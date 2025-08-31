@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patologie Vie Aeree Equine - Infografica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #073B4C;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            height: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <!-- Palette: Energetic & Playful (#FF6B6B, #FFD166, #06D6A0, #118AB2, #073B4C) -->
+    <div class="container mx-auto p-4 md:p-8">
+
+        <!-- Header Section -->
+        <header class="text-center mb-12 p-8 rounded-lg shadow-xl" style="background-color: #118AB2;">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">Patologie Vie Aeree Equine</h1>
+            <h2 class="text-xl md:text-2xl text-white opacity-90">Una Guida Visiva alla Diagnosi Differenziale</h2>
+            <p class="mt-4 text-white max-w-2xl mx-auto opacity-80">Questa infografica presenta un riassunto visivo delle principali patologie dinamiche delle prime vie aeree del cavallo, focalizzandosi sulle loro caratteristiche distintive e sui criteri diagnostici chiave.</p>
+        </header>
+
+        <!-- Main Stats Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white rounded-lg p-6 shadow-md text-center transition-transform hover:scale-105">
+                <p class="text-4xl md:text-5xl font-bold" style="color: #FF6B6B;">1 su 5</p>
+                <p class="mt-2 text-lg md:text-xl font-medium">Cavalli da corsa può essere affetto da RLN.</p>
+            </div>
+            <div class="bg-white rounded-lg p-6 shadow-md text-center transition-transform hover:scale-105">
+                <p class="text-4xl md:text-5xl font-bold" style="color: #FFD166;">80-90%</p>
+                <p class="mt-2 text-lg md:text-xl font-medium">Dei rumori respiratori dinamici è RLN o DDSP.</p>
+            </div>
+            <div class="bg-white rounded-lg p-6 shadow-md text-center transition-transform hover:scale-105">
+                <p class="text-4xl md:text-5xl font-bold" style="color: #06D6A0;">90%</p>
+                <p class="mt-2 text-lg md:text-xl font-medium">Di diagnosi richiede l'endoscopia dinamica.</p>
+            </div>
+        </div>
+
+        <!-- Section: Rumore e Diagnosi -->
+        <section class="mb-12">
+            <h3 class="text-2xl md:text-3xl font-bold text-white mb-6 p-4 rounded-md" style="background-color: #118AB2;">Il Suono che Fa la Differenza</h3>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <p class="mb-6 text-lg">Il tipo di rumore respiratorio e la sua fase nel ciclo (inspiratoria o espiratoria) sono i primi indizi. Questo grafico mostra una stima comparativa dell'incidenza delle patologie, mentre le icone a fianco dei nomi indicano la fase respiratoria tipica in cui si manifesta il rumore.</p>
+                <div class="flex justify-center items-center gap-4 mb-6 text-sm text-gray-600">
+                    <span class="flex items-center gap-1"><span class="text-xl">💨</span> = Inspiratorio</span>
+                    <span class="flex items-center gap-1"><span class="text-xl">🔊</span> = Espiratorio</span>
+                    <span class="flex items-center gap-1"><span class="text-xl">💨🔊</span> = Entrambi</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="rumoreChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Caratteristiche a Confronto -->
+        <section class="mb-12">
+            <h3 class="text-2xl md:text-3xl font-bold text-white mb-6 p-4 rounded-md" style="background-color: #118AB2;">Caratteristiche a Confronto</h3>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <p class="mb-6 text-lg">Questa tabella riassume le caratteristiche cliniche e diagnostiche delle patologie per un confronto rapido. Notate le differenze chiave nei reperti endoscopici e nella fisiologia.</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-3 font-semibold text-sm text-gray-700 border-b">Patologia</th>
+                                <th class="p-3 font-semibold text-sm text-gray-700 border-b">Rumore Respiratorio</th>
+                                <th class="p-3 font-semibold text-sm text-gray-700 border-b">Fase del Ciclo</th>
+                                <th class="p-3 font-semibold text-sm text-gray-700 border-b">Caratteristiche Endoscopiche Distintive</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-3 border-b border-gray-200">**RLN**</td>
+                                <td class="p-3 border-b border-gray-200">Stridore sibilante ("roaring")</td>
+                                <td class="p-3 border-b border-gray-200" style="color: #FF6B6B;">Inspirazione</td>
+                                <td class="p-3 border-b border-gray-200">Collasso dinamico dell'aritenoide sinistro</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-b border-gray-200">**DDSP**</td>
+                                <td class="p-3 border-b border-gray-200">Rumore gorgogliante</td>
+                                <td class="p-3 border-b border-gray-200" style="color: #118AB2;">Espirazione</td>
+                                <td class="p-3 border-b border-gray-200">Palato molle che si sposta dorsalmente sopra l'epiglottide</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-b border-gray-200">**Intrappolamento dell'Epiglottide**</td>
+                                <td class="p-3 border-b border-gray-200">Stridore alto</td>
+                                <td class="p-3 border-b border-gray-200" style="color: #FF6B6B;">Inspirazione ed Espirazione</td>
+                                <td class="p-3 border-b border-gray-200">Epiglottide avvolta dalla plica glossoepiglottica</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-b border-gray-200">**Collasso Faringeo**</td>
+                                <td class="p-3 border-b border-gray-200">Rumore "russante" o "gorgogliante"</td>
+                                <td class="p-3 border-b border-gray-200" style="color: #FF6B6B;">Inspirazione</td>
+                                <td class="p-3 border-b border-gray-200">Collasso dinamico delle pareti faringee</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-b border-gray-200">**Displasia Laringea**</td>
+                                <td class="p-3 border-b border-gray-200">Stridore inspiratorio</td>
+                                <td class="p-3 border-b border-gray-200" style="color: #FF6B6B;">Inspirazione</td>
+                                <td class="p-3 border-b border-gray-200">Faringe strutturalmente anomala, flaccida o asimmetrica</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Flusso Diagnostico -->
+        <section class="mb-12">
+            <h3 class="text-2xl md:text-3xl font-bold text-white mb-6 p-4 rounded-md" style="background-color: #118AB2;">Flusso Diagnostico Semplificato</h3>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <p class="mb-6 text-lg">La diagnosi si basa su un processo logico. Partendo dai segni clinici, si procede con l'endoscopia per confermare il sospetto e differenziare le patologie.</p>
+                <div class="flex flex-col items-center space-y-4 text-center">
+                    <div class="bg-gray-100 p-4 rounded-lg shadow-sm w-full md:w-3/4 lg:w-2/3">
+                        <p class="font-semibold" style="color: #073B4C;">1. Anamnesi e Segni Clinici</p>
+                        <p class="text-sm mt-1">Valuta rumore, fase del ciclo respiratorio e performance sotto sforzo.</p>
+                    </div>
+                    <div class="w-1 h-6 bg-gray-300"></div>
+                    <div class="bg-gray-100 p-4 rounded-lg shadow-sm w-full md:w-3/4 lg:w-2/3">
+                        <p class="font-semibold" style="color: #073B4C;">2. Esame Endoscopico a Riposo (Senza Sedazione)</p>
+                        <p class="text-sm mt-1">Verifica la presenza di anomalie fisse (es. cisti, intrappolamento).</p>
+                    </div>
+                    <div class="w-1 h-6 bg-gray-300"></div>
+                    <div class="bg-gray-100 p-4 rounded-lg shadow-sm w-full md:w-3/4 lg:w-2/3">
+                        <p class="font-semibold" style="color: #073B4C;">3. Endoscopia Dinamica (Senza Sedazione)</p>
+                        <p class="text-sm mt-1">Osserva il movimento delle strutture durante l'esercizio per identificare i collassi.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const wrapLabels = (labels) => {
+                const iconMap = {
+                    'Emiplegia Laringea Sinistra': '💨',
+                    'Dislocazione Dorsale del Palato Molle': '🔊',
+                    'Intrappolamento dell\'Epiglottide': '💨🔊',
+                    'Collasso Faringeo': '💨',
+                    'Displasia Laringea': '💨'
+                };
+                return labels.map(label => {
+                    const icon = iconMap[label] || '';
+                    const fullLabel = icon + ' ' + label;
+                    if (fullLabel.length > 16) {
+                        const words = fullLabel.split(' ');
+                        const lines = [];
+                        let currentLine = '';
+                        words.forEach(word => {
+                            if ((currentLine + ' ' + word).length > 16 && currentLine !== '') {
+                                lines.push(currentLine.trim());
+                                currentLine = word;
+                            } else {
+                                currentLine += (currentLine === '' ? '' : ' ') + word;
+                            }
+                        });
+                        lines.push(currentLine.trim());
+                        return lines;
+                    }
+                    return fullLabel;
+                });
+            };
+
+            const labels = ['Emiplegia Laringea Sinistra', 'Dislocazione Dorsale del Palato Molle', 'Intrappolamento dell\'Epiglottide', 'Collasso Faringeo', 'Displasia Laringea'];
+            const wrappedLabels = wrapLabels(labels);
+
+            const data = {
+                labels: wrappedLabels,
+                datasets: [
+                    {
+                        label: 'Incidenza Stima',
+                        data: [20, 15, 8, 7, 5],
+                        backgroundColor: ['#FF6B6B', '#FFD166', '#06D6A0', '#118AB2', '#073B4C'],
+                        borderColor: 'rgba(255, 255, 255, 0.8)',
+                        borderWidth: 1,
+                        borderRadius: 8
+                    }
+                ]
+            };
+
+            const config = {
+                type: 'bar',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const item = tooltipItems[0];
+                                    let label = item.chart.data.labels[item.dataIndex];
+                                    if (Array.isArray(label)) {
+                                        return label.join(' ');
+                                    } else {
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#073B4C'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: '#f3f4f6'
+                            },
+                            ticks: {
+                                color: '#073B4C'
+                            }
+                        }
+                    }
+                }
+            };
+            const rumoreChart = new Chart(document.getElementById('rumoreChart'), config);
+        });
+    </script>
+</body>
+</html>
