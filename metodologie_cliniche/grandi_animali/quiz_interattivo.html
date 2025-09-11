@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interattivo: La Raccolta dell'Anamnesi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .answer-btn {
+            transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
+        }
+        .answer-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            border-color: #3B82F6; /* Blue-500 */
+        }
+        .correct {
+            background-color: #D1FAE5 !important; /* Green-100 */
+            border-color: #10B981 !important; /* Green-500 */
+            color: #065F46; /* Green-800 */
+        }
+        .incorrect {
+            background-color: #FEE2E2 !important; /* Red-100 */
+            border-color: #EF4444 !important; /* Red-500 */
+            color: #991B1B; /* Red-800 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div id="quiz-container" class="bg-white p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-2xl">
+        
+        <!-- Header del Quiz -->
+        <div id="quiz-header" class="mb-6 border-b pb-4">
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 text-center">Quiz: La Raccolta dell'Anamnesi</h1>
+            <p id="question-counter" class="text-center text-gray-500 font-semibold mt-2">Domanda 1 di 10</p>
+        </div>
+
+        <!-- Corpo del Quiz -->
+        <div id="quiz-body">
+            <p id="question-text" class="text-lg font-semibold text-gray-700 mb-6 min-h-[6rem] flex items-center">Caricamento domanda...</p>
+            <div id="answer-options" class="grid grid-cols-1 gap-4">
+                <!-- Le opzioni di risposta verranno inserite qui da JS -->
+            </div>
+            <div id="rationale-container" class="mt-4 p-4 rounded-lg bg-gray-50 text-gray-600 border border-gray-200 hidden">
+                <p id="rationale-text"></p>
+            </div>
+        </div>
+        
+        <!-- Footer del Quiz -->
+        <div id="quiz-footer" class="mt-8 text-center">
+            <button id="next-button" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition duration-300 w-full sm:w-auto invisible">Prossima Domanda</button>
+        </div>
+
+        <!-- Schermata Risultati -->
+        <div id="results-container" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Quiz Completato!</h2>
+            <p class="text-xl text-gray-600 mb-2">Il tuo punteggio finale è:</p>
+            <p id="score-text" class="text-5xl font-extrabold text-blue-600 mb-8">8 / 10</p>
+            <button id="restart-button" class="bg-gray-700 text-white font-bold py-3 px-8 rounded-lg hover:bg-gray-800 transition duration-300 w-full sm:w-auto">Riprova il Quiz</button>
+        </div>
+
+    </div>
+
+    <script>
+        const quizData = {
+            "questions": [
+                { "question": "Un allevatore vi contatta perché una bovina presenta tosse da circa due settimane. Quale domanda, nell'ambito dell'anamnesi prossima, è più utile per iniziare a differenziare le possibili cause?", "hint": "Pensate a come la natura di un sintomo possa indicare diversi processi patologici in corso.", "answerOptions": [ { "text": "La tosse è secca o produttiva (catarrale)?", "isCorrect": true, "rationale": "Questa domanda aiuta a qualificare il sintomo principale, orientando verso patologie irritative/allergiche (tosse secca) o infettive/infiammatorie (tosse produttiva)." }, { "text": "L'animale è stato vaccinato di recente?", "isCorrect": false, "rationale": "Questa informazione appartiene all'anamnesi remota ed è importante, ma non è il primo passo per caratterizzare il sintomo attuale." }, { "text": "Quanti parti ha avuto la bovina?", "isCorrect": false, "rationale": "L'anamnesi riproduttiva è fondamentale nel contesto generale, ma è improbabile che sia direttamente correlata a un sintomo respiratorio cronico come la tosse." }, { "text": "Ha notato un calo nella produzione di latte?", "isCorrect": false, "rationale": "Il calo della produzione è un sintomo generale importante, ma chiedere la natura della tosse è più specifico per l'apparato respiratorio." } ] },
+                { "question": "Durante un'anamnesi di allevamento, emerge che solo i vitelli nel primo mese di vita presentano sintomatologia enterica. Questa informazione è di massima rilevanza per quale sezione dell'anamnesi?", "hint": "Considerate come l'identificazione di un sottogruppo specifico di animali malati possa restringere il campo delle cause.", "answerOptions": [ { "text": "Anamnesi Collettiva", "isCorrect": true, "rationale": "Identificare la categoria specifica di animali colpiti è un punto cardine dell'anamnesi collettiva, suggerendo cause legate all'età o alla gestione di quel gruppo." }, { "text": "Anamnesi Fisiologica", "isCorrect": false, "rationale": "L'anamnesi fisiologica si concentra sulla storia del singolo individuo, non sulla dinamica di un problema all'interno di un gruppo." }, { "text": "Anamnesi Prossima", "isCorrect": false, "rationale": "L'anamnesi prossima si focalizza sull'evoluzione dei sintomi nel singolo paziente, mentre qui si analizza la distribuzione del problema." }, { "text": "Segnalamento", "isCorrect": false, "rationale": "Il segnalamento riguarda i dati identificativi di base del singolo animale (razza, sesso, età), non la distribuzione di una patologia in un gruppo." } ] },
+                { "question": "Un proprietario riferisce che il suo cavallo ha iniziato a zoppicare improvvisamente stamattina. Come si definisce correttamente questa modalità di insorgenza dei sintomi?", "hint": "La terminologia medica usa termini specifici per descrivere la velocità con cui un sintomo appare.", "answerOptions": [ { "text": "Acuta", "isCorrect": true, "rationale": "Il termine 'acuto' descrive una comparsa improvvisa e rapida dei sintomi, proprio come in questo caso." }, { "text": "Subacuta", "isCorrect": false, "rationale": "Il termine 'subacuto' indica una comparsa che avviene in un arco di tempo di alcuni giorni, non improvvisamente." }, { "text": "Cronica", "isCorrect": false, "rationale": "Il termine 'cronico' si riferisce a sintomi che persistono da settimane, mesi o più, l'opposto di una comparsa improvvisa." }, { "text": "Ciclica", "isCorrect": false, "rationale": "Il termine 'ciclico' descrive sintomi che appaiono e scompaiono a intervalli regolari, non una prima comparsa improvvisa." } ] },
+                { "question": "Quale delle seguenti informazioni raccolte durante l'anamnesi remota è più utile per valutare una predisposizione a patologie metaboliche in una bovina da latte?", "hint": "Le esigenze metaboliche di un animale variano enormemente in base alla sua funzione fisiologica.", "answerOptions": [ { "text": "Anamnesi produttiva/riproduttiva", "isCorrect": true, "rationale": "La fase del ciclo produttivo (es. lattazione, asciutta) è strettamente legata al rischio di patologie metaboliche come la chetosi o l'ipocalcemia." }, { "text": "Mantello e segni particolari", "isCorrect": false, "rationale": "Questi dati sono cruciali per l'identificazione dell'animale, ma non hanno una correlazione diretta con il rischio di patologie metaboliche." }, { "text": "Trattamenti antiparassitari effettuati", "isCorrect": false, "rationale": "La storia dei trattamenti antiparassitari è importante per le malattie parassitarie, ma non è il fattore primario per quelle metaboliche." }, { "text": "Provenienza dell'animale", "isCorrect": false, "rationale": "La provenienza è fondamentale per considerare rischi infettivi o legati all'adattamento, ma meno diretta per le patologie metaboliche intrinseche." } ] },
+                { "question": "Il proprietario vi informa di aver già somministrato un antibiotico a un animale malato, senza risultati apparenti. Qual è il significato diagnostico principale di questa informazione?", "hint": "L'esito di una terapia può essere tanto informativo quanto il sintomo stesso.", "answerOptions": [ { "text": "Suggerisce che la patologia potrebbe non essere di natura batterica o che il batterio non è sensibile a quell'antibiotico.", "isCorrect": true, "rationale": "La mancata risposta a una terapia aiuta a escludere alcune cause e a riconsiderare le diagnosi differenziali." }, { "text": "Indica che il dosaggio del farmaco era sicuramente sbagliato.", "isCorrect": false, "rationale": "Un dosaggio errato è una possibilità, ma non l'unica né la più probabile; la causa potrebbe semplicemente non essere batterica." }, { "text": "Dimostra che il proprietario non è affidabile nel descrivere i sintomi.", "isCorrect": false, "rationale": "Questa informazione non mette in discussione l'affidabilità del proprietario, ma fornisce un dato clinico oggettivo sull'evoluzione della malattia." }, { "text": "Significa che la malattia è ormai incurabile.", "isCorrect": false, "rationale": "La mancata risposta a un singolo trattamento non implica che la malattia sia incurabile, ma solo che quella specifica terapia non è stata efficace." } ] },
+                { "question": "In un allevamento di pecore, notate un aumento dei casi di zoppia dopo l'introduzione di un nuovo lotto di animali. Questa osservazione rientra primariamente nel campo:", "hint": "Quando un problema sembra correlato a un cambiamento nella gestione del gruppo, si sta indagando un aspetto specifico dell'anamnesi.", "answerOptions": [ { "text": "dell'anamnesi collettiva, correlando un evento gestionale a un problema sanitario.", "isCorrect": true, "rationale": "Questa è l'essenza dell'anamnesi collettiva: collegare cambiamenti gestionali o ambientali alla comparsa di patologie nel gruppo." }, { "text": "dell'anamnesi prossima del singolo animale.", "isCorrect": false, "rationale": "L'anamnesi prossima si concentrerebbe sulla zoppia di una singola pecora, non sul pattern di comparsa nel gruppo." }, { "text": "del segnalamento, per identificare i nuovi animali.", "isCorrect": false, "rationale": "Il segnalamento serve a identificare gli animali, ma l'analisi della correlazione tra il loro arrivo e la malattia è un passo successivo." }, { "text": "dell'anamnesi remota, per la storia sanitaria dei nuovi animali.", "isCorrect": false, "rationale": "Indagare la storia dei nuovi animali è parte dell'anamnesi remota, ma l'osservazione della comparsa della malattia nel gruppo è un'analisi collettiva." } ] },
+                { "question": "Qual è lo scopo primario della raccolta dell'anamnesi nel processo diagnostico?", "hint": "L'anamnesi non fornisce quasi mai la risposta definitiva, ma svolge un ruolo cruciale all'inizio del percorso.", "answerOptions": [ { "text": "Orientare l'esame obiettivo e la scelta degli esami collaterali.", "isCorrect": true, "rationale": "L'anamnesi permette di formulare delle ipotesi diagnostiche preliminari, guidando il clinico su cosa cercare durante la visita e quali test richiedere." }, { "text": "Formulare la diagnosi definitiva senza bisogno di visitare l'animale.", "isCorrect": false, "rationale": "È molto raro e potenzialmente pericoloso formulare una diagnosi definitiva basandosi solo sull'anamnesi; essa deve sempre essere confermata dall'esame obiettivo." }, { "text": "Stabilire il costo esatto delle cure necessarie.", "isCorrect": false, "rationale": "La stima dei costi è una conseguenza della diagnosi e del piano terapeutico, non l'obiettivo primario della raccolta dei dati anamnestici." }, { "text": "Prescrivere immediatamente la terapia più efficace.", "isCorrect": false, "rationale": "Prescrivere una terapia senza un esame obiettivo e una diagnosi, anche se presuntiva, è un approccio scorretto e rischioso." } ] },
+                { "question": "Un allevatore vi dice che le sue vacche hanno 'meno appetito'. Quale delle seguenti è la domanda più appropriata per quantificare meglio questo sintomo?", "hint": "Sintomi vaghi devono essere trasformati in dati più oggettivi possibili.", "answerOptions": [ { "text": "Di quanto si è ridotto il consumo di alimento rispetto al normale?", "isCorrect": true, "rationale": "Questa domanda spinge l'allevatore a fornire un dato più concreto (es. 'mangia la metà', 'avanza 2 kg di razione'), rendendo il sintomo misurabile." }, { "text": "Le vacche sono anche depresse?", "isCorrect": false, "rationale": "Collegare l'appetito all'atteggiamento è utile, ma non aiuta a quantificare specificamente il sintomo 'meno appetito'." }, { "text": "Da quanti giorni va avanti questa situazione?", "isCorrect": false, "rationale": "Chiedere la durata è un passo successivo corretto (evoluzione), ma prima è fondamentale capire l'entità del sintomo." }, { "text": "Bevono normalmente?", "isCorrect": false, "rationale": "Indagare la sete è importante, ma è un sintomo separato; prima bisogna definire meglio il problema dell'appetito." } ] },
+                { "question": "La scoperta che una patologia colpisce sia le vacche in lattazione sia quelle in asciutta, ma risparmia le manze, suggerisce che la causa potrebbe essere...", "hint": "Cosa hanno in comune gli animali adulti di un allevamento, a differenza di quelli giovani?", "answerOptions": [ { "text": "legata a fattori a cui solo gli animali adulti sono esposti (es. alimentazione, ambiente).", "isCorrect": true, "rationale": "Se la patologia non colpisce gli animali giovani, è probabile che la causa sia da ricercare in un fattore comune ai soli gruppi adulti." }, { "text": "una malattia tipicamente giovanile.", "isCorrect": false, "rationale": "I dati indicano l'esatto contrario, dato che le manze (animali giovani) sono risparmiate dal problema." }, { "text": "un problema genetico ereditario.", "isCorrect": false, "rationale": "Un problema genetico si manifesterebbe probabilmente anche negli animali giovani, o comunque non seguirebbe questa suddivisione per categoria produttiva." }, { "text": "sicuramente di natura infettiva altamente contagiosa.", "isCorrect": false, "rationale": "Una malattia altamente contagiosa probabilmente colpirebbe tutti i gruppi, inclusi i più giovani e recettivi, a meno di specifiche immunità." } ] },
+                { "question": "Quale informazione, raccolta durante l'anamnesi remota, è essenziale per interpretare correttamente i risultati di futuri test sierologici?", "hint": "I test sierologici misurano la risposta immunitaria. Cosa può influenzare questa risposta prima ancora che l'animale si ammali?", "answerOptions": [ { "text": "La storia delle vaccinazioni.", "isCorrect": true, "rationale": "Le vaccinazioni inducono una risposta anticorpale che può interferire con l'interpretazione dei test sierologici, rendendo cruciale conoscere lo stato vaccinale." }, { "text": "Il numero di parti.", "isCorrect": false, "rationale": "Il numero di parti è importante per l'anamnesi riproduttiva, ma non influenza direttamente la risposta anticorpale a un agente patogeno specifico." }, { "text": "Il tipo di stabulazione.", "isCorrect": false, "rationale": "Il tipo di stabulazione è un fattore di rischio per molte patologie, ma non modifica i risultati di un test sierologico in sé." }, { "text": "La composizione della razione alimentare.", "isCorrect": false, "rationale": "L'alimentazione influenza lo stato di salute generale, ma non causa la produzione di anticorpi specifici che possano confondere un test sierologico." } ] }
+            ]
+        };
+
+        const questionCounterEl = document.getElementById('question-counter');
+        const questionTextEl = document.getElementById('question-text');
+        const answerOptionsEl = document.getElementById('answer-options');
+        const rationaleContainerEl = document.getElementById('rationale-container');
+        const rationaleTextEl = document.getElementById('rationale-text');
+        const nextButton = document.getElementById('next-button');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreTextEl = document.getElementById('score-text');
+        const restartButton = document.getElementById('restart-button');
+        const quizBody = document.getElementById('quiz-body');
+        const quizFooter = document.getElementById('quiz-footer');
+        const quizHeader = document.getElementById('quiz-header');
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            resultsContainer.classList.add('hidden');
+            quizHeader.classList.remove('hidden');
+            quizBody.classList.remove('hidden');
+            quizFooter.classList.remove('hidden');
+            nextButton.classList.add('invisible');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            quizContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+            resetState();
+            const currentQuestion = quizData.questions[currentQuestionIndex];
+            questionCounterEl.textContent = `Domanda ${currentQuestionIndex + 1} di ${quizData.questions.length}`;
+            questionTextEl.textContent = currentQuestion.question;
+
+            currentQuestion.answerOptions.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option.text;
+                button.classList.add('answer-btn', 'w-full', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'font-semibold', 'text-gray-700', 'bg-white');
+                button.dataset.correct = option.isCorrect;
+                button.dataset.rationale = option.rationale;
+                button.addEventListener('click', selectAnswer);
+                answerOptionsEl.appendChild(button);
+            });
+        }
+
+        function resetState() {
+            while (answerOptionsEl.firstChild) {
+                answerOptionsEl.removeChild(answerOptionsEl.firstChild);
+            }
+            rationaleContainerEl.classList.add('hidden');
+            nextButton.classList.add('invisible');
+        }
+
+        function selectAnswer(e) {
+            const selectedButton = e.target;
+            const isCorrect = selectedButton.dataset.correct === 'true';
+
+            if (isCorrect) {
+                score++;
+            }
+
+            Array.from(answerOptionsEl.children).forEach(button => {
+                if (button.dataset.correct === 'true') {
+                    button.classList.add('correct');
+                } else {
+                    button.classList.add('incorrect');
+                }
+                button.disabled = true;
+            });
+
+            rationaleTextEl.textContent = `Spiegazione: ${selectedButton.dataset.rationale}`;
+            rationaleContainerEl.classList.remove('hidden');
+
+            if (quizData.questions.length > currentQuestionIndex + 1) {
+                nextButton.textContent = "Prossima Domanda";
+            } else {
+                nextButton.textContent = "Mostra Risultati";
+            }
+            nextButton.classList.remove('invisible');
+        }
+
+        function showResults() {
+            quizHeader.classList.add('hidden');
+            quizBody.classList.add('hidden');
+            quizFooter.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            scoreTextEl.textContent = `${score} / ${quizData.questions.length}`;
+            resultsContainer.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        restartButton.addEventListener('click', startQuiz);
+
+        startQuiz();
+    </script>
+</body>
+</html>
