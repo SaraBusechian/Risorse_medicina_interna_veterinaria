@@ -7,221 +7,200 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .hero-bg {
-            background-color: #1E3A8A;
-            background-image: linear-gradient(to right, #1E3A8A, #3B82F6);
-        }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
         .nav-link { transition: color 0.3s; }
         .nav-link:hover { color: #93C5FD; }
-        .section-card {
-            background-color: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); transition: transform 0.3s, box-shadow 0.3s; }
+        .section-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
         }
-        .section-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        .speak-btn { background: none; border: none; cursor: pointer; padding: 0.25rem; border-radius: 9999px; }
-        .speak-btn:hover { background-color: rgba(255,255,255,0.2); }
-        .speak-btn-dark:hover { background-color: rgba(0,0,0,0.1); }
-        /* Stili per accessibilità DSA */
-        body.dsa-friendly {
-            font-family: 'Lexend', sans-serif !important;
-            background-color: #FDF5E6;
-        }
-        body.dsa-friendly p,
-        body.dsa-friendly li,
-        body.dsa-friendly button,
-        body.dsa-friendly a,
-        body.dsa-friendly h1, body.dsa-friendly h2, body.dsa-friendly h3 {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            letter-spacing: 0.03em;
-        }
-        body.dsa-friendly .hero-bg,
-        body.dsa-friendly footer.bg-gray-800 {
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #000000 !important;
             background-image: none !important;
-            background-color: #2c3e50 !important;
         }
-        body.dsa-friendly .section-card { background-color: #ffffff !important; }
-        body.dsa-friendly .text-gray-700,
-        body.dsa-friendly .text-blue-800 { color: #1a1a1a !important; }
-        body.dsa-friendly .text-5xl { font-size: 2.5rem !important; }
-        body.dsa-friendly .text-xl { font-size: 1.2rem !important; }
+        .dsa-mode .section-card { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode main h1, .dsa-mode main h2, .dsa-mode main h3, .dsa-mode main p, .dsa-mode .tts-button { color: #34495e; }
+        .dsa-mode header h1, .dsa-mode header h2, .dsa-mode header p, .dsa-mode #main-header .nav-link { color: #ffffff; }
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
     </style>
 </head>
 <body class="bg-gray-50">
 
-    <header class="hero-bg text-white shadow-lg">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+    <header id="main-header" class="hero-bg text-white shadow-lg">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center flex-wrap">
             <h1 class="text-2xl font-bold">Medicina Interna G.A.</h1>
-            <div class="flex items-center">
-                <ul class="flex space-x-6">
+            <div class="flex items-center space-x-6">
+                <ul class="hidden md:flex space-x-6">
                     <li><a href="#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
                     <li><a href="#ispezione" class="nav-link font-semibold">Ispezione</a></li>
                     <li><a href="#palpazione" class="nav-link font-semibold">Palpazione</a></li>
                     <li><a href="#percussione" class="nav-link font-semibold">Percussione</a></li>
                     <li><a href="#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
                 </ul>
-                <button id="dsa-toggle" class="ml-6 p-2 text-sm font-bold bg-white text-blue-800 rounded-lg hover:bg-gray-200 transition" title="Attiva/Disattiva modalità ad alta leggibilità">Accessibilità</button>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">Accessibilità</button>
             </div>
         </nav>
         <div class="container mx-auto px-6 py-20 text-center">
-            <div id="speakable-h2" class="text-5xl font-bold mb-2">Metodologie Cliniche Veterinarie</div>
-            <div id="speakable-p1" class="text-xl">Una guida interattiva per lo studio della medicina interna dei grandi animali.</div>
+            <h2 class="text-5xl font-bold mb-2">Metodologie Cliniche Veterinarie</h2>
+            <p class="text-xl">Una guida interattiva per lo studio della medicina interna dei grandi animali.</p>
         </div>
     </header>
 
-    <!-- Contenuto Principale -->
     <main class="container mx-auto px-6 py-12">
         
-        <!-- Sezione Anamnesi -->
         <section id="anamnesi" class="mb-16 p-8 section-card">
-            <h3 id="speakable-h3" class="text-3xl font-bold mb-4 text-blue-800">1. Anamnesi</h3>
-            <p id="speakable-p2" class="text-gray-700 leading-relaxed mb-6">
-                L'anamnesi rappresenta il primo e fondamentale passo nell'approccio al paziente. Consiste nella raccolta sistematica di tutte le informazioni che possono essere utili per raggiungere una diagnosi. Si suddivide in anamnesi remota, che indaga la storia clinica passata dell'animale, e anamnesi prossima, focalizzata sul problema attuale. In un contesto di allevamento, si aggiunge l'anamnesi collettiva per valutare lo stato di salute del gruppo e identificare possibili fattori ambientali, gestionali o infettivi. Una corretta raccolta anamnestica è cruciale e può, in molti casi, orientare in modo decisivo il percorso diagnostico.
+            <h3 class="text-3xl font-bold mb-4 text-blue-800">1. Anamnesi</h3>
+            <p id="anamnesi-desc" class="text-gray-700 leading-relaxed mb-6">
+                L'anamnesi rappresenta il primo e fondamentale passo nell'approccio al paziente. Consiste nella raccolta sistematica di tutte le informazioni che possono essere utili per raggiungere una diagnosi, dalla storia passata al problema attuale, fino alle dinamiche di allevamento.
+                <span class="tts-button" data-target-text="anamnesi-desc">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </span>
             </p>
             <div class="flex flex-wrap gap-4">
-                <a href="riassunto_anamnesi_completo.html" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition duration-300 inline-block">
-                     Leggi il Riassunto
-                </a>
-                <a href="infografica_con_header_snello.html" target="_blank" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition duration-300 inline-block">
-                    Visualizza Infografica
-                </a>
-                <a href="quiz_interattivo_completo.html" target="_blank" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition duration-300 inline-block">
-                     Fai il Quiz Interattivo
-                </a>
-                <a href="audio_riassunto_anamnesi.mp3" download class="bg-orange-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-orange-600 transition duration-300 inline-block">
-                     Ascolta e Scarica Audio
-                </a>
+                <a href="riassunto_anamnesi_completo.html" target="_blank" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition duration-300 inline-block">Leggi il Riassunto</a>
+                <a href="infografica_con_header_snello.html" target="_blank" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition duration-300 inline-block">Visualizza Infografica</a>
+                <a href="quiz_interattivo_completo.html" target="_blank" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition duration-300 inline-block">Fai il Quiz</a>
+                <a href="audio_riassunto_anamnesi.mp3" download class="bg-orange-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-orange-600 transition duration-300 inline-block">Ascolta Audio</a>
             </div>
         </section>
 
-        <!-- Placeholder per altre sezioni -->
         <section id="ispezione" class="mb-16 p-8 section-card">
-            <h3 class="text-3xl font-bold mb-4 text-blue-800">2. Ispezione Generale e Ambientale</h3>
-            <p class="text-gray-700">Contenuto sull'ispezione...</p>
+            <h3 class="text-3xl font-bold mb-4 text-blue-800">2. Ispezione</h3>
+            <p id="ispezione-desc" class="text-gray-700 leading-relaxed mb-6">
+                L'ispezione è il secondo passo del metodo clinico e consiste nell'osservazione attenta dell'animale e del suo ambiente. Permette di raccogliere segni clinici oggettivi, partendo da una visione d'insieme a distanza per poi focalizzarsi sui dettagli con un esame ravvicinato.
+                <span class="tts-button" data-target-text="ispezione-desc">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </span>
+            </p>
+            <div class="flex flex-wrap gap-4">
+                 <a href="riassunto_ispezione_completo.html" target="_blank" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition duration-300 inline-block">Leggi il Riassunto</a>
+                 <a href="ispezione_infografica.html" target="_blank" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition duration-300 inline-block">Visualizza Infografica</a>
+                 <a href="quiz_ispezione_completo.html" target="_blank" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition duration-300 inline-block">Fai il Quiz</a>
+                 <a href="audio_riassunto_ispezione.mp3" download class="bg-orange-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-orange-600 transition duration-300 inline-block">Ascolta Audio</a>
+            </div>
         </section>
 
         <section id="palpazione" class="mb-16 p-8 section-card">
             <h3 class="text-3xl font-bold mb-4 text-blue-800">3. Palpazione</h3>
-            <p class="text-gray-700">Contenuto sulla palpazione...</p>
+            <p id="palpazione-desc" class="text-gray-700">Contenuto sulla palpazione...
+                 <span class="tts-button" data-target-text="palpazione-desc">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </span>
+            </p>
         </section>
 
         <section id="percussione" class="mb-16 p-8 section-card">
             <h3 class="text-3xl font-bold mb-4 text-blue-800">4. Percussione</h3>
-            <p class="text-gray-700">Contenuto sulla percussione...</p>
+            <p id="percussione-desc" class="text-gray-700">Contenuto sulla percussione...
+                 <span class="tts-button" data-target-text="percussione-desc">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </span>
+            </p>
         </section>
 
         <section id="auscultazione" class="mb-16 p-8 section-card">
             <h3 class="text-3xl font-bold mb-4 text-blue-800">5. Auscultazione</h3>
-            <p class="text-gray-700">Contenuto sull'auscultazione...</p>
+            <p id="auscultazione-desc" class="text-gray-700">Contenuto sull'auscultazione...
+                 <span class="tts-button" data-target-text="auscultazione-desc">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </span>
+            </p>
         </section>
 
     </main>
     
-    <footer class="bg-gray-800 text-white mt-12">
+    <footer id="main-footer" class="bg-gray-800 text-white mt-12">
         <div class="container mx-auto px-6 py-4 text-center">
             <p>&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
         </div>
     </footer>
 
     <script>
-        const speakerIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd" /></svg>`;
-
+        const accessibilityToggle = document.getElementById('accessibility-toggle');
+        const body = document.body;
         const synth = window.speechSynthesis;
         let currentUtterance = null;
+        let activeTTSButton = null;
 
-        function speak(textToSpeak) {
-            // Se stiamo parlando e il testo è lo stesso, mettiamo in pausa o riprendiamo
-            if (synth.speaking && currentUtterance && currentUtterance.text === textToSpeak) {
-                if (synth.paused) {
-                    synth.resume();
-                } else {
-                    synth.pause();
-                }
+        const setA11yMode = (enabled) => {
+            if (enabled) {
+                body.classList.add('dsa-mode');
+                localStorage.setItem('dsa-mode', 'enabled');
             } else {
-                // Se sta parlando qualcos'altro, o niente, fermiamo tutto e iniziamo un nuovo discorso.
-                synth.cancel();
-
-                currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
-                currentUtterance.lang = 'it-IT';
-                currentUtterance.rate = 0.9;
-                
-                // Quando il discorso finisce, puliamo la variabile dell'enunciato corrente
-                currentUtterance.onend = () => {
-                    currentUtterance = null;
-                };
-
-                synth.speak(currentUtterance);
-            }
-        }
-
-        function makeSpeakable(element, isDark) {
-            if (!element) return;
-            
-            // Usiamo un clone per ottenere il testo in modo sicuro senza modificare il DOM attivo mentre lo leggiamo.
-            const tempEl = element.cloneNode(true);
-            const existingButton = tempEl.querySelector('.speak-btn');
-            if (existingButton) {
-                existingButton.remove();
-            }
-            const text = tempEl.textContent.trim();
-            
-            if (!text) return;
-
-            element.classList.add('flex', 'items-center', 'gap-2', 'justify-between');
-            
-            const speakButton = document.createElement('button');
-            speakButton.innerHTML = speakerIconSVG;
-            speakButton.className = 'speak-btn flex-shrink-0' + (isDark ? '' : ' text-slate-500 speak-btn-dark');
-            speakButton.setAttribute('aria-label', `Leggi: ${text.substring(0, 30)}...`);
-            speakButton.onclick = (e) => { e.stopPropagation(); speak(text); };
-            
-            // Rimuoviamo il vecchio pulsante prima di aggiungerne uno nuovo per evitare duplicati.
-            const oldButton = element.querySelector('.speak-btn');
-            if(oldButton) {
-                oldButton.remove();
-            }
-
-            element.appendChild(speakButton);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            makeSpeakable(document.getElementById('speakable-h2'), true);
-            makeSpeakable(document.getElementById('speakable-p1'), true);
-            makeSpeakable(document.getElementById('speakable-h3'), false);
-            makeSpeakable(document.getElementById('speakable-p2'), false);
-        });
-    </script>
-    <script>
-        const dsaToggleButton = document.getElementById('dsa-toggle');
-        const body = document.body;
-
-        const applyDsaMode = (isDsa) => {
-            if (isDsa) {
-                body.classList.add('dsa-friendly');
-                localStorage.setItem('dsa-mode', 'true');
-                dsaToggleButton.textContent = 'Standard';
-            } else {
-                body.classList.remove('dsa-friendly');
-                localStorage.setItem('dsa-mode', 'false');
-                dsaToggleButton.textContent = 'Accessibilità';
+                body.classList.remove('dsa-mode');
+                localStorage.setItem('dsa-mode', 'disabled');
             }
         };
 
-        const savedDsaMode = localStorage.getItem('dsa-mode') === 'true';
-        applyDsaMode(savedDsaMode);
+        accessibilityToggle.addEventListener('click', () => {
+            const isEnabled = body.classList.contains('dsa-mode');
+            setA11yMode(!isEnabled);
+        });
 
-        dsaToggleButton.addEventListener('click', () => {
-            const isCurrentlyDsa = body.classList.contains('dsa-friendly');
-            applyDsaMode(!isCurrentlyDsa);
+        if (localStorage.getItem('dsa-mode') === 'enabled') {
+            setA11yMode(true);
+        }
+        
+        function speak(text, button) {
+            if (synth.speaking) {
+                if (currentUtterance && synth.paused && activeTTSButton === button) {
+                    synth.resume();
+                    button.classList.add('playing');
+                } else if (currentUtterance && !synth.paused && activeTTSButton === button) {
+                    synth.pause();
+                    button.classList.remove('playing');
+                } else {
+                    synth.cancel();
+                    startSpeaking(text, button);
+                }
+            } else {
+                startSpeaking(text, button);
+            }
+        }
+        
+        function startSpeaking(text, button) {
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = 'it-IT';
+            currentUtterance.onend = () => {
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                activeTTSButton = null;
+            };
+            synth.speak(currentUtterance);
+            if(activeTTSButton) activeTTSButton.classList.remove('playing');
+            activeTTSButton = button;
+            button.classList.add('playing');
+        }
+
+        document.querySelectorAll('.tts-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const targetId = e.currentTarget.dataset.targetText;
+                const elementToRead = document.getElementById(targetId);
+                if (elementToRead) {
+                    let textToRead = elementToRead.textContent;
+                    const ttsButtonInside = elementToRead.querySelector('.tts-button');
+                    if(ttsButtonInside){
+                         textToRead = textToRead.replace(ttsButtonInside.textContent, '').trim();
+                    }
+                    speak(textToRead, e.currentTarget);
+                }
+            });
         });
     </script>
 </body>
