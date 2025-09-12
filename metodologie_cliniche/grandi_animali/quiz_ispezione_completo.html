@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interattivo: L'Ispezione Clinica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; }
+        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; }
+        .nav-link { transition: color 0.3s; }
+        .nav-link:hover { color: #93C5FD; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #000000 !important;
+            background-image: none !important;
+        }
+        .dsa-mode #quiz-container, .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode main h1, .dsa-mode main h2, .dsa-mode main h3, .dsa-mode main p, .dsa-mode main span { color: #34495e; }
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold">Medicina Interna G.A.</h1>
+            <div class="flex items-center space-x-6">
+                <ul class="hidden md:flex space-x-6">
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">Accessibilità</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex items-center justify-center min-h-screen p-4 pt-20">
+        <div id="quiz-container" class="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6 md:p-8">
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-sky-800">Quiz: L'Ispezione Clinica</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
+                </div>
+                <div id="question-text-container" class="text-lg text-slate-700 mb-6 min-h-[6rem] flex items-center">
+                    <p id="question-text"></p>
+                    <span id="question-tts-button" class="tts-button">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </span>
+                </div>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-6 hidden">
+                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
+                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition">Prossima Domanda</button>
+            </div>
+
+            <div id="results-area" class="text-center hidden">
+                <h2 class="text-2xl font-bold text-sky-800 mb-4">Quiz Completato!</h2>
+                <p class="text-lg text-slate-700 mb-2">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
+                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition">Ricomincia il Quiz</button>
+            </div>
+        </div>
+    </main>
+    
+    <footer id="main-footer" class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p>&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        const quizData = [
+            {
+                question: "Qual è il primo passo corretto nell'eseguire un'ispezione clinica su un grande animale?",
+                options: [
+                    { text: "Ispezione ambientale e dell'animale a distanza", correct: true, rationale: "Questo approccio permette di raccogliere dati contestuali e osservare l'animale senza alterarne il comportamento." },
+                    { text: "Ispezione ravvicinata della testa", correct: false, rationale: "Avvicinarsi subito all'animale ne altererebbe il comportamento e farebbe perdere le informazioni ottenibili a distanza." },
+                    { text: "Valutazione delle mucose apparenti", correct: false, rationale: "Questa è una parte importante dell'ispezione ravvicinata, che va eseguita dopo aver osservato l'animale a distanza." },
+                    { text: "Far deambulare l'animale", correct: false, rationale: "La valutazione della deambulazione è corretta, ma va fatta nella fase a distanza, dopo aver osservato l'animale a riposo." }
+                ]
+            },
+            {
+                question: "Durante l'ispezione ambientale, la presenza di alimento non consumato nella mangiatoia è un indizio primario di...",
+                options: [
+                    { text: "Un potenziale problema di appetito o di qualità dell'alimento.", correct: true, rationale: "L'alimento avanzato suggerisce che l'animale potrebbe avere scarso appetito (iporessia) o che l'alimento non è appetibile (es. muffe)." },
+                    { text: "Una corretta gestione della stabulazione.", correct: false, rationale: "Al contrario, potrebbe indicare un problema gestionale o sanitario che influisce sull'assunzione di cibo." },
+                    { text: "Un'eccessiva disponibilità di acqua.", correct: false, rationale: "La disponibilità di acqua non è direttamente correlata al consumo di alimento solido in questo modo." },
+                    { text: "La dominanza di altri animali nel gruppo.", correct: false, rationale: "La dominanza è una possibilità, ma un problema di appetito o di qualità del cibo è un'ipotesi più diretta." }
+                ]
+            },
+            {
+                question: "Quale dei seguenti parametri NON fa parte dell'esame funzionale del respiro?",
+                options: [
+                    { text: "Presenza di suoni respiratori anomali.", correct: true, rationale: "I suoni respiratori vengono valutati con l'auscultazione, non con l'ispezione." },
+                    { text: "Frequenza respiratoria.", correct: false, rationale: "La frequenza è uno dei quattro pilastri dell'esame funzionale del respiro, valutabile visivamente." },
+                    { text: "Profondità del respiro.", correct: false, rationale: "La profondità (respiro superficiale o profondo) si osserva visivamente e fa parte dell'esame." },
+                    { text: "Tipo di respiro (es. addominale).", correct: false, rationale: "Il tipo di movimento respiratorio è un parametro chiave dell'ispezione del torace." }
+                ]
+            },
+            {
+                question: "Un colore giallastro (itterico) delle mucose apparenti è un forte indicatore di...",
+                options: [
+                    { text: "Problemi epatici o emolisi.", correct: true, rationale: "L'ittero è causato da un accumulo di bilirubina, che può derivare da un danno al fegato o da una massiccia distruzione di globuli rossi." },
+                    { text: "Grave deficit di ossigenazione.", correct: false, rationale: "Un deficit di ossigenazione causa un colore bluastro (cianosi), non giallastro." },
+                    { text: "Anemia o stato di shock.", correct: false, rationale: "L'anemia e lo shock causano un colore pallido delle mucose." },
+                    { text: "Sepsi o infiammazione acuta.", correct: false, rationale: "La sepsi tipicamente causa mucose iperemiche (rosso intenso)." }
+                ]
+            },
+            {
+                question: "Durante l'ispezione a distanza, si valuta il BCS dell'animale. Cosa significa questa sigla?",
+                options: [
+                    { text: "Body Condition Score (Stato di Nutrizione)", correct: true, rationale: "Il BCS è un metodo standardizzato per valutare oggettivamente lo stato di nutrizione di un animale." },
+                    { text: "Behavioral Control System (Sistema di Controllo Comportamentale)", correct: false, rationale: "Il comportamento si valuta, ma la sigla BCS non si riferisce a questo." },
+                    { text: "Blood Circulation Status (Stato della Circolazione Sanguigna)", correct: false, rationale: "La circolazione si valuta con altri metodi, come l'ispezione delle mucose, non con il BCS." },
+                    { text: "Bovine Conformation Standard (Standard di Conformazione Bovina)", correct: false, rationale: "Il BCS valuta lo stato di ingrassamento, non la conformazione scheletrica." }
+                ]
+            },
+            {
+                question: "L'osservazione di un animale che mantiene il dorso incurvato (cifotico) rientra in quale parte dell'ispezione a distanza?",
+                options: [
+                    { text: "Valutazione della Postura", correct: true, rationale: "Una postura anomala, come il dorso cifotico, è un segno di dolore o disagio, valutato durante l'ispezione posturale." },
+                    { text: "Valutazione della Deambulazione", correct: false, rationale: "La deambulazione riguarda il movimento, mentre il dorso incurvato è una posizione statica." },
+                    { text: "Valutazione del Comportamento", correct: false, rationale: "Anche se legato al benessere, è più specificamente un segno posturale che un comportamento attivo." },
+                    { text: "Valutazione dello Stato di Nutrizione", correct: false, rationale: "Lo stato di nutrizione si valuta osservando le masse muscolari e adipose, non la curvatura della schiena." }
+                ]
+            },
+            {
+                question: "Cosa si intende per ispezione 'testa-coda'?",
+                options: [
+                    { text: "Un esame sistematico che parte dalla testa e prosegue ordinatamente verso la coda.", correct: true, rationale: "Questo metodo garantisce un esame completo e ordinato di tutte le regioni corporee durante l'ispezione ravvicinata." },
+                    { text: "Un metodo per valutare la lunghezza dell'animale.", correct: false, rationale: "Non è una misurazione, ma una procedura di esame." },
+                    { text: "Un'ispezione che si concentra solo sulla testa e sulla coda.", correct: false, rationale: "Al contrario, è un metodo per esaminare tutto il corpo in modo sequenziale." },
+                    { text: "Un test di reattività che stimola prima la testa e poi la coda.", correct: false, rationale: "Non è un test di riflessi, ma un'osservazione sistematica delle varie parti del corpo." }
+                ]
+            },
+            {
+                question: "Il riscontro di diarrea nel box di un animale è un'informazione raccolta durante:",
+                options: [
+                    { text: "L'ispezione ambientale", correct: true, rationale: "L'osservazione delle deiezioni nell'ambiente è una parte cruciale dell'ispezione ambientale e fornisce indizi immediati sullo stato dell'apparato digerente." },
+                    { text: "L'ispezione ravvicinata dell'addome", correct: false, rationale: "L'ispezione dell'addome valuta la sua forma, ma non le feci già emesse." },
+                    { text: "L'anamnesi remota", correct: false, rationale: "L'anamnesi si basa su ciò che riferisce il proprietario, mentre l'ispezione si basa sull'osservazione diretta dei segni." },
+                    { text: "L'ispezione della deambulazione", correct: false, rationale: "La deambulazione valuta il movimento, non le caratteristiche delle feci." }
+                ]
+            },
+            {
+                question: "L'osservazione di un'espansione asimmetrica della gabbia toracica durante la respirazione è un forte sospetto di...",
+                options: [
+                    { text: "Una patologia monolaterale (es. pneumotorace, versamento pleurico).", correct: true, rationale: "L'asimmetria indica che un emitorace non si espande correttamente, suggerendo un problema localizzato in quella sede." },
+                    { text: "Una normale variazione fisiologica in animali anziani.", correct: false, rationale: "Un movimento asimmetrico del torace non è mai fisiologico e indica sempre una condizione patologica." },
+                    { text: "Un segno tipico di bronchite cronica.", correct: false, rationale: "La bronchite è tipicamente bilaterale e influenza i suoni respiratori, non la simmetria dei movimenti toracici." },
+                    { text: "Un artefatto causato dalla posizione dell'animale.", correct: false, rationale: "Sebbene la posizione possa influenzare la valutazione, una vera asimmetria persistente è un segno clinico rilevante." }
+                ]
+            },
+            {
+                question: "Durante l'ispezione della testa, il riscontro di scolo nasale purulento (giallo-verdastro) è indicativo di...",
+                options: [
+                    { text: "Un processo infettivo-batterico in corso.", correct: true, rationale: "Il carattere purulento è dato dalla presenza di neutrofili, cellule immunitarie che combattono tipicamente le infezioni batteriche." },
+                    { text: "Una semplice irritazione delle prime vie aeree.", correct: false, rationale: "L'irritazione solitamente causa uno scolo sieroso (trasparente e acquoso), non purulento." },
+                    { text: "Una reazione allergica.", correct: false, rationale: "Le reazioni allergiche sono tipicamente associate a scolo sieroso, simile a quello da irritazione." },
+                    { text: "Un'emorragia recente.", correct: false, rationale: "Un'emorragia causerebbe uno scolo ematico (con sangue), non purulento." }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let shuffledQuestions = [];
+        const synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let activeTTSButton = null;
+
+        const quizContainer = document.getElementById('quiz-container');
+        const questionArea = document.getElementById('question-area');
+        const resultsArea = document.getElementById('results-area');
+        const questionText = document.getElementById('question-text');
+        const questionTTSButton = document.getElementById('question-tts-button');
+        const optionsContainer = document.getElementById('options-container');
+        const progressText = document.getElementById('progress-text');
+        const feedbackArea = document.getElementById('feedback-area');
+        const rationaleText = document.getElementById('rationale-text');
+        const nextButton = document.getElementById('next-button');
+        const scoreText = document.getElementById('score-text');
+        const restartButton = document.getElementById('restart-button');
+        const accessibilityToggle = document.getElementById('accessibility-toggle');
+        const body = document.body;
+
+        function speak(text, button) {
+            if (synth.speaking) {
+                if (currentUtterance && synth.paused && activeTTSButton === button) {
+                    synth.resume();
+                    button.classList.add('playing');
+                } else if (currentUtterance && !synth.paused && activeTTSButton === button) {
+                    synth.pause();
+                    button.classList.remove('playing');
+                } else {
+                    synth.cancel();
+                    startSpeaking(text, button);
+                }
+            } else {
+                startSpeaking(text, button);
+            }
+        }
+        
+        function startSpeaking(text, button) {
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = 'it-IT';
+            currentUtterance.onend = () => {
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                activeTTSButton = null;
+            };
+            synth.speak(currentUtterance);
+            if(activeTTSButton) activeTTSButton.classList.remove('playing');
+            activeTTSButton = button;
+            button.classList.add('playing');
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            currentQuestionIndex = 0;
+            score = 0;
+            shuffledQuestions = shuffleArray([...quizData]);
+            resultsArea.classList.add('hidden');
+            questionArea.classList.remove('hidden');
+            feedbackArea.classList.add('hidden');
+            nextButton.textContent = "Prossima Domanda";
+            loadQuestion();
+        }
+        
+        function loadQuestion() {
+            if (synth.speaking) synth.cancel();
+            if (activeTTSButton) activeTTSButton.classList.remove('playing');
+            activeTTSButton = null;
+
+            feedbackArea.classList.add('hidden');
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+            progressText.textContent = `Domanda ${currentQuestionIndex + 1} / ${shuffledQuestions.length}`;
+            questionText.textContent = currentQuestion.question;
+            questionTTSButton.onclick = () => speak(currentQuestion.question, questionTTSButton);
+            optionsContainer.innerHTML = '';
+            
+            const shuffledOptions = shuffleArray([...currentQuestion.options]);
+
+            shuffledOptions.forEach(option => {
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('flex', 'items-center', 'w-full');
+                
+                const button = document.createElement('button');
+                button.textContent = option.text;
+                button.classList.add('option-btn', 'w-full', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
+                
+                const ttsButton = document.createElement('span');
+                ttsButton.classList.add('tts-button');
+                ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
+                ttsButton.onclick = (e) => {
+                    e.stopPropagation();
+                    speak(option.text, ttsButton);
+                };
+                
+                button.onclick = () => selectAnswer(button, option, currentQuestion.options);
+
+                buttonContainer.appendChild(button);
+                buttonContainer.appendChild(ttsButton);
+                optionsContainer.appendChild(buttonContainer);
+            });
+        }
+
+        function selectAnswer(button, selectedOption, allOptions) {
+            if (synth.speaking) synth.cancel();
+            const correctOption = allOptions.find(opt => opt.correct);
+            const buttons = optionsContainer.querySelectorAll('button.option-btn');
+            
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                const optionDataText = btn.textContent;
+                const originalOption = allOptions.find(opt => opt.text === optionDataText);
+                if (originalOption && originalOption.correct) {
+                    btn.classList.add('correct');
+                }
+            });
+
+            if (!selectedOption.correct) {
+                button.classList.add('incorrect');
+            }
+            
+            score += selectedOption.correct ? 1 : 0;
+            
+            rationaleText.textContent = selectedOption.rationale;
+            feedbackArea.classList.remove('hidden');
+
+            if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                nextButton.textContent = "Mostra Risultati";
+            }
+        }
+        
+        function showResults() {
+            questionArea.classList.add('hidden');
+            feedbackArea.classList.add('hidden');
+            resultsArea.classList.remove('hidden');
+            scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
+        }
+        
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < shuffledQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        restartButton.addEventListener('click', startQuiz);
+
+        const setA11yMode = (enabled) => {
+            if (enabled) {
+                body.classList.add('dsa-mode');
+                localStorage.setItem('dsa-mode', 'enabled');
+            } else {
+                body.classList.remove('dsa-mode');
+                localStorage.setItem('dsa-mode', 'disabled');
+            }
+        };
+
+        accessibilityToggle.addEventListener('click', () => {
+            const isEnabled = body.classList.contains('dsa-mode');
+            setA11yMode(!isEnabled);
+        });
+
+        if (localStorage.getItem('dsa-mode') === 'enabled') {
+            setA11yMode(true);
+        }
+
+        startQuiz();
+    </script>
+</body>
+</html>
