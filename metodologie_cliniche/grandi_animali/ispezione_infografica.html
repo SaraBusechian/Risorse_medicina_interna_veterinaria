@@ -3,19 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riassunto: L'Ispezione Clinica</title>
+    <title>Infografica: L'Ispezione Clinica</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- NO SVG or Mermaid JS were used. All diagrams are built with HTML/CSS. All charts are rendered on Canvas via Chart.js. -->
+    <!-- Palette: Energetic & Playful -->
     <style>
-        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; background-color: #f8fafc; }
-        h1, h2, h3 { color: #0d47a1; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 2em; }
-        h1 { text-align: center; font-size: 2.2em; border-bottom: 3px solid #0d47a1; }
-        ul { padding-left: 20px; list-style-type: disc; }
-        li { margin-bottom: 10px; }
-        strong { color: #1565c0; }
-        .section-block { background-color: #f9f9f9; border-left: 5px solid #1e88e5; padding: 15px 20px; margin: 20px 0; border-radius: 5px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .flow-step {
+            background-color: white;
+            border: 2px solid #003f5c;
+            color: #003f5c;
+        }
+        .flow-arrow {
+            color: #003f5c;
+            font-weight: bold;
+            font-size: 2rem;
+            line-height: 1;
+        }
         .nav-link { transition: color 0.3s; }
         .nav-link:hover { color: #93C5FD; }
         .dsa-mode {
@@ -28,30 +53,16 @@
             background-color: #000000 !important;
             background-image: none !important;
         }
-        .dsa-mode #main-content { background-color: #fffdfa; border: 1px solid #e0e0e0; }
-        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
-        .tts-button {
-            cursor: pointer;
-            display: inline-block;
-            margin-left: 10px;
-            vertical-align: middle;
-            color: #64748b;
-            transition: color 0.2s;
-        }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
-        @media print {
-            #main-header, #main-footer, #print-button, .tts-button { display: none; }
-            body { margin: 0; padding: 0; }
-            .container { max-width: 100%; padding: 20px; box-shadow: none; border: none; }
-        }
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link { color: #ffffff !important; }
+        .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode span { color: #34495e; }
     </style>
 </head>
-<body class="bg-slate-50">
+<body class="text-gray-800">
 
     <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
-            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left">Medicina Interna G.A.</h1>
+            <h1 class="text-xl font-bold">Medicina Interna G.A.</h1>
             <div class="flex items-center space-x-6">
                 <ul class="hidden md:flex space-x-6">
                     <li><a href="index.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
@@ -65,198 +76,102 @@
         </nav>
     </header>
 
-    <main class="container mx-auto p-4 md:p-10">
-        <div id="main-content" class="bg-white rounded-xl shadow-lg p-6 md:p-10">
-            <h1>L'Ispezione Ambientale e dell'Animale
-                <span class="tts-button" data-text-id="title-text">
-                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                </span>
-            </h1>
-            <p class="section-block" data-text-id="intro-text">
-                L'ispezione è il secondo passo fondamentale dell'esame clinico, successivo alla raccolta dell'anamnesi. Consiste nell'osservazione attenta e metodica dell'animale e del suo ambiente, utilizzando principalmente il senso della vista. Una corretta ispezione permette di raccogliere segni clinici oggettivi che confermano o smentiscono le ipotesi nate durante l'anamnesi.
-                <span class="tts-button" data-text-id="intro-tts">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                </span>
-            </p>
-    
-            <h2 data-text-id="ambiente-text">1. Ispezione Ambientale
-                <span class="tts-button" data-text-id="ambiente-tts">
-                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                </span>
-            </h2>
-            <p>Nei grandi animali, l'ambiente fornisce indizi diagnostici tanto quanto l'animale stesso. Partire dall'osservazione dell'ambiente permette di raccogliere informazioni non influenzate dalla nostra presenza diretta sull'animale.</p>
-            <ul>
-                <li><strong>Stabulazione:</strong> Si valuta lo spazio a disposizione (sovraffollamento?), la ventilazione, l'igiene, la qualità della lettiera (umida, sporca).</li>
-                <li><strong>Zona di Alimentazione:</strong> Si ispeziona la mangiatoia. C'è alimento disponibile? È di buona qualità (assenza di muffe)? L'animale ha mangiato o ha lasciato la razione?</li>
-                <li><strong>Abbeveratoi:</strong> L'acqua è pulita e facilmente accessibile? Il funzionamento è corretto?</li>
-                <li><strong>Feci e Deiezioni:</strong> L'ispezione delle feci è fondamentale. Si valuta la consistenza (diarrea, feci secche), il colore, l'odore e la presenza di elementi anomali (sangue, muco, parassiti, cibo non digerito).</li>
-                <li><strong>Dinamiche di Gruppo:</strong> Si osserva come l'animale interagisce con i conspecifici. È isolato? Viene allontanato dalla mangiatoia? Ci sono segni di lotte?</li>
-            </ul>
-    
-            <h2 data-text-id="animale-text">2. Ispezione dell'Animale
-                <span class="tts-button" data-text-id="animale-tts">
-                     <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                </span>
-            </h2>
-            <p>Dopo aver valutato il contesto, si passa all'animale. L'ispezione si suddivide in due fasi: a distanza, per non influenzare il comportamento, e ravvicinata, per esaminare i dettagli.</p>
-    
-            <h3 data-text-id="distanza-text">Ispezione a Distanza
-                <span class="tts-button" data-text-id="distanza-tts">
-                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                </span>
-            </h3>
-            <p>Va condotta prima di approcciare l'animale, osservandolo nel suo ambiente (box, paddock).</p>
-            <ul>
-                <li><strong>Atteggiamento:</strong> Si valuta lo stato di coscienza e la reattività agli stimoli. L'animale è vigile, apatico, comatoso o iper-reattivo?</li>
-                <li><strong>Comportamento:</strong> Si osservano eventuali comportamenti anomali (es. grattarsi insistentemente, aggressività, isolamento dal gruppo, movimenti stereotipati).</li>
-                <li><strong>Postura (Atteggiamento Posturale):</strong> L'animale mantiene una postura normale o anomala? Esempi di posture anomale includono testa bassa, arti abdotti, dorso cifotico (incurvato), testa ruotata (head-tilt).</li>
-                <li><strong>Stato di Nutrizione:</strong> Si valuta la condizione corporea (BCS - Body Condition Score), osservando la copertura muscolare e adiposa sulle prominenze ossee. L'animale è in buono stato, magro, emaciato o obeso?</li>
-                <li><strong>Deambulazione:</strong> Se possibile, si fa muovere l'animale per valutare la presenza di zoppie, atassia (incoordinazione) o altri deficit motori.</li>
-            </ul>
-    
-            <h3 data-text-id="ravvicinata-text">Ispezione Ravvicinata
-                <span class="tts-button" data-text-id="ravvicinata-tts">
-                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                </span>
-            </h3>
-            <p>Si esegue un esame sistematico "testa-coda".</p>
-            <ul>
-                <li><strong>Testa e Collo:</strong> Simmetria facciale, stato degli occhi (secrezioni, opacità), orecchie (posizione, pulizia), narici (presenza di scolo nasale, colore, consistenza), bocca (salivazione, lesioni).</li>
-                <li><strong>Torace:</strong> Si valutano la forma e la simmetria. Si esegue l'esame funzionale del respiro, che comprende la valutazione di frequenza, profondità, ritmo e tipo dei movimenti respiratori (dispnea, respiro superficiale, respiro addominale).</li>
-                <li><strong>Addome:</strong> Si valuta la forma e il volume. Un addome gonfio (meteorismo) o asimmetrico è un segno importante.</li>
-                <li><strong>Arti:</strong> Presenza di gonfiori, ferite, deformità, conformazione anomala degli appiombi.</li>
-                <li><strong>Cute e Mantello:</strong> Si ispeziona la qualità del pelo (opaco, ispido), la presenza di aree alopeciche (senza pelo), lesioni, parassiti esterni.</li>
-                <li><strong>Mucose Apparenti:</strong> L'ispezione delle mucose (congiuntivale, orale, vulvare) è cruciale. Il colore può essere:
-                    <ul>
-                        <li><strong>Roseo:</strong> Normale.</li>
-                        <li><strong>Pallido:</strong> Anemia o shock.</li>
-                        <li><strong>Iperemico (Rosso Intenso):</strong> Congestione, infiammazione, sepsi.</li>
-                        <li><strong>Itteriche (Gialle):</strong> Problemi epatici o emolisi.</li>
-                        <li><strong>Cianotiche (Bluastre):</strong> Grave deficit di ossigenazione.</li>
-                    </ul>
-                </li>
-            </ul>
-    
-            <div class="mt-12 text-center">
-                <button id="print-button" onclick="window.print()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition duration-300 inline-flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
-                    Stampa
-                </button>
-            </div>
-        </div>
-    </main>
-    
-    <footer id="main-footer" class="bg-gray-800 text-white mt-12">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p>&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
-        </div>
-    </footer>
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#003f5c] mb-4">L'Occhio Clinico: Guida all'Ispezione</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">L'ispezione è l'arte di osservare per comprendere. È il secondo passo del metodo clinico che trasforma le ipotesi in evidenze oggettive.</p>
+        </header>
+
+        <main class="space-y-16">
+
+            <section class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <div class="text-center">
+                    <p class="text-2xl font-semibold text-gray-700 leading-relaxed">
+                        L'ispezione segue un ordine logico preciso: si parte dal generale per arrivare al particolare, dall'<span class="font-bold text-3xl text-[#bc5090]">ambiente</span> per arrivare all'<span class="font-bold text-3xl text-[#ff6361]">animale</span>. Questo approccio evita di alterare il comportamento del soggetto e fornisce un contesto essenziale.
+                    </p>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#003f5c]">1. Ispezione Ambientale: La Scena del Crimine</h2>
+                <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10">L'ambiente è una fonte silenziosa di informazioni cruciali. Ogni dettaglio, dalla lettiera alla mangiatoia, può rivelare la causa di un problema o un fattore di rischio.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 text-center">
+                    <div class="p-6 bg-white rounded-lg shadow-md border-b-4 border-[#003f5c]">
+                        <div class="text-4xl mb-3">🏠</div>
+                        <h3 class="text-lg font-bold mb-2">Stabulazione</h3>
+                        <p class="text-sm text-gray-600">Spazio, igiene e ventilazione. Il sovraffollamento è un fattore di stress e di contagio.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-md border-b-4 border-[#58508d]">
+                        <div class="text-4xl mb-3">🌾</div>
+                        <h3 class="text-lg font-bold mb-2">Alimentazione</h3>
+                        <p class="text-sm text-gray-600">Qualità e quantità del cibo. La presenza di muffe o avanzi è un campanello d'allarme.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-md border-b-4 border-[#bc5090]">
+                        <div class="text-4xl mb-3">💧</div>
+                        <h3 class="text-lg font-bold mb-2">Abbeveratoi</h3>
+                        <p class="text-sm text-gray-600">Accessibilità e pulizia. La disidratazione può causare o aggravare molte patologie.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-md border-b-4 border-[#ff6361]">
+                        <div class="text-4xl mb-3">💩</div>
+                        <h3 class="text-lg font-bold mb-2">Deiezioni</h3>
+                        <p class="text-sm text-gray-600">Consistenza, colore e odore delle feci offrono indizi diretti sulla funzionalità digestiva.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-lg shadow-md border-b-4 border-[#ffa600]">
+                        <div class="text-4xl mb-3">👥</div>
+                        <h3 class="text-lg font-bold mb-2">Dinamiche di Gruppo</h3>
+                        <p class="text-sm text-gray-600">L'isolamento o l'aggressività possono essere i primi segni di una malattia.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#003f5c]">2. Ispezione dell'Animale: Dal Generale al Particolare</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-2xl font-bold mb-4 text-[#58508d]">A Distanza: Osservare Senza Interferire</h3>
+                        <p class="mb-6 text-gray-600">Prima di avvicinarsi, si osserva l'animale per cogliere il suo stato naturale. Questo grafico radar mostra 5 aree chiave: un profilo normale (blu) è equilibrato, mentre un profilo alterato (rosso) mostra deviazioni significative che guidano l'esame successivo.</p>
+                        <div class="chart-container">
+                            <canvas id="distanceInspectionChart"></canvas>
+                        </div>
+                    </div>
+                     <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-2xl font-bold mb-4 text-[#ff6361]">Ravvicinata: Il Percorso "Testa-Coda"</h3>
+                        <p class="mb-6 text-gray-600">L'esame ravvicinato segue un percorso sistematico per garantire che nessun dettaglio venga tralasciato. Si inizia dalla testa e si procede metodicamente verso la coda.</p>
+                        <div class="space-y-2">
+                            <div class="flow-step rounded-lg p-3 text-center font-semibold">1. Testa e Collo</div>
+                            <div class="flow-arrow text-center">↓</div>
+                            <div class="flow-step rounded-lg p-3 text-center font-semibold">2. Torace</div>
+                            <div class="flow-arrow text-center">↓</div>
+                            <div class="flow-step rounded-lg p-3 text-center font-semibold">3. Addome</div>
+                            <div class="flow-arrow text-center">↓</div>
+                            <div class="flow-step rounded-lg p-3 text-center font-semibold">4. Arti</div>
+                            <div class="flow-arrow text-center">↓</div>
+                             <div class="flow-step rounded-lg p-3 text-center font-semibold">5. Cute e Mucose</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-center mb-2 text-[#bc5090]">Focus: Il Colore delle Mucose Apparenti</h2>
+                <p class="text-center text-gray-600 max-w-3xl mx-auto mb-8">Le mucose sono una finestra sullo stato di perfusione e ossigenazione dell'animale. La variazione dal normale colore roseo è un segno diagnostico di importanza critica. Questo grafico mostra la gravità associata a ciascun colore.</p>
+                <div class="chart-container h-96">
+                    <canvas id="mucousMembraneChart"></canvas>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer id="main-footer" class="text-center mt-16 pt-8 border-t">
+            <p class="text-gray-600">Questa infografica è uno strumento didattico per studenti di Medicina Veterinaria.</p>
+        </footer>
+
+    </div>
 
     <script>
         const accessibilityToggle = document.getElementById('accessibility-toggle');
         const body = document.body;
-        const synth = window.speechSynthesis;
-        let currentUtterance = null;
-        let activeTTSButton = null;
-
-        function speak(text, button) {
-            if (synth.speaking) {
-                if (currentUtterance && synth.paused && activeTTSButton === button) {
-                    synth.resume();
-                    button.classList.add('playing');
-                } else if (currentUtterance && !synth.paused && activeTTSButton === button) {
-                    synth.pause();
-                    button.classList.remove('playing');
-                } else {
-                    synth.cancel();
-                    startSpeaking(text, button);
-                }
-            } else {
-                startSpeaking(text, button);
-            }
-        }
-        
-        function startSpeaking(text, button) {
-            currentUtterance = new SpeechSynthesisUtterance(text);
-            currentUtterance.lang = 'it-IT';
-            currentUtterance.onend = () => {
-                if(activeTTSButton) activeTTSButton.classList.remove('playing');
-                activeTTSButton = null;
-            };
-            synth.speak(currentUtterance);
-            if(activeTTSButton) activeTTSButton.classList.remove('playing');
-            activeTTSButton = button;
-            button.classList.add('playing');
-        }
-
-        function getTextForSection(element) {
-            let text = '';
-            let currentNode = element;
-            while (currentNode) {
-                if (currentNode.nodeType === Node.ELEMENT_NODE && (currentNode.tagName === 'H2' || currentNode.tagName === 'H3')) {
-                    if (currentNode !== element) break;
-                }
-                if (currentNode.nodeType === Node.TEXT_NODE) {
-                    text += currentNode.textContent.trim() + ' ';
-                } else if (currentNode.nodeType === Node.ELEMENT_NODE) {
-                    if (currentNode.tagName === 'UL') {
-                         Array.from(currentNode.children).forEach(li => {
-                            text += li.textContent.trim() + '. ';
-                         });
-                    } else if (!currentNode.classList.contains('tts-button')) {
-                         text += currentNode.textContent.trim().replace(/\s+/g, ' ') + ' ';
-                    }
-                }
-                currentNode = currentNode.nextSibling;
-            }
-            return text.replace(/<svg.*?<\/svg>/g, '').replace(/\s+/g, ' ').trim();
-        }
-
-        document.querySelectorAll('.tts-button').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.stopPropagation();
-                let elementToRead;
-                let textToRead = '';
-                const id = e.currentTarget.dataset.textId;
-
-                if (id === 'title-text' || id === 'intro-tts') {
-                    elementToRead = document.querySelector(`[data-text-id="${id.replace('-tts','-text')}"]`);
-                    textToRead = elementToRead.textContent.trim();
-                } else {
-                     elementToRead = document.querySelector(`[data-text-id="${id.replace('-tts','-text')}"]`);
-                     textToRead = collectTextUntilNextHeading(elementToRead);
-                }
-                
-                speak(textToRead, e.currentTarget);
-            });
-        });
-
-        function collectTextUntilNextHeading(startElement) {
-            let text = '';
-            let currentNode = startElement;
-            const stopTags = ['H1', 'H2', 'H3'];
-
-            while(currentNode) {
-                if(currentNode.nodeType === Node.ELEMENT_NODE && stopTags.includes(currentNode.tagName) && currentNode !== startElement) {
-                    break;
-                }
-                
-                if (currentNode.nodeType === Node.ELEMENT_NODE && !currentNode.querySelector('.tts-button')) {
-                     text += currentNode.textContent + ' ';
-                } else if (currentNode.nodeType === Node.TEXT_NODE) {
-                    text += currentNode.textContent + ' ';
-                } else if (currentNode.nodeType === Node.ELEMENT_NODE) {
-                    // This will get the text of the element itself and its children, excluding the button
-                    let tempNode = currentNode.cloneNode(true);
-                    let btn = tempNode.querySelector('.tts-button');
-                    if(btn) btn.remove();
-                    text += tempNode.textContent + ' ';
-                }
-                
-                currentNode = currentNode.nextElementSibling || currentNode.nextSibling;
-            }
-            return text.replace(/\s+/g, ' ').trim();
-        }
 
         const setA11yMode = (enabled) => {
             if (enabled) {
@@ -276,6 +191,108 @@
         if (localStorage.getItem('dsa-mode') === 'enabled') {
             setA11yMode(true);
         }
+
+        const wrapLabel = (label) => {
+            const maxLen = 16;
+            if (label.length <= maxLen) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + ' ' + word).trim().length > maxLen && currentLine.length > 0) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            });
+            lines.push(currentLine);
+            return lines;
+        };
+        
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            return Array.isArray(label) ? label.join(' ') : label;
+        };
+
+        const distanceCtx = document.getElementById('distanceInspectionChart').getContext('2d');
+        const distanceChart = new Chart(distanceCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Atteggiamento', 'Comportamento', 'Postura', 'Stato Nutrizione', 'Deambulazione'].map(wrapLabel),
+                datasets: [{
+                    label: 'Profilo Normale',
+                    data: [8, 8, 9, 7, 8],
+                    backgroundColor: 'rgba(0, 63, 92, 0.2)',
+                    borderColor: 'rgba(0, 63, 92, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(0, 63, 92, 1)'
+                }, {
+                    label: 'Profilo Alterato (Esempio)',
+                    data: [3, 4, 3, 6, 2],
+                    backgroundColor: 'rgba(255, 99, 97, 0.2)',
+                    borderColor: 'rgba(255, 99, 97, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(255, 99, 97, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: { callbacks: { title: tooltipTitleCallback } },
+                    legend: { position: 'bottom' }
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(0,0,0,0.1)' },
+                        grid: { color: 'rgba(0,0,0,0.1)' },
+                        pointLabels: { font: { size: 12, weight: '600' }, color: '#003f5c'},
+                        suggestedMin: 0,
+                        suggestedMax: 10,
+                        ticks: { display: false }
+                    }
+                }
+            }
+        });
+        
+        const mucousCtx = document.getElementById('mucousMembraneChart').getContext('2d');
+        const mucousChart = new Chart(mucousCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Roseo (Normale)', 'Pallido (Anemia/Shock)', 'Iperemico (Sepsi)', 'Itterico (Fegato)', 'Cianotico (Asfissia)'].map(wrapLabel),
+                datasets: [{
+                    label: 'Livello di Allerta Clinica',
+                    data: [1, 5, 7, 8, 10],
+                    backgroundColor: ['#f8a0a0', '#e0e0e0', '#d9534f', '#f0ad4e', '#5bc0de'],
+                    borderColor: ['#c17c7c', '#b0b0b0', '#a94442', '#d68f2e', '#46b8da'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { display: false }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: {
+                            color: '#003f5c',
+                            font: { weight: '600', size: 14 }
+                        }
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
