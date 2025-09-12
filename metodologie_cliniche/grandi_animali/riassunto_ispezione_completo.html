@@ -3,214 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riassunto: La Raccolta dell'Anamnesi</title>
+    <title>Riassunto: L'Ispezione Clinica</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        .summary-container h1, .summary-container h2, .summary-container h3 { color: #0d47a1; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 2em; }
-        .summary-container h1 { text-align: center; font-size: 2.2em; border-bottom: 3px solid #0d47a1; margin-top: 0; }
-        .summary-container ul { padding-left: 20px; list-style-type: disc; }
-        .summary-container li { margin-bottom: 10px; }
-        .summary-container strong { color: #1565c0; }
-        .summary-container .section-block { background-color: #f1f5f9; border-left: 5px solid #1e88e5; padding: 15px 20px; margin: 20px 0; border-radius: 5px; }
-        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; background-color: #f8fafc; }
+        h1, h2, h3 { color: #0d47a1; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 2em; }
+        h1 { text-align: center; font-size: 2.2em; border-bottom: 3px solid #0d47a1; }
+        ul { padding-left: 20px; list-style-type: disc; }
+        li { margin-bottom: 10px; }
+        strong { color: #1565c0; }
+        .section-block { background-color: #f9f9f9; border-left: 5px solid #1e88e5; padding: 15px 20px; margin: 20px 0; border-radius: 5px; }
         .nav-link { transition: color 0.3s; }
         .nav-link:hover { color: #93C5FD; }
-        .speak-btn { background: none; border: none; cursor: pointer; padding: 0.25rem; border-radius: 9999px; }
-        .speak-btn:hover { background-color: rgba(0,0,0,0.1); }
-        @media print { body { background-color: white; } .no-print { display: none; } .summary-container { box-shadow: none; border: none; margin: 0; padding: 0; } .speak-btn { display: none; } }
-        /* Stili per accessibilità DSA */
-        body.dsa-friendly {
-            font-family: 'Lexend', sans-serif !important;
-            background-color: #FDF5E6;
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
         }
-        body.dsa-friendly p, body.dsa-friendly li, body.dsa-friendly button, body.dsa-friendly a, body.dsa-friendly h1, body.dsa-friendly h2, body.dsa-friendly h3 {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            letter-spacing: 0.03em;
-        }
-        body.dsa-friendly h1 { font-size: 1.8rem !important; }
-        body.dsa-friendly h2 { font-size: 1.5rem !important; }
-        body.dsa-friendly h3 { font-size: 1.3rem !important; }
-        body.dsa-friendly .hero-bg, body.dsa-friendly footer.bg-gray-800 {
+        .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #000000 !important;
             background-image: none !important;
-            background-color: #2c3e50 !important;
         }
-        body.dsa-friendly .summary-container { background-color: #ffffff !important; }
-        body.dsa-friendly .summary-container h1, body.dsa-friendly .summary-container h2, body.dsa-friendly .summary-container h3, body.dsa-friendly .summary-container strong {
-            color: #1a1a1a !important;
+        .dsa-mode #main-content { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+        @media print {
+            #main-header, #main-footer, #print-button, .tts-button { display: none; }
+            body { margin: 0; padding: 0; }
+            .container { max-width: 100%; padding: 20px; box-shadow: none; border: none; }
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-50">
 
-    <header class="hero-bg text-white shadow-lg no-print">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold">Medicina Interna G.A.</a>
-            <div class="flex items-center">
-                <ul class="flex space-x-6">
+    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left">Medicina Interna G.A.</h1>
+            <div class="flex items-center space-x-6">
+                <ul class="hidden md:flex space-x-6">
                     <li><a href="index.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
                     <li><a href="index.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
                     <li><a href="index.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
                     <li><a href="index.html#percussione" class="nav-link font-semibold">Percussione</a></li>
                     <li><a href="index.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
                 </ul>
-                <button id="dsa-toggle" class="ml-6 p-2 text-sm font-bold bg-white text-blue-800 rounded-lg hover:bg-gray-200 transition" title="Attiva/Disattiva modalità ad alta leggibilità">Accessibilità</button>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">Accessibilità</button>
             </div>
         </nav>
     </header>
 
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="bg-white p-8 md:p-12 rounded-lg shadow-lg summary-container">
-            <h1>La Raccolta dell'Anamnesi</h1>
-            <p class="section-block">
-                L'anamnesi è il primo e fondamentale passo dell'esame clinico. Consiste nella raccolta strutturata di tutte le informazioni utili relative alla storia clinica del paziente (il singolo animale) o del gruppo (l'allevamento). È un processo cruciale che, se ben condotto, può orientare correttamente la diagnosi nella grande maggioranza dei casi.
+    <main class="container mx-auto p-4 md:p-10">
+        <div id="main-content" class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+            <h1>L'Ispezione Ambientale e dell'Animale
+                <span class="tts-button" data-text-id="title-text">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </span>
+            </h1>
+            <p class="section-block" data-text-id="intro-text">
+                L'ispezione è il secondo passo fondamentale dell'esame clinico, successivo alla raccolta dell'anamnesi. Consiste nell'osservazione attenta e metodica dell'animale e del suo ambiente, utilizzando principalmente il senso della vista. Una corretta ispezione permette di raccogliere segni clinici oggettivi che confermano o smentiscono le ipotesi nate durante l'anamnesi.
+                <span class="tts-button" data-text-id="intro-tts">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </span>
             </p>
-
-            <h2>Componenti Chiave dell'Anamnesi</h2>
-            
-            <h3>1. Segnalamento</h3>
-            <p>Include tutti i dati identificativi di base dell'animale.</p>
+    
+            <h2 data-text-id="ambiente-text">1. Ispezione Ambientale
+                <span class="tts-button" data-text-id="ambiente-tts">
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </span>
+            </h2>
+            <p>Nei grandi animali, l'ambiente fornisce indizi diagnostici tanto quanto l'animale stesso. Partire dall'osservazione dell'ambiente permette di raccogliere informazioni non influenzate dalla nostra presenza diretta sull'animale.</p>
             <ul>
-                <li><strong>Specie e Razza:</strong> Fondamentali per considerare le predisposizioni di razza a determinate patologie.</li>
-                <li><strong>Sesso e Stato Riproduttivo:</strong> Utile per patologie legate all'apparato riproduttore o a squilibri ormonali.</li>
-                <li><strong>Età:</strong> Permette di restringere il campo a patologie tipiche di una certa fase della vita (es. patologie neonatali, geriatriche).</li>
-                <li><strong>Mantello e Segni Particolari:</strong> Essenziali per l'identificazione inequivocabile dell'animale.</li>
+                <li><strong>Stabulazione:</strong> Si valuta lo spazio a disposizione (sovraffollamento?), la ventilazione, l'igiene, la qualità della lettiera (umida, sporca).</li>
+                <li><strong>Zona di Alimentazione:</strong> Si ispeziona la mangiatoia. C'è alimento disponibile? È di buona qualità (assenza di muffe)? L'animale ha mangiato o ha lasciato la razione?</li>
+                <li><strong>Abbeveratoi:</strong> L'acqua è pulita e facilmente accessibile? Il funzionamento è corretto?</li>
+                <li><strong>Feci e Deiezioni:</strong> L'ispezione delle feci è fondamentale. Si valuta la consistenza (diarrea, feci secche), il colore, l'odore e la presenza di elementi anomali (sangue, muco, parassiti, cibo non digerito).</li>
+                <li><strong>Dinamiche di Gruppo:</strong> Si osserva come l'animale interagisce con i conspecifici. È isolato? Viene allontanato dalla mangiatoia? Ci sono segni di lotte?</li>
             </ul>
-
-            <h3>2. Anamnesi Remota</h3>
-            <p>Riguarda la storia clinica passata dell'animale.</p>
+    
+            <h2 data-text-id="animale-text">2. Ispezione dell'Animale
+                <span class="tts-button" data-text-id="animale-tts">
+                     <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </span>
+            </h2>
+            <p>Dopo aver valutato il contesto, si passa all'animale. L'ispezione si suddivide in due fasi: a distanza, per non influenzare il comportamento, e ravvicinata, per esaminare i dettagli.</p>
+    
+            <h3 data-text-id="distanza-text">Ispezione a Distanza
+                <span class="tts-button" data-text-id="distanza-tts">
+                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </span>
+            </h3>
+            <p>Va condotta prima di approcciare l'animale, osservandolo nel suo ambiente (box, paddock).</p>
             <ul>
-                <li><strong>Anamnesi Fisiologica:</strong> Parametri di nascita, sviluppo, performance produttive/sportive.</li>
-                <li><strong>Anamnesi Produttiva/Riproduttiva:</strong> Dati su produzioni (latte, carne), fertilità, numero di parti.</li>
-                <li><strong>Storia Sanitaria:</strong> Patologie pregresse, interventi chirurgici, storia vaccinale e trattamenti antiparassitari.</li>
-                <li><strong>Provenienza e Spostamenti:</strong> Informazioni cruciali per considerare malattie infettive legate a determinate aree geografiche.</li>
+                <li><strong>Atteggiamento:</strong> Si valuta lo stato di coscienza e la reattività agli stimoli. L'animale è vigile, apatico, comatoso o iper-reattivo?</li>
+                <li><strong>Comportamento:</strong> Si osservano eventuali comportamenti anomali (es. grattarsi insistentemente, aggressività, isolamento dal gruppo, movimenti stereotipati).</li>
+                <li><strong>Postura (Atteggiamento Posturale):</strong> L'animale mantiene una postura normale o anomala? Esempi di posture anomale includono testa bassa, arti abdotti, dorso cifotico (incurvato), testa ruotata (head-tilt).</li>
+                <li><strong>Stato di Nutrizione:</strong> Si valuta la condizione corporea (BCS - Body Condition Score), osservando la copertura muscolare e adiposa sulle prominenze ossee. L'animale è in buono stato, magro, emaciato o obeso?</li>
+                <li><strong>Deambulazione:</strong> Se possibile, si fa muovere l'animale per valutare la presenza di zoppie, atassia (incoordinazione) o altri deficit motori.</li>
             </ul>
-
-            <h3>3. Anamnesi Recente</h3>
-            <p>Si concentra sul problema attuale, indagandone ogni aspetto.</p>
+    
+            <h3 data-text-id="ravvicinata-text">Ispezione Ravvicinata
+                <span class="tts-button" data-text-id="ravvicinata-tts">
+                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                </span>
+            </h3>
+            <p>Si esegue un esame sistematico "testa-coda".</p>
             <ul>
-                <li><strong>Modalità di Insorgenza:</strong> Quando e come sono comparsi i sintomi (acuta, subacuta, cronica).</li>
-                <li><strong>Tipologia ed Evoluzione dei Sintomi:</strong> Descrizione dettagliata dei segni clinici e del loro andamento (miglioramento, peggioramento, stazionarietà).</li>
-                <li><strong>Terapie già Effettuate:</strong> Quali farmaci sono stati somministrati, con quale dosaggio e con quale esito.</li>
-                <li><strong>Funzioni Organiche:</strong> Alterazioni di appetito, sete, defecazione, minzione e comportamento.</li>
+                <li><strong>Testa e Collo:</strong> Simmetria facciale, stato degli occhi (secrezioni, opacità), orecchie (posizione, pulizia), narici (presenza di scolo nasale, colore, consistenza), bocca (salivazione, lesioni).</li>
+                <li><strong>Torace:</strong> Si valutano la forma e la simmetria. Si esegue l'esame funzionale del respiro, che comprende la valutazione di frequenza, profondità, ritmo e tipo dei movimenti respiratori (dispnea, respiro superficiale, respiro addominale).</li>
+                <li><strong>Addome:</strong> Si valuta la forma e il volume. Un addome gonfio (meteorismo) o asimmetrico è un segno importante.</li>
+                <li><strong>Arti:</strong> Presenza di gonfiori, ferite, deformità, conformazione anomala degli appiombi.</li>
+                <li><strong>Cute e Mantello:</strong> Si ispeziona la qualità del pelo (opaco, ispido), la presenza di aree alopeciche (senza pelo), lesioni, parassiti esterni.</li>
+                <li><strong>Mucose Apparenti:</strong> L'ispezione delle mucose (congiuntivale, orale, vulvare) è cruciale. Il colore può essere:
+                    <ul>
+                        <li><strong>Roseo:</strong> Normale.</li>
+                        <li><strong>Pallido:</strong> Anemia o shock.</li>
+                        <li><strong>Iperemico (Rosso Intenso):</strong> Congestione, infiammazione, sepsi.</li>
+                        <li><strong>Itteriche (Gialle):</strong> Problemi epatici o emolisi.</li>
+                        <li><strong>Cianotiche (Bluastre):</strong> Grave deficit di ossigenazione.</li>
+                    </ul>
+                </li>
             </ul>
-
-            <h3>4. Anamnesi Collettiva (o di Allevamento)</h3>
-            <p>Indispensabile quando si lavora su gruppi di animali, si concentra sull'ambiente e sulla gestione.</p>
-            <ul>
-                <li><strong>Anamnesi Ambientale:</strong> Tipologia di stabulazione, gestione delle lettiere, microclima, fonti di abbeverata.</li>
-                <li><strong>Anamnesi Alimentare:</strong> Composizione della razione, modalità di somministrazione, qualità degli alimenti.</li>
-                <li><strong>Gestione Sanitaria di Gruppo:</strong> Piani vaccinali e profilattici, protocolli di biosicurezza.</li>
-                <li><strong>Dati Epidemiologici:</strong> Prevalenza e incidenza del problema, tipologia di animali coinvolti (età, momento produttivo), correlazione con eventi gestionali.</li>
-            </ul>
-            
-            <div class="mt-12 pt-8 border-t flex justify-end no-print">
-                <button onclick="window.print()" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition duration-300 inline-flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" /></svg>
-                    Stampa Riassunto
+    
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition duration-300 inline-flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                    Stampa
                 </button>
             </div>
         </div>
     </main>
-
-    <footer class="bg-gray-800 text-white mt-12 no-print">
+    
+    <footer id="main-footer" class="bg-gray-800 text-white mt-12">
         <div class="container mx-auto px-6 py-4 text-center">
             <p>&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
         </div>
     </footer>
+
     <script>
-        const speakerIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd" /></svg>`;
-        
+        const accessibilityToggle = document.getElementById('accessibility-toggle');
+        const body = document.body;
         const synth = window.speechSynthesis;
         let currentUtterance = null;
+        let activeTTSButton = null;
 
-        function speak(textToSpeak) {
-            if (synth.speaking && currentUtterance && currentUtterance.text === textToSpeak) {
-                if (synth.paused) {
+        function speak(text, button) {
+            if (synth.speaking) {
+                if (currentUtterance && synth.paused && activeTTSButton === button) {
                     synth.resume();
-                } else {
+                    button.classList.add('playing');
+                } else if (currentUtterance && !synth.paused && activeTTSButton === button) {
                     synth.pause();
+                    button.classList.remove('playing');
+                } else {
+                    synth.cancel();
+                    startSpeaking(text, button);
                 }
             } else {
-                synth.cancel();
-                currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
-                currentUtterance.lang = 'it-IT';
-                currentUtterance.rate = 0.9;
-                currentUtterance.onend = () => {
-                    currentUtterance = null;
-                };
-                synth.speak(currentUtterance);
+                startSpeaking(text, button);
             }
         }
+        
+        function startSpeaking(text, button) {
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = 'it-IT';
+            currentUtterance.onend = () => {
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                activeTTSButton = null;
+            };
+            synth.speak(currentUtterance);
+            if(activeTTSButton) activeTTSButton.classList.remove('playing');
+            activeTTSButton = button;
+            button.classList.add('playing');
+        }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.querySelector('.summary-container');
-            if (!container) return;
-
-            function addSpeakButtonToElement(element, text) {
-                element.classList.add('flex', 'items-center', 'justify-between', 'gap-2');
-                const speakButton = document.createElement('button');
-                speakButton.innerHTML = speakerIconSVG;
-                speakButton.className = 'speak-btn flex-shrink-0 text-slate-500 hover:text-sky-600';
-                speakButton.setAttribute('aria-label', `Leggi: ${text.substring(0, 30)}...`);
-                speakButton.onclick = (e) => { e.stopPropagation(); speak(text); };
-                element.appendChild(speakButton);
+        function getTextForSection(element) {
+            let text = '';
+            let currentNode = element;
+            while (currentNode) {
+                if (currentNode.nodeType === Node.ELEMENT_NODE && (currentNode.tagName === 'H2' || currentNode.tagName === 'H3')) {
+                    if (currentNode !== element) break;
+                }
+                if (currentNode.nodeType === Node.TEXT_NODE) {
+                    text += currentNode.textContent.trim() + ' ';
+                } else if (currentNode.nodeType === Node.ELEMENT_NODE) {
+                    if (currentNode.tagName === 'UL') {
+                         Array.from(currentNode.children).forEach(li => {
+                            text += li.textContent.trim() + '. ';
+                         });
+                    } else if (!currentNode.classList.contains('tts-button')) {
+                         text += currentNode.textContent.trim().replace(/\s+/g, ' ') + ' ';
+                    }
+                }
+                currentNode = currentNode.nextSibling;
             }
+            return text.replace(/<svg.*?<\/svg>/g, '').replace(/\s+/g, ' ').trim();
+        }
 
-            function makeElementSpeakable(element) {
-                if (!element) return;
-                const textToSpeak = element.textContent.trim();
-                addSpeakButtonToElement(element, textToSpeak);
-            }
+        document.querySelectorAll('.tts-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                let elementToRead;
+                let textToRead = '';
+                const id = e.currentTarget.dataset.textId;
 
-            // Aggiunge il pulsante di lettura a elementi singoli
-            makeElementSpeakable(container.querySelector('h1'));
-            makeElementSpeakable(container.querySelector('.section-block'));
-            makeElementSpeakable(container.querySelector('h2'));
-
-            // Raggruppa le sezioni H3 e il loro contenuto
-            const headings = container.querySelectorAll('h3');
-            headings.forEach(heading => {
-                let sectionText = heading.textContent.trim();
-                let currentElement = heading.nextElementSibling;
-
-                while (currentElement && currentElement.tagName !== 'H3' && currentElement.tagName !== 'H2') {
-                    sectionText += ' ' + currentElement.textContent.trim();
-                    currentElement = currentElement.nextElementSibling;
+                if (id === 'title-text' || id === 'intro-tts') {
+                    elementToRead = document.querySelector(`[data-text-id="${id.replace('-tts','-text')}"]`);
+                    textToRead = elementToRead.textContent.trim();
+                } else {
+                     elementToRead = document.querySelector(`[data-text-id="${id.replace('-tts','-text')}"]`);
+                     textToRead = collectTextUntilNextHeading(elementToRead);
                 }
                 
-                addSpeakButtonToElement(heading, sectionText);
+                speak(textToRead, e.currentTarget);
             });
         });
-    </script>
-    <script>
-        const dsaToggleButton = document.getElementById('dsa-toggle');
-        const body = document.body;
 
-        const applyDsaMode = (isDsa) => {
-            if (isDsa) {
-                body.classList.add('dsa-friendly');
-                localStorage.setItem('dsa-mode', 'true');
-                dsaToggleButton.textContent = 'Standard';
+        function collectTextUntilNextHeading(startElement) {
+            let text = '';
+            let currentNode = startElement;
+            const stopTags = ['H1', 'H2', 'H3'];
+
+            while(currentNode) {
+                if(currentNode.nodeType === Node.ELEMENT_NODE && stopTags.includes(currentNode.tagName) && currentNode !== startElement) {
+                    break;
+                }
+                
+                if (currentNode.nodeType === Node.ELEMENT_NODE && !currentNode.querySelector('.tts-button')) {
+                     text += currentNode.textContent + ' ';
+                } else if (currentNode.nodeType === Node.TEXT_NODE) {
+                    text += currentNode.textContent + ' ';
+                } else if (currentNode.nodeType === Node.ELEMENT_NODE) {
+                    // This will get the text of the element itself and its children, excluding the button
+                    let tempNode = currentNode.cloneNode(true);
+                    let btn = tempNode.querySelector('.tts-button');
+                    if(btn) btn.remove();
+                    text += tempNode.textContent + ' ';
+                }
+                
+                currentNode = currentNode.nextElementSibling || currentNode.nextSibling;
+            }
+            return text.replace(/\s+/g, ' ').trim();
+        }
+
+        const setA11yMode = (enabled) => {
+            if (enabled) {
+                body.classList.add('dsa-mode');
+                localStorage.setItem('dsa-mode', 'enabled');
             } else {
-                body.classList.remove('dsa-friendly');
-                localStorage.setItem('dsa-mode', 'false');
-                dsaToggleButton.textContent = 'Accessibilità';
+                body.classList.remove('dsa-mode');
+                localStorage.setItem('dsa-mode', 'disabled');
             }
         };
 
-        const savedDsaMode = localStorage.getItem('dsa-mode') === 'true';
-        applyDsaMode(savedDsaMode);
-
-        dsaToggleButton.addEventListener('click', () => {
-            const isCurrentlyDsa = body.classList.contains('dsa-friendly');
-            applyDsaMode(!isCurrentlyDsa);
+        accessibilityToggle.addEventListener('click', () => {
+            const isEnabled = body.classList.contains('dsa-mode');
+            setA11yMode(!isEnabled);
         });
+
+        if (localStorage.getItem('dsa-mode') === 'enabled') {
+            setA11yMode(true);
+        }
     </script>
 </body>
 </html>
