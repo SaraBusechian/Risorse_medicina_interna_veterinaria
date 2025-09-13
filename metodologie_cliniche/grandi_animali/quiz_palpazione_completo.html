@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interattivo: La Palpazione Clinica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; }
+        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; }
+        .nav-link { transition: color 0.3s; }
+        .nav-link:hover { color: #93C5FD; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #000000 !important;
+            background-image: none !important;
+        }
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle {
+            color: #ffffff !important;
+        }
+        .dsa-mode #accessibility-toggle { border: 1px solid #ffffff; }
+        .dsa-mode #quiz-container, .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h2, .dsa-mode p { color: #34495e; }
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold">Medicina Interna G.A.</h1>
+            <div class="flex items-center space-x-6">
+                <ul class="hidden md:flex space-x-6">
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">Accessibilità</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex items-center justify-center min-h-[calc(100vh-150px)] p-4">
+        <div id="quiz-container" class="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6 md:p-8">
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-sky-800">Quiz: La Palpazione Clinica</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
+                </div>
+                <div id="question-text-container" class="text-lg text-slate-700 mb-6 min-h-[6rem] flex items-center">
+                    <p id="question-text"></p>
+                    <span id="question-tts-button" class="tts-button">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </span>
+                </div>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-6 hidden">
+                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
+                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition">Prossima Domanda</button>
+            </div>
+
+            <div id="results-area" class="text-center hidden">
+                <h2 class="text-2xl font-bold text-sky-800 mb-4">Quiz Completato!</h2>
+                <p class="text-lg text-slate-700 mb-2">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
+                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition">Ricomincia il Quiz</button>
+            </div>
+        </div>
+    </main>
+    
+    <footer id="main-footer" class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p>&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        const quizData = [
+            {
+                "question": "Qual è lo scopo primario della manovra di palpazione-trazione eseguita su laringe e trachea?",
+                "hint": "Pensa a quale reazione fisiologica protettiva si può stimolare meccanicamente in quella specifica zona.",
+                "options": [
+                    { "text": "Valutare la temperatura delle vie aeree superiori.", "isCorrect": false, "rationale": "La temperatura di una regione si apprezza con il semplice contatto, mentre la manovra di trazione ha uno scopo funzionale." },
+                    { "text": "Evocare il riflesso della tosse.", "isCorrect": true, "rationale": "Questa manovra stimola meccanicamente le vie aeree per testarne la reattività, un passaggio importante dell'esame clinico." },
+                    { "text": "Verificare la presenza di masse nell'esofago.", "isCorrect": false, "rationale": "La palpazione dell'esofago si esegue lungo il suo decorso nel collo, ma la trazione della trachea è specifica per un altro riflesso." },
+                    { "text": "Misurare la mobilità del collo.", "isCorrect": false, "rationale": "La mobilità del collo si valuta con movimenti più ampi, non con la palpazione localizzata e la trazione della trachea." }
+                ]
+            },
+            {
+                "question": "Nel cavallo, la percezione di un polso digitale forte e 'saltellante' è un segno altamente indicativo di:",
+                "hint": "L'aumento del flusso sanguigno è uno dei segni cardinali di quale processo patologico localizzato?",
+                "options": [
+                    { "text": "Un problema neurologico all'arto.", "isCorrect": false, "rationale": "I problemi neurologici tipicamente influenzano la coordinazione e la sensibilità, non l'intensità del polso." },
+                    { "text": "Un processo infiammatorio acuto localizzato nel piede.", "isCorrect": true, "rationale": "L'infiammazione causa una vasodilatazione significativa, che rende il polso delle arterie digitali molto più evidente, come nel caso classico della laminite." },
+                    { "text": "Una normale condizione fisiologica a riposo.", "isCorrect": false, "rationale": "In un cavallo sano e tranquillo, il polso digitale è normalmente debole e difficile da percepire." },
+                    { "text": "Un versamento nell'articolazione del nodello.", "isCorrect": false, "rationale": "Un versamento articolare causa un gonfiore palpabile sull'articolazione, ma non è la causa diretta dell'aumento di intensità del polso più a valle." }
+                ]
+            },
+            {
+                "question": "La manovra del ballottamento/succussione eseguita sulla parete addominale di un bovino è utilizzata specificamente per rilevare:",
+                "hint": "Questa tecnica si basa sulla percezione di un'onda di ritorno dopo un impulso. Quale stato fisico permette questo fenomeno?",
+                "options": [
+                    { "text": "La presenza di gas in eccesso nel rumine.", "isCorrect": false, "rationale": "La presenza di gas viene valutata più efficacemente con la percussione, che produce un suono timpanico, e con la palpazione della tensione della fossa del fianco." },
+                    { "text": "La consistenza e le dimensioni del fegato.", "isCorrect": false, "rationale": "Il fegato non è accessibile alla palpazione esterna o al ballottamento nei grandi animali a causa della sua posizione craniale." },
+                    { "text": "La presenza di liquido libero in cavità addominale (ascite).", "isCorrect": true, "rationale": "Questa manovra si basa proprio sulla generazione di un'onda fluida che viene percepita dalla mano, indicando la presenza di una raccolta liquida anomala." },
+                    { "text": "La dolorabilità della parete muscolare.", "isCorrect": false, "rationale": "La dolorabilità si valuta con una pressione digitale graduale e localizzata, non con i colpi decisi e rapidi del ballottamento." }
+                ]
+            },
+            {
+                "question": "Una consistenza definita 'crepitante' alla palpazione di una tumefazione o di un'area sottocutanea suggerisce la presenza di:",
+                "hint": "Pensa al suono e alla sensazione che si ha schiacciando del pluriball (la carta con le bolle d'aria).",
+                "options": [
+                    { "text": "Gas nei tessuti (enfisema).", "isCorrect": true, "rationale": "Il crepitio è la sensazione tattile, simile a quella della neve pestata, prodotta dalle bolle di gas che si muovono nei tessuti." },
+                    { "text": "Liquido denso, come il pus.", "isCorrect": false, "rationale": "Una raccolta di pus o di un altro liquido denso darebbe una consistenza fluttuante, non crepitante." },
+                    { "text": "Tessuto cicatriziale fibroso.", "isCorrect": false, "rationale": "Il tessuto fibroso, essendo denso e compatto, ha tipicamente una consistenza dura, non crepitante." },
+                    { "text": "Un edema infiammatorio.", "isCorrect": false, "rationale": "Un edema produce una sensazione pastosa e può lasciare un'impronta (fovea), ma non produce il suono o la sensazione del crepitio." }
+                ]
+            },
+            {
+                "question": "Quale gruppo di linfonodi superficiali è localizzato nella piega della grassella (regione del ginocchio) ed è un punto di repere fondamentale nel bovino?",
+                "hint": "La grassella è l'articolazione del ginocchio. Quale termine anatomico si riferisce alla regione anteriore della coscia (crus)?",
+                "options": [
+                    { "text": "Linfonodi prescapolari.", "isCorrect": false, "rationale": "Questi linfonodi si trovano cranialmente all'articolazione della spalla, molto distanti dalla grassella." },
+                    { "text": "Linfonodi precrurali.", "isCorrect": true, "rationale": "Si trovano esattamente nella plica della grassella e sono uno dei linfonodi sentinella più importanti da valutare nell'esame clinico del bovino." },
+                    { "text": "Linfonodi soprammammari.", "isCorrect": false, "rationale": "Come suggerisce il nome, questi linfonodi si trovano in posizione caudale e dorsale rispetto alla ghiandola mammaria." },
+                    { "text": "Linfonodi mandibolari.", "isCorrect": false, "rationale": "Questi linfonodi si trovano sulla mandibola, nella regione della testa, e non sull'arto posteriore." }
+                ]
+            },
+            {
+                "question": "L'evocazione della pleurodinia, un segno indicativo di pleurite, si ottiene tramite:",
+                "hint": "Il suffisso '-dinia' significa dolore. Come si può stimolare una struttura interna e sensibile come la pleura attraverso la parete toracica?",
+                "options": [
+                    { "text": "La percussione forte del torace.", "isCorrect": false, "rationale": "La percussione serve a valutare la sonorità del parenchima polmonare sottostante, non a evocare dolore pleurico in modo specifico." },
+                    { "text": "L'auscultazione dell'area cardiaca.", "isCorrect": false, "rationale": "L'auscultazione è una tecnica di ascolto dei suoni interni e non prevede l'applicazione di una pressione tale da stimolare una reazione di dolore." },
+                    { "text": "La pressione localizzata e decisa sugli spazi intercostali.", "isCorrect": true, "rationale": "Questa manovra mira a stimolare meccanicamente la pleura parietale; se questa è infiammata, l'animale reagirà con una manifestazione di dolore." },
+                    { "text": "La palpazione-trazione della trachea.", "isCorrect": false, "rationale": "Questa manovra è specifica per evocare il riflesso della tosse e testare la reattività delle vie aeree, non il dolore pleurico." }
+                ]
+            },
+            {
+                "question": "Durante l'esplorazione rettale di un cavallo maschio, la valutazione degli anelli inguinali interni è cruciale per la diagnosi di quale patologia acuta?",
+                "hint": "Pensa a quale struttura anatomica mobile, come un'ansa intestinale, può passare attraverso un'apertura naturale della parete addominale, causando un problema.",
+                "options": [
+                    { "text": "Una colica da costipazione del grosso colon.", "isCorrect": false, "rationale": "La costipazione si diagnostica palpando direttamente il contenuto disidratato e duro all'interno del colon, non valutando gli anelli inguinali." },
+                    { "text": "Un'ernia inguinale strangolata.", "isCorrect": true, "rationale": "Un'ansa intestinale può scivolare attraverso un anello inguinale dilatato, causando un'ernia che, se strangolata, rappresenta un'emergenza chirurgica." },
+                    { "text": "Una rottura della vescica.", "isCorrect": false, "rationale": "La vescica si palpa per valutarne l'integrità e il grado di riempimento, ma questo esame è distinto da quello degli anelli inguinali." },
+                    { "text": "Una frattura dell'ileo.", "isCorrect": false, "rationale": "Le ossa del bacino si palpano per la loro integrità, ma questo esame, pur importante, non è specifico per la valutazione degli anelli inguinali." }
+                ]
+            },
+            {
+                "question": "Una consistenza definita 'fluttuante' alla palpazione di una tumefazione suggerisce fortemente la presenza di:",
+                "hint": "Immagina di premere delicatamente su un palloncino riempito d'acqua. Che tipo di sensazione tattile avresti?",
+                "options": [
+                    { "text": "Gas sottocutaneo.", "isCorrect": false, "rationale": "La presenza di gas produce una sensazione di crepitio alla palpazione, simile a quella della carta accartocciata, non di fluttuazione." },
+                    { "text": "Tessuto solido e denso, come una cicatrice.", "isCorrect": false, "rationale": "Un tessuto di questo tipo darebbe una consistenza dura, compatta o parenchimatosa, ma non fluttuante." },
+                    { "text": "Liquido raccolto all'interno di una cavità (es. ascesso, cisti).", "isCorrect": true, "rationale": "La fluttuazione è proprio la sensazione di un'onda liquida che si sposta sotto la pressione delle dita, tipica di una raccolta fluida." },
+                    { "text": "Un frammento osseo.", "isCorrect": false, "rationale": "L'osso ha una consistenza dura e rigida, che è l'esatto opposto della sensazione di fluttuazione." }
+                ]
+            },
+            {
+                "question": "Secondo il riassunto, quale delle seguenti affermazioni riguardo la palpazione dei linfonodi della testa è corretta?",
+                "hint": "Il testo evidenzia una differenza chiave nella localizzazione dei linfonodi sentinella della testa tra le due principali specie di grandi animali.",
+                "options": [
+                    { "text": "Nel bovino si palpano principalmente i linfonodi intermandibolari.", "isCorrect": false, "rationale": "Il testo specifica che nel bovino il repere principale sono i mandibolari, mentre gli intermandibolari sono tipici del cavallo." },
+                    { "text": "Nel cavallo si palpano principalmente i linfonodi mandibolari.", "isCorrect": false, "rationale": "Il testo indica che nel cavallo il repere fondamentale sono gli intermandibolari." },
+                    { "text": "Nel bovino si palpano i mandibolari, nel cavallo gli intermandibolari.", "isCorrect": true, "rationale": "Questa distinzione rispecchia le differenze anatomiche e l'approccio standard descritto per le due specie." },
+                    { "text": "I linfonodi retrofaringei non sono mai palpabili in nessuna delle due specie.", "isCorrect": false, "rationale": "Il testo menziona che i retrofaringei sono palpabili, e in particolare sono più agevoli da esaminare nel cavallo." }
+                ]
+            },
+            {
+                "question": "Un 'fremito' percepito palpando la parete toracica in corrispondenza dell'area cardiaca può essere la manifestazione tattile di:",
+                "hint": "Questa vibrazione è spesso descritta come la manifestazione tattile di un fenomeno acustico molto forte e anomalo. Quale?",
+                "options": [
+                    { "text": "Una frattura costale.", "isCorrect": false, "rationale": "Una frattura costale può produrre crepitio osseo e una reazione di dolore, ma non la vibrazione ritmica e sincrona con il battito cardiaco di un fremito." },
+                    { "text": "Un grave versamento pleurico.", "isCorrect": false, "rationale": "Un versamento pleurico tende ad attutire e smorzare i suoni e le vibrazioni provenienti dal cuore, rendendo più difficile, non più facile, la percezione di un fremito." },
+                    { "text": "Un soffio cardiaco di particolare intensità.", "isCorrect": true, "rationale": "Un flusso sanguigno estremamente turbolento all'interno del cuore può produrre una vibrazione così forte da essere trasmessa e percepita sulla parete toracica." },
+                    { "text": "Un normale ritmo sinusale.", "isCorrect": false, "rationale": "Un ritmo cardiaco normale non produce vibrazioni palpabili sulla parete toracica; il fremito è sempre un segno patologico." }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let shuffledQuestions = [];
+        const synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let activeTTSButton = null;
+
+        const quizContainer = document.getElementById('quiz-container');
+        const questionArea = document.getElementById('question-area');
+        const resultsArea = document.getElementById('results-area');
+        const questionText = document.getElementById('question-text');
+        const questionTTSButton = document.getElementById('question-tts-button');
+        const optionsContainer = document.getElementById('options-container');
+        const progressText = document.getElementById('progress-text');
+        const feedbackArea = document.getElementById('feedback-area');
+        const rationaleText = document.getElementById('rationale-text');
+        const nextButton = document.getElementById('next-button');
+        const scoreText = document.getElementById('score-text');
+        const restartButton = document.getElementById('restart-button');
+        const accessibilityToggle = document.getElementById('accessibility-toggle');
+        const body = document.body;
+
+        function speak(text, button) {
+            if (synth.speaking) {
+                if (currentUtterance && synth.paused && activeTTSButton === button) {
+                    synth.resume();
+                    button.classList.add('playing');
+                } else if (currentUtterance && !synth.paused && activeTTSButton === button) {
+                    synth.pause();
+                    button.classList.remove('playing');
+                } else {
+                    synth.cancel();
+                    startSpeaking(text, button);
+                }
+            } else {
+                startSpeaking(text, button);
+            }
+        }
+        
+        function startSpeaking(text, button) {
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = 'it-IT';
+            currentUtterance.onend = () => {
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                activeTTSButton = null;
+            };
+            synth.speak(currentUtterance);
+            if(activeTTSButton) activeTTSButton.classList.remove('playing');
+            activeTTSButton = button;
+            button.classList.add('playing');
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            document.documentElement.scrollTop = 0; 
+            document.body.scrollTop = 0;
+
+            currentQuestionIndex = 0;
+            score = 0;
+            shuffledQuestions = shuffleArray([...quizData]);
+            resultsArea.classList.add('hidden');
+            questionArea.classList.remove('hidden');
+            feedbackArea.classList.add('hidden');
+            nextButton.textContent = "Prossima Domanda";
+            loadQuestion();
+        }
+        
+        function loadQuestion() {
+            if (synth.speaking) synth.cancel();
+            if (activeTTSButton) activeTTSButton.classList.remove('playing');
+            activeTTSButton = null;
+
+            feedbackArea.classList.add('hidden');
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+            progressText.textContent = `Domanda ${currentQuestionIndex + 1} / ${shuffledQuestions.length}`;
+            questionText.textContent = currentQuestion.question;
+            questionTTSButton.onclick = () => speak(currentQuestion.question, questionTTSButton);
+            optionsContainer.innerHTML = '';
+            
+            const shuffledOptions = shuffleArray([...currentQuestion.options]);
+
+            shuffledOptions.forEach(option => {
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('flex', 'items-center', 'w-full');
+                
+                const button = document.createElement('button');
+                button.textContent = option.text;
+                button.classList.add('option-btn', 'w-full', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
+                
+                const ttsButton = document.createElement('span');
+                ttsButton.classList.add('tts-button');
+                ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
+                ttsButton.onclick = (e) => {
+                    e.stopPropagation();
+                    speak(option.text, ttsButton);
+                };
+                
+                button.onclick = () => selectAnswer(button, option, currentQuestion.options);
+
+                buttonContainer.appendChild(button);
+                buttonContainer.appendChild(ttsButton);
+                optionsContainer.appendChild(buttonContainer);
+            });
+        }
+
+        function selectAnswer(button, selectedOption, allOptions) {
+            if (synth.speaking) synth.cancel();
+            const correctOption = allOptions.find(opt => opt.isCorrect);
+            const buttons = optionsContainer.querySelectorAll('button.option-btn');
+            
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                const optionDataText = btn.textContent;
+                const originalOption = allOptions.find(opt => opt.text === optionDataText);
+                if (originalOption && originalOption.isCorrect) {
+                    btn.classList.add('correct');
+                }
+            });
+
+            if (!selectedOption.isCorrect) {
+                button.classList.add('incorrect');
+            }
+            
+            score += selectedOption.isCorrect ? 1 : 0;
+            
+            rationaleText.textContent = selectedOption.rationale;
+            feedbackArea.classList.remove('hidden');
+
+            if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                nextButton.textContent = "Mostra Risultati";
+            }
+        }
+        
+        function showResults() {
+            questionArea.classList.add('hidden');
+            feedbackArea.classList.add('hidden');
+            resultsArea.classList.remove('hidden');
+            scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
+        }
+        
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < shuffledQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        restartButton.addEventListener('click', startQuiz);
+
+        const setA11yMode = (enabled) => {
+            if (enabled) {
+                body.classList.add('dsa-mode');
+                localStorage.setItem('dsa-mode', 'enabled');
+            } else {
+                body.classList.remove('dsa-mode');
+                localStorage.setItem('dsa-mode', 'disabled');
+            }
+        };
+
+        accessibilityToggle.addEventListener('click', () => {
+            const isEnabled = body.classList.contains('dsa-mode');
+            setA11yMode(!isEnabled);
+        });
+
+        if (localStorage.getItem('dsa-mode') === 'enabled') {
+            setA11yMode(true);
+        }
+
+        startQuiz();
+    </script>
+</body>
+</html>
