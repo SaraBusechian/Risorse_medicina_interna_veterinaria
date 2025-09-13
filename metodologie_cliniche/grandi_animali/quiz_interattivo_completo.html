@@ -5,235 +5,223 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Interattivo: La Raccolta dell'Anamnesi</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f8fafc; /* Allineato al colore delle altre pagine */
-        }
-        
-        /* Stili per header e navigazione */
-        .hero-bg {
-            background-color: #1E3A8A;
-            background-image: linear-gradient(to right, #1E3A8A, #3B82F6);
-        }
-        .nav-link {
-            transition: color 0.3s;
-        }
-        .nav-link:hover {
-            color: #93C5FD;
-        }
-
-        /* Stili originali del quiz */
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; }
         .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
         .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; }
         .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; }
-        .speak-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0.25rem;
-            border-radius: 9999px;
+        .nav-link { transition: color 0.3s; }
+        .nav-link:hover { color: #93C5FD; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
         }
-        .speak-btn:hover {
-             background-color: rgba(0,0,0,0.1);
-        }
-
-        /* Stili per accessibilità DSA */
-        body.dsa-friendly {
-            font-family: 'Lexend', sans-serif !important;
-            background-color: #FDF5E6; /* Sfondo crema */
-        }
-        body.dsa-friendly p,
-        body.dsa-friendly li,
-        body.dsa-friendly button,
-        body.dsa-friendly a,
-        body.dsa-friendly h2 {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            letter-spacing: 0.03em;
-        }
-        body.dsa-friendly .hero-bg,
-        body.dsa-friendly footer.bg-gray-800 {
+        .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #000000 !important;
             background-image: none !important;
-            background-color: #2c3e50 !important;
         }
-        body.dsa-friendly .bg-white { background-color: #ffffff !important; }
-        body.dsa-friendly .text-slate-700,
-        body.dsa-friendly .text-sky-800 {
-            color: #1a1a1a !important;
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
+            color: #ffffff !important;
         }
-        body.dsa-friendly #score-text { font-size: 3.5rem; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
+        .dsa-mode #quiz-container, .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h2, .dsa-mode p { color: #34495e; }
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
     </style>
 </head>
-<body class="bg-slate-100">
+<body class="bg-slate-50">
 
-    <!-- Header e Navigazione (Versione Ridotta per Pagine Interne) -->
-    <header class="hero-bg text-white shadow-lg">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold">Medicina Interna G.A.</a>
-            <div class="flex items-center">
-                <ul class="flex space-x-6">
-                    <li><a href="index.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
-                    <li><a href="index.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
-                    <li><a href="index.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
-                    <li><a href="index.html#percussione" class="nav-link font-semibold">Percussione</a></li>
-                    <li><a href="index.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6">
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
                 </ul>
-                <button id="dsa-toggle" class="ml-6 p-2 text-sm font-bold bg-white text-blue-800 rounded-lg hover:bg-gray-200 transition" title="Attiva/Disattiva modalità ad alta leggibilità">Accessibilità</button>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
         </nav>
     </header>
 
-    <!-- Contenuto Principale del Quiz -->
-    <main class="flex items-center justify-center min-h-screen p-4 py-12">
+    <main class="flex items-center justify-center min-h-[calc(100vh-150px)] p-4">
         <div id="quiz-container" class="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6 md:p-8">
             <div id="question-area">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-sky-800">Quiz: La Raccolta dell'Anamnesi</h2>
+                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: La Raccolta dell'Anamnesi</h2>
                     <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
                 </div>
-                <div id="question-text" class="text-lg text-slate-700 mb-6 min-h-[6rem]"></div>
+                <div class="text-lg text-slate-700 mb-6 min-h-[6rem] flex items-center">
+                    <p id="question-text"></p>
+                    <span id="question-tts-button" class="tts-button">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </span>
+                </div>
                 <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
             <div id="feedback-area" class="mt-6 hidden">
                 <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
-                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition">Prossima Domanda</button>
+                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
             </div>
 
             <div id="results-area" class="text-center hidden">
-                <h2 class="text-2xl font-bold text-sky-800 mb-4">Quiz Completato!</h2>
-                <p class="text-lg text-slate-700 mb-2">Il tuo punteggio finale è:</p>
+                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
                 <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
-                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition">Ricomincia il Quiz</button>
+                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
             </div>
         </div>
     </main>
     
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white">
+    <footer id="main-footer" class="bg-gray-800 text-white">
         <div class="container mx-auto px-6 py-4 text-center">
-            <p>&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
+            <p data-lang-key="footerText">&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
         </div>
     </footer>
 
     <script>
-        const quizData = [
-            {
-                question: "Un allevatore ti contatta perché una bovina presenta tosse da circa due settimane. Quale domanda, nell'ambito dell'anamnesi recente, è più utile per iniziare a differenziare le possibili cause?",
-                hint: "Pensa a come la natura di un sintomo possa indicare diversi processi patologici in corso.",
+        const translations = {
+            siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
+            navAnamnesi: { it: 'Anamnesi', en: 'History' },
+            navIspezione: { it: 'Ispezione', en: 'Inspection' },
+            navPalpazione: { it: 'Palpazione', en: 'Palpation' },
+            navPercussione: { it: 'Percussione', en: 'Percussion' },
+            navAuscultazione: { it: 'Auscultazione', en: 'Auscultation' },
+            accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+            quizTitle: { it: "Quiz: La Raccolta dell'Anamnesi", en: 'Quiz: History Taking' },
+            progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+            btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+            btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
+            resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+            resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+            btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+            footerText: { it: '&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Clinical Methodologies. Created by Sara Busechian.' },
+            q1: {
+                question: { it: "Un allevatore ti contatta perché una bovina presenta tosse da circa due settimane. Quale domanda, nell'ambito dell'anamnesi recente, è più utile per iniziare a differenziare le possibili cause?", en: "A farmer contacts you because a cow has had a cough for about two weeks. Which question, within the recent history, is most useful to start differentiating the possible causes?" },
                 options: [
-                    { text: "La tosse è secca o produttiva (catarrale)?", correct: true, rationale: "Questa domanda aiuta a qualificare il sintomo principale, orientando verso patologie irritative/allergiche (tosse secca) o infettive/infiammatorie (tosse produttiva)." },
-                    { text: "L'animale è stato vaccinato di recente?", correct: false, rationale: "Questa informazione appartiene all'anamnesi remota ed è importante, ma non è il primo passo per caratterizzare il sintomo attuale." },
-                    { text: "Quanti parti ha avuto la bovina?", correct: false, rationale: "L'anamnesi riproduttiva è fondamentale nel contesto generale, ma è improbabile che sia direttamente correlata a un sintomo respiratorio cronico come la tosse." },
-                    { text: "Hai notato un calo nella produzione di latte?", correct: false, rationale: "Il calo della produzione è un sintomo generale importante, ma chiedere la natura della tosse è più specifico per l'apparato respiratorio." }
+                    { text: { it: "La tosse è secca o produttiva (catarrale)?", en: "Is the cough dry or productive (with phlegm)?" }, rationale: { it: "Questa domanda aiuta a qualificare il sintomo principale, orientando verso patologie irritative/allergiche (tosse secca) o infettive/infiammatorie (tosse produttiva).", en: "This question helps to qualify the main symptom, guiding towards irritative/allergic (dry cough) or infectious/inflammatory (productive cough) conditions." }, isCorrect: true },
+                    { text: { it: "L'animale è stato vaccinato di recente?", en: "Has the animal been vaccinated recently?" }, rationale: { it: "Questa informazione appartiene all'anamnesi remota ed è importante, ma non è il primo passo per caratterizzare il sintomo attuale.", en: "This information belongs to the past history and is important, but it is not the first step to characterize the current symptom." }, isCorrect: false },
+                    { text: { it: "Quanti parti ha avuto la bovina?", en: "How many times has the cow calved?" }, rationale: { it: "L'anamnesi riproduttiva è fondamentale nel contesto generale, ma è improbabile che sia direttamente correlata a un sintomo respiratorio cronico come la tosse.", en: "The reproductive history is crucial in the general context, but it is unlikely to be directly related to a chronic respiratory symptom like a cough." }, isCorrect: false },
+                    { text: { it: "Hai notato un calo nella produzione di latte?", en: "Have you noticed a drop in milk production?" }, rationale: { it: "Il calo della produzione è un sintomo generale importante, ma chiedere la natura della tosse è più specifico per l'apparato respiratorio.", en: "A drop in production is an important general symptom, but asking about the nature of the cough is more specific to the respiratory system." }, isCorrect: false }
                 ]
             },
-            {
-                question: "Durante un'anamnesi di allevamento, emerge che solo i vitelli nel primo mese di vita presentano sintomatologia enterica. Questa informazione è di massima rilevanza per quale sezione dell'anamnesi?",
-                hint: "Considera come l'identificazione di un sottogruppo specifico di animali malati possa restringere il campo delle cause.",
+            q2: {
+                question: { it: "Durante un'anamnesi di allevamento, emerge che solo i vitelli nel primo mese di vita presentano sintomatologia enterica. Questa informazione è di massima rilevanza per quale sezione dell'anamnesi?", en: "During a herd history investigation, it emerges that only calves in the first month of life show enteric symptoms. This information is of utmost relevance to which section of the history?" },
                 options: [
-                    { text: "Anamnesi Collettiva", correct: true, rationale: "Identificare la categoria specifica di animali colpiti è un punto cardine dell'anamnesi collettiva, suggerendo cause legate all'età o alla gestione di quel gruppo." },
-                    { text: "Anamnesi Fisiologica", correct: false, rationale: "L'anamnesi fisiologica si concentra sulla storia del singolo individuo, non sulla dinamica di un problema all'interno di un gruppo." },
-                    { text: "Anamnesi Recente", correct: false, rationale: "L'anamnesi recente si focalizza sull'evoluzione dei sintomi nel singolo paziente, mentre qui si analizza la distribuzione del problema." },
-                    { text: "Segnalamento", correct: false, rationale: "Il segnalamento riguarda i dati identificativi di base del singolo animale (razza, sesso, età), non la distribuzione di una patologia in un gruppo." }
+                    { text: { it: "Anamnesi Collettiva", en: "Collective History" }, rationale: { it: "Identificare la categoria specifica di animali colpiti è un punto cardine dell'anamnesi collettiva, suggerendo cause legate all'età o alla gestione di quel gruppo.", en: "Identifying the specific category of affected animals is a cornerstone of the collective history, suggesting causes related to age or the management of that group." }, isCorrect: true },
+                    { text: { it: "Anamnesi Fisiologica", en: "Physiological History" }, rationale: { it: "L'anamnesi fisiologica si concentra sulla storia del singolo individuo, non sulla dinamica di un problema all'interno di un gruppo.", en: "The physiological history focuses on the individual's history, not on the dynamics of a problem within a group." }, isCorrect: false },
+                    { text: { it: "Anamnesi Recente", en: "Recent History" }, rationale: { it: "L'anamnesi recente si focalizza sull'evoluzione dei sintomi nel singolo paziente, mentre qui si analizza la distribuzione del problema.", en: "The recent history focuses on the evolution of symptoms in the individual patient, whereas here the distribution of the problem is being analyzed." }, isCorrect: false },
+                    { text: { it: "Segnalamento", en: "Signalment" }, rationale: { it: "Il segnalamento riguarda i dati identificativi di base del singolo animale (razza, sesso, età), non la distribuzione di una patologia in un gruppo.", en: "Signalment concerns the basic identification data of the individual animal (breed, sex, age), not the distribution of a pathology in a group." }, isCorrect: false }
                 ]
             },
-            {
-                question: "Un proprietario riferisce che il suo cavallo ha iniziato a zoppicare improvvisamente stamattina. Come si definisce correttamente questa modalità di insorgenza dei sintomi?",
-                hint: "La terminologia medica usa termini specifici per descrivere la velocità con cui un sintomo appare.",
+             q3: {
+                question: { it: "Un proprietario riferisce che il suo cavallo ha iniziato a zoppicare improvvisamente stamattina. Come si definisce correttamente questa modalità di insorgenza dei sintomi?", en: "An owner reports that his horse suddenly started limping this morning. How is this mode of symptom onset correctly defined?" },
                 options: [
-                    { text: "Acuta", correct: true, rationale: "Il termine 'acuto' descrive una comparsa improvvisa e rapida dei sintomi, proprio come in questo caso." },
-                    { text: "Subacuta", correct: false, rationale: "Il termine 'subacuto' indica una comparsa che avviene in un arco di tempo di alcuni giorni, non improvvisamente." },
-                    { text: "Cronica", correct: false, rationale: "Il termine 'cronico' si riferisce a sintomi che persistono da settimane, mesi o più, l'opposto di una comparsa improvvisa." },
-                    { text: "Ciclica", correct: false, rationale: "Il termine 'ciclico' descrive sintomi che appaiono e scompaiono a intervalli regolari, non una prima comparsa improvvisa." }
+                    { text: { it: "Acuta", en: "Acute" }, rationale: { it: "Il termine 'acuto' descrive una comparsa improvvisa e rapida dei sintomi, proprio come in questo caso.", en: "The term 'acute' describes a sudden and rapid onset of symptoms, just as in this case." }, isCorrect: true },
+                    { text: { it: "Subacuta", en: "Subacute" }, rationale: { it: "Il termine 'subacuto' indica una comparsa che avviene in un arco di tempo di alcuni giorni, non improvvisamente.", en: "The term 'subacute' indicates an onset that occurs over a few days, not suddenly." }, isCorrect: false },
+                    { text: { it: "Cronica", en: "Chronic" }, rationale: { it: "Il termine 'cronico' si riferisce a sintomi che persistono da settimane, mesi o più, l'opposto di una comparsa improvvisa.", en: "The term 'chronic' refers to symptoms that have persisted for weeks, months, or more, the opposite of a sudden onset." }, isCorrect: false },
+                    { text: { it: "Ciclica", en: "Cyclic" }, rationale: { it: "Il termine 'ciclico' descrive sintomi che appaiono e scompaiono a intervalli regolari, non una prima comparsa improvvisa.", en: "The term 'cyclic' describes symptoms that appear and disappear at regular intervals, not a first sudden onset." }, isCorrect: false }
                 ]
             },
-            {
-                question: "Quale delle seguenti informazioni raccolte durante l'anamnesi remota è più utile per valutare una predisposizione a patologie metaboliche in una bovina da latte?",
-                hint: "Le esigenze metaboliche di un animale variano enormemente in base alla sua funzione fisiologica.",
+            q4: {
+                question: { it: "Quale delle seguenti informazioni raccolte durante l'anamnesi remota è più utile per valutare una predisposizione a patologie metaboliche in una bovina da latte?", en: "Which of the following information collected during the past history is most useful for assessing a predisposition to metabolic diseases in a dairy cow?" },
                 options: [
-                    { text: "Anamnesi produttiva/riproduttiva", correct: true, rationale: "La fase del ciclo produttivo (es. lattazione, asciutta) è strettamente legata al rischio di patologie metaboliche come la chetosi o l'ipocalcemia." },
-                    { text: "Mantello e segni particolari", correct: false, rationale: "Questi dati sono cruciali per l'identificazione dell'animale, ma non hanno una correlazione diretta con il rischio di patologie metaboliche." },
-                    { text: "Trattamenti antiparassitari effettuati", correct: false, rationale: "La storia dei trattamenti antiparassitari è importante per le malattie parassitarie, ma non è il fattore primario per quelle metaboliche." },
-                    { text: "Provenienza dell'animale", correct: false, rationale: "La provenienza è fondamentale per considerare rischi infettivi o legati all'adattamento, ma meno diretta per le patologie metaboliche intrinseche." }
+                    { text: { it: "Anamnesi produttiva/riproduttiva", en: "Productive/reproductive history" }, rationale: { it: "La fase del ciclo produttivo (es. lattazione, asciutta) è strettamente legata al rischio di patologie metaboliche come la chetosi o l'ipocalcemia.", en: "The stage of the production cycle (e.g., lactation, dry period) is closely linked to the risk of metabolic diseases such as ketosis or hypocalcemia." }, isCorrect: true },
+                    { text: { it: "Mantello e segni particolari", en: "Coat and markings" }, rationale: { it: "Questi dati sono cruciali per l'identificazione dell'animale, ma non hanno una correlazione diretta con il rischio di patologie metaboliche.", en: "This data is crucial for identifying the animal but has no direct correlation with the risk of metabolic diseases." }, isCorrect: false },
+                    { text: { it: "Trattamenti antiparassitari effettuati", en: "Parasite treatments administered" }, rationale: { it: "La storia dei trattamenti antiparassitari è importante per le malattie parassitarie, ma non è il fattore primario per quelle metaboliche.", en: "The history of parasite treatments is important for parasitic diseases but is not the primary factor for metabolic ones." }, isCorrect: false },
+                    { text: { it: "Provenienza dell'animale", en: "Origin of the animal" }, rationale: { it: "La provenienza è fondamentale per considerare rischi infettivi o legati all'adattamento, ma meno diretta per le patologie metaboliche intrinseche.", en: "The origin is fundamental for considering infectious or adaptation-related risks, but less direct for intrinsic metabolic diseases." }, isCorrect: false }
                 ]
             },
-            {
-                question: "Il proprietario ti informa di aver già somministrato un antibiotico a un animale malato, senza risultati apparenti. Qual è il significato diagnostico principale di questa informazione?",
-                hint: "L'esito di una terapia può essere tanto informativo quanto il sintomo stesso.",
+            q5: {
+                question: { it: "Il proprietario ti informa di aver già somministrato un antibiotico a un animale malato, senza risultati apparenti. Qual è il significato diagnostico principale di questa informazione?", en: "The owner informs you that they have already administered an antibiotic to a sick animal, with no apparent results. What is the main diagnostic significance of this information?" },
                 options: [
-                    { text: "Suggerisce che la patologia potrebbe non essere di natura batterica o che il batterio non è sensibile a quell'antibiotico.", correct: true, rationale: "La mancata risposta a una terapia aiuta a escludere alcune cause e a riconsiderare le diagnosi differenziali." },
-                    { text: "Indica che il dosaggio del farmaco era sicuramente sbagliato.", correct: false, rationale: "Un dosaggio errato è una possibilità, ma non l'unica né la più probabile; la causa potrebbe semplicemente non essere batterica." },
-                    { text: "Dimostra che il proprietario non è affidabile nel descrivere i sintomi.", correct: false, rationale: "Questa informazione non mette in discussione l'affidabilità del proprietario, ma fornisce un dato clinico oggettivo sull'evoluzione della malattia." },
-                    { text: "Significa che la malattia è ormai incurabile.", correct: false, rationale: "La mancata risposta a un singolo trattamento non implica che la malattia sia incurabile, ma solo che quella specifica terapia non è stata efficace." }
+                    { text: { it: "Suggerisce che la patologia potrebbe non essere di natura batterica o che il batterio non è sensibile a quell'antibiotico.", en: "It suggests that the pathology may not be bacterial in nature or that the bacterium is not sensitive to that antibiotic." }, rationale: { it: "La mancata risposta a una terapia aiuta a escludere alcune cause e a riconsiderare le diagnosi differenziali.", en: "The lack of response to a therapy helps to rule out some causes and to reconsider differential diagnoses." }, isCorrect: true },
+                    { text: { it: "Indica che il dosaggio del farmaco era sicuramente sbagliato.", en: "It indicates that the drug dosage was definitely wrong." }, rationale: { it: "Un dosaggio errato è una possibilità, ma non l'unica né la più probabile; la causa potrebbe semplicemente non essere batterica.", en: "An incorrect dosage is a possibility, but not the only or most likely one; the cause might simply not be bacterial." }, isCorrect: false },
+                    { text: { it: "Dimostra che il proprietario non è affidabile nel descrivere i sintomi.", en: "It proves that the owner is not reliable in describing the symptoms." }, rationale: { it: "Questa informazione non mette in discussione l'affidabilità del proprietario, ma fornisce un dato clinico oggettivo sull'evoluzione della malattia.", en: "This information does not question the owner's reliability but provides an objective clinical fact about the disease's evolution." }, isCorrect: false },
+                    { text: { it: "Significa che la malattia è ormai incurabile.", en: "It means the disease is now incurable." }, rationale: { it: "La mancata risposta a un singolo trattamento non implica che la malattia sia incurabile, ma solo che quella specifica terapia non è stata efficace.", en: "The lack of response to a single treatment does not imply that the disease is incurable, only that that specific therapy was not effective." }, isCorrect: false }
                 ]
             },
-            {
-                question: "In un allevamento di pecore, noti un aumento dei casi di zoppia dopo l'introduzione di un nuovo lotto di animali. Questa osservazione rientra primariamente nel campo:",
-                hint: "Quando un problema sembra correlato a un cambiamento nella gestione del gruppo, si sta indagando un aspetto specifico dell'anamnesi.",
+            q6: {
+                question: { it: "In un allevamento di pecore, noti un aumento dei casi di zoppia dopo l'introduzione di un nuovo lotto di animali. Questa osservazione rientra primariamente nel campo:", en: "In a sheep farm, you notice an increase in lameness cases after the introduction of a new batch of animals. This observation primarily falls into the field of:" },
                 options: [
-                    { text: "dell'anamnesi collettiva, correlando un evento gestionale a un problema sanitario.", correct: true, rationale: "Questa è l'essenza dell'anamnesi collettiva: collegare cambiamenti gestionali o ambientali alla comparsa di patologie nel gruppo." },
-                    { text: "dell'anamnesi recente del singolo animale.", correct: false, rationale: "L'anamnesi recente si concentrerebbe sulla zoppia di una singola pecora, non sul pattern di comparsa nel gruppo." },
-                    { text: "del segnalamento, per identificare i nuovi animali.", correct: false, rationale: "Il segnalamento serve a identificare gli animali, ma l'analisi della correlazione tra il loro arrivo e la malattia è un passo successivo." },
-                    { text: "dell'anamnesi remota, per la storia sanitaria dei nuovi animali.", correct: false, rationale: "Indagare la storia dei nuovi animali è parte dell'anamnesi remota, ma l'osservazione della comparsa della malattia nel gruppo è un'analisi collettiva." }
+                    { text: { it: "dell'anamnesi collettiva, correlando un evento gestionale a un problema sanitario.", en: "collective history, correlating a management event with a health problem." }, rationale: { it: "Questa è l'essenza dell'anamnesi collettiva: collegare cambiamenti gestionali o ambientali alla comparsa di patologie nel gruppo.", en: "This is the essence of collective history: linking management or environmental changes to the appearance of pathologies in the group." }, isCorrect: true },
+                    { text: { it: "dell'anamnesi recente del singolo animale.", en: "the recent history of the individual animal." }, rationale: { it: "L'anamnesi recente si concentrerebbe sulla zoppia di una singola pecora, non sul pattern di comparsa nel gruppo.", en: "The recent history would focus on the lameness of a single sheep, not on the pattern of appearance in the group." }, isCorrect: false },
+                    { text: { it: "del segnalamento, per identificare i nuovi animali.", en: "signalment, to identify the new animals." }, rationale: { it: "Il segnalamento serve a identificare gli animali, ma l'analisi della correlazione tra il loro arrivo e la malattia è un passo successivo.", en: "Signalment is used to identify the animals, but analyzing the correlation between their arrival and the disease is a subsequent step." }, isCorrect: false },
+                    { text: { it: "dell'anamnesi remota, per la storia sanitaria dei nuovi animali.", en: "past history, for the health history of the new animals." }, rationale: { it: "Indagare la storia dei nuovi animali è parte dell'anamnesi remota, ma l'osservazione della comparsa della malattia nel gruppo è un'analisi collettiva.", en: "Investigating the history of the new animals is part of the past history, but observing the appearance of the disease in the group is a collective analysis." }, isCorrect: false }
                 ]
             },
-            {
-                question: "Qual è lo scopo primario della raccolta dell'anamnesi nel processo diagnostico?",
-                hint: "L'anamnesi non fornisce quasi mai la risposta definitiva, ma svolge un ruolo cruciale all'inizio del percorso.",
+            q7: {
+                question: { it: "Qual è lo scopo primario della raccolta dell'anamnesi nel processo diagnostico?", en: "What is the primary purpose of history taking in the diagnostic process?" },
                 options: [
-                    { text: "Orientare l'esame obiettivo e la scelta degli esami collaterali.", correct: true, rationale: "L'anamnesi permette di formulare delle ipotesi diagnostiche preliminari, guidando il clinico su cosa cercare durante la visita e quali test richiedere." },
-                    { text: "Formulare la diagnosi definitiva senza bisogno di visitare l'animale.", correct: false, rationale: "È molto raro e potenzialmente pericoloso formulare una diagnosi definitiva basandosi solo sull'anamnesi; essa deve sempre essere confermata dall'esame obiettivo." },
-                    { text: "Stabilire il costo esatto delle cure necessarie.", correct: false, rationale: "La stima dei costi è una conseguenza della diagnosi e del piano terapeutico, non l'obiettivo primario della raccolta dei dati anamnestici." },
-                    { text: "Prescrivere immediatamente la terapia più efficace.", correct: false, rationale: "Prescrivere una terapia senza un esame obiettivo e una diagnosi, anche se presuntiva, è un approccio scorretto e rischioso." }
+                    { text: { it: "Orientare l'esame obiettivo e la scelta degli esami collaterali.", en: "To guide the physical examination and the choice of ancillary tests." }, rationale: { it: "L'anamnesi permette di formulare delle ipotesi diagnostiche preliminari, guidando il clinico su cosa cercare durante la visita e quali test richiedere.", en: "History taking allows for the formulation of preliminary diagnostic hypotheses, guiding the clinician on what to look for during the visit and which tests to request." }, isCorrect: true },
+                    { text: { it: "Formulare la diagnosi definitiva senza bisogno di visitare l'animale.", en: "To formulate a definitive diagnosis without needing to examine the animal." }, rationale: { it: "È molto raro e potenzialmente pericoloso formulare una diagnosi definitiva basandosi solo sull'anamnesi; essa deve sempre essere confermata dall'esame obiettivo.", en: "It is very rare and potentially dangerous to formulate a definitive diagnosis based solely on the history; it must always be confirmed by physical examination." }, isCorrect: false },
+                    { text: { it: "Stabilire il costo esatto delle cure necessarie.", en: "To establish the exact cost of the necessary treatments." }, rationale: { it: "La stima dei costi è una conseguenza della diagnosi e del piano terapeutico, non l'obiettivo primario della raccolta dei dati anamnestici.", en: "Cost estimation is a consequence of the diagnosis and therapeutic plan, not the primary objective of collecting anamnestic data." }, isCorrect: false },
+                    { text: { it: "Prescrivere immediatamente la terapia più efficace.", en: "To immediately prescribe the most effective therapy." }, rationale: { it: "Prescrivere una terapia senza un esame obiettivo e una diagnosi, anche se presuntiva, è un approccio scorretto e rischioso.", en: "Prescribing therapy without a physical examination and a diagnosis, even a presumptive one, is an incorrect and risky approach." }, isCorrect: false }
                 ]
             },
-            {
-                question: "Un allevatore ti dice che le sue vacche hanno 'meno appetito'. Quale delle seguenti è la domanda più appropriata per quantificare meglio questo sintomo?",
-                hint: "Sintomi vaghi devono essere trasformati in dati più oggettivi possibili.",
+            q8: {
+                question: { it: "Un allevatore ti dice che le sue vacche hanno 'meno appetito'. Quale delle seguenti è la domanda più appropriata per quantificare meglio questo sintomo?", en: "A farmer tells you that his cows have 'less appetite'. Which of the following is the most appropriate question to better quantify this symptom?" },
                 options: [
-                    { text: "Di quanto si è ridotto il consumo di alimento rispetto al normale?", correct: true, rationale: "Questa domanda spinge l'allevatore a fornire un dato più concreto (es. 'mangia la metà', 'avanza 2 kg di razione'), rendendo il sintomo misurabile." },
-                    { text: "Le vacche sono anche depresse?", correct: false, rationale: "Collegare l'appetito all'atteggiamento è utile, ma non aiuta a quantificare specificamente il sintomo 'meno appetito'." },
-                    { text: "Da quanti giorni va avanti questa situazione?", correct: false, rationale: "Chiedere la durata è un passo successivo corretto (evoluzione), ma prima è fondamentale capire l'entità del sintomo." },
-                    { text: "Bevono normalmente?", correct: false, rationale: "Indagare la sete è importante, ma è un sintomo separato; prima bisogna definire meglio il problema dell'appetito." }
+                    { text: { it: "Di quanto si è ridotto il consumo di alimento rispetto al normale?", en: "By how much has the feed consumption decreased compared to normal?" }, rationale: { it: "Questa domanda spinge l'allevatore a fornire un dato più concreto (es. 'mangia la metà', 'avanza 2 kg di razione'), rendendo il sintomo misurabile.", en: "This question prompts the farmer to provide more concrete data (e.g., 'eats half', 'leaves 2 kg of ration'), making the symptom measurable." }, isCorrect: true },
+                    { text: { it: "Le vacche sono anche depresse?", en: "Are the cows also depressed?" }, rationale: { it: "Collegare l'appetito all'atteggiamento è utile, ma non aiuta a quantificare specificamente il sintomo 'meno appetito'.", en: "Connecting appetite to demeanor is useful, but it does not help to specifically quantify the symptom 'less appetite'." }, isCorrect: false },
+                    { text: { it: "Da quanti giorni va avanti questa situazione?", en: "For how many days has this situation been going on?" }, rationale: { it: "Chiedere la durata è un passo successivo corretto (evoluzione), ma prima è fondamentale capire l'entità del sintomo.", en: "Asking for the duration is a correct next step (evolution), but first, it is essential to understand the extent of the symptom." }, isCorrect: false },
+                    { text: { it: "Bevono normalmente?", en: "Are they drinking normally?" }, rationale: { it: "Indagare la sete è importante, ma è un sintomo separato; prima bisogna definire meglio il problema dell'appetito.", en: "Investigating thirst is important, but it is a separate symptom; first, the appetite problem needs to be better defined." }, isCorrect: false }
                 ]
             },
-            {
-                question: "La scoperta che una patologia colpisce sia le vacche in lattazione sia quelle in asciutta, ma risparmia le manze, suggerisce che la causa potrebbe essere...",
-                hint: "Cosa hanno in comune gli animali adulti di un allevamento, a differenza di quelli giovani?",
+            q9: {
+                question: { it: "La scoperta che una patologia colpisce sia le vacche in lattazione sia quelle in asciutta, ma risparmia le manze, suggerisce che la causa potrebbe essere...", en: "The discovery that a pathology affects both lactating and dry cows, but spares heifers, suggests that the cause might be..." },
                 options: [
-                    { text: "legata a fattori a cui solo gli animali adulti sono esposti (es. alimentazione, ambiente).", correct: true, rationale: "Se la patologia non colpisce gli animali giovani, è probabile che la causa sia da ricercare in un fattore comune ai soli gruppi adulti." },
-                    { text: "una malattia tipicamente giovanile.", correct: false, rationale: "I dati indicano l'esatto contrario, dato che le manze (animali giovani) sono risparmiate dal problema." },
-                    { text: "un problema genetico ereditario.", correct: false, rationale: "Un problema genetico si manifesterebbe probabilmente anche negli animali giovani, o comunque non seguirebbe questa suddivisione per categoria produttiva." },
-                    { text: "sicuramente di natura infettiva altamente contagiosa.", correct: false, rationale: "Una malattia altamente contagiosa probabilmente colpirebbe tutti i gruppi, inclusi i più giovani e recettivi, a meno di specifiche immunità." }
+                    { text: { it: "legata a fattori a cui solo gli animali adulti sono esposti (es. alimentazione, ambiente).", en: "related to factors to which only adult animals are exposed (e.g., diet, environment)." }, rationale: { it: "Se la patologia non colpisce gli animali giovani, è probabile che la causa sia da ricercare in un fattore comune ai soli gruppi adulti.", en: "If the pathology does not affect young animals, the cause is likely to be found in a factor common only to adult groups." }, isCorrect: true },
+                    { text: { it: "una malattia tipicamente giovanile.", en: "a typically juvenile disease." }, rationale: { it: "I dati indicano l'esatto contrario, dato che le manze (animali giovani) sono risparmiate dal problema.", en: "The data indicate the exact opposite, as heifers (young animals) are spared from the problem." }, isCorrect: false },
+                    { text: { it: "un problema genetico ereditario.", en: "a hereditary genetic problem." }, rationale: { it: "Un problema genetico si manifesterebbe probabilmente anche negli animali giovani, o comunque non seguirebbe questa suddivisione per categoria produttiva.", en: "A genetic problem would likely also manifest in young animals, or at least would not follow this division by production category." }, isCorrect: false },
+                    { text: { it: "sicuramente di natura infettiva altamente contagiosa.", en: "definitely of a highly contagious infectious nature." }, rationale: { it: "Una malattia altamente contagiosa probabilmente colpirebbe tutti i gruppi, inclusi i più giovani e recettivi, a meno di specifiche immunità.", en: "A highly contagious disease would likely affect all groups, including the youngest and most susceptible, unless specific immunity exists." }, isCorrect: false }
                 ]
             },
-            {
-                question: "Quale informazione, raccolta durante l'anamnesi remota, è essenziale per interpretare correttamente i risultati di futuri test sierologici?",
-                hint: "I test sierologici misurano la risposta immunitaria. Cosa può influenzare questa risposta prima ancora che l'animale si ammali?",
+            q10: {
+                question: { it: "Quale informazione, raccolta durante l'anamnesi remota, è essenziale per interpretare correttamente i risultati di futuri test sierologici?", en: "Which information, collected during the past history, is essential for correctly interpreting the results of future serological tests?" },
                 options: [
-                    { text: "La storia delle vaccinazioni.", correct: true, rationale: "Le vaccinazioni inducono una risposta anticorpale che può interferire con l'interpretazione dei test sierologici, rendendo cruciale conoscere lo stato vaccinale." },
-                    { text: "Il numero di parti.", correct: false, rationale: "Il numero di parti è importante per l'anamnesi riproduttiva, ma non influenza direttamente la risposta anticorpale a un agente patogeno specifico." },
-                    { text: "Il tipo di stabulazione.", correct: false, rationale: "Il tipo di stabulazione è un fattore di rischio per molte patologie, ma non modifica i risultati di un test sierologico in sé." },
-                    { text: "La composizione della razione alimentare.", correct: false, rationale: "L'alimentazione influenza lo stato di salute generale, ma non causa la produzione di anticorpi specifici che possano confondere un test sierologico." }
+                    { text: { it: "La storia delle vaccinazioni.", en: "The vaccination history." }, rationale: { it: "Le vaccinazioni inducono una risposta anticorpale che può interferire con l'interpretazione dei test sierologici, rendendo cruciale conoscere lo stato vaccinale.", en: "Vaccinations induce an antibody response that can interfere with the interpretation of serological tests, making it crucial to know the vaccination status." }, isCorrect: true },
+                    { text: { it: "Il numero di parti.", en: "The number of parturitions." }, rationale: { it: "Il numero di parti è importante per l'anamnesi riproduttiva, ma non influenza direttamente la risposta anticorpale a un agente patogeno specifico.", en: "The number of parturitions is important for the reproductive history but does not directly influence the antibody response to a specific pathogen." }, isCorrect: false },
+                    { text: { it: "Il tipo di stabulazione.", en: "The type of housing." }, rationale: { it: "Il tipo di stabulazione è un fattore di rischio per molte patologie, ma non modifica i risultati di un test sierologico in sé.", en: "The type of housing is a risk factor for many diseases, but it does not change the results of a serological test itself." }, isCorrect: false },
+                    { text: { it: "La composizione della razione alimentare.", en: "The composition of the feed ration." }, rationale: { it: "L'alimentazione influenza lo stato di salute generale, ma non causa la produzione di anticorpi specifici che possano confondere un test sierologico.", en: "Diet influences the general health status but does not cause the production of specific antibodies that could confound a serological test." }, isCorrect: false }
                 ]
             }
-        ];
+        };
+
+        const quizData = Object.keys(translations)
+            .filter(k => /^q\d+$/.test(k))
+            .map(k => translations[k]);
 
         let currentQuestionIndex = 0;
         let score = 0;
         let shuffledQuestions = [];
+        const synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let activeTTSButton = null;
 
         const quizContainer = document.getElementById('quiz-container');
         const questionArea = document.getElementById('question-area');
         const resultsArea = document.getElementById('results-area');
         const questionText = document.getElementById('question-text');
+        const questionTTSButton = document.getElementById('question-tts-button');
         const optionsContainer = document.getElementById('options-container');
         const progressText = document.getElementById('progress-text');
         const feedbackArea = document.getElementById('feedback-area');
@@ -241,29 +229,63 @@
         const nextButton = document.getElementById('next-button');
         const scoreText = document.getElementById('score-text');
         const restartButton = document.getElementById('restart-button');
-        const speakerIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd" /></svg>`;
         
-        const synth = window.speechSynthesis;
-        let currentUtterance = null;
+        let currentLanguage = localStorage.getItem('language') || 'it';
 
-        function speak(textToSpeak) {
-            if (synth.speaking && currentUtterance && currentUtterance.text === textToSpeak) {
-                if (synth.paused) {
+        const accessibilityToggle = document.getElementById('accessibility-toggle');
+        const langToggle = document.getElementById('lang-toggle');
+        const body = document.body;
+
+        function speak(text, button) {
+            if (synth.speaking) {
+                if (currentUtterance && synth.paused && activeTTSButton === button) {
                     synth.resume();
-                } else {
+                    button.classList.add('playing');
+                } else if (currentUtterance && !synth.paused && activeTTSButton === button) {
                     synth.pause();
+                    button.classList.remove('playing');
+                } else {
+                    synth.cancel();
+                    startSpeaking(text, button);
                 }
             } else {
-                synth.cancel();
-                currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
-                currentUtterance.lang = 'it-IT';
-                currentUtterance.rate = 0.9;
-                currentUtterance.onend = () => {
-                    currentUtterance = null;
-                };
-                synth.speak(currentUtterance);
+                startSpeaking(text, button);
             }
         }
+        
+        function startSpeaking(text, button) {
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+            currentUtterance.onend = () => {
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                activeTTSButton = null;
+            };
+            synth.speak(currentUtterance);
+            if(activeTTSButton) activeTTSButton.classList.remove('playing');
+            activeTTSButton = button;
+            button.classList.add('playing');
+        }
+        
+        const updateLanguage = (lang) => {
+            document.documentElement.lang = lang;
+            langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if (translations[key] && translations[key][lang]) {
+                    element.innerHTML = translations[key][lang];
+                }
+            });
+            
+            if (shuffledQuestions.length > 0 && questionArea.classList.contains('hidden') === false) {
+                 loadQuestion();
+            }
+        };
+
+        langToggle.addEventListener('click', () => {
+            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage(currentLanguage);
+        });
 
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -274,82 +296,86 @@
         }
 
         function startQuiz() {
+            document.documentElement.scrollTop = 0; 
+            document.body.scrollTop = 0;
+
             currentQuestionIndex = 0;
             score = 0;
             shuffledQuestions = shuffleArray([...quizData]);
             resultsArea.classList.add('hidden');
             questionArea.classList.remove('hidden');
             feedbackArea.classList.add('hidden');
-            nextButton.textContent = "Prossima Domanda";
             loadQuestion();
         }
         
         function loadQuestion() {
-            quizContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (synth.speaking) synth.cancel();
+            if (activeTTSButton) activeTTSButton.classList.remove('playing');
+            activeTTSButton = null;
+
             feedbackArea.classList.add('hidden');
             const currentQuestion = shuffledQuestions[currentQuestionIndex];
-            progressText.textContent = `Domanda ${currentQuestionIndex + 1} / ${shuffledQuestions.length}`;
+            progressText.textContent = translations.progressText[currentLanguage]
+                .replace('{current}', currentQuestionIndex + 1)
+                .replace('{total}', shuffledQuestions.length);
             
-            questionText.innerHTML = '';
-            const questionWrapper = document.createElement('div');
-            questionWrapper.className = 'flex items-center justify-between gap-4';
-            const qText = document.createElement('span');
-            qText.textContent = currentQuestion.question;
-            const speakButton = document.createElement('button');
-            speakButton.innerHTML = speakerIconSVG;
-            speakButton.className = 'speak-btn flex-shrink-0 text-slate-500 hover:text-sky-600';
-            speakButton.setAttribute('aria-label', 'Leggi la domanda');
-            speakButton.onclick = (e) => { e.stopPropagation(); speak(currentQuestion.question); };
-            questionWrapper.appendChild(qText);
-            questionWrapper.appendChild(speakButton);
-            questionText.appendChild(questionWrapper);
-
+            questionText.textContent = currentQuestion.question[currentLanguage];
+            questionTTSButton.onclick = () => speak(currentQuestion.question[currentLanguage], questionTTSButton);
             optionsContainer.innerHTML = '';
             
             const shuffledOptions = shuffleArray([...currentQuestion.options]);
 
             shuffledOptions.forEach(option => {
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('flex', 'items-center', 'w-full');
+                
                 const button = document.createElement('button');
-                button.classList.add('option-btn', 'w-full', 'p-4', 'border-2', 'rounded-lg', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300', 'flex', 'justify-between', 'items-center', 'gap-4');
-                const optionTextSpan = document.createElement('span');
-                optionTextSpan.className = 'text-left';
-                optionTextSpan.textContent = option.text;
-                const speakOptionButton = document.createElement('button');
-                speakOptionButton.innerHTML = speakerIconSVG;
-                speakOptionButton.className = 'speak-btn flex-shrink-0 text-slate-400 hover:text-sky-500';
-                speakOptionButton.setAttribute('aria-label', 'Leggi la risposta');
-                speakOptionButton.onclick = (e) => { e.stopPropagation(); speak(option.text); };
-                button.appendChild(optionTextSpan);
-                button.appendChild(speakOptionButton);
+                button.textContent = option.text[currentLanguage];
+                button.classList.add('option-btn', 'w-full', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
+                
+                const ttsButton = document.createElement('span');
+                ttsButton.classList.add('tts-button');
+                ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
+                ttsButton.onclick = (e) => {
+                    e.stopPropagation();
+                    speak(option.text[currentLanguage], ttsButton);
+                };
+                
                 button.onclick = () => selectAnswer(button, option, currentQuestion.options);
-                optionsContainer.appendChild(button);
+
+                buttonContainer.appendChild(button);
+                buttonContainer.appendChild(ttsButton);
+                optionsContainer.appendChild(buttonContainer);
             });
         }
 
         function selectAnswer(button, selectedOption, allOptions) {
-            const correctOption = allOptions.find(opt => opt.correct);
-            const buttons = optionsContainer.querySelectorAll('.option-btn');
+            if (synth.speaking) synth.cancel();
+            
+            const buttons = optionsContainer.querySelectorAll('button.option-btn');
             
             buttons.forEach(btn => {
                 btn.disabled = true;
-                const btnText = btn.querySelector('span').textContent;
-                const optionData = allOptions.find(opt => opt.text === btnText);
-                if (optionData && optionData.correct) {
+                const optionDataText = btn.textContent;
+                const originalOption = allOptions.find(opt => opt.text[currentLanguage] === optionDataText);
+                if (originalOption && originalOption.isCorrect) {
                     btn.classList.add('correct');
                 }
             });
 
-            if (!selectedOption.correct) {
+            if (!selectedOption.isCorrect) {
                 button.classList.add('incorrect');
             }
             
-            score += selectedOption.correct ? 1 : 0;
+            score += selectedOption.isCorrect ? 1 : 0;
             
-            rationaleText.textContent = correctOption.rationale; // Show rationale of the correct answer
+            rationaleText.textContent = selectedOption.rationale[currentLanguage];
             feedbackArea.classList.remove('hidden');
 
             if (currentQuestionIndex === shuffledQuestions.length - 1) {
-                nextButton.textContent = "Mostra Risultati";
+                nextButton.textContent = translations.btnResults[currentLanguage];
+            } else {
+                 nextButton.textContent = translations.btnNext[currentLanguage];
             }
         }
         
@@ -371,31 +397,28 @@
 
         restartButton.addEventListener('click', startQuiz);
 
-        startQuiz();
-    </script>
-    <script>
-        const dsaToggleButton = document.getElementById('dsa-toggle');
-        const body = document.body;
-
-        const applyDsaMode = (isDsa) => {
-            if (isDsa) {
-                body.classList.add('dsa-friendly');
-                localStorage.setItem('dsa-mode', 'true');
-                dsaToggleButton.textContent = 'Standard';
+        const setA11yMode = (enabled) => {
+            if (enabled) {
+                body.classList.add('dsa-mode');
+                localStorage.setItem('dsa-mode', 'enabled');
             } else {
-                body.classList.remove('dsa-friendly');
-                localStorage.setItem('dsa-mode', 'false');
-                dsaToggleButton.textContent = 'Accessibilità';
+                body.classList.remove('dsa-mode');
+                localStorage.setItem('dsa-mode', 'disabled');
             }
         };
 
-        const savedDsaMode = localStorage.getItem('dsa-mode') === 'true';
-        applyDsaMode(savedDsaMode);
-
-        dsaToggleButton.addEventListener('click', () => {
-            const isCurrentlyDsa = body.classList.contains('dsa-friendly');
-            applyDsaMode(!isCurrentlyDsa);
+        accessibilityToggle.addEventListener('click', () => {
+            const isEnabled = body.classList.contains('dsa-mode');
+            setA11yMode(!isEnabled);
         });
+
+        if (localStorage.getItem('dsa-mode') === 'enabled') {
+            setA11yMode(true);
+        }
+
+        startQuiz();
+        updateLanguage(currentLanguage);
+
     </script>
 </body>
 </html>
