@@ -7,209 +7,195 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        .summary-container h1, .summary-container h2, .summary-container h3 { color: #0d47a1; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 2em; }
-        .summary-container h1 { text-align: center; font-size: 2.2em; border-bottom: 3px solid #0d47a1; margin-top: 0; }
-        .summary-container ul { padding-left: 20px; list-style-type: disc; }
-        .summary-container li { margin-bottom: 10px; }
-        .summary-container strong { color: #1565c0; }
-        .summary-container .section-block { background-color: #f1f5f9; border-left: 5px solid #1e88e5; padding: 15px 20px; margin: 20px 0; border-radius: 5px; }
-        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; background-color: #f8fafc; }
+        h1, h2, h3 { color: #0d47a1; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 2em; }
+        h1 { text-align: center; font-size: 2.2em; border-bottom: 3px solid #0d47a1; }
+        ul { padding-left: 20px; list-style-type: disc; }
+        li { margin-bottom: 10px; }
+        strong { color: #1565c0; }
+        .section-block { background-color: #f9f9f9; border-left: 5px solid #1e88e5; padding: 15px 20px; margin: 20px 0; border-radius: 5px; }
         .nav-link { transition: color 0.3s; }
         .nav-link:hover { color: #93C5FD; }
-        .speak-btn { background: none; border: none; cursor: pointer; padding: 0.25rem; border-radius: 9999px; }
-        .speak-btn:hover { background-color: rgba(0,0,0,0.1); }
-        @media print { body { background-color: white; } .no-print { display: none; } .summary-container { box-shadow: none; border: none; margin: 0; padding: 0; } .speak-btn { display: none; } }
-        /* Stili per accessibilità DSA */
-        body.dsa-friendly {
-            font-family: 'Lexend', sans-serif !important;
-            background-color: #FDF5E6;
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
         }
-        body.dsa-friendly p, body.dsa-friendly li, body.dsa-friendly button, body.dsa-friendly a, body.dsa-friendly h1, body.dsa-friendly h2, body.dsa-friendly h3 {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            letter-spacing: 0.03em;
-        }
-        body.dsa-friendly h1 { font-size: 1.8rem !important; }
-        body.dsa-friendly h2 { font-size: 1.5rem !important; }
-        body.dsa-friendly h3 { font-size: 1.3rem !important; }
-        body.dsa-friendly .hero-bg, body.dsa-friendly footer.bg-gray-800 {
+        .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #000000 !important;
             background-image: none !important;
-            background-color: #2c3e50 !important;
         }
-        body.dsa-friendly .summary-container { background-color: #ffffff !important; }
-        body.dsa-friendly .summary-container h1, body.dsa-friendly .summary-container h2, body.dsa-friendly .summary-container h3, body.dsa-friendly .summary-container strong {
-            color: #1a1a1a !important;
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
+            color: #ffffff !important;
+        }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
+        .dsa-mode #main-content { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+        @media print {
+            #main-header, #main-footer, #print-button, .tts-button { display: none; }
+            body { margin: 0; padding: 0; }
+            .container { max-width: 100%; padding: 20px; box-shadow: none; border: none; }
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-slate-50">
 
-    <header class="hero-bg text-white shadow-lg no-print">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold">Medicina Interna G.A.</a>
-            <div class="flex items-center">
-                <ul class="flex space-x-6">
-                    <li><a href="index.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
-                    <li><a href="index.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
-                    <li><a href="index.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
-                    <li><a href="index.html#percussione" class="nav-link font-semibold">Percussione</a></li>
-                    <li><a href="index.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6">
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
                 </ul>
-                <button id="dsa-toggle" class="ml-6 p-2 text-sm font-bold bg-white text-blue-800 rounded-lg hover:bg-gray-200 transition" title="Attiva/Disattiva modalità ad alta leggibilità">Accessibilità</button>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
         </nav>
     </header>
 
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="bg-white p-8 md:p-12 rounded-lg shadow-lg summary-container">
-            <h1>La Raccolta dell'Anamnesi</h1>
-            <p class="section-block">
-                L'anamnesi è il primo e fondamentale passo dell'esame clinico. Consiste nella raccolta strutturata di tutte le informazioni utili relative alla storia clinica del paziente (il singolo animale) o del gruppo (l'allevamento). È un processo cruciale che, se ben condotto, può orientare correttamente la diagnosi nella grande maggioranza dei casi.
-            </p>
-
-            <h2>Componenti Chiave dell'Anamnesi</h2>
-            
-            <h3>1. Segnalamento</h3>
-            <p>Include tutti i dati identificativi di base dell'animale.</p>
-            <ul>
-                <li><strong>Specie e Razza:</strong> Fondamentali per considerare le predisposizioni di razza a determinate patologie.</li>
-                <li><strong>Sesso e Stato Riproduttivo:</strong> Utile per patologie legate all'apparato riproduttore o a squilibri ormonali.</li>
-                <li><strong>Età:</strong> Permette di restringere il campo a patologie tipiche di una certa fase della vita (es. patologie neonatali, geriatriche).</li>
-                <li><strong>Mantello e Segni Particolari:</strong> Essenziali per l'identificazione inequivocabile dell'animale.</li>
-            </ul>
-
-            <h3>2. Anamnesi Remota</h3>
-            <p>Riguarda la storia clinica passata dell'animale.</p>
-            <ul>
-                <li><strong>Anamnesi Fisiologica:</strong> Parametri di nascita, sviluppo, performance produttive/sportive.</li>
-                <li><strong>Anamnesi Produttiva/Riproduttiva:</strong> Dati su produzioni (latte, carne), fertilità, numero di parti.</li>
-                <li><strong>Storia Sanitaria:</strong> Patologie pregresse, interventi chirurgici, storia vaccinale e trattamenti antiparassitari.</li>
-                <li><strong>Provenienza e Spostamenti:</strong> Informazioni cruciali per considerare malattie infettive legate a determinate aree geografiche.</li>
-            </ul>
-
-            <h3>3. Anamnesi Recente</h3>
-            <p>Si concentra sul problema attuale, indagandone ogni aspetto.</p>
-            <ul>
-                <li><strong>Modalità di Insorgenza:</strong> Quando e come sono comparsi i sintomi (acuta, subacuta, cronica).</li>
-                <li><strong>Tipologia ed Evoluzione dei Sintomi:</strong> Descrizione dettagliata dei segni clinici e del loro andamento (miglioramento, peggioramento, stazionarietà).</li>
-                <li><strong>Terapie già Effettuate:</strong> Quali farmaci sono stati somministrati, con quale dosaggio e con quale esito.</li>
-                <li><strong>Funzioni Organiche:</strong> Alterazioni di appetito, sete, defecazione, minzione e comportamento.</li>
-            </ul>
-
-            <h3>4. Anamnesi Collettiva (o di Allevamento)</h3>
-            <p>Indispensabile quando si lavora su gruppi di animali, si concentra sull'ambiente e sulla gestione.</p>
-            <ul>
-                <li><strong>Anamnesi Ambientale:</strong> Tipologia di stabulazione, gestione delle lettiere, microclima, fonti di abbeverata.</li>
-                <li><strong>Anamnesi Alimentare:</strong> Composizione della razione, modalità di somministrazione, qualità degli alimenti.</li>
-                <li><strong>Gestione Sanitaria di Gruppo:</strong> Piani vaccinali e profilattici, protocolli di biosicurezza.</li>
-                <li><strong>Dati Epidemiologici:</strong> Prevalenza e incidenza del problema, tipologia di animali coinvolti (età, momento produttivo), correlazione con eventi gestionali.</li>
-            </ul>
-            
-            <div class="mt-12 pt-8 border-t flex justify-end no-print">
-                <button onclick="window.print()" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition duration-300 inline-flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" /></svg>
-                    Stampa Riassunto
+    <main class="container mx-auto p-4 md:p-10">
+        <div id="main-content" class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+            <h1 data-lang-key="pageTitle"></h1>
+            <p class="section-block" data-lang-key="introText"></p>
+    
+            <div data-lang-key="section1"></div>
+            <div data-lang-key="section2"></div>
+            <div data-lang-key="section3"></div>
+            <div data-lang-key="section4"></div>
+    
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition duration-300 inline-flex items-center" data-lang-key="btnPrint">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                    Stampa
                 </button>
             </div>
         </div>
     </main>
-
-    <footer class="bg-gray-800 text-white mt-12 no-print">
+    
+    <footer id="main-footer" class="bg-gray-800 text-white mt-12">
         <div class="container mx-auto px-6 py-4 text-center">
-            <p>&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
+            <p data-lang-key="footerText">&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
         </div>
     </footer>
+
     <script>
-        const speakerIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clip-rule="evenodd" /></svg>`;
-        
-        const synth = window.speechSynthesis;
-        let currentUtterance = null;
-
-        function speak(textToSpeak) {
-            if (synth.speaking && currentUtterance && currentUtterance.text === textToSpeak) {
-                if (synth.paused) {
-                    synth.resume();
-                } else {
-                    synth.pause();
-                }
-            } else {
-                synth.cancel();
-                currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
-                currentUtterance.lang = 'it-IT';
-                currentUtterance.rate = 0.9;
-                currentUtterance.onend = () => {
-                    currentUtterance = null;
-                };
-                synth.speak(currentUtterance);
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            const container = document.querySelector('.summary-container');
-            if (!container) return;
+            const speakerIconLarge = `<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
+            const speakerIconSmall = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
+            const speakerIconH2 = `<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
+                navAnamnesi: { it: 'Anamnesi', en: 'History' },
+                navIspezione: { it: 'Ispezione', en: 'Inspection' },
+                navPalpazione: { it: 'Palpazione', en: 'Palpation' },
+                navPercussione: { it: 'Percussione', en: 'Percussion' },
+                navAuscultazione: { it: 'Auscultazione', en: 'Auscultation' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: `La Raccolta dell'Anamnesi ${speakerIconLarge}`, en: `History Taking ${speakerIconLarge}` },
+                introText: { it: `L'anamnesi è il primo e fondamentale passo dell'esame clinico. Consiste nella raccolta strutturata di tutte le informazioni utili relative alla storia clinica del paziente (il singolo animale) o del gruppo (l'allevamento). È un processo cruciale che, se ben condotto, può orientare correttamente la diagnosi nella grande maggioranza dei casi. ${speakerIconSmall}`, en: `History taking is the first and most fundamental step of the clinical examination. It consists of the structured collection of all useful information regarding the clinical history of the patient (the individual animal) or the group (the herd). It is a crucial process that, if conducted well, can correctly guide the diagnosis in the vast majority of cases. ${speakerIconSmall}` },
+                section1: { it: `<h2>1. Componenti Chiave dell'Anamnesi${speakerIconH2}</h2><h3>Segnalamento</h3><p>Include tutti i dati identificativi di base dell'animale.</p><ul><li><strong>Specie e Razza:</strong> Fondamentali per considerare le predisposizioni di razza a determinate patologie.</li><li><strong>Sesso e Stato Riproduttivo:</strong> Utile per patologie legate all'apparato riproduttore o a squilibri ormonali.</li><li><strong>Età:</strong> Permette di restringere il campo a patologie tipiche di una certa fase della vita (es. patologie neonatali, geriatriche).</li><li><strong>Mantello e Segni Particolari:</strong> Essenziali per l'identificazione inequivocabile dell'animale.</li></ul>`, en: `<h2>1. Key Components of History Taking${speakerIconH2}</h2><h3>Signalment</h3><p>Includes all the basic identification data of the animal.</p><ul><li><strong>Species and Breed:</strong> Fundamental for considering breed predispositions to certain pathologies.</li><li><strong>Sex and Reproductive Status:</strong> Useful for pathologies related to the reproductive system or hormonal imbalances.</li><li><strong>Age:</strong> Allows narrowing the field to pathologies typical of a certain life stage (e.g., neonatal, geriatric pathologies).</li><li><strong>Coat and Markings:</strong> Essential for the unequivocal identification of the animal.</li></ul>` },
+                section2: { it: `<h2>2. Anamnesi Remota${speakerIconH2}</h2><p>Riguarda la storia clinica passata dell'animale.</p><ul><li><strong>Anamnesi Fisiologica:</strong> Parametri di nascita, sviluppo, performance produttive/sportive.</li><li><strong>Anamnesi Produttiva/Riproduttiva:</strong> Dati su produzioni (latte, carne), fertilità, numero di parti.</li><li><strong>Storia Sanitaria:</strong> Patologie pregresse, interventi chirurgici, storia vaccinale e trattamenti antiparassitari.</li><li><strong>Provenienza e Spostamenti:</strong> Informazioni cruciali per considerare malattie infettive legate a determinate aree geografiche.</li></ul>`, en: `<h2>2. Past History${speakerIconH2}</h2><p>Concerns the animal's past clinical history.</p><ul><li><strong>Physiological History:</strong> Birth parameters, development, productive/athletic performance.</li><li><strong>Productive/Reproductive History:</strong> Data on production (milk, meat), fertility, number of parturitions.</li><li><strong>Health History:</strong> Previous pathologies, surgical interventions, vaccination history, and parasite treatments.</li><li><strong>Origin and Movements:</strong> Crucial information for considering infectious diseases linked to specific geographical areas.</li></ul>` },
+                section3: { it: `<h2>3. Anamnesi Recente${speakerIconH2}</h2><p>Si concentra sul problema attuale, indagandone ogni aspetto.</p><ul><li><strong>Modalità di Insorgenza:</strong> Quando e come sono comparsi i sintomi (acuta, subacuta, cronica).</li><li><strong>Tipologia ed Evoluzione dei Sintomi:</strong> Descrizione dettagliata dei segni clinici e del loro andamento (miglioramento, peggioramento, stazionarietà).</li><li><strong>Terapie già Effettuate:</strong> Quali farmaci sono stati somministrati, con quale dosaggio e con quale esito.</li><li><strong>Funzioni Organiche:</strong> Alterazioni di appetito, sete, defecazione, minzione e comportamento.</li></ul>`, en: `<h2>3. Recent History${speakerIconH2}</h2><p>Focuses on the current problem, investigating every aspect.</p><ul><li><strong>Mode of Onset:</strong> When and how the symptoms appeared (acute, subacute, chronic).</li><li><strong>Type and Evolution of Symptoms:</strong> Detailed description of the clinical signs and their progression (improvement, worsening, stable).</li><li><strong>Treatments Already Administered:</strong> Which drugs were given, at what dosage, and with what outcome.</li><li><strong>Organic Functions:</strong> Changes in appetite, thirst, defecation, urination, and behavior.</li></ul>` },
+                section4: { it: `<h2>4. Anamnesi Collettiva (o di Allevamento)${speakerIconH2}</h2><p>Indispensabile quando si lavora su gruppi di animali, si concentra sull'ambiente e sulla gestione.</p><ul><li><strong>Anamnesi Ambientale:</strong> Tipologia di stabulazione, gestione delle lettiere, microclima, fonti di abbeverata.</li><li><strong>Anamnesi Alimentare:</strong> Composizione della razione, modalità di somministrazione, qualità degli alimenti.</li><li><strong>Gestione Sanitaria di Gruppo:</strong> Piani vaccinali e profilattici, protocolli di biosicurezza.</li><li><strong>Dati Epidemiologici:</strong> Prevalenza e incidenza del problema, tipologia di animali coinvolti (età, momento produttivo), correlazione con eventi gestionali.</li></ul>`, en: `<h2>4. Collective (or Herd) History${speakerIconH2}</h2><p>Indispensable when working with groups of animals, it focuses on the environment and management.</p><ul><li><strong>Environmental History:</strong> Type of housing, bedding management, microclimate, water sources.</li><li><strong>Dietary History:</strong> Ration composition, feeding methods, quality of feed.</li><li><strong>Group Health Management:</strong> Vaccination and prophylactic plans, biosecurity protocols.</li><li><strong>Epidemiological Data:</strong> Prevalence and incidence of the problem, type of animals involved (age, production stage), correlation with management events.</li></ul>` },
+                btnPrint: { it: 'Stampa', en: 'Print' },
+                footerText: { it: '&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Clinical Methodologies. Created by Sara Busechian.' }
+            };
 
-            function addSpeakButtonToElement(element, text) {
-                element.classList.add('flex', 'items-center', 'justify-between', 'gap-2');
-                const speakButton = document.createElement('button');
-                speakButton.innerHTML = speakerIconSVG;
-                speakButton.className = 'speak-btn flex-shrink-0 text-slate-500 hover:text-sky-600';
-                speakButton.setAttribute('aria-label', `Leggi: ${text.substring(0, 30)}...`);
-                speakButton.onclick = (e) => { e.stopPropagation(); speak(text); };
-                element.appendChild(speakButton);
-            }
+            const accessibilityToggle = document.getElementById('accessibility-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const body = document.body;
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
 
-            function makeElementSpeakable(element) {
-                if (!element) return;
-                const textToSpeak = element.textContent.trim();
-                addSpeakButtonToElement(element, textToSpeak);
-            }
-
-            // Aggiunge il pulsante di lettura a elementi singoli
-            makeElementSpeakable(container.querySelector('h1'));
-            makeElementSpeakable(container.querySelector('.section-block'));
-            makeElementSpeakable(container.querySelector('h2'));
-
-            // Raggruppa le sezioni H3 e il loro contenuto
-            const headings = container.querySelectorAll('h3');
-            headings.forEach(heading => {
-                let sectionText = heading.textContent.trim();
-                let currentElement = heading.nextElementSibling;
-
-                while (currentElement && currentElement.tagName !== 'H3' && currentElement.tagName !== 'H2') {
-                    sectionText += ' ' + currentElement.textContent.trim();
-                    currentElement = currentElement.nextElementSibling;
+            function speak(text, button) {
+                if (synth.speaking && activeTTSButton === button) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else { synth.pause(); button.classList.remove('playing'); }
+                } else {
+                    if (synth.speaking) { synth.cancel(); }
+                    currentUtterance = new SpeechSynthesisUtterance(text);
+                    currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                    currentUtterance.onend = () => {
+                        if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                        activeTTSButton = null;
+                    };
+                    synth.speak(currentUtterance);
+                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = button;
+                    button.classList.add('playing');
                 }
-                
-                addSpeakButtonToElement(heading, sectionText);
-            });
-        });
-    </script>
-    <script>
-        const dsaToggleButton = document.getElementById('dsa-toggle');
-        const body = document.body;
-
-        const applyDsaMode = (isDsa) => {
-            if (isDsa) {
-                body.classList.add('dsa-friendly');
-                localStorage.setItem('dsa-mode', 'true');
-                dsaToggleButton.textContent = 'Standard';
-            } else {
-                body.classList.remove('dsa-friendly');
-                localStorage.setItem('dsa-mode', 'false');
-                dsaToggleButton.textContent = 'Accessibilità';
             }
-        };
 
-        const savedDsaMode = localStorage.getItem('dsa-mode') === 'true';
-        applyDsaMode(savedDsaMode);
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const parent = e.currentTarget.parentNode;
+                        const key = parent.dataset.langKey;
+                        if (translations[key]) {
+                            const htmlContent = translations[key][currentLanguage];
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = htmlContent;
+                            tempDiv.querySelectorAll('.tts-button').forEach(btn => btn.remove());
+                            const textToRead = tempDiv.textContent.trim().replace(/\s+/g, ' ');
+                            if (textToRead) speak(textToRead, e.currentTarget);
+                        }
+                    });
+                });
+            }
 
-        dsaToggleButton.addEventListener('click', () => {
-            const isCurrentlyDsa = body.classList.contains('dsa-friendly');
-            applyDsaMode(!isCurrentlyDsa);
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+                setupTTSListeners();
+            };
+
+            const setA11yMode = (enabled) => {
+                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); } 
+                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            };
+
+            langToggle.addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            accessibilityToggle.addEventListener('click', () => {
+                const isEnabled = body.classList.contains('dsa-mode');
+                setA11yMode(!isEnabled);
+            });
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') {
+                setA11yMode(true);
+            }
+            updateLanguage(currentLanguage);
         });
     </script>
 </body>
