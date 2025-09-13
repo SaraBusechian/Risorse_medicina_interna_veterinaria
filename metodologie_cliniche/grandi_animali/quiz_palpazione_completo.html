@@ -26,10 +26,10 @@
             background-color: #000000 !important;
             background-image: none !important;
         }
-        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle {
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
             color: #ffffff !important;
         }
-        .dsa-mode #accessibility-toggle { border: 1px solid #ffffff; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
         .dsa-mode #quiz-container, .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
         .dsa-mode h2, .dsa-mode p { color: #34495e; }
         .tts-button {
@@ -48,16 +48,17 @@
 
     <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
-            <h1 class="text-xl font-bold">Medicina Interna G.A.</h1>
-            <div class="flex items-center space-x-6">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
+            <div class="flex items-center space-x-4">
                 <ul class="hidden md:flex space-x-6">
-                    <li><a href="index.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
-                    <li><a href="index.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
-                    <li><a href="index.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
-                    <li><a href="index.html#percussione" class="nav-link font-semibold">Percussione</a></li>
-                    <li><a href="index.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
                 </ul>
-                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">Accessibilità</button>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
         </nav>
     </header>
@@ -66,10 +67,10 @@
         <div id="quiz-container" class="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6 md:p-8">
             <div id="question-area">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-sky-800">Quiz: La Palpazione Clinica</h2>
+                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: La Palpazione Clinica</h2>
                     <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
                 </div>
-                <div id="question-text-container" class="text-lg text-slate-700 mb-6 min-h-[6rem] flex items-center">
+                <div class="text-lg text-slate-700 mb-6 min-h-[6rem] flex items-center">
                     <p id="question-text"></p>
                     <span id="question-tts-button" class="tts-button">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
@@ -80,126 +81,144 @@
 
             <div id="feedback-area" class="mt-6 hidden">
                 <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
-                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition">Prossima Domanda</button>
+                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
             </div>
 
             <div id="results-area" class="text-center hidden">
-                <h2 class="text-2xl font-bold text-sky-800 mb-4">Quiz Completato!</h2>
-                <p class="text-lg text-slate-700 mb-2">Il tuo punteggio finale è:</p>
+                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
                 <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
-                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition">Ricomincia il Quiz</button>
+                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
             </div>
         </div>
     </main>
     
     <footer id="main-footer" class="bg-gray-800 text-white">
         <div class="container mx-auto px-6 py-4 text-center">
-            <p>&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
+            <p data-lang-key="footerText">&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
         </div>
     </footer>
 
     <script>
+        const translations = {
+            siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
+            navAnamnesi: { it: 'Anamnesi', en: 'History' },
+            navIspezione: { it: 'Ispezione', en: 'Inspection' },
+            navPalpazione: { it: 'Palpazione', en: 'Palpation' },
+            navPercussione: { it: 'Percussione', en: 'Percussion' },
+            navAuscultazione: { it: 'Auscultazione', en: 'Auscultation' },
+            accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+            quizTitle: { it: 'Quiz: La Palpazione Clinica', en: 'Quiz: Clinical Palpation' },
+            progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+            btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+            btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
+            resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+            resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+            btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+            footerText: { it: '&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Clinical Methodologies. Created by Sara Busechian.' },
+            q1_question: { it: "Qual è lo scopo primario della manovra di palpazione-trazione eseguita su laringe e trachea?", en: "What is the primary purpose of the palpation-traction maneuver performed on the larynx and trachea?" },
+            q1_opt1: { it: "Valutare la temperatura delle vie aeree superiori.", en: "To assess the temperature of the upper airways." },
+            q1_rat1: { it: "La temperatura di una regione si apprezza con il semplice contatto, mentre la manovra di trazione ha uno scopo funzionale.", en: "The temperature of a region is assessed by simple contact, whereas the traction maneuver has a functional purpose." },
+            q1_opt2: { it: "Evocare il riflesso della tosse.", en: "To elicit the cough reflex." },
+            q1_rat2: { it: "Questa manovra stimola meccanicamente le vie aeree per testarne la reattività, un passaggio importante dell'esame clinico.", en: "This maneuver mechanically stimulates the airways to test their reactivity, an important step in the clinical examination." },
+            q1_opt3: { it: "Verificare la presenza di masse nell'esofago.", en: "To check for masses in the esophagus." },
+            q1_rat3: { it: "La palpazione dell'esofago si esegue lungo il suo decorso nel collo, ma la trazione della trachea è specifica per un altro riflesso.", en: "Palpation of the esophagus is performed along its course in the neck, but traction of the trachea is specific for another reflex." },
+            q1_opt4: { it: "Misurare la mobilità del collo.", en: "To measure neck mobility." },
+            q1_rat4: { it: "La mobilità del collo si valuta con movimenti più ampi, non con la palpazione localizzata e la trazione della trachea.", en: "Neck mobility is assessed with broader movements, not with localized palpation and traction of the trachea." },
+            q2_question: { it: "Nel cavallo, la percezione di un polso digitale forte e 'saltellante' è un segno altamente indicativo di:", en: "In a horse, the perception of a strong and 'bounding' digital pulse is a highly indicative sign of:" },
+            q2_opt1: { it: "Un problema neurologico all'arto.", en: "A neurological problem in the limb." },
+            q2_rat1: { it: "I problemi neurologici tipicamente influenzano la coordinazione e la sensibilità, non l'intensità del polso.", en: "Neurological problems typically affect coordination and sensitivity, not the intensity of the pulse." },
+            q2_opt2: { it: "Un processo infiammatorio acuto localizzato nel piede.", en: "An acute inflammatory process localized in the foot." },
+            q2_rat2: { it: "L'infiammazione causa una vasodilatazione significativa, che rende il polso delle arterie digitali molto più evidente, come nel caso classico della laminite.", en: "Inflammation causes significant vasodilation, which makes the digital artery pulse much more prominent, as in the classic case of laminitis." },
+            q2_opt3: { it: "Una normale condizione fisiologica a riposo.", en: "A normal physiological condition at rest." },
+            q2_rat3: { it: "In un cavallo sano e tranquillo, il polso digitale è normalmente debole e difficile da percepire.", en: "In a healthy and calm horse, the digital pulse is normally weak and difficult to feel." },
+            q2_opt4: { it: "Un versamento nell'articolazione del nodello.", en: "An effusion in the fetlock joint." },
+            q2_rat4: { it: "Un versamento articolare causa un gonfiore palpabile sull'articolazione, ma non è la causa diretta dell'aumento di intensità del polso più a valle.", en: "A joint effusion causes a palpable swelling over the joint, but it is not the direct cause of the increased pulse intensity downstream." },
+            q3_question: { it: "La manovra del ballottamento/succussione eseguita sulla parete addominale di un bovino è utilizzata specificamente per rilevare:", en: "The ballottement/succussion maneuver performed on the abdominal wall of a bovine is specifically used to detect:" },
+            q3_opt1: { it: "La presenza di gas in eccesso nel rumine.", en: "The presence of excess gas in the rumen." },
+            q3_rat1: { it: "La presenza di gas viene valutata più efficacemente con la percussione, che produce un timpanico suono, e con la palpazione della tensione della fossa del fianco.", en: "The presence of gas is more effectively assessed with percussion, which produces a tympanic sound, and with palpation of the flank fossa tension." },
+            q3_opt2: { it: "La consistenza e le dimensioni del fegato.", en: "The consistency and size of the liver." },
+            q3_rat2: { it: "Il fegato non è accessibile alla palpazione esterna o al ballottamento nei grandi animali a causa della sua posizione craniale.", en: "The liver is not accessible to external palpation or ballottement in large animals due to its cranial position." },
+            q3_opt3: { it: "La presenza di liquido libero in cavità addominale (ascite).", en: "The presence of free fluid in the abdominal cavity (ascites)." },
+            q3_rat3: { it: "Questa manovra si basa proprio sulla generazione di un'onda fluida che viene percepita dalla mano, indicando la presenza di una raccolta liquida anomala.", en: "This maneuver is based on generating a fluid wave that is perceived by the hand, indicating the presence of an abnormal fluid collection." },
+            q3_opt4: { it: "La dolorabilità della parete muscolare.", en: "The tenderness of the muscular wall." },
+            q3_rat4: { it: "La dolorabilità si valuta con una pressione digitale graduale e localizzata, non con i colpi decisi e rapidi del ballottamento.", en: "Tenderness is assessed with gradual and localized digital pressure, not with the sharp and rapid strikes of ballottement." },
+            q4_question: { it: "Una consistenza definita 'crepitante' alla palpazione di una tumefazione o di un'area sottocutanea suggerisce la presenza di:", en: "A 'crepitant' consistency on palpation of a swelling or subcutaneous area strongly suggests the presence of:" },
+            q4_opt1: { it: "Gas nei tessuti (enfisema).", en: "Gas in the tissues (emphysema)." },
+            q4_rat1: { it: "Il crepitio è la sensazione tattile, simile a quella della neve pestata, prodotta dalle bolle di gas che si muovono nei tessuti.", en: "Crepitus is the tactile sensation, similar to stepping on snow, produced by gas bubbles moving through the tissues." },
+            q4_opt2: { it: "Liquido denso, come il pus.", en: "Thick fluid, such as pus." },
+            q4_rat2: { it: "Una raccolta di pus o di un altro liquido denso darebbe una consistenza fluttuante, non crepitante.", en: "A collection of pus or other thick fluid would give a fluctuant consistency, not crepitant." },
+            q4_opt3: { it: "Tessuto cicatriziale fibroso.", en: "Fibrous scar tissue." },
+            q4_rat3: { it: "Il tessuto fibroso, essendo denso e compatto, ha tipicamente una consistenza dura, non crepitante.", en: "Fibrous tissue, being dense and compact, typically has a firm consistency, not crepitant." },
+            q4_opt4: { it: "Un edema infiammatorio.", en: "An inflammatory edema." },
+            q4_rat4: { it: "Un edema produce una sensazione pastosa e può lasciare un'impronta (fovea), ma non produce il suono o la sensazione del crepitio.", en: "An edema produces a doughy sensation and may leave a pit (pitting edema), but it does not produce the sound or sensation of crepitus." },
+            q5_question: { it: "Quale gruppo di linfonodi superficiali è localizzato nella piega della grassella (regione del ginocchio) ed è un punto di repere fondamentale nel bovino?", en: "Which group of superficial lymph nodes is located in the fold of the stifle (knee region) and is a fundamental landmark in cattle?" },
+            q5_opt1: { it: "Linfonodi prescapolari.", en: "Prescapular lymph nodes." },
+            q5_rat1: { it: "Questi linfonodi si trovano cranialmente all'articolazione della spalla, molto distanti dalla grassella.", en: "These lymph nodes are located cranial to the shoulder joint, very distant from the stifle." },
+            q5_opt2: { it: "Linfonodi precrurali.", en: "Precrural lymph nodes." },
+            q5_rat2: { it: "Si trovano esattamente nella plica della grassella e sono uno dei linfonodi sentinella più importanti da valutare nell'esame clinico del bovino.", en: "They are located exactly in the fold of the stifle and are one of the most important sentinel lymph nodes to assess in the clinical examination of cattle." },
+            q5_opt3: { it: "Linfonodi soprammammari.", en: "Supramammary lymph nodes." },
+            q5_rat3: { it: "Come suggerisce il nome, questi linfonodi si trovano in posizione caudale e dorsale rispetto alla ghiandola mammaria.", en: "As the name suggests, these lymph nodes are located caudal and dorsal to the mammary gland." },
+            q5_opt4: { it: "Linfonodi mandibolari.", en: "Mandibular lymph nodes." },
+            q5_rat4: { it: "Questi linfonodi si trovano sulla mandibola, nella regione della testa, e non sull'arto posteriore.", en: "These lymph nodes are located on the mandible, in the head region, and not on the hind limb." },
+            q6_question: { it: "L'evocazione della pleurodinia, un segno indicativo di pleurite, si ottiene tramite:", en: "Eliciting pleurodynia, a sign indicative of pleuritis, is achieved by:" },
+            q6_opt1: { it: "La percussione forte del torace.", en: "Strong percussion of the chest." },
+            q6_rat1: { it: "La percussione serve a valutare la sonorità del parenchima polmonare sottostante, non a evocare dolore pleurico in modo specifico.", en: "Percussion is used to assess the resonance of the underlying lung parenchyma, not to specifically elicit pleuritic pain." },
+            q6_opt2: { it: "L'auscultazione dell'area cardiaca.", en: "Auscultation of the cardiac area." },
+            q6_rat2: { it: "L'auscultazione è una tecnica di ascolto dei suoni interni e non prevede l'applicazione di una pressione tale da stimolare una reazione di dolore.", en: "Auscultation is a technique for listening to internal sounds and does not involve applying pressure sufficient to stimulate a pain reaction." },
+            q6_opt3: { it: "La pressione localizzata e decisa sugli spazi intercostali.", en: "Localized and firm pressure on the intercostal spaces." },
+            q6_rat3: { it: "Questa manovra mira a stimolare meccanicamente la pleura parietale; se questa è infiammata, l'animale reagirà con una manifestazione di dolore.", en: "This maneuver aims to mechanically stimulate the parietal pleura; if it is inflamed, the animal will react with a pain response." },
+            q6_opt4: { it: "La palpazione-trazione della trachea.", en: "Palpation-traction of the trachea." },
+            q6_rat4: { it: "Questa manovra è specifica per evocare il riflesso della tosse e testare la reattività delle vie aeree, non il dolore pleurico.", en: "This maneuver is specific for eliciting the cough reflex and testing airway reactivity, not pleuritic pain." },
+            q7_question: { it: "Durante l'esplorazione rettale di un cavallo maschio, la valutazione degli anelli inguinali interni è cruciale per la diagnosi di quale patologia acuta?", en: "During rectal palpation of a male horse, evaluation of the internal inguinal rings is crucial for the diagnosis of which acute pathology?" },
+            q7_opt1: { it: "Una colica da costipazione del grosso colon.", en: "Colic from large colon impaction." },
+            q7_rat1: { it: "La costipazione si diagnostica palpando direttamente il contenuto disidratato e duro all'interno del colon, non valutando gli anelli inguinali.", en: "Impaction is diagnosed by directly palpating the dehydrated and hard content within the colon, not by evaluating the inguinal rings." },
+            q7_opt2: { it: "Un'ernia inguinale strangolata.", en: "A strangulated inguinal hernia." },
+            q7_rat2: { it: "Un'ansa intestinale può scivolare attraverso un anello inguinale dilatato, causando un'ernia che, se strangolata, rappresenta un'emergenza chirurgica.", en: "A loop of intestine can slip through a dilated inguinal ring, causing a hernia that, if strangulated, represents a surgical emergency." },
+            q7_opt3: { it: "Una rottura della vescica.", en: "A ruptured bladder." },
+            q7_rat3: { it: "La vescica si palpa per valutarne l'integrità e il grado di riempimento, ma questo esame è distinto da quello degli anelli inguinali.", en: "The bladder is palpated to assess its integrity and degree of fullness, but this examination is distinct from that of the inguinal rings." },
+            q7_opt4: { it: "Una frattura dell'ileo.", en: "A fracture of the ilium." },
+            q7_rat4: { it: "Le ossa del bacino si palpano per la loro integrità, ma questo esame, pur importante, non è specifico per la valutazione degli anelli inguinali.", en: "The pelvic bones are palpated for their integrity, but this examination, while important, is not specific for the evaluation of the inguinal rings." },
+            q8_question: { it: "Una consistenza definita 'fluttuante' alla palpazione di una tumefazione suggerisce fortemente la presenza di:", en: "A 'fluctuant' consistency on palpation of a swelling strongly suggests the presence of:" },
+            q8_opt1: { it: "Gas sottocutaneo.", en: "Subcutaneous gas." },
+            q8_rat1: { it: "La presenza di gas produce una sensazione di crepitio alla palpazione, simile a quella della carta accartocciata, non di fluttuazione.", en: "The presence of gas produces a crepitant sensation on palpation, similar to crumpled paper, not fluctuation." },
+            q8_opt2: { it: "Tessuto solido e denso, come una cicatrice.", en: "Solid and dense tissue, like a scar." },
+            q8_rat2: { it: "Un tessuto di questo tipo darebbe una consistenza dura, compatta o parenchimatosa, ma non fluttuante.", en: "This type of tissue would give a firm, compact, or parenchymatous consistency, but not fluctuant." },
+            q8_opt3: { it: "Liquido raccolto all'interno di una cavità (es. ascesso, cisti).", en: "Fluid collected within a cavity (e.g., abscess, cyst)." },
+            q8_rat3: { it: "La fluttuazione è proprio la sensazione di un'onda liquida che si sposta sotto la pressione delle dita, tipica di una raccolta fluida.", en: "Fluctuation is precisely the sensation of a fluid wave moving under the pressure of the fingers, typical of a fluid collection." },
+            q8_opt4: { it: "Un frammento osseo.", en: "A bone fragment." },
+            q8_rat4: { it: "L'osso ha una consistenza dura e rigida, che è l'esatto opposto della sensazione di fluttuazione.", en: "Bone has a hard and rigid consistency, which is the exact opposite of the sensation of fluctuation." },
+            q9_question: { it: "Secondo il riassunto, quale delle seguenti affermazioni riguardo la palpazione dei linfonodi della testa è corretta?", en: "According to the summary, which of the following statements regarding palpation of the head lymph nodes is correct?" },
+            q9_opt1: { it: "Nel bovino si palpano principalmente i linfonodi intermandibolari.", en: "In cattle, the intermandibular lymph nodes are primarily palpated." },
+            q9_rat1: { it: "Il testo specifica che nel bovino il repere principale sono i mandibolari, mentre gli intermandibolari sono tipici del cavallo.", en: "The text specifies that in cattle the main landmark is the mandibular nodes, while the intermandibular nodes are typical of the horse." },
+            q9_opt2: { it: "Nel cavallo si palpano principalmente i linfonodi mandibolari.", en: "In horses, the mandibular lymph nodes are primarily palpated." },
+            q9_rat2: { it: "Il testo indica che nel cavallo il repere fondamentale sono gli intermandibolari.", en: "The text indicates that in horses the fundamental landmark is the intermandibular nodes." },
+            q9_opt3: { it: "Nel bovino si palpano i mandibolari, nel cavallo gli intermandibolari.", en: "In cattle, the mandibular nodes are palpated; in horses, the intermandibular." },
+            q9_rat3: { it: "Questa distinzione rispecchia le differenze anatomiche e l'approccio standard descritto per le due specie.", en: "This distinction reflects the anatomical differences and the standard approach described for the two species." },
+            q9_opt4: { it: "I linfonodi retrofaringei non sono mai palpabili in nessuna delle due specie.", en: "The retropharyngeal lymph nodes are never palpable in either species." },
+            q9_rat4: { it: "Il testo menziona che i retrofaringei sono palpabili, e in particolare sono più agevoli da esaminare nel cavallo.", en: "The text mentions that the retropharyngeal nodes are palpable, and are particularly easier to examine in the horse." },
+            q10_question: { it: "Un 'fremito' percepito palpando la parete toracica in corrispondenza dell'area cardiaca può essere la manifestazione tattile di:", en: "A 'thrill' felt on palpating the chest wall over the cardiac area can be the tactile manifestation of:" },
+            q10_opt1: { it: "Una frattura costale.", en: "A rib fracture." },
+            q10_rat1: { it: "Una frattura costale può produrre crepitio osseo e una reazione di dolore, ma non la vibrazione ritmica e sincrona con il battito cardiaco di un fremito.", en: "A rib fracture can produce bony crepitus and a pain reaction, but not the rhythmic vibration synchronous with the heartbeat of a thrill." },
+            q10_opt2: { it: "Un grave versamento pleurico.", en: "A severe pleural effusion." },
+            q10_rat2: { it: "Un versamento pleurico tende ad attutire e smorzare i suoni e le vibrazioni provenienti dal cuore, rendendo più difficile, non più facile, la percezione di un fremito.", en: "A pleural effusion tends to muffle and dampen sounds and vibrations from the heart, making it harder, not easier, to perceive a thrill." },
+            q10_opt3: { it: "Un soffio cardiaco di particolare intensità.", en: "A particularly intense heart murmur." },
+            q10_rat3: { it: "Un flusso sanguigno estremamente turbolento all'interno del cuore può produrre una vibrazione così forte da essere trasmessa e percepita sulla parete toracica.", en: "Extremely turbulent blood flow within the heart can produce a vibration so strong that it is transmitted to and felt on the chest wall." },
+            q10_opt4: { it: "Un normale ritmo sinusale.", en: "A normal sinus rhythm." },
+            q10_rat4: { it: "Un ritmo cardiaco normale non produce vibrazioni palpabili sulla parete toracica; il fremito è sempre un segno patologico.", en: "A normal heart rhythm does not produce palpable vibrations on the chest wall; a thrill is always a pathological sign." }
+        };
+
         const quizData = [
-            {
-                "question": "Qual è lo scopo primario della manovra di palpazione-trazione eseguita su laringe e trachea?",
-                "hint": "Pensa a quale reazione fisiologica protettiva si può stimolare meccanicamente in quella specifica zona.",
-                "options": [
-                    { "text": "Valutare la temperatura delle vie aeree superiori.", "isCorrect": false, "rationale": "La temperatura di una regione si apprezza con il semplice contatto, mentre la manovra di trazione ha uno scopo funzionale." },
-                    { "text": "Evocare il riflesso della tosse.", "isCorrect": true, "rationale": "Questa manovra stimola meccanicamente le vie aeree per testarne la reattività, un passaggio importante dell'esame clinico." },
-                    { "text": "Verificare la presenza di masse nell'esofago.", "isCorrect": false, "rationale": "La palpazione dell'esofago si esegue lungo il suo decorso nel collo, ma la trazione della trachea è specifica per un altro riflesso." },
-                    { "text": "Misurare la mobilità del collo.", "isCorrect": false, "rationale": "La mobilità del collo si valuta con movimenti più ampi, non con la palpazione localizzata e la trazione della trachea." }
-                ]
-            },
-            {
-                "question": "Nel cavallo, la percezione di un polso digitale forte e 'saltellante' è un segno altamente indicativo di:",
-                "hint": "L'aumento del flusso sanguigno è uno dei segni cardinali di quale processo patologico localizzato?",
-                "options": [
-                    { "text": "Un problema neurologico all'arto.", "isCorrect": false, "rationale": "I problemi neurologici tipicamente influenzano la coordinazione e la sensibilità, non l'intensità del polso." },
-                    { "text": "Un processo infiammatorio acuto localizzato nel piede.", "isCorrect": true, "rationale": "L'infiammazione causa una vasodilatazione significativa, che rende il polso delle arterie digitali molto più evidente, come nel caso classico della laminite." },
-                    { "text": "Una normale condizione fisiologica a riposo.", "isCorrect": false, "rationale": "In un cavallo sano e tranquillo, il polso digitale è normalmente debole e difficile da percepire." },
-                    { "text": "Un versamento nell'articolazione del nodello.", "isCorrect": false, "rationale": "Un versamento articolare causa un gonfiore palpabile sull'articolazione, ma non è la causa diretta dell'aumento di intensità del polso più a valle." }
-                ]
-            },
-            {
-                "question": "La manovra del ballottamento/succussione eseguita sulla parete addominale di un bovino è utilizzata specificamente per rilevare:",
-                "hint": "Questa tecnica si basa sulla percezione di un'onda di ritorno dopo un impulso. Quale stato fisico permette questo fenomeno?",
-                "options": [
-                    { "text": "La presenza di gas in eccesso nel rumine.", "isCorrect": false, "rationale": "La presenza di gas viene valutata più efficacemente con la percussione, che produce un suono timpanico, e con la palpazione della tensione della fossa del fianco." },
-                    { "text": "La consistenza e le dimensioni del fegato.", "isCorrect": false, "rationale": "Il fegato non è accessibile alla palpazione esterna o al ballottamento nei grandi animali a causa della sua posizione craniale." },
-                    { "text": "La presenza di liquido libero in cavità addominale (ascite).", "isCorrect": true, "rationale": "Questa manovra si basa proprio sulla generazione di un'onda fluida che viene percepita dalla mano, indicando la presenza di una raccolta liquida anomala." },
-                    { "text": "La dolorabilità della parete muscolare.", "isCorrect": false, "rationale": "La dolorabilità si valuta con una pressione digitale graduale e localizzata, non con i colpi decisi e rapidi del ballottamento." }
-                ]
-            },
-            {
-                "question": "Una consistenza definita 'crepitante' alla palpazione di una tumefazione o di un'area sottocutanea suggerisce la presenza di:",
-                "hint": "Pensa al suono e alla sensazione che si ha schiacciando del pluriball (la carta con le bolle d'aria).",
-                "options": [
-                    { "text": "Gas nei tessuti (enfisema).", "isCorrect": true, "rationale": "Il crepitio è la sensazione tattile, simile a quella della neve pestata, prodotta dalle bolle di gas che si muovono nei tessuti." },
-                    { "text": "Liquido denso, come il pus.", "isCorrect": false, "rationale": "Una raccolta di pus o di un altro liquido denso darebbe una consistenza fluttuante, non crepitante." },
-                    { "text": "Tessuto cicatriziale fibroso.", "isCorrect": false, "rationale": "Il tessuto fibroso, essendo denso e compatto, ha tipicamente una consistenza dura, non crepitante." },
-                    { "text": "Un edema infiammatorio.", "isCorrect": false, "rationale": "Un edema produce una sensazione pastosa e può lasciare un'impronta (fovea), ma non produce il suono o la sensazione del crepitio." }
-                ]
-            },
-            {
-                "question": "Quale gruppo di linfonodi superficiali è localizzato nella piega della grassella (regione del ginocchio) ed è un punto di repere fondamentale nel bovino?",
-                "hint": "La grassella è l'articolazione del ginocchio. Quale termine anatomico si riferisce alla regione anteriore della coscia (crus)?",
-                "options": [
-                    { "text": "Linfonodi prescapolari.", "isCorrect": false, "rationale": "Questi linfonodi si trovano cranialmente all'articolazione della spalla, molto distanti dalla grassella." },
-                    { "text": "Linfonodi precrurali.", "isCorrect": true, "rationale": "Si trovano esattamente nella plica della grassella e sono uno dei linfonodi sentinella più importanti da valutare nell'esame clinico del bovino." },
-                    { "text": "Linfonodi soprammammari.", "isCorrect": false, "rationale": "Come suggerisce il nome, questi linfonodi si trovano in posizione caudale e dorsale rispetto alla ghiandola mammaria." },
-                    { "text": "Linfonodi mandibolari.", "isCorrect": false, "rationale": "Questi linfonodi si trovano sulla mandibola, nella regione della testa, e non sull'arto posteriore." }
-                ]
-            },
-            {
-                "question": "L'evocazione della pleurodinia, un segno indicativo di pleurite, si ottiene tramite:",
-                "hint": "Il suffisso '-dinia' significa dolore. Come si può stimolare una struttura interna e sensibile come la pleura attraverso la parete toracica?",
-                "options": [
-                    { "text": "La percussione forte del torace.", "isCorrect": false, "rationale": "La percussione serve a valutare la sonorità del parenchima polmonare sottostante, non a evocare dolore pleurico in modo specifico." },
-                    { "text": "L'auscultazione dell'area cardiaca.", "isCorrect": false, "rationale": "L'auscultazione è una tecnica di ascolto dei suoni interni e non prevede l'applicazione di una pressione tale da stimolare una reazione di dolore." },
-                    { "text": "La pressione localizzata e decisa sugli spazi intercostali.", "isCorrect": true, "rationale": "Questa manovra mira a stimolare meccanicamente la pleura parietale; se questa è infiammata, l'animale reagirà con una manifestazione di dolore." },
-                    { "text": "La palpazione-trazione della trachea.", "isCorrect": false, "rationale": "Questa manovra è specifica per evocare il riflesso della tosse e testare la reattività delle vie aeree, non il dolore pleurico." }
-                ]
-            },
-            {
-                "question": "Durante l'esplorazione rettale di un cavallo maschio, la valutazione degli anelli inguinali interni è cruciale per la diagnosi di quale patologia acuta?",
-                "hint": "Pensa a quale struttura anatomica mobile, come un'ansa intestinale, può passare attraverso un'apertura naturale della parete addominale, causando un problema.",
-                "options": [
-                    { "text": "Una colica da costipazione del grosso colon.", "isCorrect": false, "rationale": "La costipazione si diagnostica palpando direttamente il contenuto disidratato e duro all'interno del colon, non valutando gli anelli inguinali." },
-                    { "text": "Un'ernia inguinale strangolata.", "isCorrect": true, "rationale": "Un'ansa intestinale può scivolare attraverso un anello inguinale dilatato, causando un'ernia che, se strangolata, rappresenta un'emergenza chirurgica." },
-                    { "text": "Una rottura della vescica.", "isCorrect": false, "rationale": "La vescica si palpa per valutarne l'integrità e il grado di riempimento, ma questo esame è distinto da quello degli anelli inguinali." },
-                    { "text": "Una frattura dell'ileo.", "isCorrect": false, "rationale": "Le ossa del bacino si palpano per la loro integrità, ma questo esame, pur importante, non è specifico per la valutazione degli anelli inguinali." }
-                ]
-            },
-            {
-                "question": "Una consistenza definita 'fluttuante' alla palpazione di una tumefazione suggerisce fortemente la presenza di:",
-                "hint": "Immagina di premere delicatamente su un palloncino riempito d'acqua. Che tipo di sensazione tattile avresti?",
-                "options": [
-                    { "text": "Gas sottocutaneo.", "isCorrect": false, "rationale": "La presenza di gas produce una sensazione di crepitio alla palpazione, simile a quella della carta accartocciata, non di fluttuazione." },
-                    { "text": "Tessuto solido e denso, come una cicatrice.", "isCorrect": false, "rationale": "Un tessuto di questo tipo darebbe una consistenza dura, compatta o parenchimatosa, ma non fluttuante." },
-                    { "text": "Liquido raccolto all'interno di una cavità (es. ascesso, cisti).", "isCorrect": true, "rationale": "La fluttuazione è proprio la sensazione di un'onda liquida che si sposta sotto la pressione delle dita, tipica di una raccolta fluida." },
-                    { "text": "Un frammento osseo.", "isCorrect": false, "rationale": "L'osso ha una consistenza dura e rigida, che è l'esatto opposto della sensazione di fluttuazione." }
-                ]
-            },
-            {
-                "question": "Secondo il riassunto, quale delle seguenti affermazioni riguardo la palpazione dei linfonodi della testa è corretta?",
-                "hint": "Il testo evidenzia una differenza chiave nella localizzazione dei linfonodi sentinella della testa tra le due principali specie di grandi animali.",
-                "options": [
-                    { "text": "Nel bovino si palpano principalmente i linfonodi intermandibolari.", "isCorrect": false, "rationale": "Il testo specifica che nel bovino il repere principale sono i mandibolari, mentre gli intermandibolari sono tipici del cavallo." },
-                    { "text": "Nel cavallo si palpano principalmente i linfonodi mandibolari.", "isCorrect": false, "rationale": "Il testo indica che nel cavallo il repere fondamentale sono gli intermandibolari." },
-                    { "text": "Nel bovino si palpano i mandibolari, nel cavallo gli intermandibolari.", "isCorrect": true, "rationale": "Questa distinzione rispecchia le differenze anatomiche e l'approccio standard descritto per le due specie." },
-                    { "text": "I linfonodi retrofaringei non sono mai palpabili in nessuna delle due specie.", "isCorrect": false, "rationale": "Il testo menziona che i retrofaringei sono palpabili, e in particolare sono più agevoli da esaminare nel cavallo." }
-                ]
-            },
-            {
-                "question": "Un 'fremito' percepito palpando la parete toracica in corrispondenza dell'area cardiaca può essere la manifestazione tattile di:",
-                "hint": "Questa vibrazione è spesso descritta come la manifestazione tattile di un fenomeno acustico molto forte e anomalo. Quale?",
-                "options": [
-                    { "text": "Una frattura costale.", "isCorrect": false, "rationale": "Una frattura costale può produrre crepitio osseo e una reazione di dolore, ma non la vibrazione ritmica e sincrona con il battito cardiaco di un fremito." },
-                    { "text": "Un grave versamento pleurico.", "isCorrect": false, "rationale": "Un versamento pleurico tende ad attutire e smorzare i suoni e le vibrazioni provenienti dal cuore, rendendo più difficile, non più facile, la percezione di un fremito." },
-                    { "text": "Un soffio cardiaco di particolare intensità.", "isCorrect": true, "rationale": "Un flusso sanguigno estremamente turbolento all'interno del cuore può produrre una vibrazione così forte da essere trasmessa e percepita sulla parete toracica." },
-                    { "text": "Un normale ritmo sinusale.", "isCorrect": false, "rationale": "Un ritmo cardiaco normale non produce vibrazioni palpabili sulla parete toracica; il fremito è sempre un segno patologico." }
-                ]
-            }
+            { questionKey: "q1_question", options: [{ textKey: "q1_opt1", rationaleKey: "q1_rat1", isCorrect: false }, { textKey: "q1_opt2", rationaleKey: "q1_rat2", isCorrect: true }, { textKey: "q1_opt3", rationaleKey: "q1_rat3", isCorrect: false }, { textKey: "q1_opt4", rationaleKey: "q1_rat4", isCorrect: false }] },
+            { questionKey: "q2_question", options: [{ textKey: "q2_opt1", rationaleKey: "q2_rat1", isCorrect: false }, { textKey: "q2_opt2", rationaleKey: "q2_rat2", isCorrect: true }, { textKey: "q2_opt3", rationaleKey: "q2_rat3", isCorrect: false }, { textKey: "q2_opt4", rationaleKey: "q2_rat4", isCorrect: false }] },
+            { questionKey: "q3_question", options: [{ textKey: "q3_opt1", rationaleKey: "q3_rat1", isCorrect: false }, { textKey: "q3_opt2", rationaleKey: "q3_rat2", isCorrect: false }, { textKey: "q3_opt3", rationaleKey: "q3_rat3", isCorrect: true }, { textKey: "q3_opt4", rationaleKey: "q3_rat4", isCorrect: false }] },
+            { questionKey: "q4_question", options: [{ textKey: "q4_opt1", rationaleKey: "q4_rat1", isCorrect: true }, { textKey: "q4_opt2", rationaleKey: "q4_rat2", isCorrect: false }, { textKey: "q4_opt3", rationaleKey: "q4_rat3", isCorrect: false }, { textKey: "q4_opt4", rationaleKey: "q4_rat4", isCorrect: false }] },
+            { questionKey: "q5_question", options: [{ textKey: "q5_opt1", rationaleKey: "q5_rat1", isCorrect: false }, { textKey: "q5_opt2", rationaleKey: "q5_rat2", isCorrect: true }, { textKey: "q5_opt3", rationaleKey: "q5_rat3", isCorrect: false }, { textKey: "q5_opt4", rationaleKey: "q5_rat4", isCorrect: false }] },
+            { questionKey: "q6_question", options: [{ textKey: "q6_opt1", rationaleKey: "q6_rat1", isCorrect: false }, { textKey: "q6_opt2", rationaleKey: "q6_rat2", isCorrect: false }, { textKey: "q6_opt3", rationaleKey: "q6_rat3", isCorrect: true }, { textKey: "q6_opt4", rationaleKey: "q6_rat4", isCorrect: false }] },
+            { questionKey: "q7_question", options: [{ textKey: "q7_opt1", rationaleKey: "q7_rat1", isCorrect: false }, { textKey: "q7_opt2", rationaleKey: "q7_rat2", isCorrect: true }, { textKey: "q7_opt3", rationaleKey: "q7_rat3", isCorrect: false }, { textKey: "q7_opt4", rationaleKey: "q7_rat4", isCorrect: false }] },
+            { questionKey: "q8_question", options: [{ textKey: "q8_opt1", rationaleKey: "q8_rat1", isCorrect: false }, { textKey: "q8_opt2", rationaleKey: "q8_rat2", isCorrect: false }, { textKey: "q8_opt3", rationaleKey: "q8_rat3", isCorrect: true }, { textKey: "q8_opt4", rationaleKey: "q8_rat4", isCorrect: false }] },
+            { questionKey: "q9_question", options: [{ textKey: "q9_opt1", rationaleKey: "q9_rat1", isCorrect: false }, { textKey: "q9_opt2", rationaleKey: "q9_rat2", isCorrect: false }, { textKey: "q9_opt3", rationaleKey: "q9_rat3", isCorrect: true }, { textKey: "q9_opt4", rationaleKey: "q9_rat4", isCorrect: false }] },
+            { questionKey: "q10_question", options: [{ textKey: "q10_opt1", rationaleKey: "q10_rat1", isCorrect: false }, { textKey: "q10_opt2", rationaleKey: "q10_rat2", isCorrect: false }, { textKey: "q10_opt3", rationaleKey: "q10_rat3", isCorrect: true }, { textKey: "q10_opt4", rationaleKey: "q10_rat4", isCorrect: false }] }
         ];
 
         let currentQuestionIndex = 0;
@@ -221,7 +240,11 @@
         const nextButton = document.getElementById('next-button');
         const scoreText = document.getElementById('score-text');
         const restartButton = document.getElementById('restart-button');
+        
+        let currentLanguage = localStorage.getItem('language') || 'it';
+
         const accessibilityToggle = document.getElementById('accessibility-toggle');
+        const langToggle = document.getElementById('lang-toggle');
         const body = document.body;
 
         function speak(text, button) {
@@ -243,7 +266,7 @@
         
         function startSpeaking(text, button) {
             currentUtterance = new SpeechSynthesisUtterance(text);
-            currentUtterance.lang = 'it-IT';
+            currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
             currentUtterance.onend = () => {
                 if(activeTTSButton) activeTTSButton.classList.remove('playing');
                 activeTTSButton = null;
@@ -253,6 +276,27 @@
             activeTTSButton = button;
             button.classList.add('playing');
         }
+        
+        const updateLanguage = (lang) => {
+            document.documentElement.lang = lang;
+            langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if (translations[key] && translations[key][lang]) {
+                    element.innerHTML = translations[key][lang];
+                }
+            });
+            
+            if (shuffledQuestions.length > 0 && questionArea.classList.contains('hidden') === false) {
+                 loadQuestion();
+            }
+        };
+
+        langToggle.addEventListener('click', () => {
+            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage(currentLanguage);
+        });
 
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -272,7 +316,6 @@
             resultsArea.classList.add('hidden');
             questionArea.classList.remove('hidden');
             feedbackArea.classList.add('hidden');
-            nextButton.textContent = "Prossima Domanda";
             loadQuestion();
         }
         
@@ -283,9 +326,12 @@
 
             feedbackArea.classList.add('hidden');
             const currentQuestion = shuffledQuestions[currentQuestionIndex];
-            progressText.textContent = `Domanda ${currentQuestionIndex + 1} / ${shuffledQuestions.length}`;
-            questionText.textContent = currentQuestion.question;
-            questionTTSButton.onclick = () => speak(currentQuestion.question, questionTTSButton);
+            progressText.textContent = translations.progressText[currentLanguage]
+                .replace('{current}', currentQuestionIndex + 1)
+                .replace('{total}', shuffledQuestions.length);
+            
+            questionText.textContent = translations[currentQuestion.questionKey][currentLanguage];
+            questionTTSButton.onclick = () => speak(translations[currentQuestion.questionKey][currentLanguage], questionTTSButton);
             optionsContainer.innerHTML = '';
             
             const shuffledOptions = shuffleArray([...currentQuestion.options]);
@@ -295,7 +341,7 @@
                 buttonContainer.classList.add('flex', 'items-center', 'w-full');
                 
                 const button = document.createElement('button');
-                button.textContent = option.text;
+                button.textContent = translations[option.textKey][currentLanguage];
                 button.classList.add('option-btn', 'w-full', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
                 
                 const ttsButton = document.createElement('span');
@@ -303,9 +349,9 @@
                 ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
                 ttsButton.onclick = (e) => {
                     e.stopPropagation();
-                    speak(option.text, ttsButton);
+                    speak(translations[option.textKey][currentLanguage], ttsButton);
                 };
-                
+
                 button.onclick = () => selectAnswer(button, option, currentQuestion.options);
 
                 buttonContainer.appendChild(button);
@@ -316,13 +362,13 @@
 
         function selectAnswer(button, selectedOption, allOptions) {
             if (synth.speaking) synth.cancel();
-            const correctOption = allOptions.find(opt => opt.isCorrect);
+            
             const buttons = optionsContainer.querySelectorAll('button.option-btn');
             
             buttons.forEach(btn => {
                 btn.disabled = true;
                 const optionDataText = btn.textContent;
-                const originalOption = allOptions.find(opt => opt.text === optionDataText);
+                const originalOption = allOptions.find(opt => translations[opt.textKey][currentLanguage] === optionDataText);
                 if (originalOption && originalOption.isCorrect) {
                     btn.classList.add('correct');
                 }
@@ -334,11 +380,13 @@
             
             score += selectedOption.isCorrect ? 1 : 0;
             
-            rationaleText.textContent = selectedOption.rationale;
+            rationaleText.textContent = translations[selectedOption.rationaleKey][currentLanguage];
             feedbackArea.classList.remove('hidden');
 
             if (currentQuestionIndex === shuffledQuestions.length - 1) {
-                nextButton.textContent = "Mostra Risultati";
+                nextButton.textContent = translations.btnResults[currentLanguage];
+            } else {
+                 nextButton.textContent = translations.btnNext[currentLanguage];
             }
         }
         
@@ -380,6 +428,8 @@
         }
 
         startQuiz();
+        updateLanguage(currentLanguage);
+
     </script>
 </body>
 </html>
