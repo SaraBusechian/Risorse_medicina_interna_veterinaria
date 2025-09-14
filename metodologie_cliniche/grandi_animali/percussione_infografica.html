@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: La Percussione Clinica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- NO SVG or Mermaid JS were used. All diagrams are built with HTML/CSS. All charts are rendered on Canvas via Chart.js. -->
+    <!-- Palette: Brilliant Blues -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        .nav-link { transition: color 0.3s; }
+        .nav-link:hover { color: #93C5FD; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #000000 !important;
+            background-image: none !important;
+        }
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
+            color: #ffffff !important;
+        }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
+        .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode span, .dsa-mode div, .dsa-mode li { color: #34495e; }
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6">
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#0D47A1] mb-4" data-lang-key="pageTitle">L'Arte di Ascoltare con le Dita: Guida alla Percussione<span class="tts-button"></span></h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-lang-key="pageSubtitle">La percussione trasforma la consistenza dei tessuti in un suono, rivelando ciò che si nasconde sotto la superficie.</p>
+        </header>
+
+        <main class="space-y-16">
+
+            <section class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#0D47A1]" data-lang-key="soundsTitle">I 4 Suoni Fondamentali della Percussione<span class="tts-button"></span></h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                    <div class="p-4 bg-gray-50 rounded-lg border-b-4 border-sky-500">
+                        <h3 class="text-xl font-bold text-sky-700" data-lang-key="sound1Title">Chiaro Polmonare</h3>
+                        <p class="text-sm text-gray-600 mt-2" data-lang-key="sound1Desc">Il suono risonante di un polmone sano e pieno d'aria.</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg border-b-4 border-teal-500">
+                        <h3 class="text-xl font-bold text-teal-700" data-lang-key="sound2Title">Timpanico</h3>
+                        <p class="text-sm text-gray-600 mt-2" data-lang-key="sound2Desc">Simile a un tamburo, indica gas in un organo cavo (es. rumine).</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg border-b-4 border-amber-500">
+                        <h3 class="text-xl font-bold text-amber-700" data-lang-key="sound3Title">Ottuso</h3>
+                        <p class="text-sm text-gray-600 mt-2" data-lang-key="sound3Desc">Un suono sordo, tipico di organi solidi, liquidi o consolidamenti.</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg border-b-4 border-red-500">
+                        <h3 class="text-xl font-bold text-red-700" data-lang-key="sound4Title">Metallico</h3>
+                        <p class="text-sm text-gray-600 mt-2" data-lang-key="sound4Desc">Un "ping" acuto, segno di gas sotto tensione (es. dislocazione abomaso).</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#0D47A1]" data-lang-key="appsTitle">Applicazioni Cliniche Principali<span class="tts-button"></span></h2>
+                <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                    <li data-lang-key="app1"><strong>Torace:</strong> Mappare i confini dei polmoni, delimitare l'area cardiaca e ricercare versamenti liquidi o accumuli di aria.</li>
+                    <li data-lang-key="app2"><strong>Addome:</strong> Valutare lo stato di ripienezza gassosa di organi come il rumine (bovino) o il cieco (cavallo).</li>
+                    <li data-lang-key="app3"><strong>Diagnosi Specifiche:</strong> Identificare condizioni come la dislocazione dell'abomaso nel bovino attraverso il caratteristico suono metallico ("ping").</li>
+                    <li data-lang-key="app4"><strong>Seni Paranasali:</strong> Rilevare la presenza di essudato (pus o liquido) in caso di sinusite, soprattutto nel cavallo.</li>
+                </ul>
+            </section>
+
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl font-bold mb-4 text-[#0D47A1]" data-lang-key="techniqueTitle">Le Tecniche di Percussione<span class="tts-button"></span></h3>
+                    <div data-lang-key="techniqueDesc">
+                        <p class="mb-4"><strong>Percussione Mediata (Standard):</strong> Utilizza una mano come base (plessimetro) e l'altra per colpire (plessore). Questa tecnica, più precisa, genera un suono chiaro e localizzato.</p>
+                        <p><strong>Percussione Diretta:</strong> Si esegue colpendo la parete corporea direttamente con la punta delle dita. È una tecnica meno precisa ma utile in alcune situazioni, come per i seni paranasali.</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl font-bold mb-4 text-[#0D47A1]" data-lang-key="thoraxTitle">Mappatura del Torace: Limiti Polmonari Posteriori<span class="tts-button"></span></h3>
+                    <p class="mb-6 text-gray-600" data-lang-key="thoraxDesc">La percussione permette di definire i confini del polmone. Il grafico mostra il limite posteriore normale (dove il suono passa da chiaro a ottuso) nel cavallo e nel bovino, percuotendo lungo la prima linea di Vogel.</p>
+                    <div class="chart-container h-64">
+                        <canvas id="lungBorderChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#0D47A1]" data-lang-key="abdomenTitle">Indagini Addominali: Il Significato del "Ping"<span class="tts-button"></span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                     <div>
+                        <p class="mb-6 text-gray-600" data-lang-key="abdomenDesc">Nell'addome, la percussione è cruciale. Nel bovino, la combinazione di percussione e auscultazione può rivelare il suono metallico ("ping") tipico della dislocazione dell'abomaso. Il grafico mostra le cause più comuni di un "ping" rilevato sul fianco sinistro.</p>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-xl font-bold text-pink-700 mb-4" data-lang-key="pingChartTitle"></h3>
+                        <div class="chart-container h-80">
+                            <canvas id="pingCausesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer id="main-footer" class="bg-gray-800 text-white mt-12">
+             <div class="container mx-auto px-6 py-4 text-center">
+                <p data-lang-key="footerText">&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const speakerIcon = (size = 'w-6 h-6') => `<span class="tts-button"><svg class="${size}" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
+            
+            const originalItalianTexts = {};
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                originalItalianTexts[element.dataset.langKey] = element.innerHTML;
+            });
+            
+            const translations = {
+                siteTitle: { en: 'Large Animal Internal Medicine' },
+                navAnamnesi: { en: 'History' },
+                navIspezione: { en: 'Inspection' },
+                navPalpazione: { en: 'Palpation' },
+                navPercussione: { en: 'Percussion' },
+                navAuscultazione: { en: 'Auscultation' },
+                accessibility: { en: 'Accessibility' },
+                pageTitle: { it: `L'Arte di Ascoltare con le Dita: Guida alla Percussione${speakerIcon('w-8 h-8')}`, en: `The Art of Listening with Fingers: A Guide to Percussion${speakerIcon('w-8 h-8')}` },
+                pageSubtitle: { it: "La percussione trasforma la consistenza dei tessuti in un suono, rivelando ciò che si nasconde sotto la superficie.", en: "Percussion transforms tissue consistency into sound, revealing what lies beneath the surface." },
+                soundsTitle: { it: `I 4 Suoni Fondamentali della Percussione${speakerIcon('w-7 h-7')}`, en: `The 4 Fundamental Sounds of Percussion${speakerIcon('w-7 h-7')}` },
+                sound1Title: { it: "Chiaro Polmonare", en: "Resonant Lung" },
+                sound1Desc: { it: "Il suono risonante di un polmone sano e pieno d'aria.", en: "The resonant sound of a healthy, air-filled lung." },
+                sound2Title: { it: "Timpanico", en: "Tympanic" },
+                sound2Desc: { it: "Simile a un tamburo, indica gas in un organo cavo (es. rumine).", en: "Drum-like, indicates gas in a hollow organ (e.g., rumen)." },
+                sound3Title: { it: "Ottuso", en: "Dull" },
+                sound3Desc: { it: "Un suono sordo, tipico di organi solidi, liquidi o consolidamenti.", en: "A dull sound, typical of solid organs, fluids, or consolidations." },
+                sound4Title: { it: "Metallico", en: "Metallic" },
+                sound4Desc: { it: "Un \"ping\" acuto, segno di gas sotto tensione (es. dislocazione abomaso).", en: "A sharp \"ping,\" a sign of gas under tension (e.g., abomasal displacement)." },
+                appsTitle: { it: `Applicazioni Cliniche Principali${speakerIcon('w-7 h-7')}`, en: `Main Clinical Applications${speakerIcon('w-7 h-7')}` },
+                app1: { it: "<strong>Torace:</strong> Mappare i confini dei polmoni, delimitare l'area cardiaca e ricercare versamenti liquidi o accumuli di aria.", en: "<strong>Thorax:</strong> Mapping lung borders, delineating the cardiac area, and searching for fluid effusions or air accumulations." },
+                app2: { it: "<strong>Addome:</strong> Valutare lo stato di ripienezza gassosa di organi come il rumine (bovino) o il cieco (cavallo).", en: "<strong>Abdomen:</strong> Assessing the gaseous content of organs like the rumen (bovine) or cecum (horse)." },
+                app3: { it: "<strong>Diagnosi Specifiche:</strong> Identificare condizioni come la dislocazione dell'abomaso nel bovino attraverso il caratteristico suono metallico (\"ping\").", en: "<strong>Specific Diagnoses:</strong> Identifying conditions like abomasal displacement in cattle through the characteristic metallic sound (\"ping\")." },
+                app4: { it: "<strong>Seni Paranasali:</strong> Rilevare la presenza di essudato (pus o liquido) in caso di sinusite, soprattutto nel cavallo.", en: "<strong>Paranasal Sinuses:</strong> Detecting the presence of exudate (pus or fluid) in case of sinusitis, especially in the horse." },
+                techniqueTitle: { it: `Le Tecniche di Percussione${speakerIcon()}`, en: `Percussion Techniques${speakerIcon()}` },
+                techniqueDesc: { it: `<p class="mb-4"><strong>Percussione Mediata (Standard):</strong> Utilizza una mano come base (plessimetro) e l'altra per colpire (plessore). Questa tecnica, più precisa, genera un suono chiaro e localizzato.</p><p><strong>Percussione Diretta:</strong> Si esegue colpendo la parete corporea direttamente con la punta delle dita. È una tecnica meno precisa ma utile in alcune situazioni, come per i seni paranasali.</p>`, en: `<p class="mb-4"><strong>Mediate Percussion (Standard):</strong> Uses one hand as a base (pleximeter) and the other to strike (plexor). This more precise technique generates a clear, localized sound.</p><p><strong>Direct Percussion:</strong> Performed by striking the body wall directly with the fingertips. It is a less precise technique but useful in some situations, such as for the paranasal sinuses.</p>` },
+                thoraxTitle: { it: `Mappatura del Torace: Limiti Polmonari Posteriori${speakerIcon()}`, en: `Mapping the Thorax: Caudal Lung Borders${speakerIcon()}` },
+                thoraxDesc: { it: "La percussione permette di definire i confini del polmone. Il grafico mostra il limite posteriore normale (dove il suono passa da chiaro a ottuso) nel cavallo e nel bovino, percuotendo lungo la prima linea di Vogel.", en: "Percussion allows defining the lung borders. The chart shows the normal caudal border (where the sound changes from resonant to dull) in horses and cattle, percussing along Vogel's first line." },
+                abdomenTitle: { it: `Indagini Addominali: Il Significato del "Ping"${speakerIcon('w-7 h-7')}`, en: `Abdominal Investigations: The Meaning of the "Ping"${speakerIcon('w-7 h-7')}` },
+                abdomenDesc: { it: "Nell'addome, la percussione è cruciale. Nel bovino, la combinazione di percussione e auscultazione può rivelare il suono metallico (\"ping\") tipico della dislocazione dell'abomaso. Il grafico mostra le cause più comuni di un \"ping\" rilevato sul fianco sinistro.", en: "In the abdomen, percussion is crucial. In cattle, the combination of percussion and auscultation can reveal the metallic sound (\"ping\") typical of abomasal displacement. The chart shows the most common causes of a \"ping\" detected on the left flank." },
+                pingChartTitle: { it: 'Cause di "Ping" a Sinistra', en: 'Causes of Left-Sided "Ping"' },
+                footerText: { it: '&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Clinical Methodologies. Created by Sara Busechian.' },
+                chart1Labels: { it: ['Cavallo (Sinistra)', 'Cavallo (Destra)', 'Bovino (Entrambi)'], en: ['Horse (Left)', 'Horse (Right)', 'Bovine (Both)'] },
+                chart1Title: { it: 'Spazio Intercostale', en: 'Intercostal Space' },
+                chart2Labels: { it: ['Dislocazione Abomaso', 'Meteorismo Ruminale', 'Pneumoperitoneo'], en: ['Displaced Abomasum', 'Ruminal Tympany', 'Pneumoperitoneum'] }
+            };
+            
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const accessibilityToggle = document.getElementById('accessibility-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function speak(text, button) {
+                if (synth.speaking && activeTTSButton === button) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else { synth.pause(); button.classList.remove('playing'); }
+                } else {
+                    if (synth.speaking) { synth.cancel(); }
+                    currentUtterance = new SpeechSynthesisUtterance(text);
+                    currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                    currentUtterance.onend = () => {
+                        if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                        activeTTSButton = null;
+                    };
+                    synth.speak(currentUtterance);
+                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                }
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const parent = e.currentTarget.parentNode;
+                        const key = parent.dataset.langKey;
+                        if (translations[key]) {
+                            const htmlContent = (currentLanguage === 'en' && translations[key].en) ? translations[key].en : originalItalianTexts[key];
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = htmlContent;
+                            tempDiv.querySelectorAll('.tts-button').forEach(btn => btn.remove());
+                            const textToRead = tempDiv.textContent.trim().replace(/\s+/g, ' ');
+                            if (textToRead) speak(textToRead, e.currentTarget);
+                        }
+                    });
+                });
+            }
+
+            const wrapLabel = (label) => {
+                const maxLen = 16;
+                if (label.length <= maxLen) return label;
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).trim().length > maxLen && currentLine.length > 0) {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                });
+                lines.push(currentLine);
+                return lines;
+            };
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                return Array.isArray(label) ? label.join(' ') : label;
+            };
+
+            const lungBorderCtx = document.getElementById('lungBorderChart').getContext('2d');
+            const lungBorderChart = new Chart(lungBorderCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '',
+                        data: [15, 13, 9],
+                        backgroundColor: ['#1E88E5', '#42A5F5', '#90CAF9'],
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { title: tooltipTitleCallback } } },
+                    scales: {
+                        x: { beginAtZero: true, max: 18, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { stepSize: 3 } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+
+            const pingCausesCtx = document.getElementById('pingCausesChart').getContext('2d');
+            const pingCausesChart = new Chart(pingCausesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '',
+                        data: [85, 10, 5],
+                        backgroundColor: ['#D81B60', '#F48FB1', '#F8BBD0'],
+                        borderColor: '#ffffff',
+                        borderWidth: 3,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { font: { size: 12, weight: '600' }, padding: 15 } },
+                        tooltip: { callbacks: { title: tooltipTitleCallback } }
+                    }
+                }
+            });
+            
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (lang === 'en' && translations[key] && translations[key].en) {
+                        element.innerHTML = translations[key].en;
+                    } else if (lang === 'it' && originalItalianTexts[key]) {
+                        element.innerHTML = originalItalianTexts[key];
+                    }
+                });
+
+                lungBorderChart.data.datasets[0].label = translations.chart1Title[lang];
+                lungBorderChart.data.labels = translations.chart1Labels[lang];
+                lungBorderChart.update();
+
+                pingCausesChart.data.labels = translations.chart2Labels[lang].map(wrapLabel);
+                pingCausesChart.update();
+
+                setupTTSListeners();
+            };
+
+            const setA11yMode = (enabled) => {
+                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); } 
+                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            };
+
+            langToggle.addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            accessibilityToggle.addEventListener('click', () => {
+                const isEnabled = body.classList.contains('dsa-mode');
+                setA11yMode(!isEnabled);
+            });
+            
+            if (localStorage.getItem('dsa-mode') === 'enabled') {
+                setA11yMode(true);
+            }
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
