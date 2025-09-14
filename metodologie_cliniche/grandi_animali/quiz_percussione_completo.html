@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interattivo: La Percussione Clinica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; }
+        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; }
+        .nav-link { transition: color 0.3s; }
+        .nav-link:hover { color: #93C5FD; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #000000 !important;
+            background-image: none !important;
+        }
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
+            color: #ffffff !important;
+        }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
+        .dsa-mode #quiz-container, .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h2, .dsa-mode p { color: #34495e; }
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6">
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex items-center justify-center min-h-[calc(100vh-150px)] p-4">
+        <div id="quiz-container" class="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6 md:p-8">
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: La Percussione Clinica</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
+                </div>
+                <div class="text-lg text-slate-700 mb-6 min-h-[6rem] flex items-center">
+                    <p id="question-text"></p>
+                    <span id="question-tts-button" class="tts-button">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </span>
+                </div>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-6 hidden">
+                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
+                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
+            </div>
+
+            <div id="results-area" class="text-center hidden">
+                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
+                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+        </div>
+    </main>
+    
+    <footer id="main-footer" class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p data-lang-key="footerText">&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
+            navAnamnesi: { it: 'Anamnesi', en: 'History' },
+            navIspezione: { it: 'Ispezione', en: 'Inspection' },
+            navPalpazione: { it: 'Palpazione', en: 'Palpation' },
+            navPercussione: { it: 'Percussione', en: 'Percussion' },
+            navAuscultazione: { it: 'Auscultazione', en: 'Auscultation' },
+            accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+            quizTitle: { it: "Quiz: La Percussione Clinica", en: 'Quiz: Clinical Percussion' },
+            progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+            btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+            btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
+            resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+            resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+            btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+            footerText: { it: '&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Clinical Methodologies. Created by Sara Busechian.' },
+            q1: {
+                question: { it: "Quale suono ci si aspetta di sentire percuotendo un polmone sano in un cavallo?", en: "What sound would you expect to hear when percussing a healthy lung in a horse?" },
+                options: [
+                    { text: { it: "Suono ottuso", en: "Dull sound" }, rationale: { it: "Un suono ottuso indica la presenza di tessuto solido o liquido, non di un polmone aerato.", en: "A dull sound indicates the presence of solid or liquid tissue, not an aerated lung." }, isCorrect: false },
+                    { text: { it: "Suono timpanico", en: "Tympanic sound" }, rationale: { it: "Il suono timpanico è tipico di organi cavi pieni di gas sotto pressione, non di un polmone normale.", en: "A tympanic sound is typical of hollow organs filled with gas under pressure, not a normal lung." }, isCorrect: false },
+                    { text: { it: "Suono chiaro polmonare", en: "Resonant lung sound" }, rationale: { it: "Questo è il suono di normale risonanza prodotto da un tessuto polmonare ben aerato.", en: "This is the normal resonance sound produced by well-aerated lung tissue." }, isCorrect: true },
+                    { text: { it: "Suono metallico", en: "Metallic sound" }, rationale: { it: "Il suono metallico è un 'ping' acuto associato a specifiche patologie addominali, non al polmone.", en: "A metallic sound is a sharp 'ping' associated with specific abdominal pathologies, not the lung." }, isCorrect: false }
+                ]
+            },
+            q2: {
+                question: { it: "La percussione mediata (o indiretta) richiede l'uso di:", en: "Mediate (or indirect) percussion requires the use of:" },
+                options: [
+                    { text: { it: "Solo le dita per colpire direttamente la cute.", en: "Only the fingers to strike the skin directly." }, rationale: { it: "Questa descrizione corrisponde alla percussione immediata, che è meno precisa.", en: "This description corresponds to immediate percussion, which is less precise." }, isCorrect: false },
+                    { text: { it: "Un plessimetro e un plessore.", en: "A pleximeter and a plexor." }, rationale: { it: "Questa è la definizione corretta della tecnica standard, che utilizza un dito o uno strumento come base (plessimetro) e un altro per colpire (plessore).", en: "This is the correct definition of the standard technique, which uses a finger or instrument as a base (pleximeter) and another to strike (plexor)." }, isCorrect: true },
+                    { text: { it: "Uno stetoscopio per amplificare il suono.", en: "A stethoscope to amplify the sound." }, rationale: { it: "Lo stetoscopio è usato per l'auscultazione, non per la percussione.", en: "The stethoscope is used for auscultation, not percussion." }, isCorrect: false },
+                    { text: { it: "Un martelletto neurologico.", en: "A neurological hammer." }, rationale: { it: "Sebbene un martelletto possa essere usato come plessore, la tecnica richiede sempre anche un plessimetro.", en: "Although a hammer can be used as a plexor, the technique always requires a pleximeter as well." }, isCorrect: false }
+                ]
+            },
+            q3: {
+                question: { it: "Un suono ottuso percussorio ottenuto in un'area normalmente occupata dal polmone può indicare:", en: "A dull percussion sound obtained in an area normally occupied by the lung may indicate:" },
+                options: [
+                    { text: { it: "Enfisema polmonare.", en: "Pulmonary emphysema." }, rationale: { it: "L'enfisema, intrappolando più aria del normale, produrrebbe un suono iper-risonante (sovrachiaro), non ottuso.", en: "Emphysema, by trapping more air than normal, would produce a hyper-resonant sound, not a dull one." }, isCorrect: false },
+                    { text: { it: "Pneumotorace.", en: "Pneumothorax." }, rationale: { it: "La presenza di aria libera nel torace (pneumotorace) genera un suono timpanico o iper-risonante.", en: "The presence of free air in the chest (pneumothorax) generates a tympanic or hyper-resonant sound." }, isCorrect: false },
+                    { text: { it: "Un consolidamento polmonare (polmonite) o un versamento pleurico.", en: "Lung consolidation (pneumonia) or pleural effusion." }, rationale: { it: "Sia il tessuto polmonare riempito di liquido/cellule che una raccolta di liquido nello spazio pleurico smorzano il suono, producendo ottusità.", en: "Both lung tissue filled with fluid/cells and a fluid collection in the pleural space dampen the sound, producing dullness." }, isCorrect: true },
+                    { text: { it: "Un animale sano con una grande massa muscolare.", en: "A healthy animal with large muscle mass." }, rationale: { it: "La massa muscolare produce un suono ottuso, ma non dovrebbe trovarsi all'interno dell'area di risonanza polmonare.", en: "Muscle mass produces a dull sound, but it should not be located within the area of pulmonary resonance." }, isCorrect: false }
+                ]
+            },
+            q4: {
+                question: { it: "Nel bovino, un suono metallico a 'ping' auscultato e percosso sulla parete addominale sinistra è patognomonico di:", en: "In cattle, a metallic 'ping' sound auscultated and percussed on the left abdominal wall is pathognomonic for:" },
+                options: [
+                    { text: { it: "Meteorismo ruminale.", en: "Ruminal bloat." }, rationale: { it: "Il meteorismo produce un suono timpanico diffuso, ma non il 'ping' acuto e metallico tipico di un'altra condizione.", en: "Bloat produces a diffuse tympanic sound, but not the sharp, metallic 'ping' typical of another condition." }, isCorrect: false },
+                    { text: { it: "Dislocazione sinistra dell'abomaso.", en: "Left displaced abomasum." }, rationale: { it: "Questo è il segno clinico classico che si ricerca per diagnosticare la dislocazione dell'abomaso, dove l'organo pieno di gas si interpone tra il rumine e la parete.", en: "This is the classic clinical sign sought to diagnose a displaced abomasum, where the gas-filled organ becomes trapped between the rumen and the body wall." }, isCorrect: true },
+                    { text: { it: "Peritonite.", en: "Peritonitis." }, rationale: { it: "La peritonite non produce un suono a 'ping'; può essere associata a dolore e, a volte, a un suono ottuso per la presenza di liquido.", en: "Peritonitis does not produce a 'ping' sound; it may be associated with pain and sometimes a dull sound due to fluid." }, isCorrect: false },
+                    { text: { it: "Gravidanza avanzata.", en: "Advanced pregnancy." }, rationale: { it: "Un utero gravido produce un'area di ottusità, non un suono metallico.", en: "A gravid uterus produces an area of dullness, not a metallic sound." }, isCorrect: false }
+                ]
+            },
+            q5: {
+                question: { it: "Qual è il limite polmonare posteriore normale in un bovino sano?", en: "What is the normal caudal lung border in a healthy bovine?" },
+                options: [
+                    { text: { it: "Il 15° spazio intercostale.", en: "The 15th intercostal space." }, rationale: { it: "Questo limite è più rappresentativo del cavallo, non del bovino.", en: "This border is more representative of a horse, not a bovine." }, isCorrect: false },
+                    { text: { it: "Il 7° spazio intercostale.", en: "The 7th intercostal space." }, rationale: { it: "Questo limite è troppo craniale per rappresentare il margine posteriore del polmone.", en: "This border is too cranial to represent the caudal margin of the lung." }, isCorrect: false },
+                    { text: { it: "Il 9° spazio intercostale.", en: "The 9th intercostal space." }, rationale: { it: "Questo è il corretto punto di repere per il limite polmonare posteriore nel bovino su entrambi i lati.", en: "This is the correct landmark for the caudal lung border in cattle on both sides." }, isCorrect: true },
+                    { text: { it: "Il 12° spazio intercostale.", en: "The 12th intercostal space." }, rationale: { it: "Questo limite è troppo caudale; nel bovino il diaframma ha una posizione più verticale e craniale rispetto al cavallo.", en: "This border is too caudal; in cattle, the diaphragm has a more vertical and cranial position compared to the horse." }, isCorrect: false }
+                ]
+            },
+            q6: {
+                question: { it: "La percussione dei seni paranasali nel cavallo serve a rilevare:", en: "Percussion of the paranasal sinuses in a horse is used to detect:" },
+                options: [
+                    { text: { it: "La presenza di masse tumorali nel cervello.", en: "The presence of brain tumors." }, rationale: { it: "La percussione dei seni non fornisce informazioni sulle strutture intracraniche.", en: "Percussion of the sinuses does not provide information about intracranial structures." }, isCorrect: false },
+                    { text: { it: "La presenza di essudato (liquido o pus) in caso di sinusite.", en: "The presence of exudate (fluid or pus) in case of sinusitis." }, rationale: { it: "Un seno normalmente pieno d'aria ha un suono risonante; la presenza di liquido o pus lo rende ottuso alla percussione.", en: "A normally air-filled sinus has a resonant sound; the presence of fluid or pus makes it dull to percussion." }, isCorrect: true },
+                    { text: { it: "Problemi dentali come un ascesso apicale.", en: "Dental problems such as an apical abscess." }, rationale: { it: "Mentre un ascesso dentale può causare sinusite, la percussione rileva il fluido nel seno, non direttamente il problema dentale.", en: "While a dental abscess can cause sinusitis, percussion detects the fluid in the sinus, not the dental problem directly." }, isCorrect: false },
+                    { text: { it: "La pervietà delle vie aeree nasali.", en: "The patency of the nasal passages." }, rationale: { it: "La pervietà delle vie aeree si valuta con altri metodi, come il test del fiocco di cotone, non con la percussione dei seni.", en: "The patency of the airways is assessed with other methods, such as the cotton ball test, not by percussing the sinuses." }, isCorrect: false }
+                ]
+            },
+            q7: {
+                question: { it: "Un suono timpanico percosso sulla fossa del fianco destra in un cavallo con colica potrebbe indicare:", en: "A tympanic sound percussed over the right paralumbar fossa in a horse with colic could indicate:" },
+                options: [
+                    { text: { it: "Una grave costipazione del piccolo colon.", en: "A severe impaction of the small colon." }, rationale: { it: "Una costipazione produrrebbe un suono più ottuso o subottuso a causa del contenuto solido.", en: "An impaction would produce a more dull or sub-dull sound due to the solid content." }, isCorrect: false },
+                    { text: { it: "Una distensione gassosa del cieco.", en: "Gaseous distension of the cecum." }, rationale: { it: "La fossa del fianco destra è l'area di proiezione della base del cieco, e un suono timpanico qui è il segno classico di meteorismo cecale.", en: "The right paralumbar fossa is the projection area of the base of the cecum, and a tympanic sound here is the classic sign of cecal tympany." }, isCorrect: true },
+                    { text: { it: "Uno stomaco vuoto.", en: "An empty stomach." }, rationale: { it: "Lo stomaco del cavallo si trova in una posizione molto più craniale e non è accessibile alla percussione della fossa del fianco.", en: "The horse's stomach is located much more cranially and is not accessible to percussion of the paralumbar fossa." }, isCorrect: false },
+                    { text: { it: "Un versamento peritoneale.", en: "A peritoneal effusion." }, rationale: { it: "Un versamento liquido nell'addome produrrebbe un suono ottuso, specialmente nelle zone ventrali.", en: "A fluid effusion in the abdomen would produce a dull sound, especially in the ventral areas." }, isCorrect: false }
+                ]
+            },
+            q8: {
+                question: { it: "Come viene eseguita la percussione per delimitare l'area di ottusità cardiaca?", en: "How is percussion performed to delineate the area of cardiac dullness?" },
+                options: [
+                    { text: { it: "Seguendo una linea retta dall'alto verso il basso.", en: "Following a straight line from top to bottom." }, rationale: { it: "Questo metodo è più adatto per il limite polmonare posteriore, non per un organo di forma tondeggiante come il cuore.", en: "This method is more suitable for the caudal lung border, not for a round-shaped organ like the heart." }, isCorrect: false },
+                    { text: { it: "In modo casuale su tutto il torace.", en: "Randomly over the entire chest." }, rationale: { it: "La percussione clinica è una tecnica sistematica, mai casuale, per mappare le strutture.", en: "Clinical percussion is a systematic technique, never random, for mapping structures." }, isCorrect: false },
+                    { text: { it: "A raggiera, convergendo verso il punto dell'olecrano.", en: "In a radiating pattern, converging towards the point of the olecranon." }, rationale: { it: "Questo approccio permette di definire i confini di un'area tondeggiante, passando dalla risonanza del polmone all'ottusità del cuore.", en: "This approach allows for defining the borders of a rounded area, moving from the resonance of the lung to the dullness of the heart." }, isCorrect: true },
+                    { text: { it: "Solo sulla sesta costa.", en: "Only on the sixth rib." }, rationale: { it: "La percussione deve essere eseguita su più spazi intercostali per mappare l'intera area cardiaca.", en: "Percussion must be performed over multiple intercostal spaces to map the entire cardiac area." }, isCorrect: false }
+                ]
+            },
+            q9: {
+                question: { it: "Il passaggio da un suono chiaro polmonare a un suono ottuso durante la percussione del torace definisce:", en: "The transition from a resonant lung sound to a dull sound during chest percussion defines:" },
+                options: [
+                    { text: { it: "Il limite polmonare posteriore.", en: "The caudal lung border." }, rationale: { it: "Questo cambiamento di suono indica il punto in cui il tessuto polmonare aerato termina e iniziano gli organi addominali solidi o ripieni.", en: "This change in sound indicates the point where the aerated lung tissue ends and the solid or filled abdominal organs begin." }, isCorrect: true },
+                    { text: { it: "Un'area di polmonite.", en: "An area of pneumonia." }, rationale: { it: "Un'area di polmonite creerebbe un'isola di ottusità all'interno del campo polmonare, non necessariamente al suo confine.", en: "An area of pneumonia would create an island of dullness within the lung field, not necessarily at its border." }, isCorrect: false },
+                    { text: { it: "La posizione del cuore.", en: "The position of the heart." }, rationale: { it: "L'area cardiaca ha una sua specifica area di ottusità, ma non definisce il confine posteriore generale del polmone.", en: "The cardiac area has its own specific area of dullness but does not define the general caudal border of the lung." }, isCorrect: false },
+                    { text: { it: "La linea del Vogel.", en: "Vogel's line." }, rationale: { it: "La linea di Vogel è la linea guida lungo la quale si esegue la percussione, non il risultato sonoro che si ottiene.", en: "Vogel's line is the guideline along which percussion is performed, not the sound result obtained." }, isCorrect: false }
+                ]
+            },
+            q10: {
+                question: { it: "Quale suono percussorio è tipico della fossa del fianco sinistra in un bovino sano?", en: "Which percussion sound is typical of the left paralumbar fossa in a healthy bovine?" },
+                options: [
+                    { text: { it: "Ottuso", en: "Dull" }, rationale: { it: "Un suono ottuso in questa zona sarebbe anomalo e potrebbe indicare una massa o un'ostruzione.", en: "A dull sound in this area would be abnormal and could indicate a mass or an obstruction." }, isCorrect: false },
+                    { text: { it: "Timpanico", en: "Tympanic" }, rationale: { it: "Questa è la risposta corretta, poiché la fossa del fianco sinistra è la proiezione del sacco dorsale del rumine, che contiene fisiologicamente gas.", en: "This is the correct answer, as the left paralumbar fossa is the projection of the dorsal sac of the rumen, which physiologically contains gas." }, isCorrect: true },
+                    { text: { it: "Chiaro Polmonare", en: "Resonant Lung" }, rationale: { it: "Il suono polmonare si trova nel torace, non nell'addome.", en: "The lung sound is found in the chest, not the abdomen." }, isCorrect: false },
+                    { text: { it: "Metallico", en: "Metallic" }, rationale: { it: "Un suono metallico in questa zona è un segno patologico grave, spesso associato alla dislocazione dell'abomaso.", en: "A metallic sound in this area is a severe pathological sign, often associated with a displaced abomasum." }, isCorrect: false }
+                ]
+            }
+        };
+
+        const quizData = Object.keys(translations)
+            .filter(k => /^q\d+$/.test(k))
+            .map(k => translations[k]);
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let shuffledQuestions = [];
+        const synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let activeTTSButton = null;
+
+        const quizContainer = document.getElementById('quiz-container');
+        const questionArea = document.getElementById('question-area');
+        const resultsArea = document.getElementById('results-area');
+        const questionText = document.getElementById('question-text');
+        const questionTTSButton = document.getElementById('question-tts-button');
+        const optionsContainer = document.getElementById('options-container');
+        const progressText = document.getElementById('progress-text');
+        const feedbackArea = document.getElementById('feedback-area');
+        const rationaleText = document.getElementById('rationale-text');
+        const nextButton = document.getElementById('next-button');
+        const scoreText = document.getElementById('score-text');
+        const restartButton = document.getElementById('restart-button');
+        
+        let currentLanguage = localStorage.getItem('language') || 'it';
+
+        const accessibilityToggle = document.getElementById('accessibility-toggle');
+        const langToggle = document.getElementById('lang-toggle');
+        const body = document.body;
+
+        function speak(text, button) {
+            if (synth.speaking) {
+                if (currentUtterance && synth.paused && activeTTSButton === button) {
+                    synth.resume();
+                    button.classList.add('playing');
+                } else if (currentUtterance && !synth.paused && activeTTSButton === button) {
+                    synth.pause();
+                    button.classList.remove('playing');
+                } else {
+                    synth.cancel();
+                    startSpeaking(text, button);
+                }
+            } else {
+                startSpeaking(text, button);
+            }
+        }
+        
+        function startSpeaking(text, button) {
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+            currentUtterance.onend = () => {
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                activeTTSButton = null;
+            };
+            synth.speak(currentUtterance);
+            if(activeTTSButton) activeTTSButton.classList.remove('playing');
+            activeTTSButton = button;
+            button.classList.add('playing');
+        }
+        
+        const updateLanguage = (lang) => {
+            document.documentElement.lang = lang;
+            langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if (translations[key] && translations[key][lang]) {
+                    element.innerHTML = translations[key][lang];
+                }
+            });
+            
+            if (shuffledQuestions.length > 0 && questionArea.classList.contains('hidden') === false) {
+                 loadQuestion();
+            }
+        };
+
+        langToggle.addEventListener('click', () => {
+            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage(currentLanguage);
+        });
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            document.documentElement.scrollTop = 0; 
+            document.body.scrollTop = 0;
+
+            currentQuestionIndex = 0;
+            score = 0;
+            shuffledQuestions = shuffleArray([...quizData]);
+            resultsArea.classList.add('hidden');
+            questionArea.classList.remove('hidden');
+            feedbackArea.classList.add('hidden');
+            loadQuestion();
+        }
+        
+        function loadQuestion() {
+            if (synth.speaking) synth.cancel();
+            if (activeTTSButton) activeTTSButton.classList.remove('playing');
+            activeTTSButton = null;
+
+            feedbackArea.classList.add('hidden');
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+            progressText.textContent = translations.progressText[currentLanguage]
+                .replace('{current}', currentQuestionIndex + 1)
+                .replace('{total}', shuffledQuestions.length);
+            
+            questionText.textContent = currentQuestion.question[currentLanguage];
+            questionTTSButton.onclick = () => speak(currentQuestion.question[currentLanguage], questionTTSButton);
+            optionsContainer.innerHTML = '';
+            
+            const shuffledOptions = shuffleArray([...currentQuestion.options]);
+
+            shuffledOptions.forEach(option => {
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('flex', 'items-center', 'w-full');
+                
+                const button = document.createElement('button');
+                button.textContent = option.text[currentLanguage];
+                button.classList.add('option-btn', 'w-full', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
+                
+                const ttsButton = document.createElement('span');
+                ttsButton.classList.add('tts-button');
+                ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
+                ttsButton.onclick = (e) => {
+                    e.stopPropagation();
+                    speak(option.text[currentLanguage], ttsButton);
+                };
+                
+                button.onclick = () => selectAnswer(button, option, currentQuestion.options);
+
+                buttonContainer.appendChild(button);
+                buttonContainer.appendChild(ttsButton);
+                optionsContainer.appendChild(buttonContainer);
+            });
+        }
+
+        function selectAnswer(button, selectedOption, allOptions) {
+            if (synth.speaking) synth.cancel();
+            
+            const buttons = optionsContainer.querySelectorAll('button.option-btn');
+            
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                const optionDataText = btn.textContent;
+                const originalOption = allOptions.find(opt => opt.text[currentLanguage] === optionDataText);
+                if (originalOption && originalOption.isCorrect) {
+                    btn.classList.add('correct');
+                }
+            });
+
+            if (!selectedOption.isCorrect) {
+                button.classList.add('incorrect');
+            }
+            
+            score += selectedOption.isCorrect ? 1 : 0;
+            
+            rationaleText.textContent = selectedOption.rationale[currentLanguage];
+            feedbackArea.classList.remove('hidden');
+
+            if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                nextButton.textContent = translations.btnResults[currentLanguage];
+            } else {
+                 nextButton.textContent = translations.btnNext[currentLanguage];
+            }
+        }
+        
+        function showResults() {
+            questionArea.classList.add('hidden');
+            feedbackArea.classList.add('hidden');
+            resultsArea.classList.remove('hidden');
+            scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
+        }
+        
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < shuffledQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        restartButton.addEventListener('click', startQuiz);
+
+        const setA11yMode = (enabled) => {
+            if (enabled) {
+                body.classList.add('dsa-mode');
+                localStorage.setItem('dsa-mode', 'enabled');
+            } else {
+                body.classList.remove('dsa-mode');
+                localStorage.setItem('dsa-mode', 'disabled');
+            }
+        };
+
+        accessibilityToggle.addEventListener('click', () => {
+            const isEnabled = body.classList.contains('dsa-mode');
+            setA11yMode(!isEnabled);
+        });
+
+        if (localStorage.getItem('dsa-mode') === 'enabled') {
+            setA11yMode(true);
+        }
+
+        startQuiz();
+        updateLanguage(currentLanguage);
+
+    </script>
+</body>
+</html>
