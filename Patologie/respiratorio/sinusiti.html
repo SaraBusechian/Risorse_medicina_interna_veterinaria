@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sinusiti nel Cavallo - Medicina Interna Veterinaria</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
@@ -107,13 +108,21 @@
                 <section id="audio">
                     <h2 class="text-3xl font-bold text-teal-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
                     <div class="p-4 bg-teal-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
-                        <audio controls class="w-full sm:w-auto flex-grow rounded-lg">
-                            <source src="audio_sinusiti.mp3" type="audio/mpeg">
-                            Il tuo browser non supporta l'elemento audio.
-                        </audio>
-                        <a href="audio_sinusiti.mp3" download class="bg-teal-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-teal-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                        <button id="audio-play-pause" class="p-3 bg-teal-500 text-white rounded-full hover:bg-teal-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                            </svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" />
+                            </svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-teal-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-teal-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_sinusiti.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
-                            <span data-lang-key="btnDownloadAudio">Scarica Audio</span>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
                         </a>
                     </div>
                 </section>
@@ -152,7 +161,9 @@
                 quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
                 quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
                 audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
-                btnDownloadAudio: { it: "Scarica Audio", en: "Download Audio" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
                 bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
                 bibliographyContent: { it: `<li>Reed SM, Bayly WM, Sellon DC, EQUINE INTERNAL MEDICINE, 4th Edition, Saunders, 2018</li><li>Smith BP, Van Metre DC, Pusterla N, LARGE ANIMAL INTERNAL MEDICINE, 6th Edition, Elsevier, 2021</li><li>McGorum BC, Dixon PM, Robinson NE, Schumacher J, EQUINE RESPIRATORY MEDICINE AND SURGERY, Elsevier, 2006</li>`, en: `<li>Reed SM, Bayly WM, Sellon DC, EQUINE INTERNAL MEDICINE, 4th Edition, Saunders, 2018</li><li>Smith BP, Van Metre DC, Pusterla N, LARGE ANIMAL INTERNAL MEDICINE, 6th Edition, Elsevier, 2021</li><li>McGorum BC, Dixon PM, Robinson NE, Schumacher J, EQUINE RESPIRATORY MEDICINE AND SURGERY, Elsevier, 2006</li>` },
                 btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
@@ -191,39 +202,51 @@
             let currentUtterance = null;
             let activeTTSButton = null;
 
+            const sound = new Howl({
+                src: ['audio_sinusiti.mp3'],
+                html5: true
+            });
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+
+            playPauseBtn.addEventListener('click', () => {
+                if (sound.playing()) {
+                    sound.pause();
+                } else {
+                    sound.play();
+                }
+            });
+
+            sound.on('play', () => {
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+            });
+
+            sound.on('pause', () => {
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+            });
+
+            sound.on('end', () => {
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+            });
+
             function speak(text, button) {
                 if (activeTTSButton === button) {
-                    if (synth.paused) {
-                        synth.resume();
-                        button.classList.add('playing');
-                    } else if (synth.speaking) {
-                        synth.pause();
-                        button.classList.remove('playing');
-                    }
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
                     return;
                 }
-
-                if (synth.speaking) {
-                    synth.cancel();
-                }
-                if (activeTTSButton) {
-                    activeTTSButton.classList.remove('playing');
-                }
+                if (synth.speaking) { synth.cancel(); }
+                if (activeTTSButton) { activeTTSButton.classList.remove('playing'); }
                 
                 currentUtterance = new SpeechSynthesisUtterance(text);
                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                
-                currentUtterance.onend = () => {
-                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                    activeTTSButton = null;
-                    currentUtterance = null;
-                };
-                currentUtterance.onerror = () => {
-                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                    activeTTSButton = null;
-                    currentUtterance = null;
-                };
-
+                currentUtterance.onend = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                currentUtterance.onerror = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
                 synth.speak(currentUtterance);
                 activeTTSButton = button;
                 button.classList.add('playing');
@@ -233,12 +256,10 @@
                 document.querySelectorAll('.tts-button').forEach(button => {
                     const newButton = button.cloneNode(true);
                     button.parentNode.replaceChild(newButton, button);
-                    
                     newButton.addEventListener('click', (e) => {
                         e.stopPropagation();
                         let textToRead = '';
                         const parentElement = newButton.parentElement;
-
                         if (parentElement.tagName === 'H2') {
                             const section = parentElement.closest('section');
                             let contentToRead = '';
@@ -247,7 +268,6 @@
                                 clone.querySelectorAll('h2, button, a, img, audio, .tts-button, #quiz, #infografica, #audio, #bibliografia, [class*="my-4"]').forEach(el => el.remove());
                                 contentToRead = clone.textContent.trim().replace(/\s\s+/g, ' ');
                             }
-                            
                             const titleClone = parentElement.cloneNode(true);
                             titleClone.querySelector('.tts-button').remove();
                             textToRead = `${titleClone.textContent.trim()}. ${contentToRead}`;
@@ -265,10 +285,7 @@
                                 textToRead = answerTextNode.textContent.trim();
                             }
                         }
-                        
-                        if (textToRead) {
-                            speak(textToRead, newButton);
-                        }
+                        if (textToRead) speak(textToRead, newButton);
                     });
                 });
             }
