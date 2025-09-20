@@ -179,32 +179,41 @@
             let activeTTSButton = null;
 
             function speak(text, button) {
-                if (synth.speaking && activeTTSButton === button) {
-                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
-                    else { synth.pause(); button.classList.remove('playing'); }
-                } else {
-                    if (synth.speaking) {
-                        synth.cancel();
+                if (activeTTSButton === button) {
+                    if (synth.paused) {
+                        synth.resume();
+                        button.classList.add('playing');
+                    } else {
+                        synth.pause();
+                        button.classList.remove('playing');
                     }
-                    if(activeTTSButton) {
-                        activeTTSButton.classList.remove('playing');
-                    }
-                    
-                    currentUtterance = new SpeechSynthesisUtterance(text);
-                    currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                    
-                    currentUtterance.onend = () => {
-                        if (activeTTSButton) {
-                            activeTTSButton.classList.remove('playing');
-                        }
-                        activeTTSButton = null;
-                        currentUtterance = null;
-                    };
-
-                    synth.speak(currentUtterance);
-                    activeTTSButton = button;
-                    button.classList.add('playing');
+                    return;
                 }
+
+                if (synth.speaking) {
+                    synth.cancel();
+                }
+                if (activeTTSButton) {
+                    activeTTSButton.classList.remove('playing');
+                }
+                
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                currentUtterance.onend = () => {
+                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+                currentUtterance.onerror = () => {
+                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+
+                synth.speak(currentUtterance);
+                activeTTSButton = button;
+                button.classList.add('playing');
             }
 
             function setupTTSListeners() {
@@ -215,23 +224,38 @@
                     newButton.addEventListener('click', (e) => {
                         e.stopPropagation();
                         let textToRead = '';
-                        const parent = e.currentTarget.parentNode;
-                        
-                        if (parent.tagName === 'H2') {
-                            const section = parent.closest('section');
-                            const clone = section.cloneNode(true);
-                            clone.querySelectorAll('button, a, #infografica, #quiz, #audio, #bibliografia, h2, img, audio, .tts-button').forEach(el => el.remove());
-                            let titleClone = parent.cloneNode(true);
+                        const parentElement = newButton.parentElement;
+
+                        if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            let contentToRead = '';
+                            if(section){
+                                const clone = section.cloneNode(true);
+                                clone.querySelectorAll('h2, button, a, img, audio, .tts-button, #quiz, #infografica, #audio, #bibliografia, [class*="my-4"]').forEach(el => el.remove());
+                                contentToRead = clone.textContent.trim().replace(/\s\s+/g, ' ');
+                            }
+                            
+                            const titleClone = parentElement.cloneNode(true);
                             titleClone.querySelector('.tts-button').remove();
-                            textToRead = `${titleClone.textContent.trim()}. ${clone.textContent.trim().replace(/\s\s+/g, ' ')}`;
-                        } else if (parent.tagName === 'H3') {
-                             const questionTextNode = parent.querySelector('span:first-child');
-                             if(questionTextNode) {
+                            textToRead = `${titleClone.textContent.trim()}. ${contentToRead}`;
+                        } 
+                        else if (parentElement.tagName === 'H3') {
+                             const questionTextNode = parentElement.querySelector('span:first-child');
+                             if (questionTextNode) {
                                 textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
                              }
                         }
+                        else if (parentElement.closest('label')) {
+                            const label = parentElement.closest('label');
+                            const answerTextNode = label.querySelector('span:first-child');
+                            if (answerTextNode) {
+                                textToRead = answerTextNode.textContent.trim();
+                            }
+                        }
                         
-                        if (textToRead) speak(textToRead, newButton);
+                        if (textToRead) {
+                            speak(textToRead, newButton);
+                        }
                     });
                 });
             }
@@ -243,7 +267,13 @@
                 quizData[lang].forEach((q, index) => {
                     const questionDiv = document.createElement('div');
                     questionDiv.className = 'quiz-question p-4 rounded-lg';
-                    let optionsHtml = q.options.map(o => `<li class="quiz-option p-2 rounded hover:bg-teal-50"><label class="flex items-center cursor-pointer"><input type="radio" name="q${index}" value="${o}" class="mr-3">${o}</label></li>`).join('');
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-teal-50">
+                            <label class="flex items-center justify-between w-full cursor-pointer">
+                                <span class="flex-grow pr-4"><input type="radio" name="q${index}" value="${o}" class="mr-3">${o}</span>
+                                <span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                            </label>
+                        </li>`).join('');
                     questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
                     quizContainer.appendChild(questionDiv);
                 });
