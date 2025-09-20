@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: Sinusiti nel Cavallo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #1E3A8A;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .flow-arrow {
+            font-size: 2.5rem;
+            line-height: 1;
+            color: #60A5FA;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-6xl font-black text-[#1E3A8A] uppercase tracking-wide mb-4">Sinusiti nel Cavallo</h1>
+            <p class="text-lg text-gray-700 max-w-3xl mx-auto">Una guida visuale per comprendere, diagnosticare e trattare l'infiammazione dei seni paranasali nell'equino.</p>
+        </header>
+
+        <main class="space-y-20">
+
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white rounded-lg shadow-xl p-8">
+                <div class="text-center">
+                    <div class="text-8xl font-black text-[#3B82F6]">>70%</div>
+                    <p class="font-bold text-lg mt-2">dei casi di sinusite equina presenta uno scolo nasale <span class="text-[#1D4ED8]">monolaterale</span>.</p>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold mb-3">Definizione e Impatto</h2>
+                    <p class="text-gray-800">La sinusite è una comune e importante causa di patologia respiratoria nel cavallo. Si definisce come l'infiammazione di uno o più seni paranasali e può avere un impatto significativo sulla performance e sul benessere dell'animale se non diagnosticata e trattata correttamente.</p>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-bold text-center mb-8">Le Cause: Primaria vs. Secondaria</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-[#3B82F6]">
+                        <h3 class="text-2xl font-bold mb-3">Sinusite Primaria</h3>
+                        <p class="mb-4">Originata da un'infezione batterica o virale delle prime vie aeree, senza una causa anatomica sottostante. Spesso più semplice da trattare.</p>
+                        <ul class="list-disc list-inside text-sm space-y-1">
+                            <li>Post-virale (es. Influenza)</li>
+                            <li>Infezioni batteriche opportuniste</li>
+                            <li>Forma idiopatica</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-[#1E40AF]">
+                        <h3 class="text-2xl font-bold mb-3">Sinusite Secondaria</h3>
+                        <p class="mb-4">La forma più comune, derivante da un'altra patologia che ostruisce il drenaggio o danneggia l'integrità del seno.</p>
+                        <ul class="list-disc list-inside text-sm space-y-1">
+                            <li><strong>Patologie dentali (causa più frequente)</strong></li>
+                            <li>Traumi cranici</li>
+                            <li>Cisti sinusali</li>
+                            <li>Neoplasie</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-center mb-4">Frequenza dei Segni Clinici</h2>
+                    <p class="text-center text-sm mb-6">Lo scolo nasale è il segno predominante, ma il suo carattere (odore, consistenza) può già orientare verso una causa primaria o secondaria.</p>
+                    <div class="chart-container">
+                        <canvas id="clinicalSignsChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-center mb-4">Efficacia Diagnostica per Immagini</h2>
+                    <p class="text-center text-sm mb-6">La radiografia è un ottimo primo passo, ma la Tomografia Computerizzata (TC) offre un dettaglio anatomico insuperabile, essenziale nelle forme secondarie.</p>
+                     <div class="chart-container">
+                        <canvas id="imagingEffectivenessChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-bold text-center mb-8">Il Percorso Diagnostico</h2>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 text-center">
+                    <div class="bg-white p-4 rounded-lg shadow-md w-full md:w-1/5"><h3 class="font-bold">1. Esame Clinico</h3><p class="text-xs">Valutazione dello scolo e percussione dei seni</p></div>
+                    <div class="flow-arrow transform md:rotate-0 rotate-90">&#10142;</div>
+                    <div class="bg-white p-4 rounded-lg shadow-md w-full md:w-1/5"><h3 class="font-bold">2. Endoscopia</h3><p class="text-xs">Visualizzazione del drenaggio dal recesso naso-mascellare</p></div>
+                    <div class="flow-arrow transform md:rotate-0 rotate-90">&#10142;</div>
+                    <div class="bg-white p-4 rounded-lg shadow-md w-full md:w-1/5"><h3 class="font-bold">3. Radiografia</h3><p class="text-xs">Identificazione di linee di fluido e patologie dentali</p></div>
+                    <div class="flow-arrow transform md:rotate-0 rotate-90">&#10142;</div>
+                    <div class="bg-white p-4 rounded-lg shadow-md w-full md:w-1/5"><h3 class="font-bold text-[#1E3A8A]">4. TC (Gold Standard)</h3><p class="text-xs">Mappatura 3D precisa di tutte le strutture</p></div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-bold text-center mb-8">Approcci Terapeutici</h2>
+                 <p class="text-center text-gray-700 max-w-3xl mx-auto mb-10">La strategia terapeutica è a gradini: si parte sempre risolvendo la causa primaria e si procede con terapie più invasive solo se necessario.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-bold text-[#3B82F6] mb-2">1. Risoluzione Causa Primaria</h3>
+                        <p class="text-sm">Fondamentale nelle sinusiti secondarie. Include estrazioni dentali, rimozione di masse o gestione di traumi.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-bold text-[#2563EB] mb-2">2. Terapia Medica</h3>
+                        <ul class="text-sm text-left list-disc list-inside space-y-2">
+                           <li><strong>Antibiotici Sistemici:</strong> Terapia prolungata (settimane/mesi), idealmente basata su antibiogramma.</li>
+                           <li><strong>Lavaggio dei Seni:</strong> Tramite trapanazione, si eseguono lavaggi con soluzioni saline per rimuovere l'essudato.</li>
+                           <li><strong>Supporto:</strong> FANS per gestire dolore e infiammazione; mucolitici per fluidificare il muco.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="text-xl font-bold text-[#1D4ED8] mb-2">3. Approccio Chirurgico</h3>
+                        <p class="text-sm">Riservato ai casi refrattari. La creazione di un flap sinusale (es. nasofrontale) permette un debridement e un drenaggio efficaci.</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center mt-20 pt-8 border-t border-gray-300">
+            <p class="text-gray-600">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const wrapLabel = (label) => {
+            const maxLen = 16;
+            if (!label || typeof label !== 'string') return '';
+            if (label.length <= maxLen) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + ' ' + word).trim().length > maxLen && currentLine.length > 0) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            });
+            lines.push(currentLine);
+            return lines;
+        };
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            return Array.isArray(label) ? label.join(' ') : label;
+        };
+
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        font: { size: 12, weight: '600' },
+                        color: '#1E3A8A',
+                        padding: 15
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    }
+                }
+            }
+        };
+
+        const clinicalSignsCtx = document.getElementById('clinicalSignsChart').getContext('2d');
+        new Chart(clinicalSignsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Scolo Nasale Monolaterale', 'Odore Fetido', 'Deformazione Facciale', 'Epifora'].map(wrapLabel),
+                datasets: [{
+                    label: 'Frequenza Segni Clinici (%)',
+                    data: [85, 60, 40, 30],
+                    backgroundColor: ['#3B82F6', '#1D4ED8', '#60A5FA', '#93C5FD'],
+                    borderColor: '#ffffff',
+                    borderWidth: 4,
+                    hoverOffset: 8
+                }]
+            },
+            options: { ...commonChartOptions, cutout: '50%' }
+        });
+
+        const imagingEffectivenessCtx = document.getElementById('imagingEffectivenessChart').getContext('2d');
+        new Chart(imagingEffectivenessCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Radiografia', 'Tomografia Computerizzata (TC)'].map(wrapLabel),
+                datasets: [{
+                    label: 'Livello di Dettaglio Diagnostico (valore relativo)',
+                    data: [70, 95],
+                    backgroundColor: ['#60A5FA', '#1E3A8A'],
+                    borderRadius: 5,
+                    barThickness: 50,
+                }]
+            },
+            options: {
+                ...commonChartOptions,
+                plugins: { ...commonChartOptions.plugins, legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { color: '#1E3A8A', font: { weight: 'bold' } },
+                        grid: { color: '#BFDBFE' }
+                    },
+                    x: {
+                        ticks: { color: '#1E3A8A', font: { weight: 'bold' } },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
