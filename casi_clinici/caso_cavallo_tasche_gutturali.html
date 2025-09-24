@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caso Clinico: Cavallo con Rumore Respiratorio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f5f3ff; }
+        .step-card { display: none; }
+        .step-card.active { display: block; }
+        .option-button { transition: all 0.2s; }
+        .option-button:disabled:not(.correct) { opacity: 0.6; cursor: not-allowed; }
+        .option-button.correct { background-color: #10b981; color: white; border-color: #059669; }
+        .option-button.incorrect { background-color: #ef4444; color: white; border-color: #dc2626; }
+        .tts-button { cursor: pointer; display: inline-flex; align-items: center; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #8b5cf6; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #34495e;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+    </style>
+</head>
+<body class="text-slate-800">
+    <header id="main-header" class="bg-violet-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Caso Clinico Interattivo</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+            
+            <div id="case-container">
+                <!-- Steps will be dynamically shown here -->
+            </div>
+
+            <div id="navigation-buttons" class="mt-8 flex justify-between">
+                <button id="prev-btn" class="bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition" disabled>
+                    <span data-lang-key="prevBtn">Precedente</span>
+                </button>
+                <button id="next-btn" class="bg-violet-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-violet-700 transition">
+                    <span data-lang-key="nextBtn">Prosegui</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Caso Clinico Interattivo", en: "Interactive Clinical Case" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                prevBtn: { it: "Precedente", en: "Previous" },
+                nextBtn: { it: "Prosegui", en: "Continue" },
+                submitBtn: { it: "Invia Risposta", en: "Submit Answer" },
+                resultsTitle: { it: "Quiz Finale - Rivediamo i Concetti Chiave", en: "Final Quiz - Let's Review the Key Concepts" },
+                step1Title: { it: "Presentazione del Caso", en: "Case Presentation" },
+                step1Content: { it: `<p>Un <strong>cavallo da endurance, castrone di 10 anni</strong>, viene riferito per calo di performance e un <strong>rumore respiratorio inspiratorio</strong> che si manifesta solo durante il lavoro intenso.</p><p>A riposo, il cavallo appare vigile ma tranquillo e il proprietario nega la presenza di scolo nasale al momento della visita.</p>`, en: `<p>A <strong>10-year-old gelding endurance horse</strong> is referred for poor performance and an <strong>inspiratory respiratory noise</strong> that only occurs during intense work.</p><p>At rest, the horse appears bright and alert, and the owner denies any nasal discharge at the time of examination.</p>`},
+                step2Title: { it: "Domanda 1: Prima Ipotesi", en: "Question 1: Initial Hypothesis" },
+                step2Question: { it: "Sulla base dell'anamnesi, quale apparato è più probabilmente coinvolto?", en: "Based on the history, which system is most likely involved?" },
+                step2Options: { it: ["Apparato digerente", "Apparato cardiovascolare", "Apparato respiratorio", "Apparato locomotore"], en: ["Digestive system", "Cardiovascular system", "Respiratory system", "Locomotor system"] },
+                step2Answer: { it: "Apparato respiratorio", en: "Respiratory system" },
+                step2Feedbacks: { 
+                    it: {
+                        "Apparato digerente": "Non esatto. Problemi digestivi raramente causano rumori respiratori specifici durante l'esercizio. Riconsidera il sintomo principale.",
+                        "Apparato cardiovascolare": "Poco probabile. Un problema cardiaco può causare intolleranza all'esercizio, ma il rumore respiratorio è un indizio più forte per un'altra localizzazione. Quale?",
+                        "Apparato respiratorio": "Corretto. Il rumore respiratorio durante l'esercizio è un segno cardine di una patologia delle vie aeree.",
+                        "Apparato locomotore": "Improbabile. Una zoppia potrebbe causare un calo di performance, ma non spiegherebbe il rumore respiratorio. Concentrati sul sintomo più specifico."
+                    },
+                    en: {
+                        "Digestive system": "Not quite. Digestive problems rarely cause specific respiratory noises during exercise. Reconsider the main symptom.",
+                        "Cardiovascular system": "Unlikely. A heart problem can cause exercise intolerance, but the respiratory noise is a stronger clue for another location. Which one?",
+                        "Respiratory system": "Correct. A respiratory noise during exercise is a key sign of an airway pathology.",
+                        "Locomotor system": "Improbable. Lameness could cause poor performance, but wouldn't explain the respiratory noise. Focus on the most specific symptom."
+                    }
+                },
+                step3Title: { it: "Esame Obiettivo a Riposo", en: "Physical Examination at Rest" },
+                step3Content: { it: `<p>All'esame obiettivo generale, il cavallo è in buone condizioni generali. I parametri vitali sono nella norma.</p><ul><li>Frequenza Cardiaca: 36 bpm</li><li>Frequenza Respiratoria: 12 apm</li><li>Temperatura: 37.8°C</li><li>Mucose rosee, TRC < 2 sec.</li></ul><p>All'auscultazione del torace non si evidenziano rumori polmonari o cardiaci patologici. Alla palpazione della regione faringea, si nota un <strong>leggero ingrossamento dei linfonodi intermandibolari di destra</strong>.</p>`, en: `<p>On general physical examination, the horse is in good overall condition. Vital signs are within normal limits.</p><ul><li>Heart Rate: 36 bpm</li><li>Respiratory Rate: 12 rpm</li><li>Temperature: 37.8°C</li><li>Pink mucous membranes, CRT < 2 sec.</li></ul><p>On thoracic auscultation, no pathological lung or heart sounds are detected. On palpation of the pharyngeal region, a <strong>slight enlargement of the right intermandibular lymph nodes</strong> is noted.</p>`},
+                step4Title: { it: "Domanda 2: Prossimo Passo Diagnostico", en: "Question 2: Next Diagnostic Step" },
+                step4Question: { it: "Dato il rumore respiratorio e l'ingrossamento del linfonodo destro, quale esame diventa prioritario?", en: "Given the respiratory noise and the enlarged right lymph node, which examination becomes a priority?" },
+                step4Options: { it: ["Radiografia del torace", "Endoscopia delle vie aeree", "Aspirato transtracheale", "Tomografia Computerizzata (TC) del torace"], en: ["Thoracic radiography", "Airway endoscopy", "Transtracheal wash", "Computed Tomography (CT) of the thorax"] },
+                step4Answer: { it: "Endoscopia delle vie aeree", en: "Airway endoscopy" },
+                step4Feedbacks: {
+                    it: {
+                        "Radiografia del torace": "Non è la priorità. I segni (rumore inspiratorio, linfonodo satellite) puntano alle prime vie aeree, non al torace.",
+                        "Endoscopia delle vie aeree": "Esatto. L'endoscopia è il passo successivo fondamentale per visualizzare direttamente le prime vie aeree.",
+                        "Aspirato transtracheale": "Non indicato in questa fase. È un esame per le basse vie aeree, ma i segni attuali sono localizzati più in alto.",
+                        "Tomografia Computerizzata (TC) del torace": "Inappropriato. La TC è un esame avanzato e in questo caso andrebbe fatta alla testa, non al torace."
+                    },
+                    en: {
+                        "Thoracic radiography": "Not the priority. The signs (inspiratory noise, satellite lymph node) point to the upper airways, not the chest.",
+                        "Airway endoscopy": "Correct. Endoscopy is the essential next step to directly visualize the upper airways.",
+                        "Transtracheal wash": "Not indicated at this stage. It's a test for the lower airways, but the current signs are located higher up.",
+                        "Computed Tomography (CT) of the thorax": "Inappropriate. CT is an advanced imaging modality and in this case, it should be of the head, not the thorax."
+                    }
+                },
+                step5Title: { it: "Reperti Endoscopici", en: "Endoscopic Findings" },
+                step5Content: { it: `<p>L'endoscopia delle vie aeree superiori non evidenzia anomalie della mucosa di laringe e faringe o la presenza di essudato. Tuttavia, all'esame della laringe si osserva un'incapacità dell'<strong>aritenoide destra</strong> di abdurre durante l'inspirazione (emiplegia laringea destra).</p>`, en: `<p>Upper airway endoscopy does not reveal any abnormalities of the laryngeal and pharyngeal mucosa or the presence of exudate. However, on laryngeal examination, there is an inability of the <strong>right arytenoid</strong> to abduct during inspiration (right laryngeal hemiplegia).</p>`},
+                step6Title: { it: "Domanda 3: Approfondimento Anamnestico", en: "Question 3: Deepening the History" },
+                step6Question: { it: "L'endoscopia rivela un'emiplegia laringea DESTRA, un reperto raro e atipico. Quale domanda mirata al proprietario potrebbe aiutarti a trovare una causa locale sottostante?", en: "The endoscopy reveals RIGHT laryngeal hemiplegia, a rare and atypical finding. What targeted question to the owner could help you find a local underlying cause?" },
+                step6Options: { it: ["Il cavallo ha avuto febbre di recente?", "C'è stato qualche cambiamento nella dieta?", "C'è mai stato scolo nasale in passato, anche se ora non è presente?", "Il cavallo ha problemi di zoppia?"], en: ["Has the horse had a fever recently?", "Has there been any change in diet?", "Has there ever been nasal discharge in the past, even if it's not present now?", "Does the horse have any lameness issues?"] },
+                step6Answer: { it: "C'è mai stato scolo nasale in passato, anche se ora non è presente?", en: "Has there ever been nasal discharge in the past, even if it's not present now?" },
+                step6Feedbacks: {
+                    it: {
+                        "Il cavallo ha avuto febbre di recente?": "Utile, ma non così specifico. Una febbre potrebbe indicare un'infezione, ma non ne localizza l'origine.",
+                        "C'è stato qualche cambiamento nella dieta?": "Improbabile che sia correlato ai segni respiratori attuali.",
+                        "C'è mai stato scolo nasale in passato, anche se ora non è presente?": "Eccellente! L'emiplegia destra ti ha spinto a cercare una causa locale. Il proprietario ora ricorda e riferisce che circa un mese fa il cavallo ha avuto per alcuni giorni uno scolo purulento dalla narice destra, che poi si è risolto spontaneamente.",
+                        "Il cavallo ha problemi di zoppia?": "Non correlato al problema respiratorio.",
+                    },
+                    en: {
+                        "Has the horse had a fever recently?": "Useful, but not very specific. A fever could indicate an infection, but it doesn't locate the origin.",
+                        "Has there been any change in diet?": "Unlikely to be related to the current respiratory signs.",
+                        "Has there ever been nasal discharge in the past, even if it's not present now?": "Excellent! The right-sided hemiplegia prompted you to look for a local cause. The owner now remembers and reports that about a month ago, the horse had purulent discharge from the right nostril for a few days, which then resolved spontaneously.",
+                        "Does the horse have any lameness issues?": "Unrelated to the respiratory problem.",
+                    }
+                },
+                step7Title: { it: "Domanda 4: Collegare gli Indizi", en: "Question 4: Connecting the Clues" },
+                step7Question: { it: "Ora hai tutti gli elementi (scolo pregresso, linfonodo reattivo, emiplegia destra), qual è la diagnosi più probabile?", en: "Now that you have all the pieces (previous discharge, reactive lymph node, right hemiplegia), what is the most likely diagnosis?" },
+                step7Options: { it: ["Emiplegia laringea idiopatica sinistra", "Asma equina grave", "Patologia della tasca gutturale destra", "Corpo estraneo nasale"], en: ["Idiopathic left laryngeal hemiplegia", "Severe equine asthma", "Right guttural pouch disease", "Nasal foreign body"] },
+                step7Answer: { it: "Patologia della tasca gutturale destra", en: "Right guttural pouch disease" },
+                step7Feedbacks: {
+                    it: {
+                        "Emiplegia laringea idiopatica sinistra": "Errato. L'emiplegia è destra, non sinistra, e la forma idiopatica non spiegherebbe gli altri segni sul lato destro.",
+                        "Asma equina grave": "Improbabile. L'asma equina è una patologia delle basse vie aeree e non causa emiplegia laringea o scolo monolaterale.",
+                        "Patologia della tasca gutturale destra": "Esatto! L'emiplegia laringea destra è quasi sempre secondaria. La combinazione con lo scolo e il linfonodo reattivo sullo stesso lato rende una patologia della tasca gutturale la causa più probabile del danno neurologico.",
+                        "Corpo estraneo nasale": "Poco probabile. Un corpo estraneo potrebbe causare scolo, ma difficilmente causerebbe un'emiplegia laringea."
+                    },
+                    en: {
+                        "Idiopathic left laryngeal hemiplegia": "Incorrect. The hemiplegia is on the right, not the left, and the idiopathic form would not explain the other right-sided signs.",
+                        "Severe equine asthma": "Unlikely. Equine asthma is a lower airway disease and does not cause laryngeal hemiplegia or unilateral discharge.",
+                        "Right guttural pouch disease": "Correct! Right-sided laryngeal hemiplegia is almost always secondary. The combination with discharge and a reactive lymph node on the same side makes a guttural pouch pathology the most likely cause of the neurological damage.",
+                        "Nasal foreign body": "Unlikely. A foreign body could cause discharge but would hardly cause laryngeal hemiplegia."
+                    }
+                },
+                step8Title: { it: "Domanda 5: Piano Diagnostico Specifico", en: "Question 5: Specific Diagnostic Plan" },
+                step8Question: { it: "Per confermare il sospetto di patologia della tasca gutturale, quale esame specifico devi eseguire?", en: "To confirm the suspicion of guttural pouch disease, which specific examination must you perform?" },
+                step8Options: { it: ["Radiografie del cranio", "Endoscopia specifica della tasca gutturale destra", "TC del torace", "Biopsia del linfonodo"], en: ["Skull radiographs", "Specific endoscopy of the right guttural pouch", "CT of the thorax", "Lymph node biopsy"] },
+                step8Answer: { it: "Endoscopia specifica della tasca gutturale destra", en: "Specific endoscopy of the right guttural pouch" },
+                step8Feedbacks: {
+                    it: {
+                        "Radiografie del cranio": "Utili, ma l'endoscopia della tasca è più sensibile e specifica per identificare la patologia interna.",
+                        "Endoscopia specifica della tasca gutturale destra": "Perfetto. L'ispezione visiva diretta dell'interno della tasca gutturale è l'unico modo per confermare la presenza di empiema, micosi o altre anomalie.",
+                        "TC del torace": "Inappropriato. Il problema è localizzato alla testa.",
+                        "Biopsia del linfonodo": "Invasivo e non diagnostico per la causa primaria. L'ingrossamento è probabilmente solo reattivo."
+                    },
+                    en: {
+                        "Skull radiographs": "Useful, but endoscopy of the pouch is more sensitive and specific for identifying the internal pathology.",
+                        "Specific endoscopy of the right guttural pouch": "Perfect. Direct visual inspection of the inside of the guttural pouch is the only way to confirm the presence of empyema, mycosis, or other abnormalities.",
+                        "CT of the thorax": "Inappropriate. The problem is localized to the head.",
+                        "Lymph node biopsy": "Invasive and not diagnostic for the primary cause. The enlargement is likely just reactive."
+                    }
+                },
+                step9Title: { it: "Reperti Finali e Diagnosi", en: "Final Findings and Diagnosis" },
+                step9Content: { it: `<p>Viene eseguita l'endoscopia della tasca gutturale destra. All'interno del compartimento mediale si osservano numerosi <strong>condroidi</strong> (aggregati di pus inspessito) e una moderata quantità di essudato purulento sul pavimento.</p>`, en: `<p>Endoscopy of the right guttural pouch is performed. Inside the medial compartment, numerous <strong>chondroids</strong> (inspissated pus concretions) and a moderate amount of purulent exudate on the floor are observed.</p>`},
+                step10Title: { it: "Domanda 6: Azione Immediata", en: "Question 6: Immediate Action" },
+                step10Question: { it: "Ora che hai confermato la presenza di empiema con condroidi, qual è la procedura corretta da eseguire immediatamente?", en: "Now that you have confirmed the presence of empyema with chondroids, what is the correct procedure to perform immediately?" },
+                step10Options: { it: ["Solo somministrare FANS per il dolore", "Eseguire un lavaggio della tasca con soluzione fisiologica sterile e raccogliere un campione per l'esame colturale", "Procedere subito con la chirurgia per rimuovere i condroidi", "Iniziare una terapia antibiotica a caso"], en: ["Administer NSAIDs for pain only", "Perform a lavage of the pouch with sterile saline and collect a sample for culture", "Proceed immediately to surgery to remove the chondroids", "Start a random antibiotic therapy"] },
+                step10Answer: { it: "Eseguire un lavaggio della tasca con soluzione fisiologica sterile e raccogliere un campione per l'esame colturale", en: "Perform a lavage of the pouch with sterile saline and collect a sample for culture" },
+                step10Feedbacks: {
+                    it: {
+                        "Solo somministrare FANS per il dolore": "Insufficiente. Bisogna affrontare l'infezione attiva.",
+                        "Eseguire un lavaggio della tasca con soluzione fisiologica sterile e raccogliere un campione per l'esame colturale": "Perfetto. Il lavaggio aiuta a pulire la tasca e raccogliere un campione per un antibiogramma è fondamentale per impostare una terapia antibiotica mirata ed efficace.",
+                        "Procedere subito con la chirurgia per rimuovere i condroidi": "Precoce. La rimozione chirurgica si considera se i condroidi sono troppo grandi per essere rimossi con i lavaggi.",
+                        "Iniziare una terapia antibiotica a caso": "Non ideale. Una terapia mirata basata su un esame colturale è sempre la scelta migliore."
+                    },
+                    en: {
+                        "Administer NSAIDs for pain only": "Insufficient. The active infection must be addressed.",
+                        "Perform a lavage of the pouch with sterile saline and collect a sample for culture": "Perfect. Lavage helps to clean the pouch, and collecting a sample for culture and sensitivity is crucial for establishing a targeted and effective antibiotic therapy.",
+                        "Proceed immediately to surgery to remove the chondroids": "Premature. Surgical removal is considered if the chondroids are too large to be removed by lavage.",
+                        "Start a random antibiotic therapy": "Not ideal. A targeted therapy based on culture results is always the best choice."
+                    }
+                },
+                 step11Title: { it: "Domanda 7: Terapia Antibiotica", en: "Question 7: Antibiotic Therapy" },
+                step11Question: { it: "In attesa dell'antibiogramma, quale terapia antibiotica empirica è più razionale per un empiema della tasca gutturale?", en: "Pending culture results, which empirical antibiotic therapy is most rational for guttural pouch empyema?" },
+                step11Options: { it: ["Metronidazolo (attivo solo su anaerobi)", "Gentamicina (attivo solo su aerobi Gram-negativi)", "Penicillina (attivo principalmente su Gram-positivi)", "Trimetoprim-Sulfametossazolo (ampio spettro)"], en: ["Metronidazole (active only on anaerobes)", "Gentamicin (active only on Gram-negative aerobes)", "Penicillin (primarily active on Gram-positives)", "Trimethoprim-Sulfamethoxazole (broad spectrum)"] },
+                step11Answer: { it: "Trimetoprim-Sulfametossazolo (ampio spettro)", en: "Trimethoprim-Sulfamethoxazole (broad spectrum)" },
+                step11Feedbacks: {
+                    it: {
+                        "Metronidazolo (attivo solo su anaerobi)": "Incompleto. Le infezioni sono spesso miste, serve una copertura più ampia.",
+                        "Gentamicina (attivo solo su aerobi Gram-negativi)": "Incompleto. Streptococcus spp. (Gram+) è un patogeno comune e non sarebbe coperto.",
+                        "Penicillina (attivo principalmente su Gram-positivi)": "Potrebbe essere una parte della terapia, ma da sola non copre i Gram-negativi, spesso presenti.",
+                        "Trimetoprim-Sulfametossazolo (ampio spettro)": "Corretto. Un antibiotico ad ampio spettro che copra sia Gram-positivi che Gram-negativi è la scelta empirica più sicura in attesa dei risultati."
+                    },
+                    en: {
+                        "Metronidazole (active only on anaerobes)": "Incomplete. Infections are often mixed, broader coverage is needed.",
+                        "Gentamicin (active only on Gram-negative aerobes)": "Incomplete. Streptococcus spp. (Gram+) is a common pathogen and would not be covered.",
+                        "Penicillin (primarily active on Gram-positives)": "Could be part of the therapy, but alone it doesn't cover Gram-negatives, which are often present.",
+                        "Trimethoprim-Sulfamethoxazole (broad spectrum)": "Correct. A broad-spectrum antibiotic covering both Gram-positives and Gram-negatives is the safest empirical choice while awaiting results."
+                    }
+                },
+                 step12Title: { it: "Domanda 8: Prognosi", en: "Question 8: Prognosis" },
+                step12Question: { it: "Qual è la prognosi per il recupero della funzione laringea (emiplegia) dopo la risoluzione dell'empiema?", en: "What is the prognosis for the recovery of laryngeal function (hemiplegia) after the empyema is resolved?" },
+                step12Options: { it: ["Eccellente, il recupero è sempre completo", "Buona, la maggior parte dei cavalli recupera completamente", "Riservata, il danno al nervo può essere permanente", "Infausta, il danno è sempre irreversibile"], en: ["Excellent, recovery is always complete", "Good, most horses recover completely", "Guarded, the nerve damage can be permanent", "Grave, the damage is always irreversible"] },
+                step12Answer: { it: "Riservata, il danno al nervo può essere permanente", en: "Guarded, the nerve damage can be permanent" },
+                step12Feedbacks: {
+                    it: {
+                        "Eccellente, il recupero è sempre completo": "Errato. Purtroppo, un'infiammazione cronica può causare fibrosi e danno permanente al nervo.",
+                        "Buona, la maggior parte dei cavalli recupera completamente": "Troppo ottimistico. Il recupero dipende dalla gravità e dalla cronicità del danno.",
+                        "Riservata, il danno al nervo può essere permanente": "Corretto. La prognosi per la funzione neurologica è sempre riservata. Bisogna attendere la risoluzione dell'infiammazione e rivalutare la funzionalità laringea a distanza di tempo.",
+                        "Infausta, il danno è sempre irreversibile": "Troppo pessimistico. Un certo grado di recupero è possibile, specialmente se l'intervento è tempestivo."
+                    },
+                    en: {
+                        "Excellent, recovery is always complete": "Incorrect. unfortunately, chronic inflammation can cause fibrosis and permanent nerve damage.",
+                        "Good, most horses recover completely": "Too optimistic. Recovery depends on the severity and chronicity of the damage.",
+                        "Guarded, the nerve damage can be permanent": "Correct. The prognosis for neurological function is always guarded. It is necessary to wait for the inflammation to resolve and re-evaluate laryngeal function over time.",
+                        "Grave, the damage is always irreversible": "Too pessimistic. Some degree of recovery is possible, especially with prompt intervention."
+                    }
+                },
+                step13Title: { it: "Domanda 9: Gestione a Lungo Termine", en: "Question 9: Long-Term Management" },
+                step13Question: { it: "Se l'empiema si risolve ma l'emiplegia destra persiste, cosa diventa rilevante per il futuro atletico del cavallo?", en: "If the empyema resolves but the right hemiplegia persists, what becomes relevant for the horse's athletic future?" },
+                step13Options: { it: ["Niente, l'emiplegia destra non ha importanza", "Il cavallo non potrà più lavorare", "La necessità di una valutazione per un intervento chirurgico correttivo (es. laringoplastica)", "Una terapia medica a vita con broncodilatatori"], en: ["Nothing, right-sided hemiplegia is not important", "The horse will never be able to work again", "The need for evaluation for corrective surgery (e.g., laryngoplasty)", "Lifelong medical therapy with bronchodilators"] },
+                step13Answer: { it: "La necessità di una valutazione per un intervento chirurgico correttivo (es. laringoplastica)", en: "The need for evaluation for corrective surgery (e.g., laryngoplasty)" },
+                step13Feedbacks: {
+                    it: {
+                        "Niente, l'emiplegia destra non ha importanza": "Falso. Qualsiasi grado di emiplegia può limitare la performance in un cavallo atleta.",
+                        "Il cavallo non potrà più lavorare": "Non necessariamente. Molti cavalli possono tornare a competere dopo una chirurgia correttiva.",
+                        "La necessità di una valutazione per un intervento chirurgico correttivo (es. laringoplastica)": "Esatto. Se il deficit neurologico è permanente e clinicamente significativo, la chirurgia è l'opzione per ripristinare il diametro delle vie aeree e permettere il ritorno all'attività sportiva.",
+                        "Una terapia medica a vita con broncodilatatori": "Inappropriato. I broncodilatatori agiscono sulle basse vie aeree e non risolvono un'ostruzione meccanica delle alte vie."
+                    },
+                    en: {
+                        "Nothing, right-sided hemiplegia is not important": "False. Any degree of hemiplegia can limit performance in an athletic horse.",
+                        "The horse will never be able to work again": "Not necessarily. Many horses can return to competition after corrective surgery.",
+                        "The need for evaluation for corrective surgery (e.g., laryngoplasty)": "Correct. If the neurological deficit is permanent and clinically significant, surgery is the option to restore airway diameter and allow a return to sport.",
+                        "Lifelong medical therapy with bronchodilators": "Inappropriate. Bronchodilators act on the lower airways and do not resolve a mechanical upper airway obstruction."
+                    }
+                },
+                 step14Title: { it: "Domanda 10: Prevenzione", en: "Question 10: Prevention" },
+                step14Question: { it: "Dal lavaggio della tasca gutturale di questo cavallo viene isolato Streptococcus equi equi, agente dell'adenite equina. Quale pratica gestionale è fondamentale per prevenire la diffusione di patologie respiratorie infettive come questa?", en: "From the guttural pouch lavage of this horse, Streptococcus equi equi, the agent of Strangles, is isolated. What management practice is crucial to prevent the spread of infectious respiratory diseases like this one?" },
+                step14Options: { it: ["Isolare i nuovi cavalli (quarantena)", "Allenare il cavallo più intensamente", "Alimentare solo con fieno secco", "Tenere il cavallo sempre a box"], en: ["Isolating new horses (quarantine)", "Training the horse more intensively", "Feeding only dry hay", "Keeping the horse stalled at all times"] },
+                step14Answer: { it: "Isolare i nuovi cavalli (quarantena)", en: "Isolating new horses (quarantine)" },
+                step14Feedbacks: {
+                    it: {
+                        "Isolare i nuovi cavalli (quarantena)": "Corretto. Molti patogeni respiratori, come lo Streptococcus equi equi, sono contagiosi. La quarantena aiuta a prevenire la diffusione di infezioni in una scuderia.",
+                        "Allenare il cavallo più intensamente": "Non previene le infezioni, anzi, lo stress da allenamento intenso può aumentare la suscettibilità.",
+                        "Alimentare solo con fieno secco": "La gestione della polvere è importante per l'asma, ma non è la misura principale per prevenire infezioni contagiose.",
+                        "Tenere il cavallo sempre a box": "Al contrario, una buona ventilazione e il pascolo sono benefici per la salute respiratoria."
+                    },
+                    en: {
+                        "Isolating new horses (quarantine)": "Correct. Many respiratory pathogens, such as Streptococcus equi zooepidemicus, are contagious. Quarantine helps prevent the spread of infections in a stable.",
+                        "Training the horse more intensively": "This does not prevent infections; in fact, the stress of intense training can increase susceptibility.",
+                        "Feeding only dry hay": "Dust management is important for asthma, but it is not the primary measure to prevent contagious infections.",
+                        "Keeping the horse stalled at all times": "On the contrary, good ventilation and pasture access are beneficial for respiratory health."
+                    }
+                },
+                step15Title: { it: "Diagnosi Finale e Piano", en: "Final Diagnosis and Plan" },
+                step15Content: { it: `<p>Basandosi sulla combinazione dei reperti (emiplegia destra, linfonodo satellite reattivo, anamnesi di scolo nasale destro), la diagnosi più probabile è <strong>Emiplegia Laringea Destra secondaria a una patologia della Tasca Gutturale Destra (probabilmente un empiema cronico)</strong>.</p><p>A differenza della comune forma idiopatica sinistra, l'emiplegia destra è quasi sempre secondaria. Il piano diagnostico successivo includerebbe esami più approfonditi della tasca gutturale (radiografie, endoscopia della tasca stessa) per confermare la diagnosi e guidare la terapia (lavaggi, antibiotici).</p>`, en: `<p>Based on the combination of findings (right hemiplegia, reactive lymph node, history of right nasal discharge), the most likely diagnosis is <strong>Right Laryngeal Hemiplegia secondary to a Right Guttural Pouch pathology (likely chronic empyema)</strong>.</p><p>Unlike the common idiopathic left-sided form, right-sided hemiplegia is almost always secondary. The next diagnostic plan would include more in-depth exams of the guttural pouch (radiographs, endoscopy of the pouch itself) to confirm the diagnosis and guide therapy (lavage, antibiotics).</p>`},
+                finalQuizTitle: {it: "Quiz Finale - Rivediamo i Concetti Chiave", en: "Final Quiz - Let's Review the Key Concepts"},
+            };
+
+            const finalQuizData = {
+                it: [
+                    { question: "Quale segno clinico è fortemente suggestivo di micosi della tasca gutturale?", options: ["Scolo nasale purulento", "Epistassi arteriosa improvvisa", "Tosse cronica", "Febbre alta"], answer: "Epistassi arteriosa improvvisa" },
+                    { question: "Oltre all'emiplegia laringea, quale altro segno neurologico può essere causato da una patologia della tasca gutturale?", options: ["Atassia", "Cecità", "Disfagia (difficoltà a deglutire)", "Convulsioni"], answer: "Disfagia (difficoltà a deglutire)" },
+                    { question: "Cosa sono i 'condroidi' che si possono trovare nelle tasche gutturali?", options: ["Calcoli di saliva", "Neoplasie benigne", "Aggregati di pus inspessito", "Corpi estranei vegetali"], answer: "Aggregati di pus inspessito" },
+                    { question: "La sindrome di Horner (ptosi, miosi, enoftalmo) può essere una complicanza per un danno a quale struttura vicina alla tasca gutturale?", options: ["Nervo ottico", "Arteria carotide interna", "Tronco simpatico", "Nervo facciale"], answer: "Tronco simpatico" },
+                    { question: "L'emiplegia laringea destra, a differenza della sinistra, è quasi sempre...", options: ["Idiopatica", "Congenita", "Secondaria a un problema locale", "Bilaterale"], answer: "Secondaria a un problema locale" },
+                    { question: "Quale nervo cranico è responsabile della deglutizione e può essere danneggiato in caso di empiema della tasca gutturale?", options: ["Nervo Olfattivo (I)", "Nervo Trigemino (V)", "Nervo Glossofaringeo (IX)", "Nervo Ipoglosso (XII)"], answer: "Nervo Glossofaringeo (IX)" },
+                    { question: "Qual è il cardine della terapia dell'empiema della tasca gutturale?", options: ["Terapia antibiotica sistemica a lungo termine", "Rimozione fisica del pus (lavaggi o chirurgia)", "Terapia antinfiammatoria con FANS", "Riposo assoluto per 2 mesi"], answer: "Rimozione fisica del pus (lavaggi o chirurgia)" },
+                    { question: "Quale arteria è a rischio di erosione fatale in caso di micosi della tasca gutturale?", options: ["Arteria facciale", "Arteria carotide interna", "Arteria mascellare", "Arteria oftalmica"], answer: "Arteria carotide interna" },
+                    { question: "Quale tecnica è fondamentale per confermare un'infezione attiva all'interno della tasca gutturale?", options: ["Radiografia", "Prelievo per esame citologico e colturale", "Ecografia", "Analisi del sangue"], answer: "Prelievo per esame citologico e colturale" },
+                    { question: "Per determinare la guarigione batteriologica da S. equi equi e identificare i portatori, quando è consigliabile effettuare un lavaggio della tasca gutturale per la PCR dopo la risoluzione dei segni clinici?", options: ["Subito dopo la fine della terapia antibiotica", "Dopo 1 settimana dalla fine dei segni clinici", "Dopo almeno 3 settimane dalla fine dei segni clinici", "Non è necessario, la guarigione clinica è sufficiente"], answer: "Dopo almeno 3 settimane dalla fine dei segni clinici" }
+                ],
+                en: [
+                    { question: "Which clinical sign is strongly suggestive of guttural pouch mycosis?", options: ["Purulent nasal discharge", "Sudden arterial epistaxis", "Chronic cough", "High fever"], answer: "Sudden arterial epistaxis" },
+                    { question: "Besides laryngeal hemiplegia, what other neurological sign can be caused by a guttural pouch pathology?", options: ["Ataxia", "Blindness", "Dysphagia (difficulty swallowing)", "Seizures"], answer: "Dysphagia (difficulty swallowing)" },
+                    { question: "What are 'chondroids' that can be found in the guttural pouches?", options: ["Salivary stones", "Benign neoplasms", "Inspissated pus concretions", "Plant foreign bodies"], answer: "Inspissated pus concretions" },
+                    { question: "Horner's syndrome (ptosis, miosis, enophthalmos) can be a complication due to damage to which structure near the guttural pouch?", options: ["Optic nerve", "Internal carotid artery", "Sympathetic trunk", "Facial nerve"], answer: "Sympathetic trunk" },
+                    { question: "Right laryngeal hemiplegia, unlike the left form, is almost always...", options: ["Idiopathic", "Congenital", "Secondary to a local problem", "Bilateral"], answer: "Secondary to a local problem" },
+                    { question: "Which cranial nerve is responsible for swallowing and can be damaged in cases of guttural pouch empyema?", options: ["Olfactory nerve (I)", "Trigeminal nerve (V)", "Glossopharyngeal nerve (IX)", "Hypoglossal nerve (XII)"], answer: "Glossopharyngeal nerve (IX)" },
+                    { question: "What is the cornerstone of therapy for guttural pouch empyema?", options: ["Long-term systemic antibiotic therapy", "Physical removal of pus (lavage or surgery)", "Anti-inflammatory therapy with NSAIDs", "Absolute rest for 2 months"], answer: "Physical removal of pus (lavage or surgery)" },
+                    { question: "Which artery is at risk of fatal erosion in a case of guttural pouch mycosis?", options: ["Facial artery", "Internal carotid artery", "Maxillary artery", "Ophthalmic artery"], answer: "Internal carotid artery" },
+                    { question: "Which technique is essential to confirm an active infection inside the guttural pouch?", options: ["Radiography", "Sampling for cytology and culture", "Ultrasonography", "Blood analysis"], answer: "Sampling for cytology and culture" },
+                    { question: "To determine bacteriological cure from S. equi equi and identify carriers, when is it advisable to perform a guttural pouch lavage for PCR after clinical signs resolve?", options: ["Immediately after finishing antibiotic therapy", "1 week after clinical signs resolve", "At least 3 weeks after clinical signs resolve", "It is not necessary, clinical cure is sufficient"], answer: "At least 3 weeks after clinical signs resolve" }
+                ]
+            };
+            
+            const caseStructure = [
+                { type: 'info', titleKey: 'step1Title', contentKey: 'step1Content' },
+                { type: 'question', titleKey: 'step2Title', questionKey: 'step2Question', optionsKey: 'step2Options', answerKey: 'step2Answer', feedbacksKey: 'step2Feedbacks' },
+                { type: 'info', titleKey: 'step3Title', contentKey: 'step3Content' },
+                { type: 'question', titleKey: 'step4Title', questionKey: 'step4Question', optionsKey: 'step4Options', answerKey: 'step4Answer', feedbacksKey: 'step4Feedbacks' },
+                { type: 'info', titleKey: 'step5Title', contentKey: 'step5Content' },
+                { type: 'question', titleKey: 'step6Title', questionKey: 'step6Question', optionsKey: 'step6Options', answerKey: 'step6Answer', feedbacksKey: 'step6Feedbacks' },
+                { type: 'question', titleKey: 'step7Title', questionKey: 'step7Question', optionsKey: 'step7Options', answerKey: 'step7Answer', feedbacksKey: 'step7Feedbacks' },
+                { type: 'question', titleKey: 'step8Title', questionKey: 'step8Question', optionsKey: 'step8Options', answerKey: 'step8Answer', feedbacksKey: 'step8Feedbacks' },
+                { type: 'info', titleKey: 'step9Title', contentKey: 'step9Content' },
+                { type: 'question', titleKey: 'step10Title', questionKey: 'step10Question', optionsKey: 'step10Options', answerKey: 'step10Answer', feedbacksKey: 'step10Feedbacks' },
+                { type: 'question', titleKey: 'step11Title', questionKey: 'step11Question', optionsKey: 'step11Options', answerKey: 'step11Answer', feedbacksKey: 'step11Feedbacks' },
+                { type: 'question', titleKey: 'step12Title', questionKey: 'step12Question', optionsKey: 'step12Options', answerKey: 'step12Answer', feedbacksKey: 'step12Feedbacks' },
+                { type: 'question', titleKey: 'step13Title', questionKey: 'step13Question', optionsKey: 'step13Options', answerKey: 'step13Answer', feedbacksKey: 'step13Feedbacks' },
+                { type: 'question', titleKey: 'step14Title', questionKey: 'step14Question', optionsKey: 'step14Options', answerKey: 'step14Answer', feedbacksKey: 'step14Feedbacks' },
+                { type: 'info', titleKey: 'step15Title', contentKey: 'step15Content' },
+                { type: 'final_quiz', titleKey: 'finalQuizTitle' }
+            ];
+
+            let currentStep = 0;
+            const caseContainer = document.getElementById('case-container');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            
+            function renderStep(stepIndex) {
+                const stepData = caseStructure[stepIndex];
+                const lang = currentLanguage;
+                const title = translations[stepData.titleKey]?.[lang] || `Step ${stepIndex + 1}`;
+
+                let contentHtml = `<div class="step-card active p-4" id="step-${stepIndex}"><h2 class="text-3xl font-bold text-violet-700 mb-6 flex items-center">${title} <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>`;
+
+                if (stepData.type === 'info') {
+                    contentHtml += `<div class="prose max-w-none">${translations[stepData.contentKey][lang]}</div>`;
+                } else if (stepData.type === 'question') {
+                    const question = translations[stepData.questionKey][lang];
+                    const options = translations[stepData.optionsKey][lang];
+                    contentHtml += `<h3 class="text-xl font-semibold mb-4">${question}</h3><div class="space-y-3">${options.map(opt => `<button class="option-button w-full text-left p-4 border rounded-lg hover:bg-violet-100" data-answer="${opt}">${opt}</button>`).join('')}</div><p id="feedback-${stepIndex}" class="mt-4 text-sm font-semibold"></p>`;
+                } else if (stepData.type === 'final_quiz') {
+                    contentHtml += `<div id="final-quiz-container" class="space-y-6"></div><div class="mt-6 text-center"><button id="submit-final-quiz" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-700 transition">${translations['submitBtn'][lang]}</button></div><div id="final-quiz-results" class="mt-6 text-center text-xl font-bold"></div>`;
+                }
+
+                contentHtml += `</div>`;
+                caseContainer.innerHTML = contentHtml;
+                if (stepData.type === 'final_quiz') {
+                    loadFinalQuiz(lang);
+                    document.getElementById('submit-final-quiz').addEventListener('click', checkFinalQuiz);
+                }
+                updateNavButtons();
+                addOptionListeners();
+                setupTTSListeners();
+            }
+            
+            function loadFinalQuiz(lang) {
+                const quizContainer = document.getElementById('final-quiz-container');
+                quizContainer.innerHTML = '';
+                finalQuizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `<li class="quiz-option p-2 rounded hover:bg-violet-50"><label class="flex items-center cursor-pointer"><input type="radio" name="final_q${index}" value="${o}" class="mr-3">${o}</label></li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function checkFinalQuiz() {
+                let score = 0;
+                const lang = currentLanguage;
+                const questions = document.querySelectorAll('#final-quiz-container .quiz-question');
+                finalQuizData[lang].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="final_q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected && selected.value === q.answer) {
+                        score++;
+                        questions[index].classList.add('correct');
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultText = lang === 'it' ? `Punteggio finale: ${score} / ${finalQuizData.it.length}` : `Final Score: ${score} / ${finalQuizData.en.length}`;
+                document.getElementById('final-quiz-results').textContent = resultText;
+            }
+
+            function addOptionListeners() {
+                document.querySelectorAll('.option-button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const stepData = caseStructure[currentStep];
+                        const lang = currentLanguage;
+                        const selectedAnswer = btn.dataset.answer;
+                        const correctAnswer = translations[stepData.answerKey][lang];
+                        const feedbackEl = document.getElementById(`feedback-${currentStep}`);
+                        const feedbackText = translations[stepData.feedbacksKey][lang][selectedAnswer];
+                        
+                        feedbackEl.textContent = feedbackText;
+
+                        if (selectedAnswer === correctAnswer) {
+                            btn.classList.add('correct');
+                            feedbackEl.className = 'mt-4 text-sm font-semibold text-green-600';
+                            document.querySelectorAll('.option-button').forEach(b => b.disabled = true);
+                            nextBtn.disabled = false;
+                        } else {
+                            btn.disabled = true;
+                            btn.classList.add('incorrect');
+                            feedbackEl.className = 'mt-4 text-sm font-semibold text-red-600';
+                        }
+                    });
+                });
+            }
+
+            function updateNavButtons() {
+                prevBtn.disabled = currentStep === 0;
+                const stepData = caseStructure[currentStep];
+                if (stepData.type === 'question') {
+                    const answeredCorrectly = document.querySelector('.option-button.correct');
+                    nextBtn.disabled = !answeredCorrectly;
+                } else {
+                    nextBtn.disabled = currentStep === caseStructure.length - 1;
+                }
+            }
+            
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function speak(text, button) {
+                if (activeTTSButton === button) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                    return;
+                }
+                if (synth.speaking) { synth.cancel(); }
+                if (activeTTSButton) { activeTTSButton.classList.remove('playing'); }
+                
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                currentUtterance.onend = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                currentUtterance.onerror = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                synth.speak(currentUtterance);
+                activeTTSButton = button;
+                button.classList.add('playing');
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('.step-card');
+                            const clone = section.cloneNode(true);
+                            clone.querySelectorAll('button, a, .tts-button, h2').forEach(el => el.remove());
+                            let titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = `${titleClone.textContent.trim()}. ${clone.textContent.trim().replace(/\s\s+/g, ' ')}`;
+                        } else if (parentElement.tagName === 'H3') {
+                             const questionTextNode = parentElement.querySelector('span:first-child');
+                             if (questionTextNode) {
+                                textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
+                             }
+                        } else if (parentElement.closest('label')) {
+                            const label = parentElement.closest('label');
+                            const answerTextNode = label.querySelector('span:first-child');
+                            if (answerTextNode) {
+                                textToRead = answerTextNode.textContent.trim();
+                            }
+                        }
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+             const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.textContent = translations[key][lang];
+                    }
+                });
+                
+                renderStep(currentStep);
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            };
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    renderStep(currentStep);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < caseStructure.length - 1) {
+                    currentStep++;
+                    renderStep(currentStep);
+                }
+            });
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+            
+            if (localStorage.getItem('dsa-mode') === 'enabled') {
+                body.classList.add('dsa-mode');
+            }
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
