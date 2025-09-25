@@ -18,6 +18,10 @@
         .option-button.incorrect { background-color: #ef4444; color: white; border-color: #dc2626; }
         .tts-button { cursor: pointer; display: inline-flex; align-items: center; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
         .tts-button:hover, .tts-button.playing { color: #8b5cf6; }
+        
+        .quiz-option.correct-answer { background-color: #d1fae5 !important; border-radius: 0.5rem; }
+        .quiz-option.incorrect-answer { background-color: #fee2e2 !important; border-radius: 0.5rem; }
+        
         .dsa-mode {
             font-family: 'Lexend', sans-serif;
             background-color: #fdfaf5 !important;
@@ -68,8 +72,9 @@
                 accessibility: { it: "Accessibilità", en: "Accessibility" },
                 prevBtn: { it: "Precedente", en: "Previous" },
                 nextBtn: { it: "Prosegui", en: "Continue" },
-                submitBtn: { it: "Invia Risposta", en: "Submit Answer" },
+                submitBtn: { it: "Verifica Risposte", en: "Check Answers" },
                 resultsTitle: { it: "Quiz Finale - Rivediamo i Concetti Chiave", en: "Final Quiz - Let's Review the Key Concepts" },
+
                 step1Title: { it: "Presentazione del Caso", en: "Case Presentation" },
                 step1Content: { it: `<p>Un <strong>cavallo da endurance, castrone di 10 anni</strong>, viene riferito per calo di performance e un <strong>rumore respiratorio inspiratorio</strong> che si manifesta solo durante il lavoro intenso.</p><p>A riposo, il cavallo appare vigile ma tranquillo e il proprietario nega la presenza di scolo nasale al momento della visita.</p>`, en: `<p>A <strong>10-year-old gelding endurance horse</strong> is referred for poor performance and an <strong>inspiratory respiratory noise</strong> that only occurs during intense work.</p><p>At rest, the horse appears bright and alert, and the owner denies any nasal discharge at the time of examination.</p>`},
                 step2Title: { it: "Domanda 1: Prima Ipotesi", en: "Question 1: Initial Hypothesis" },
@@ -361,13 +366,22 @@
                 const lang = currentLanguage;
                 const questions = document.querySelectorAll('#final-quiz-container .quiz-question');
                 finalQuizData[lang].forEach((q, index) => {
-                    const selected = document.querySelector(`input[name="final_q${index}"]:checked`);
-                    questions[index].classList.remove('correct', 'incorrect');
-                    if (selected && selected.value === q.answer) {
-                        score++;
-                        questions[index].classList.add('correct');
-                    } else {
-                        questions[index].classList.add('incorrect');
+                    const selectedInput = document.querySelector(`input[name="final_q${index}"]:checked`);
+                    const options = questions[index].querySelectorAll('.quiz-option');
+                    
+                    options.forEach(optLabel => {
+                        const optInput = optLabel.querySelector('input');
+                        if (optInput.value === q.answer) {
+                            optLabel.classList.add('correct-answer');
+                        }
+                    });
+
+                    if (selectedInput) {
+                        if (selectedInput.value === q.answer) {
+                            score++;
+                        } else {
+                            selectedInput.closest('.quiz-option').classList.add('incorrect-answer');
+                        }
                     }
                 });
                 const resultText = lang === 'it' ? `Punteggio finale: ${score} / ${finalQuizData.it.length}` : `Final Score: ${score} / ${finalQuizData.en.length}`;
@@ -448,17 +462,6 @@
                             let titleClone = parentElement.cloneNode(true);
                             titleClone.querySelector('.tts-button').remove();
                             textToRead = `${titleClone.textContent.trim()}. ${clone.textContent.trim().replace(/\s\s+/g, ' ')}`;
-                        } else if (parentElement.tagName === 'H3') {
-                             const questionTextNode = parentElement.querySelector('span:first-child');
-                             if (questionTextNode) {
-                                textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
-                             }
-                        } else if (parentElement.closest('label')) {
-                            const label = parentElement.closest('label');
-                            const answerTextNode = label.querySelector('span:first-child');
-                            if (answerTextNode) {
-                                textToRead = answerTextNode.textContent.trim();
-                            }
                         }
                         if (textToRead) speak(textToRead, newButton);
                     });
