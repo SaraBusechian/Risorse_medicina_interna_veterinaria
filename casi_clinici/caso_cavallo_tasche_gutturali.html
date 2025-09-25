@@ -338,7 +338,7 @@
                 } else if (stepData.type === 'question') {
                     const question = translations[stepData.questionKey][lang];
                     const options = translations[stepData.optionsKey][lang];
-                    contentHtml += `<h3 class="text-xl font-semibold mb-4">${question}</h3><div class="space-y-3">${options.map(opt => `<button class="option-button w-full text-left p-4 border rounded-lg hover:bg-violet-100" data-answer="${opt}">${opt}</button>`).join('')}</div><p id="feedback-${stepIndex}" class="mt-4 text-sm font-semibold"></p>`;
+                    contentHtml += `<h3 class="text-xl font-semibold mb-4 flex justify-between items-center"><span>${question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><div class="space-y-3">${options.map(opt => `<button class="option-button w-full text-left p-4 border rounded-lg hover:bg-violet-100 flex justify-between items-center" data-answer="${opt}"><span>${opt}</span><span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></button>`).join('')}</div><p id="feedback-${stepIndex}" class="mt-4 text-sm font-semibold"></p>`;
                 } else if (stepData.type === 'final_quiz') {
                     contentHtml += `<div id="final-quiz-container" class="space-y-6"></div><div class="mt-6 text-center"><button id="submit-final-quiz" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-700 transition">${translations['submitBtn'][lang]}</button></div><div id="final-quiz-results" class="mt-6 text-center text-xl font-bold"></div>`;
                 }
@@ -450,7 +450,7 @@
             let activeTTSButton = null;
 
             function speak(text, button) {
-                if (activeTTSButton === button) {
+                if (activeTTSButton === button && currentUtterance) {
                     if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
                     else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
                     return;
@@ -475,14 +475,24 @@
                         e.stopPropagation();
                         let textToRead = '';
                         const parentElement = newButton.parentElement;
-                        if (parentElement.tagName === 'H2') {
+
+                        if (parentElement.tagName === 'H2') { // Title of the step
                             const section = parentElement.closest('.step-card');
                             const clone = section.cloneNode(true);
-                            clone.querySelectorAll('button, a, .tts-button, h2').forEach(el => el.remove());
+                            clone.querySelectorAll('button, a, .tts-button, h2, h3').forEach(el => el.remove());
                             let titleClone = parentElement.cloneNode(true);
                             titleClone.querySelector('.tts-button').remove();
                             textToRead = `${titleClone.textContent.trim()}. ${clone.textContent.trim().replace(/\s\s+/g, ' ')}`;
+                        } else if (parentElement.tagName === 'H3') { // Question
+                            const questionClone = parentElement.cloneNode(true);
+                            questionClone.querySelectorAll('.tts-button').forEach(el => el.remove());
+                            textToRead = questionClone.textContent.trim();
+                        } else if (parentElement.classList.contains('option-button')) { // Answer option
+                            const answerClone = parentElement.cloneNode(true);
+                            answerClone.querySelectorAll('.tts-button').forEach(el => el.remove());
+                            textToRead = answerClone.textContent.trim();
                         }
+                        
                         if (textToRead) speak(textToRead, newButton);
                     });
                 });
