@@ -110,26 +110,31 @@
                     </div>
                 </div>
                 
-                <!-- Equine Gastric Ulcer Syndrome (EGUS) -->
-                <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col opacity-60">
+                <!-- Diarrea neonatale del vitello -->
+                <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col">
                      <div class="p-6 flex-grow">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center gap-3">
-                                <span class="text-4xl">🐴</span>
+                                <span class="text-4xl">🐮</span>
                                 <div>
-                                    <h2 class="text-2xl font-bold text-slate-700" data-lang-key="case-egus-species">Cavallo</h2>
-                                    <p class="text-sm text-slate-500" data-lang-key="case-egus-system">Apparato Digerente</p>
+                                    <h2 class="text-2xl font-bold text-violet-700" data-lang-key="case-diarrhea-species">Vitello</h2>
+                                    <p class="text-sm text-slate-500" data-lang-key="case-diarrhea-system">Apparato Digerente</p>
                                 </div>
                             </div>
-                             <span class="bg-slate-200 text-slate-600 text-xs font-semibold px-2.5 py-0.5 rounded-full" data-lang-key="coming-soon">Prossimamente</span>
+                             <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full" data-lang-key="case-level-easy">Facile</span>
                         </div>
-                        <p class="text-slate-500 leading-relaxed" data-lang-key="case-egus-desc">Un cavallo sportivo mostra scarso appetito, perdita di peso e lievi coliche ricorrenti.</p>
+                        <p class="text-slate-600 leading-relaxed flex justify-between items-start">
+                           <span data-lang-key="case-diarrhea-desc">Un vitello di pochi giorni di vita presenta diarrea acquosa, disidratazione e depressione del sensorio.</span>
+                            <button class="tts-button flex-shrink-0 ml-2"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></button>
+                        </p>
                     </div>
                     <div class="p-6 bg-slate-50">
-                        <span class="inline-block bg-slate-300 text-slate-500 font-bold py-3 px-6 rounded-lg w-full text-center cursor-not-allowed" data-lang-key="not-available">Non Disponibile</span>
+                       <a href="caso_vitello_diarrea.html" class="inline-block bg-violet-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-violet-700 transition duration-300 w-full text-center" data-lang-key="case-start-btn">
+                            Inizia il Caso
+                        </a>
                     </div>
                 </div>
-                
+
                  <!-- Ovine Mastitis -->
                 <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col opacity-60">
                      <div class="p-6 flex-grow">
@@ -211,6 +216,9 @@
                 "case-brd-species": { it: "Bovino", en: "Bovine" },
                 "case-brd-system": { it: "Apparato Respiratorio", en: "Respiratory System" },
                 "case-brd-desc": { it: "Un gruppo di vitelli da ristallo sviluppa tosse, scolo nasale e febbre dopo l'arrivo in allevamento.", en: "A group of feeder calves develops cough, nasal discharge, and fever after arrival at the farm." },
+                "case-diarrhea-species": { it: "Vitello", en: "Calf" },
+                "case-diarrhea-system": { it: "Apparato Digerente", en: "Digestive System" },
+                "case-diarrhea-desc": { it: "Un vitello di pochi giorni di vita presenta diarrea acquosa, disidratazione e depressione del sensorio.", en: "A few-day-old calf presents with watery diarrhea, dehydration, and depression." },
                 "case-egus-species": { it: "Cavallo", en: "Horse" },
                 "case-egus-system": { it: "Apparato Digerente", en: "Digestive System" },
                 "case-egus-desc": { it: "Un cavallo sportivo mostra scarso appetito, perdita di peso e lievi coliche ricorrenti.", en: "A sport horse shows poor appetite, weight loss, and mild recurrent colic." },
@@ -225,6 +233,7 @@
                 "case-colic-desc": { it: "Un cavallo presenta irrequietezza, si guarda i fianchi e rifiuta il cibo. Approccio al cavallo con dolore addominale.", en: "A horse presents with restlessness, flank watching, and refuses to eat. Approach to the horse with abdominal pain." },
                 "case-level-hard": { it: "Difficile", en: "Hard" },
                 "case-level-medium": { it: "Medio", en: "Medium" },
+                "case-level-easy": { it: "Facile", en: "Easy" },
                 "case-start-btn": { it: "Inizia il Caso", en: "Start Case" },
                 "coming-soon": { it: "Prossimamente", en: "Coming Soon" },
                 "not-available": { it: "Non Disponibile", en: "Not Available" },
@@ -238,18 +247,34 @@
             let activeTTSButton = null;
 
             function speak(text, button) {
-                if (activeTTSButton === button) {
-                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
-                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { 
+                        synth.resume(); 
+                        button.classList.add('playing');
+                    } else if (synth.speaking) { 
+                        synth.pause(); 
+                        button.classList.remove('playing');
+                    }
                     return;
                 }
+                
                 if (synth.speaking) { synth.cancel(); }
                 if (activeTTSButton) { activeTTSButton.classList.remove('playing'); }
-                
+
                 currentUtterance = new SpeechSynthesisUtterance(text);
                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                currentUtterance.onend = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
-                currentUtterance.onerror = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                
+                currentUtterance.onend = () => {
+                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+                currentUtterance.onerror = () => {
+                     if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+
                 synth.speak(currentUtterance);
                 activeTTSButton = button;
                 button.classList.add('playing');
@@ -259,14 +284,18 @@
                  document.querySelectorAll('.tts-button').forEach(button => {
                     const newButton = button.cloneNode(true);
                     button.parentNode.replaceChild(newButton, button);
-
                     newButton.addEventListener('click', (e) => {
                         e.stopPropagation();
                         const cardBody = newButton.closest('.p-6');
                         if (cardBody) {
-                             const title = cardBody.querySelector('h2').textContent;
-                             const system = cardBody.querySelector('[data-lang-key$="-system"]').textContent;
-                             const description = cardBody.querySelector('[data-lang-key$="-desc"]').textContent;
+                             const titleEl = cardBody.querySelector('h2');
+                             const systemEl = cardBody.querySelector('[data-lang-key$="-system"]');
+                             const descEl = cardBody.querySelector('[data-lang-key$="-desc"]');
+                             
+                             const title = titleEl ? titleEl.textContent : '';
+                             const system = systemEl ? systemEl.textContent : '';
+                             const description = descEl ? descEl.textContent : '';
+
                              const textToRead = `${title}, ${system}. ${description}`;
                              speak(textToRead, newButton);
                         }
@@ -277,11 +306,19 @@
             function updateLanguage(lang) {
                 document.documentElement.lang = lang;
                 document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                if (synth.speaking) { synth.cancel(); }
 
                 document.querySelectorAll('[data-lang-key]').forEach(element => {
                     const key = element.dataset.langKey;
                     if (translations[key] && translations[key][lang]) {
-                        element.textContent = translations[key][lang];
+                        // Preserve the button if it exists
+                        const ttsButton = element.querySelector('.tts-button');
+                        if (ttsButton) {
+                             const spanElement = element.querySelector('span');
+                             if(spanElement) spanElement.textContent = translations[key][lang];
+                        } else {
+                            element.textContent = translations[key][lang];
+                        }
                     }
                 });
                 const dsaToggle = document.getElementById('dsa-toggle');
