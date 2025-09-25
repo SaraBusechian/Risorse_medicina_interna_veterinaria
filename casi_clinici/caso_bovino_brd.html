@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caso Clinico: Vitelli con Tosse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f9ff; }
+        .step-card { display: none; }
+        .step-card.active { display: block; }
+        .option-button { transition: all 0.2s; }
+        .option-button:disabled:not(.correct) { opacity: 0.6; cursor: not-allowed; }
+        .option-button.correct { background-color: #10b981; color: white; border-color: #059669; }
+        .option-button.incorrect { background-color: #ef4444; color: white; border-color: #dc2626; }
+        .tts-button { cursor: pointer; display: inline-flex; align-items: center; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #0369a1; }
+        
+        .quiz-option.correct-answer { background-color: #d1fae5 !important; border-radius: 0.5rem; }
+        .quiz-option.incorrect-answer { background-color: #fee2e2 !important; border-radius: 0.5rem; }
+        
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #34495e;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+    </style>
+</head>
+<body class="text-slate-800">
+    <header id="main-header" class="bg-sky-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Caso Clinico Interattivo</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+            
+            <div id="case-container">
+                <!-- Steps will be dynamically shown here -->
+            </div>
+
+            <div id="navigation-buttons" class="mt-8 flex justify-between">
+                <button id="prev-btn" class="bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition" disabled>
+                    <span data-lang-key="prevBtn">Precedente</span>
+                </button>
+                <a id="back-to-index-btn" href="index.html" class="hidden bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition">
+                     <span data-lang-key="backToIndex">Torna all'Indice dei Casi</span>
+                </a>
+                <button id="next-btn" class="bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition">
+                    <span data-lang-key="nextBtn">Prosegui</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Caso Clinico Interattivo", en: "Interactive Clinical Case" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                prevBtn: { it: "Precedente", en: "Previous" },
+                nextBtn: { it: "Prosegui", en: "Continue" },
+                submitBtn: { it: "Verifica Risposte", en: "Check Answers" },
+                resultsTitle: { it: "Quiz Finale - Rivediamo i Concetti Chiave", en: "Final Quiz - Let's Review the Key Concepts" },
+                backToIndex: { it: "Torna all'Indice dei Casi", en: "Back to Case Index" },
+
+                step1Title: { it: "Presentazione del Caso", en: "Case Presentation" },
+                step1Content: { it: `<p>Vieni chiamato in un allevamento di bovini da carne per visitare un gruppo di <strong>50 vitelli da ristallo</strong>, arrivati da circa 10 giorni. L'allevatore segnala che diversi animali (circa 20%) presentano <strong>tosse, abbattimento e scarso appetito</strong>.</p><p>Gli animali provengono da allevamenti diversi e hanno affrontato un lungo trasporto.</p>`, en: `<p>You are called to a beef cattle farm to examine a group of <strong>50 feeder calves</strong> that arrived about 10 days ago. The farmer reports that several animals (about 20%) are showing <strong>coughing, depression, and poor appetite</strong>.</p><p>The animals come from different farms and have undergone a long transport.</p>`},
+                step2Title: { it: "Domanda 1: Prima Ipotesi", en: "Question 1: Initial Hypothesis" },
+                step2Question: { it: "Considerando l'anamnesi e la tipologia di animali, qual è la tua diagnosi differenziale principale?", en: "Considering the history and the type of animals, what is your main differential diagnosis?" },
+                step2Options: { it: ["Acidosi ruminale", "Polmonite parassitaria (strongilosi)", "Complesso della Malattia Respiratoria del Bovino (BRD)", "Carenza di Selenio e Vitamina E"], en: ["Ruminal acidosis", "Parasitic pneumonia (lungworm)", "Bovine Respiratory Disease (BRD) Complex", "Selenium and Vitamin E deficiency"] },
+                step2Answer: { it: "Complesso della Malattia Respiratoria del Bovino (BRD)", en: "Bovine Respiratory Disease (BRD) Complex" },
+                step2Feedbacks: { 
+                    it: {
+                        "Acidosi ruminale": "Improbabile. L'acidosi è una patologia digestiva e non spiega i sintomi respiratori di gruppo.",
+                        "Polmonite parassitaria (strongilosi)": "Possibile, ma meno probabile come focolaio acuto in vitelli appena arrivati. La BRD è molto più comune in questo scenario.",
+                        "Complesso della Malattia Respiratoria del Bovino (BRD)": "Corretto. La combinazione di stress (trasporto, mescolamento) e l'arrivo di animali da provenienze diverse sono fattori di rischio classici per la BRD.",
+                        "Carenza di Selenio e Vitamina E": "Poco probabile. La 'malattia del muscolo bianco' causa problemi muscolari, non primariamente respiratori in questa forma."
+                    },
+                    en: {
+                        "Ruminal acidosis": "Unlikely. Acidosis is a digestive disorder and does not explain the group's respiratory symptoms.",
+                        "Parasitic pneumonia (lungworm)": "Possible, but less likely as an acute outbreak in newly arrived calves. BRD is much more common in this scenario.",
+                        "Bovine Respiratory Disease (BRD) Complex": "Correct. The combination of stress (transport, mixing) and the arrival of animals from different sources are classic risk factors for BRD.",
+                        "Selenium and Vitamin E deficiency": "Unlikely. 'White muscle disease' causes muscular problems, not primarily respiratory issues in this form."
+                    }
+                },
+                step3Title: { it: "Domanda 2: Approfondimento Anamnestico", en: "Question 2: Deepening the History" },
+                step3Question: { it: "Quale informazione anamnestica aggiuntiva è cruciale per valutare il rischio di BRD in questo gruppo?", en: "What additional piece of history is crucial for assessing the risk of BRD in this group?" },
+                step3Options: { it: ["La razza esatta dei vitelli", "Lo stato vaccinale degli animali alla partenza", "Il tipo di lettiera utilizzata", "La dieta prima del trasporto"], en: ["The exact breed of the calves", "The vaccination status of the animals at departure", "The type of bedding used", "The diet before transport"] },
+                step3Answer: { it: "Lo stato vaccinale degli animali alla partenza", en: "The vaccination status of the animals at departure" },
+                step3Feedbacks: {
+                    it: {
+                        "La razza esatta dei vitelli": "Informazione utile, ma non cruciale quanto lo stato immunitario.",
+                        "Lo stato vaccinale degli animali alla partenza": "Esatto! Sapere se i vitelli sono stati vaccinati per i principali patogeni respiratori (IBR, BRSV, etc.) prima della partenza è fondamentale per capire la loro suscettibilità.",
+                        "Il tipo di lettiera utilizzata": "Importante per la gestione generale, ma meno rilevante per il rischio iniziale di BRD rispetto allo stato immunitario.",
+                        "La dieta prima del trasporto": "Può influire sullo stress, ma lo stato vaccinale è un indicatore di rischio più diretto."
+                    },
+                    en: {
+                        "The exact breed of the calves": "Useful information, but not as crucial as their immune status.",
+                        "The vaccination status of the animals at departure": "Correct! Knowing if the calves were vaccinated for major respiratory pathogens (IBR, BRSV, etc.) before departure is fundamental to understanding their susceptibility.",
+                        "The type of bedding used": "Important for general management, but less relevant to the initial risk of BRD than immune status.",
+                        "The diet before transport": "Can influence stress, but vaccination status is a more direct risk indicator."
+                    }
+                },
+                step4Title: { it: "Esame Clinico del Gruppo", en: "Clinical Examination of the Group" },
+                step4Content: { it: `<p>Osservando il gruppo, noti che circa 10 vitelli sono isolati, con la testa bassa e le orecchie abbassate. Hanno uno scolo nasale sieroso o mucopurulento e la frequenza respiratoria è aumentata in molti di loro. L'allevatore, purtroppo, non conosce lo stato vaccinale degli animali.</p>`, en: `<p>Observing the group, you notice that about 10 calves are isolated, with their heads and ears down. They have serous or mucopurulent nasal discharge, and many have an increased respiratory rate. Unfortunately, the farmer does not know the vaccination status of the animals.</p>`},
+                step5Title: { it: "Domanda 3: Approccio al Paziente", en: "Question 3: Patient Approach" },
+                step5Question: { it: "Qual è il modo più efficiente per identificare rapidamente gli animali da trattare in un focolaio di BRD?", en: "What is the most efficient way to quickly identify animals to be treated in a BRD outbreak?" },
+                step5Options: { it: ["Eseguire un'auscultazione toracica dettagliata su tutti e 50 gli animali", "Misurare la temperatura rettale solo agli animali che tossiscono", "Utilizzare uno score clinico (es. Wisconsin o Calf Health Score) per valutare tutti gli animali", "Effettuare un lavaggio broncoalveolare (BAL) su un animale a caso"], en: ["Perform detailed thoracic auscultation on all 50 animals", "Measure rectal temperature only on coughing animals", "Use a clinical scoring system (e.g., Wisconsin or Calf Health Score) to evaluate all animals", "Perform a bronchoalveolar lavage (BAL) on a random animal"] },
+                step5Answer: { it: "Utilizzare uno score clinico (es. Wisconsin o Calf Health Score) per valutare tutti gli animali", en: "Use a clinical scoring system (e.g., Wisconsin or Calf Health Score) to evaluate all animals" },
+                step5Feedbacks: {
+                    it: {
+                        "Eseguire un'auscultazione toracica dettagliata su tutti e 50 gli animali": "Poco pratico in un contesto di allevamento e non sempre correlato alla gravità della malattia in fase iniziale.",
+                        "Misurare la temperatura rettale solo agli animali che tossiscono": "Insufficiente. Alcuni animali possono avere la febbre senza ancora tossire, o essere troppo abbattuti per tossire.",
+                        "Utilizzare uno score clinico (es. Wisconsin o Calf Health Score) per valutare tutti gli animali": "Corretto. I sistemi a punti permettono una valutazione rapida, oggettiva e standardizzata di tutti gli animali, identificando i soggetti con febbre, scolo nasale, tosse e depressione che necessitano di trattamento.",
+                        "Effettuare un lavaggio broncoalveolare (BAL) su un animale a caso": "Non è un metodo di screening. Il BAL è un esame diagnostico avanzato da eseguire su animali già identificati come malati."
+                    },
+                    en: {
+                        "Perform detailed thoracic auscultation on all 50 animals": "Impractical in a farm setting and not always correlated with disease severity in the early stages.",
+                        "Measure rectal temperature only on coughing animals": "Insufficient. Some animals may have a fever without coughing yet, or be too depressed to cough.",
+                        "Use a clinical scoring system (e.g., Wisconsin or Calf Health Score) to evaluate all animals": "Correct. Scoring systems allow for a rapid, objective, and standardized evaluation of all animals, identifying subjects with fever, nasal discharge, cough, and depression who require treatment.",
+                        "Perform a bronchoalveolar lavage (BAL) on a random animal": "This is not a screening method. BAL is an advanced diagnostic test to be performed on animals already identified as sick."
+                    }
+                },
+                 step6Title: { it: "Domanda 4: Campionamento", en: "Question 4: Sampling" },
+                step6Question: { it: "Decidi di campionare alcuni animali per identificare gli agenti patogeni. Qual è il metodo di campionamento più pratico ed efficace per ottenere un campione rappresentativo delle alte e basse vie aeree in questo contesto?", en: "You decide to sample some animals to identify the pathogens. What is the most practical and effective sampling method to obtain a representative sample from the upper and lower airways in this context?" },
+                step6Options: { it: ["Tampone nasale profondo", "Aspirato transtracheale", "Lavaggio broncoalveolare (BAL)", "Tutti i precedenti sono ugualmente validi"], en: ["Deep nasopharyngeal swab", "Transtracheal wash", "Bronchoalveolar lavage (BAL)", "All of the above are equally valid"] },
+                step6Answer: { it: "Tampone nasale profondo", en: "Deep nasopharyngeal swab" },
+                step6Feedbacks: {
+                    it: {
+                        "Tampone nasale profondo": "Corretto. In un focolaio, il tampone nasofaringeo profondo è un metodo rapido, poco invasivo e sufficientemente rappresentativo per la ricerca dei principali virus e batteri coinvolti nella BRD.",
+                        "Aspirato transtracheale": "Più invasivo e generalmente riservato a singoli animali con polmonite grave che non rispondono alla terapia.",
+                        "Lavaggio broncoalveolare (BAL)": "Ancora più invasivo e fornisce informazioni principalmente sulle basse vie aeree, mentre la BRD è un complesso che coinvolge anche le alte vie.",
+                        "Tutti i precedenti sono ugualmente validi": "Non corretto. Ogni metodo ha indicazioni, vantaggi e svantaggi specifici. In questo scenario, il tampone è la scelta migliore."
+                    },
+                    en: {
+                        "Deep nasopharyngeal swab": "Correct. In an outbreak setting, a deep nasopharyngeal swab is a quick, minimally invasive, and sufficiently representative method for detecting the main viruses and bacteria involved in BRD.",
+                        "Transtracheal wash": "More invasive and generally reserved for individual animals with severe pneumonia that do not respond to therapy.",
+                        "Bronchoalveolar lavage (BAL)": "Even more invasive and primarily provides information about the lower airways, whereas BRD is a complex involving the upper airways as well.",
+                        "All of the above are equally valid": "Incorrect. Each method has specific indications, advantages, and disadvantages. In this scenario, the swab is the best choice."
+                    }
+                },
+                step7Title: { it: "Domanda 5: Agenti Patogeni", en: "Question 5: Pathogens" },
+                step7Question: { it: "Quale dei seguenti NON è considerato un agente virale primario comune nel complesso della BRD?", en: "Which of the following is NOT considered a common primary viral agent in the BRD complex?" },
+                step7Options: { it: ["Virus Respiratorio Sinciziale Bovino (BRSV)", "Virus della Parainfluenza di tipo 3 (PI-3)", "Herpesvirus Bovino di tipo 1 (IBR)", "Rotavirus Bovino"], en: ["Bovine Respiratory Syncytial Virus (BRSV)", "Parainfluenza-3 Virus (PI-3)", "Bovine Herpesvirus-1 (IBR)", "Bovine Rotavirus"] },
+                step7Answer: { it: "Rotavirus Bovino", en: "Bovine Rotavirus" },
+                step7Feedbacks: {
+                    it: {
+                        "Virus Respiratorio Sinciziale Bovino (BRSV)": "Errato. BRSV è uno dei principali virus che causano danno all'epitelio respiratorio, predisponendo a infezioni batteriche.",
+                        "Virus della Parainfluenza di tipo 3 (PI-3)": "Errato. PI-3 è un altro virus comune che apre la strada ai batteri nella BRD.",
+                        "Herpesvirus Bovino di tipo 1 (IBR)": "Errato. L'IBR è un agente primario molto importante nella BRD, causando la 'Rinotracheite Infettiva del Bovino'.",
+                        "Rotavirus Bovino": "Corretto. Il Rotavirus è un'importante causa di diarrea neonatale nei vitelli, ma non è un agente primario del complesso respiratorio."
+                    },
+                    en: {
+                        "Bovine Respiratory Syncytial Virus (BRSV)": "Incorrect. BRSV is one of the main viruses causing damage to the respiratory epithelium, predisposing to bacterial infections.",
+                        "Parainfluenza-3 Virus (PI-3)": "Incorrect. PI-3 is another common virus that paves the way for bacteria in BRD.",
+                        "Bovine Herpesvirus-1 (IBR)": "Incorrect. IBR is a very important primary agent in BRD, causing 'Infectious Bovine Rhinotracheitis'.",
+                        "Bovine Rotavirus": "Correct. Rotavirus is a major cause of neonatal diarrhea in calves but is not a primary agent of the respiratory complex."
+                    }
+                },
+                step8Title: { it: "Domanda 6: Scelta Terapeutica", en: "Question 6: Therapeutic Choice" },
+                step8Question: { it: "Devi iniziare una terapia di gruppo (metafilassi) sugli animali a rischio e una terapia individuale sui malati. Quale combinazione di farmaci è più appropriata?", en: "You need to start group therapy (metaphylaxis) for at-risk animals and individual therapy for the sick ones. Which drug combination is most appropriate?" },
+                step8Options: { it: ["Solo un antiparassitario", "Un antibiotico a lunga azione e un antinfiammatorio non steroideo (FANS)", "Solo vitamine e reidratanti orali", "Un diuretico per ridurre l'edema polmonare"], en: ["An antiparasitic drug only", "A long-acting antibiotic and a non-steroidal anti-inflammatory drug (NSAID)", "Vitamins and oral rehydrating solutions only", "A diuretic to reduce pulmonary edema"] },
+                step8Answer: { it: "Un antibiotico a lunga azione e un antinfiammatorio non steroideo (FANS)", en: "A long-acting antibiotic and a non-steroidal anti-inflammatory drug (NSAID)" },
+                step8Feedbacks: {
+                    it: {
+                        "Solo un antiparassitario": "Inappropriato. La causa più probabile è batterica/virale, non parassitaria.",
+                        "Un antibiotico a lunga azione e un antinfiammatorio non steroideo (FANS)": "Corretto. L'antibiotico combatte l'infezione batterica secondaria (o primaria), mentre il FANS riduce la febbre, il dolore e l'infiammazione polmonare, migliorando rapidamente il benessere dell'animale.",
+                        "Solo vitamine e reidratanti orali": "Terapia di supporto utile, ma insufficiente da sola per trattare un focolaio di polmonite batterica.",
+                        "Un diuretico per ridurre l'edema polmonare": "Non indicato in questa fase. L'edema non è il problema primario nella BRD non complicata."
+                    },
+                    en: {
+                        "An antiparasitic drug only": "Inappropriate. The most likely cause is bacterial/viral, not parasitic.",
+                        "A long-acting antibiotic and a non-steroidal anti-inflammatory drug (NSAID)": "Correct. The antibiotic fights the secondary (or primary) bacterial infection, while the NSAID reduces fever, pain, and lung inflammation, rapidly improving the animal's well-being.",
+                        "Vitamins and oral rehydrating solutions only": "Useful supportive therapy, but insufficient on its own to treat a bacterial pneumonia outbreak.",
+                        "A diuretic to reduce pulmonary edema": "Not indicated at this stage. Edema is not the primary problem in uncomplicated BRD."
+                    }
+                },
+                step9Title: { it: "Risultati di Laboratorio", en: "Laboratory Results" },
+                step9Content: { it: `<p>I campioni inviati al laboratorio confermano la presenza di <strong>BRSV</strong> e <strong>Mannheimia haemolytica</strong>.</p>`, en: `<p>Samples sent to the laboratory confirm the presence of <strong>BRSV</strong> and <strong>Mannheimia haemolytica</strong>.</p>`},
+                step10Title: { it: "Domanda 7: Gestione del Focolaio", en: "Question 7: Outbreak Management" },
+                step10Question: { it: "Oltre alla terapia, quale misura gestionale è fondamentale per controllare la diffusione della malattia all'interno del gruppo?", en: "Besides therapy, what management measure is crucial to control the spread of the disease within the group?" },
+                step10Options: { it: ["Aumentare la densità di animali per tenerli al caldo", "Isolare gli animali gravemente malati dal resto del gruppo", "Sospendere l'alimentazione per 24 ore", "Aumentare l'umidità nell'ambiente"], en: ["Increase the stocking density to keep the animals warm", "Isolate severely ill animals from the rest of the group", "Withhold feed for 24 hours", "Increase environmental humidity"] },
+                step10Answer: { it: "Isolare gli animali gravemente malati dal resto del gruppo", en: "Isolate severely ill animals from the rest of the group" },
+                step10Feedbacks: {
+                    it: {
+                        "Aumentare la densità di animali per tenerli al caldo": "Errato. L'affollamento aumenta la trasmissione dei patogeni e lo stress.",
+                        "Isolare gli animali gravemente malati dal resto del gruppo": "Corretto. Separare i soggetti più infetti riduce la carica infettante nell'ambiente e permette di concentrare su di loro le cure.",
+                        "Sospendere l'alimentazione per 24 ore": "Controproducente. Gli animali malati hanno bisogno di energia per combattere l'infezione.",
+                        "Aumentare l'umidità nell'ambiente": "Peggiorativo. Un'alta umidità favorisce la sopravvivenza e la proliferazione di molti patogeni respiratori."
+                    },
+                    en: {
+                        "Increase the stocking density to keep the animals warm": "Incorrect. Overcrowding increases pathogen transmission and stress.",
+                        "Isolate severely ill animals from the rest of the group": "Correct. Separating the most infectious individuals reduces the environmental pathogen load and allows for focused care.",
+                        "Withhold feed for 24 hours": "Counterproductive. Sick animals need energy to fight the infection.",
+                        "Increase environmental humidity": "Worsens the situation. High humidity favors the survival and proliferation of many respiratory pathogens."
+                    }
+                },
+                step11Title: { it: "Domanda 8: Terapia di Supporto", en: "Question 8: Supportive Care" },
+                step11Question: { it: "Quale terapia di supporto è più importante per i vitelli con BRD che mostrano disidratazione e scarso appetito?", en: "What is the most important supportive therapy for calves with BRD showing dehydration and poor appetite?" },
+                step11Options: { it: ["Somministrazione di sedativi", "Fluidoterapia orale o endovenosa", "Bagni freddi per abbassare la febbre", "Esercizio forzato per stimolare la tosse"], en: ["Administration of sedatives", "Oral or intravenous fluid therapy", "Cold baths to lower fever", "Forced exercise to stimulate coughing"] },
+                step11Answer: { it: "Fluidoterapia orale o endovenosa", en: "Oral or intravenous fluid therapy" },
+                step11Feedbacks: {
+                    it: {
+                        "Somministrazione di sedativi": "Controindicato. La sedazione può peggiorare la depressione respiratoria.",
+                        "Fluidoterapia orale o endovenosa": "Corretto. Mantenere l'idratazione è cruciale per la funzione mucociliare e per il benessere generale del paziente, specialmente se anoressico e febbricitante.",
+                        "Bagni freddi per abbassare la febbre": "Pericoloso. Può causare shock termico e stress eccessivo.",
+                        "Esercizio forzato per stimolare la tosse": "Dannoso. Un animale con polmonite ha bisogno di riposo per conservare le energie."
+                    },
+                    en: {
+                        "Administration of sedatives": "Contraindicated. Sedation can worsen respiratory depression.",
+                        "Oral or intravenous fluid therapy": "Correct. Maintaining hydration is crucial for mucociliary function and the overall well-being of the patient, especially if anorexic and febrile.",
+                        "Cold baths to lower fever": "Dangerous. It can cause thermal shock and excessive stress.",
+                        "Forced exercise to stimulate coughing": "Harmful. An animal with pneumonia needs rest to conserve energy."
+                    }
+                },
+                 step12Title: { it: "Domanda 9: Valutazione della Risposta", en: "Question 9: Evaluating Response" },
+                step12Question: { it: "Dopo 48 ore dall'inizio della terapia, come valuti la sua efficacia sul gruppo?", en: "After 48 hours of therapy, how do you evaluate its effectiveness on the group?" },
+                step12Options: { it: ["Solo contando il numero di animali che tossiscono ancora", "Verificando se lo scolo nasale è completamente scomparso", "Rivalutando gli animali con lo score clinico e misurando la temperatura ai soggetti trattati", "Aspettando almeno una settimana prima di qualsiasi valutazione"], en: ["Only by counting the number of animals still coughing", "By checking if the nasal discharge has completely disappeared", "By re-evaluating the animals with the clinical score and taking the temperature of treated subjects", "By waiting at least a week before any evaluation"] },
+                step12Answer: { it: "Rivalutando gli animali con lo score clinico e misurando la temperatura ai soggetti trattati", en: "By re-evaluating the animals with the clinical score and taking the temperature of treated subjects" },
+                step12Feedbacks: {
+                    it: {
+                        "Solo contando il numero di animali che tossiscono ancora": "Incompleto. La tosse può persistere anche durante la guarigione.",
+                        "Verificando se lo scolo nasale è completamente scomparso": "Incompleto. Lo scolo può cambiare carattere prima di risolversi completamente.",
+                        "Rivalutando gli animali con lo score clinico e misurando la temperatura ai soggetti trattati": "Corretto. Una riduzione della febbre e un miglioramento dello score clinico (meno depressione, miglior appetito) sono i primi e più affidabili indicatori di una risposta positiva alla terapia.",
+                        "Aspettando almeno una settimana prima di qualsiasi valutazione": "Troppo tardi. Una mancata risposta dovrebbe essere identificata entro 48-72 ore per poter cambiare protocollo se necessario."
+                    },
+                    en: {
+                        "Only by counting the number of animals still coughing": "Incomplete. Coughing can persist even during recovery.",
+                        "By checking if the nasal discharge has completely disappeared": "Incomplete. The nature of the discharge may change before it resolves completely.",
+                        "By re-evaluating the animals with the clinical score and taking the temperature of treated subjects": "Correct. A reduction in fever and an improvement in the clinical score (less depression, better appetite) are the first and most reliable indicators of a positive response to therapy.",
+                        "By waiting at least a week before any evaluation": "Too late. A lack of response should be identified within 48-72 hours to change the protocol if necessary."
+                    }
+                },
+                 step13Title: { it: "Domanda 10: Prevenzione a Lungo Termine", en: "Question 10: Long-Term Prevention" },
+                step13Question: { it: "Qual è la strategia più efficace per prevenire futuri focolai di BRD in questo allevamento?", en: "What is the most effective strategy to prevent future BRD outbreaks on this farm?" },
+                step13Options: { it: ["Trattare tutti i vitelli in arrivo con antibiotici (metafilassi di routine)", "Migliorare la gestione dell'arrivo: ridurre lo stress e implementare un protocollo vaccinale pre-condizionamento", "Aumentare la quota di concentrati nella razione", "Usare solo disinfettanti a base di cloro"], en: ["Treating all incoming calves with antibiotics (routine metaphylaxis)", "Improving arrival management: reducing stress and implementing a pre-conditioning vaccination protocol", "Increasing the proportion of concentrates in the ration", "Using only chlorine-based disinfectants"] },
+                step13Answer: { it: "Migliorare la gestione dell'arrivo: ridurre lo stress e implementare un protocollo vaccinale pre-condizionamento", en: "Improving arrival management: reducing stress and implementing a pre-conditioning vaccination protocol" },
+                step13Feedbacks: {
+                    it: {
+                        "Trattare tutti i vitelli in arrivo con antibiotici (metafilassi di routine)": "Non è una strategia sostenibile a lungo termine e favorisce l'antibiotico-resistenza. La metafilassi va riservata ai gruppi ad altissimo rischio.",
+                        "Migliorare la gestione dell'arrivo: ridurre lo stress e implementare un protocollo vaccinale pre-condizionamento": "Corretto. La prevenzione si basa su un approccio multifattoriale che mira a ridurre i fattori di rischio e a migliorare l'immunità degli animali prima che affrontino lo stress.",
+                        "Aumentare la quota di concentrati nella razione": "Potrebbe aumentare il rischio di patologie metaboliche e non previene la BRD.",
+                        "Usare solo disinfettanti a base di cloro": "La biosicurezza è importante, ma non è l'unico né il principale fattore di prevenzione per la BRD."
+                    },
+                    en: {
+                        "Treating all incoming calves with antibiotics (routine metaphylaxis)": "Not a sustainable long-term strategy and promotes antibiotic resistance. Metaphylaxis should be reserved for very high-risk groups.",
+                        "Improving arrival management: reducing stress and implementing a pre-conditioning vaccination protocol": "Correct. Prevention is based on a multifactorial approach aimed at reducing risk factors and improving the animals' immunity before they face stress.",
+                        "Increasing the proportion of concentrates in the ration": "Could increase the risk of metabolic diseases and does not prevent BRD.",
+                        "Using only chlorine-based disinfectants": "Biosecurity is important, but it is not the only or main prevention factor for BRD."
+                    }
+                },
+                step14Title: { it: "Diagnosi Finale", en: "Final Diagnosis" },
+                step14Content: { it: `<p>La diagnosi clinica è <strong>Focolaio di Complesso della Malattia Respiratoria del Bovino (BRD)</strong>. I campioni inviati al laboratorio confermano la presenza di <strong>BRSV</strong> e <strong>Mannheimia haemolytica</strong>.</p><p>Questo scenario è classico: lo stress da trasporto e mescolamento deprime il sistema immunitario, un'infezione virale primaria danneggia le difese respiratorie e i batteri opportunisti colonizzano i polmoni causando una grave polmonite.</p>`, en: `<p>The clinical diagnosis is an <strong>outbreak of Bovine Respiratory Disease (BRD) Complex</strong>. Samples sent to the laboratory confirm the presence of <strong>BRSV</strong> and <strong>Mannheimia haemolytica</strong>.</p><p>This scenario is classic: stress from transport and mixing suppresses the immune system, a primary viral infection damages respiratory defenses, and opportunistic bacteria colonize the lungs, causing severe pneumonia.</p>`},
+                finalQuizTitle: {it: "Quiz Finale - Rivediamo i Concetti Chiave", en: "Final Quiz - Let's Review the Key Concepts"},
+            };
+
+            const finalQuizData = {
+                it: [
+                    { question: "Qual è il principale fattore di rischio per la BRD nei vitelli da ristallo?", options: ["Dieta ricca di proteine", "Mancanza di esercizio", "Stress (trasporto, mescolamento)", "Eccessiva esposizione al sole"], answer: "Stress (trasporto, mescolamento)" },
+                    { question: "Quale batterio è considerato uno degli agenti più importanti della polmonite fibrinosa nella BRD?", options: ["Mycoplasma bovis", "Pasteurella multocida", "Mannheimia haemolytica", "Histophilus somni"], answer: "Mannheimia haemolytica" },
+                    { question: "Cosa si intende per 'metafilassi'?", options: ["Trattamento di tutti gli animali di un gruppo, sia sani che malati, a rischio di malattia", "Vaccinazione di massa durante un focolaio", "Trattamento solo degli animali gravemente malati", "Terapia di supporto con vitamine"], answer: "Trattamento di tutti gli animali di un gruppo, sia sani che malati, a rischio di malattia" },
+                    { question: "L'uso di un FANS nella BRD è importante per...", options: ["Uccidere i virus", "Stimolare l'appetito", "Ridurre la febbre e l'infiammazione polmonare", "Prevenire le infezioni future"], answer: "Ridurre la febbre e l'infiammazione polmonare" },
+                    { question: "Quale strumento di valutazione oggettiva è utile per gestire un focolaio di BRD in allevamento?", options: ["Termocamera a infrarossi", "Stetoscopio elettronico", "Score clinico standardizzato", "Analisi del sangue di gruppo"], answer: "Score clinico standardizzato" },
+                    { question: "Qual è il meccanismo principale attraverso cui i virus primari facilitano la polmonite batterica?", options: ["Causando una grave immunosoppressione sistemica", "Danneggiando l'epitelio ciliare e le difese meccaniche polmonari", "Aumentando la temperatura corporea", "Consumando le riserve di vitamina A"], answer: "Danneggiando l'epitelio ciliare e le difese meccaniche polmonari" },
+                    { question: "Quale dei seguenti antibiotici NON è comunemente usato per la terapia della BRD?", options: ["Florfenicolo", "Tulatromicina", "Ceftiofur", "Penicillina G"], answer: "Penicillina G" },
+                    { question: "La prevenzione della BRD si basa principalmente su...", options: ["Terapia antibiotica preventiva a tutti i vitelli", "Una buona gestione, riduzione dello stress e protocolli vaccinali corretti", "Alimentazione con soli concentrati", "Tenere gli animali sempre al chiuso"], answer: "Una buona gestione, riduzione dello stress e protocolli vaccinali corretti" },
+                    { question: "Quale lesione anatomo-patologica è tipica dell'infezione da Mannheimia haemolytica?", options: ["Polmonite interstiziale diffusa", "Bronchite cronica", "Pleurite fibrinosa e polmonite fibrino-necrotizzante", "Edema polmonare acuto"], answer: "Pleurite fibrinosa e polmonite fibrino-necrotizzante" },
+                    { question: "Quale campione biologico è più indicato per la diagnosi eziologica di un focolaio di BRD in allevamento?", options: ["Campione di feci", "Biopsia polmonare", "Tampone nasofaringeo profondo su più soggetti", "Prelievo di sangue per sierologia"], answer: "Tampone nasofaringeo profondo su più soggetti" }
+                ],
+                en: [
+                    { question: "What is the main risk factor for BRD in feeder calves?", options: ["High-protein diet", "Lack of exercise", "Stress (transport, mixing)", "Excessive sun exposure"], answer: "Stress (transport, mixing)" },
+                    { question: "Which bacterium is considered one of the most important agents of fibrinous pneumonia in BRD?", options: ["Mycoplasma bovis", "Pasteurella multocida", "Mannheimia haemolytica", "Histophilus somni"], answer: "Mannheimia haemolytica" },
+                    { question: "What is meant by 'metaphylaxis'?", options: ["Treatment of all animals in a group, both sick and healthy, at risk of disease", "Mass vaccination during an outbreak", "Treatment of only severely ill animals", "Supportive therapy with vitamins"], answer: "Treatment of all animals in a group, both sick and healthy, at risk of disease" },
+                    { question: "The use of an NSAID in BRD is important to...", options: ["Kill viruses", "Stimulate appetite", "Reduce fever and lung inflammation", "Prevent future infections"], answer: "Reduce fever and lung inflammation" },
+                    { question: "Which objective assessment tool is useful for managing a BRD outbreak on a farm?", options: ["Infrared thermocamera", "Electronic stethoscope", "Standardized clinical score", "Group blood analysis"], answer: "Standardized clinical score" },
+                    { question: "What is the main mechanism by which primary viruses facilitate bacterial pneumonia?", options: ["Causing severe systemic immunosuppression", "Damaging the ciliated epithelium and mechanical lung defenses", "Increasing body temperature", "Depleting Vitamin A reserves"], answer: "Damaging the ciliated epithelium and mechanical lung defenses" },
+                    { question: "Which of the following antibiotics is NOT commonly used for BRD therapy?", options: ["Florfenicol", "Tulathromycin", "Ceftiofur", "Penicillin G"], answer: "Penicillin G" },
+                    { question: "BRD prevention is primarily based on...", options: ["Preventive antibiotic therapy for all calves", "Good management, stress reduction, and correct vaccination protocols", "Feeding concentrates only", "Keeping animals indoors at all times"], answer: "Good management, stress reduction, and correct vaccination protocols" },
+                    { question: "Which pathological lesion is typical of Mannheimia haemolytica infection?", options: ["Diffuse interstitial pneumonia", "Chronic bronchitis", "Fibrinous pleuritis and fibrino-necrotizing pneumonia", "Acute pulmonary edema"], answer: "Fibrinous pleuritis and fibrino-necrotizing pneumonia" },
+                    { question: "Which biological sample is most appropriate for the etiological diagnosis of a BRD outbreak on a farm?", options: ["Fecal sample", "Lung biopsy", "Deep nasopharyngeal swab from multiple animals", "Blood sample for serology"], answer: "Deep nasopharyngeal swab from multiple animals" }
+                ]
+            };
+            
+            const caseStructure = [
+                { type: 'info', titleKey: 'step1Title', contentKey: 'step1Content' },
+                { type: 'question', titleKey: 'step2Title', questionKey: 'step2Question', optionsKey: 'step2Options', answerKey: 'step2Answer', feedbacksKey: 'step2Feedbacks' },
+                { type: 'question', titleKey: 'step3Title', questionKey: 'step3Question', optionsKey: 'step3Options', answerKey: 'step3Answer', feedbacksKey: 'step3Feedbacks' },
+                { type: 'info', titleKey: 'step4Title', contentKey: 'step4Content' },
+                { type: 'question', titleKey: 'step5Title', questionKey: 'step5Question', optionsKey: 'step5Options', answerKey: 'step5Answer', feedbacksKey: 'step5Feedbacks' },
+                { type: 'question', titleKey: 'step6Title', questionKey: 'step6Question', optionsKey: 'step6Options', answerKey: 'step6Answer', feedbacksKey: 'step6Feedbacks' },
+                { type: 'question', titleKey: 'step7Title', questionKey: 'step7Question', optionsKey: 'step7Options', answerKey: 'step7Answer', feedbacksKey: 'step7Feedbacks' },
+                { type: 'question', titleKey: 'step8Title', questionKey: 'step8Question', optionsKey: 'step8Options', answerKey: 'step8Answer', feedbacksKey: 'step8Feedbacks' },
+                { type: 'info', titleKey: 'step9Title', contentKey: 'step9Content' },
+                { type: 'question', titleKey: 'step10Title', questionKey: 'step10Question', optionsKey: 'step10Options', answerKey: 'step10Answer', feedbacksKey: 'step10Feedbacks' },
+                { type: 'question', titleKey: 'step11Title', questionKey: 'step11Question', optionsKey: 'step11Options', answerKey: 'step11Answer', feedbacksKey: 'step11Feedbacks' },
+                { type: 'question', titleKey: 'step12Title', questionKey: 'step12Question', optionsKey: 'step12Options', answerKey: 'step12Answer', feedbacksKey: 'step12Feedbacks' },
+                { type: 'question', titleKey: 'step13Title', questionKey: 'step13Question', optionsKey: 'step13Options', answerKey: 'step13Answer', feedbacksKey: 'step13Feedbacks' },
+                { type: 'info', titleKey: 'step14Title', contentKey: 'step14Content' },
+                { type: 'final_quiz', titleKey: 'finalQuizTitle' }
+            ];
+
+            let currentStep = 0;
+            const caseContainer = document.getElementById('case-container');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const backToIndexBtn = document.getElementById('back-to-index-btn');
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            
+            function renderStep(stepIndex) {
+                const stepData = caseStructure[stepIndex];
+                const lang = currentLanguage;
+                const title = translations[stepData.titleKey]?.[lang] || `Step ${stepIndex + 1}`;
+
+                let contentHtml = `<div class="step-card active p-4" id="step-${stepIndex}"><h2 class="text-3xl font-bold text-sky-700 mb-6 flex items-center">${title} <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>`;
+
+                if (stepData.type === 'info') {
+                    contentHtml += `<div class="prose max-w-none">${translations[stepData.contentKey][lang]}</div>`;
+                } else if (stepData.type === 'question') {
+                    const question = translations[stepData.questionKey][lang];
+                    const options = translations[stepData.optionsKey][lang];
+                    contentHtml += `<h3 class="text-xl font-semibold mb-4 flex justify-between items-center"><span>${question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><div class="space-y-3">${options.map(opt => `<button class="option-button w-full text-left p-4 border rounded-lg hover:bg-sky-100 flex justify-between items-center" data-answer="${opt}"><span>${opt}</span><span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></button>`).join('')}</div><p id="feedback-${stepIndex}" class="mt-4 text-sm font-semibold"></p>`;
+                } else if (stepData.type === 'final_quiz') {
+                    contentHtml += `<div id="final-quiz-container" class="space-y-6"></div><div class="mt-6 text-center"><button id="submit-final-quiz" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-700 transition">${translations['submitBtn'][lang]}</button></div><div id="final-quiz-results" class="mt-6 text-center text-xl font-bold"></div>`;
+                }
+
+                contentHtml += `</div>`;
+                caseContainer.innerHTML = contentHtml;
+                if (stepData.type === 'final_quiz') {
+                    loadFinalQuiz(lang);
+                    document.getElementById('submit-final-quiz').addEventListener('click', checkFinalQuiz);
+                }
+                updateNavButtons();
+                addOptionListeners();
+                setupTTSListeners();
+            }
+            
+            function loadFinalQuiz(lang) {
+                const quizContainer = document.getElementById('final-quiz-container');
+                quizContainer.innerHTML = '';
+                finalQuizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `<li class="quiz-option p-2 rounded hover:bg-sky-50"><label class="flex items-center cursor-pointer"><input type="radio" name="final_q${index}" value="${o}" class="mr-3">${o}</label></li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function checkFinalQuiz() {
+                let score = 0;
+                const lang = currentLanguage;
+                const questions = document.querySelectorAll('#final-quiz-container .quiz-question');
+                finalQuizData[lang].forEach((q, index) => {
+                    const selectedInput = document.querySelector(`input[name="final_q${index}"]:checked`);
+                    const options = questions[index].querySelectorAll('.quiz-option');
+                    
+                    options.forEach(optLabel => {
+                        const optInput = optLabel.querySelector('input');
+                        optLabel.classList.remove('incorrect-answer', 'correct-answer');
+                        if (optInput.value === q.answer) {
+                            optLabel.classList.add('correct-answer');
+                        }
+                    });
+
+                    if (selectedInput) {
+                        if (selectedInput.value === q.answer) {
+                            score++;
+                        } else {
+                            selectedInput.closest('.quiz-option').classList.add('incorrect-answer');
+                        }
+                    }
+                });
+                const resultText = lang === 'it' ? `Punteggio finale: ${score} / ${finalQuizData.it.length}` : `Final Score: ${score} / ${finalQuizData.en.length}`;
+                document.getElementById('final-quiz-results').textContent = resultText;
+                
+                prevBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+                backToIndexBtn.classList.remove('hidden');
+            }
+
+            function addOptionListeners() {
+                document.querySelectorAll('.option-button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const stepData = caseStructure[currentStep];
+                        const lang = currentLanguage;
+                        const selectedAnswer = btn.dataset.answer;
+                        const correctAnswer = translations[stepData.answerKey][lang];
+                        const feedbackEl = document.getElementById(`feedback-${currentStep}`);
+                        const feedbackText = translations[stepData.feedbacksKey][lang][selectedAnswer];
+                        
+                        feedbackEl.textContent = feedbackText;
+
+                        if (selectedAnswer === correctAnswer) {
+                            btn.classList.add('correct');
+                            feedbackEl.className = 'mt-4 text-sm font-semibold text-green-600';
+                            document.querySelectorAll('.option-button').forEach(b => b.disabled = true);
+                            nextBtn.disabled = false;
+                        } else {
+                            btn.disabled = true;
+                            btn.classList.add('incorrect');
+                            feedbackEl.className = 'mt-4 text-sm font-semibold text-red-600';
+                        }
+                    });
+                });
+            }
+
+            function updateNavButtons() {
+                prevBtn.disabled = currentStep === 0;
+                const stepData = caseStructure[currentStep];
+                if (stepData.type === 'question') {
+                    const answeredCorrectly = document.querySelector('.option-button.correct');
+                    nextBtn.disabled = !answeredCorrectly;
+                } else {
+                    nextBtn.disabled = currentStep === caseStructure.length - 1;
+                }
+
+                if (stepData.type === 'final_quiz') {
+                    prevBtn.classList.remove('hidden');
+                    nextBtn.classList.add('hidden');
+                    backToIndexBtn.classList.add('hidden');
+                } else {
+                    prevBtn.classList.remove('hidden');
+                    nextBtn.classList.remove('hidden');
+                    backToIndexBtn.classList.add('hidden');
+                }
+            }
+            
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                    return;
+                }
+                if (synth.speaking) { synth.cancel(); }
+                if (activeTTSButton) { activeTTSButton.classList.remove('playing'); }
+                
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                currentUtterance.onend = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                currentUtterance.onerror = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                synth.speak(currentUtterance);
+                activeTTSButton = button;
+                button.classList.add('playing');
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        if (parentElement.tagName === 'H2') { // Title of the step
+                            const section = parentElement.closest('.step-card');
+                            const clone = section.cloneNode(true);
+                            clone.querySelectorAll('button, a, .tts-button, h2, h3').forEach(el => el.remove());
+                            let titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = `${titleClone.textContent.trim()}. ${clone.textContent.trim().replace(/\s\s+/g, ' ')}`;
+                        } else if (parentElement.tagName === 'H3') { // Question
+                            const questionClone = parentElement.cloneNode(true);
+                            questionClone.querySelectorAll('.tts-button').forEach(el => el.remove());
+                            textToRead = questionClone.textContent.trim();
+                        } else if (parentElement.classList.contains('option-button')) { // Answer option
+                            const answerClone = parentElement.cloneNode(true);
+                            answerClone.querySelectorAll('.tts-button').forEach(el => el.remove());
+                            textToRead = answerClone.textContent.trim();
+                        }
+                        
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+             const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.textContent = translations[key][lang];
+                    }
+                });
+                
+                renderStep(currentStep);
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            };
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    renderStep(currentStep);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < caseStructure.length - 1) {
+                    currentStep++;
+                    renderStep(currentStep);
+                }
+            });
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+            
+            if (localStorage.getItem('dsa-mode') === 'enabled') {
+                body.classList.add('dsa-mode');
+            }
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
