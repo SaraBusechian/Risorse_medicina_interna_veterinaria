@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caso Clinico: Vitello con Diarrea</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f5f3ff; }
+        .step-card { display: none; }
+        .step-card.active { display: block; }
+        .option-button { transition: all 0.2s; }
+        .option-button:disabled:not(.correct) { opacity: 0.6; cursor: not-allowed; }
+        .option-button.correct { background-color: #10b981; color: white; border-color: #059669; }
+        .option-button.incorrect { background-color: #ef4444; color: white; border-color: #dc2626; }
+        .tts-button { cursor: pointer; display: inline-flex; align-items: center; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #8b5cf6; }
+        
+        .quiz-option.correct-answer { background-color: #d1fae5 !important; border-radius: 0.5rem; }
+        .quiz-option.incorrect-answer { background-color: #fee2e2 !important; border-radius: 0.5rem; }
+        
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #34495e;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+    </style>
+</head>
+<body class="text-slate-800">
+    <header id="main-header" class="bg-violet-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Caso Clinico Interattivo</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+            
+            <div id="case-container">
+                <!-- Steps will be dynamically shown here -->
+            </div>
+
+            <div id="navigation-buttons" class="mt-8 flex justify-between">
+                <button id="prev-btn" class="bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition" disabled>
+                    <span data-lang-key="prevBtn">Precedente</span>
+                </button>
+                <a id="back-to-index-btn" href="index.html" class="hidden bg-violet-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-violet-700 transition">
+                     <span data-lang-key="backToIndex">Torna all'Indice dei Casi</span>
+                </a>
+                <button id="next-btn" class="bg-violet-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-violet-700 transition">
+                    <span data-lang-key="nextBtn">Prosegui</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Caso Clinico Interattivo", en: "Interactive Clinical Case" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                prevBtn: { it: "Precedente", en: "Previous" },
+                nextBtn: { it: "Prosegui", en: "Continue" },
+                submitBtn: { it: "Verifica Risposte", en: "Check Answers" },
+                resultsTitle: { it: "Quiz Finale - Rivediamo i Concetti Chiave", en: "Final Quiz - Let's Review the Key Concepts" },
+                backToIndex: { it: "Torna all'Indice dei Casi", en: "Back to Case Index" },
+
+                step1Title: { it: "Presentazione del Caso", en: "Case Presentation" },
+                step1Content: { it: `<p>Vieni chiamato in un allevamento di vacche da latte per visitare un <strong>vitello di 5 giorni di vita</strong> che presenta <strong>diarrea acquosa giallastra</strong> da circa 24 ore. L'allevatore riferisce che il vitello è <strong>abbattuto</strong> e ha poca voglia di bere il latte.</p>`, en: `<p>You are called to a dairy farm to examine a <strong>5-day-old calf</strong> that has had <strong>yellowish watery diarrhea</strong> for about 24 hours. The farmer reports that the calf is <strong>depressed</strong> and reluctant to drink milk.</p>`},
+                step2Title: { it: "Domanda 1: Anamnesi", en: "Question 1: History" },
+                step2Question: { it: "Qual è la domanda più importante da porre all'allevatore per orientare la diagnosi e la prognosi?", en: "What is the most important question to ask the farmer to guide diagnosis and prognosis?" },
+                step2Options: { it: ["Il vitello è stato vaccinato?", "Il vitello ha assunto una quantità adeguata di colostro di buona qualità?", "Di che colore erano le feci all'inizio?", "Il box è stato pulito di recente?"], en: ["Has the calf been vaccinated?", "Did the calf receive an adequate amount of good quality colostrum?", "What color were the feces initially?", "Has the pen been cleaned recently?"] },
+                step2Answer: { it: "Il vitello ha assunto una quantità adeguata di colostro di buona qualità?", en: "Did the calf receive an adequate amount of good quality colostrum?" },
+                step2Feedbacks: { 
+                    it: {
+                        "Il vitello è stato vaccinato?": "Importante per il futuro, ma alla sua età l'immunità dipende quasi esclusivamente dal colostro.",
+                        "Il vitello ha assunto una quantità adeguata di colostro di buona qualità?": "Corretto! La mancata o insufficiente assunzione di colostro (fallimento del trasferimento passivo) è il principale fattore di rischio per tutte le patologie neonatali, inclusa la diarrea.",
+                        "Di che colore erano le feci all'inizio?": "Può dare qualche indicazione, ma l'informazione sullo stato immunitario è molto più critica.",
+                        "Il box è stato pulito di recente?": "L'igiene è importante, ma il fattore più determinante per la sopravvivenza del vitello è la sua immunità passiva."
+                    },
+                    en: {
+                        "Has the calf been vaccinated?": "Important for the future, but at this age, immunity depends almost exclusively on colostrum.",
+                        "Did the calf receive an adequate amount of good quality colostrum?": "Correct! Failure of passive transfer is the main risk factor for all neonatal diseases, including diarrhea.",
+                        "What color were the feces initially?": "It might give some clues, but information about the immune status is far more critical.",
+                        "Has the pen been cleaned recently?": "Hygiene is important, but the most decisive factor for the calf's survival is its passive immunity."
+                    }
+                },
+                step3Title: { it: "Esame Clinico", en: "Clinical Examination" },
+                step3Content: { it: `<p>L'allevatore ti informa che il vitello ha bevuto solo mezzo litro di colostro dopo la nascita. All'esame clinico, il vitello è in decubito sternale e si alza a fatica. La temperatura rettale è 38.2°C. Le mucose sono pallide e appiccicose.</p>`, en: `<p>The farmer informs you that the calf only drank half a liter of colostrum after birth. On clinical examination, the calf is in sternal recumbency and struggles to stand. Rectal temperature is 38.2°C. The mucous membranes are pale and tacky.</p>`},
+                step4Title: { it: "Domanda 2: Valutazione della Disidratazione", en: "Question 2: Dehydration Assessment" },
+                step4Question: { it: "Pizzicando la cute del collo, noti che la plica cutanea impiega 5-6 secondi a tornare in posizione. A quale grado di disidratazione corrisponde approssimativamente questo reperto?", en: "When you pinch the skin on the neck, you notice the skin fold takes 5-6 seconds to return to place. What degree of dehydration does this finding approximately correspond to?" },
+                step4Options: { it: ["< 5% (non clinicamente rilevabile)", "6-8% (moderata)", "8-10% (grave)", "> 10% (gravissima, shock)"], en: ["< 5% (not clinically detectable)", "6-8% (moderate)", "8-10% (severe)", "> 10% (very severe, shock)"] },
+                step4Answer: { it: "8-10% (grave)", en: "8-10% (severe)" },
+                step4Feedbacks: {
+                    it: {
+                        "< 5% (non clinicamente rilevabile)": "No, un tempo di ritorno così lungo indica una disidratazione significativa.",
+                        "6-8% (moderata)": "Sottostimato. Un tempo di ritorno di 2-4 secondi corrisponde a una disidratazione moderata. Qui siamo oltre.",
+                        "8-10% (grave)": "Corretto. Un tempo di ritorno della plica cutanea di 5-10 secondi, associato a mucose appiccicose e depressione, indica una disidratazione grave.",
+                        "> 10% (gravissima, shock)": "Potenzialmente, ma in genere a questo stadio il vitello sarebbe in decubito laterale e comatoso."
+                    },
+                    en: {
+                        "< 5% (not clinically detectable)": "No, such a long skin tent time indicates significant dehydration.",
+                        "6-8% (moderate)": "Underestimated. A skin tent time of 2-4 seconds corresponds to moderate dehydration. We are beyond that here.",
+                        "8-10% (severe)": "Correct. A skin tent time of 5-10 seconds, associated with tacky mucous membranes and depression, indicates severe dehydration.",
+                        "> 10% (very severe, shock)": "Potentially, but typically at this stage, the calf would be in lateral recumbency and comatose."
+                    }
+                },
+                step5Title: { it: "Domanda 3: Piano Diagnostico", en: "Question 3: Diagnostic Plan" },
+                step5Question: { it: "Quale test diagnostico rapido da campo è più utile per identificare i patogeni enterici più comuni in un vitello di questa età?", en: "What rapid on-farm diagnostic test is most useful for identifying the most common enteric pathogens in a calf of this age?" },
+                step5Options: { it: ["Esame coprologico per parassiti", "Test antigenico rapido su feci (ELISA/immunocromatografia)", "Esame del sangue per la funzionalità epatica", "Ecografia addominale"], en: ["Fecal examination for parasites", "Rapid fecal antigen test (ELISA/immunochromatography)", "Blood test for liver function", "Abdominal ultrasound"] },
+                step5Answer: { it: "Test antigenico rapido su feci (ELISA/immunocromatografia)", en: "Rapid fecal antigen test (ELISA/immunochromatography)" },
+                step5Feedbacks: {
+                    it: {
+                        "Esame coprologico per parassiti": "Meno probabile. I parassiti come la coccidiosi di solito colpiscono vitelli più grandi (dopo le 3 settimane).",
+                        "Test antigenico rapido su feci (ELISA/immunocromatografia)": "Corretto. Questi kit rapidi permettono di testare simultaneamente i 4 principali agenti della diarrea neonatale: Rotavirus, Coronavirus, E. coli K99 e Cryptosporidium.",
+                        "Esame del sangue per la funzionalità epatica": "Non pertinente per un problema diarroico primario.",
+                        "Ecografia addominale": "Può essere utile, ma non identifica l'agente eziologico."
+                    },
+                    en: {
+                        "Fecal examination for parasites": "Less likely. Parasites like coccidiosis usually affect older calves (after 3 weeks of age).",
+                        "Rapid fecal antigen test (ELISA/immunochromatography)": "Correct. These rapid kits allow for simultaneous testing for the 4 main agents of neonatal diarrhea: Rotavirus, Coronavirus, E. coli K99, and Cryptosporidium.",
+                        "Blood test for liver function": "Not relevant for a primary diarrheic problem.",
+                        "Abdominal ultrasound": "Can be useful, but it does not identify the etiological agent."
+                    }
+                },
+                step6Title: { it: "Risultati del Test", en: "Test Results" },
+                step6Content: { it: `<p>Esegui un test rapido sulle feci del vitello. Il risultato è <strong>positivo per Rotavirus e Cryptosporidium parvum</strong>.</p>`, en: `<p>You perform a rapid test on the calf's feces. The result is <strong>positive for Rotavirus and Cryptosporidium parvum</strong>.</p>`},
+                step7Title: { it: "Domanda 4: Fisiopatologia", en: "Question 4: Pathophysiology" },
+                step7Question: { it: "La diarrea profusa causa gravi squilibri. Qual è la conseguenza metabolica più grave e potenzialmente letale in un vitello con diarrea neonatale?", en: "Profuse diarrhea causes severe imbalances. What is the most severe and potentially fatal metabolic consequence in a calf with neonatal diarrhea?" },
+                step7Options: { it: ["Alcalosi metabolica", "Acidosi metabolica", "Iperglicemia", "Ipercalcemia"], en: ["Metabolic alkalosis", "Metabolic acidosis", "Hyperglycemia", "Hypercalcemia"] },
+                step7Answer: { it: "Acidosi metabolica", en: "Metabolic acidosis" },
+                step7Feedbacks: {
+                    it: {
+                        "Alcalosi metabolica": "Errato. La perdita di bicarbonati con le feci porta alla condizione opposta.",
+                        "Acidosi metabolica": "Corretto. La perdita di bicarbonati intestinali, la produzione di acido lattico dovuta alla disidratazione e la scarsa perfusione renale portano a una grave acidosi metabolica, che causa depressione del sensorio e può essere letale.",
+                        "Iperglicemia": "Al contrario, i vitelli anoressici e malati sono spesso ipoglicemici.",
+                        "Ipercalcemia": "Non è una conseguenza tipica della diarrea neonatale."
+                    },
+                    en: {
+                        "Metabolic alkalosis": "Incorrect. The loss of bicarbonate in the feces leads to the opposite condition.",
+                        "Metabolic acidosis": "Correct. The loss of intestinal bicarbonate, lactic acid production due to dehydration, and poor renal perfusion lead to severe metabolic acidosis, which causes depression of the sensorium and can be fatal.",
+                        "Hyperglycemia": "On the contrary, anorexic and sick calves are often hypoglycemic.",
+                        "Hypercalcemia": "Not a typical consequence of neonatal diarrhea."
+                    }
+                },
+                step8Title: { it: "Domanda 5: Terapia Fluida", en: "Question 5: Fluid Therapy" },
+                step8Question: { it: "Dato il grado di disidratazione (8-10%) e la depressione del sensorio, quale approccio terapeutico è indispensabile?", en: "Given the degree of dehydration (8-10%) and the depressed sensorium, which therapeutic approach is essential?" },
+                step8Options: { it: ["Somministrare solo antibiotici per via orale", "Lasciare il vitello a digiuno", "Reidratazione orale con soluzioni elettrolitiche", "Fluidoterapia endovenosa"], en: ["Administering oral antibiotics only", "Fasting the calf", "Oral rehydration with electrolyte solutions", "Intravenous fluid therapy"] },
+                step8Answer: { it: "Fluidoterapia endovenosa", en: "Intravenous fluid therapy" },
+                step8Feedbacks: {
+                    it: {
+                        "Somministrare solo antibiotici per via orale": "Insufficiente e potenzialmente dannoso. La priorità assoluta è correggere la disidratazione e l'acidosi.",
+                        "Lasciare il vitello a digiuno": "Sbagliato. I vitelli hanno bisogno di energia. La somministrazione di latte o sostituti va continuata, separata dalla reidratazione orale.",
+                        "Reidratazione orale con soluzioni elettrolitiche": "Insufficiente. La reidratazione orale è efficace per disidratazioni lievi o moderate (<8%), ma un vitello così abbattuto e disidratato non assorbirebbe adeguatamente e necessita di un supporto più aggressivo.",
+                        "Fluidoterapia endovenosa": "Corretto. Per una disidratazione superiore all'8% e con un vitello che non riesce a bere o ad assorbire, la via endovenosa è l'unica che garantisce una correzione rapida ed efficace degli squilibri idro-elettrolitici e acido-base."
+                    },
+                    en: {
+                        "Administering oral antibiotics only": "Insufficient and potentially harmful. The absolute priority is to correct dehydration and acidosis.",
+                        "Fasting the calf": "Wrong. Calves need energy. Milk or milk replacer feeding should be continued, separate from oral rehydration.",
+                        "Oral rehydration with electrolyte solutions": "Insufficient. Oral rehydration is effective for mild to moderate dehydration (<8%), but a calf this depressed and dehydrated would not absorb adequately and needs more aggressive support.",
+                        "Intravenous fluid therapy": "Correct. For dehydration greater than 8% and with a calf unable to drink or absorb, the intravenous route is the only way to ensure rapid and effective correction of fluid, electrolyte, and acid-base imbalances."
+                    }
+                },
+                step9Title: { it: "Domanda 6: Gestione del Focolaio", en: "Question 6: Outbreak Management" },
+                step9Question: { it: "Mentre tratti il vitello malato, quale consiglio gestionale è più importante per l'allevatore per limitare la diffusione dell'infezione?", en: "While you treat the sick calf, what is the most important management advice for the farmer to limit the spread of the infection?" },
+                step9Options: { it: ["Vaccinare tutti i vitelli sani", "Aumentare la concentrazione di latte in polvere", "Isolare immediatamente i vitelli malati e migliorare l'igiene e la disinfezione delle gabbie", "Mescolare i vitelli malati con quelli sani per creare immunità di gruppo"], en: ["Vaccinate all healthy calves immediately", "Increase the concentration of milk powder", "Immediately isolate sick calves and improve pen hygiene and disinfection", "Mix sick calves with healthy ones to create herd immunity"] },
+                step9Answer: { it: "Isolare immediatamente i vitelli malati e migliorare l'igiene e la disinfezione delle gabbie", en: "Immediately isolate sick calves and improve pen hygiene and disinfection" },
+                step9Feedbacks: {
+                    it: {
+                        "Vaccinare tutti i vitelli sani": "La vaccinazione delle madri è preventiva. Vaccinare i vitelli sani durante un focolaio ha un'efficacia limitata e tardiva.",
+                        "Isolare immediatamente i vitelli malati e migliorare l'igiene e la disinfezione delle gabbie": "Corretto. Rotavirus e soprattutto Cryptosporidium sono altamente contagiosi e resistenti nell'ambiente. L'isolamento e una rigorosa igiene sono fondamentali per interrompere il ciclo di trasmissione.",
+                        "Aumentare la concentrazione di latte in polvere": "Peggiorativo. Potrebbe causare una diarrea alimentare osmotica, aggravando il problema.",
+                        "Mescolare i vitelli malati con quelli sani per creare immunità di gruppo": "Estremamente pericoloso. Aumenterebbe esponenzialmente la carica infettante e la mortalità."
+                    },
+                    en: {
+                        "Vaccinate all healthy calves immediately": "Vaccinating dams is preventive. Vaccinating healthy calves during an outbreak has limited and delayed effectiveness.",
+                        "Immediately isolate sick calves and improve pen hygiene and disinfection": "Correct. Rotavirus and especially Cryptosporidium are highly contagious and resistant in the environment. Isolation and strict hygiene are essential to break the transmission cycle.",
+                        "Increase the concentration of milk powder": "Worsens the situation. It could cause osmotic nutritional diarrhea, exacerbating the problem.",
+                        "Mix sick calves with healthy ones to create herd immunity": "Extremely dangerous. It would exponentially increase the infectious load and mortality."
+                    }
+                },
+                 step10Title: { it: "Domanda 7: Terapia Specifica", en: "Question 7: Specific Therapy" },
+                step10Question: { it: "Oltre alla fluidoterapia, quale farmaco specifico è indicato per il trattamento dell'infezione da Cryptosporidium parvum?", en: "Besides fluid therapy, which specific drug is indicated for the treatment of Cryptosporidium parvum infection?" },
+                step10Options: { it: ["Fenbendazolo", "Sulfamidici", "Alofuginone lattato", "Amprolium"], en: ["Fenbendazole", "Sulfonamides", "Halofuginone lactate", "Amprolium"] },
+                step10Answer: { it: "Alofuginone lattato", en: "Halofuginone lactate" },
+                step10Feedbacks: {
+                    it: {
+                        "Fenbendazolo": "Errato. È un antielmintico, non ha efficacia contro i coccidi come Cryptosporidium.",
+                        "Sulfamidici": "Hanno una certa efficacia contro i coccidi in generale, ma non sono il farmaco d'elezione per Cryptosporidium.",
+                        "Alofuginone lattato": "Corretto. È l'unico farmaco approvato in molti paesi specificamente per la prevenzione e il trattamento della criptosporidiosi nei vitelli.",
+                        "Amprolium": "Usato per la coccidiosi da Eimeria, ma non è considerato efficace per Cryptosporidium."
+                    },
+                    en: {
+                        "Fenbendazole": "Incorrect. This is an anthelmintic and has no efficacy against coccidia like Cryptosporidium.",
+                        "Sulfonamides": "They have some efficacy against coccidia in general but are not the drug of choice for Cryptosporidium.",
+                        "Halofuginone lactate": "Correct. It is the only drug approved in many countries specifically for the prevention and treatment of cryptosporidiosis in calves.",
+                        "Amprolium": "Used for coccidiosis caused by Eimeria, but it is not considered effective for Cryptosporidium."
+                    }
+                },
+                 step11Title: { it: "Domanda 8: Gestione Alimentare", en: "Question 8: Nutritional Management" },
+                step11Question: { it: "Durante la terapia reidratante, come gestisci l'alimentazione lattea?", en: "During rehydration therapy, how do you manage milk feeding?" },
+                step11Options: { it: ["Sospendere completamente il latte fino a guarigione", "Diluire il latte al 50% con acqua", "Continuare con i pasti di latte normali, separati temporalmente dalla soluzione reidratante orale", "Sostituire il latte con solo glucosio"], en: ["Completely withhold milk until recovery", "Dilute milk 50% with water", "Continue with normal milk meals, temporally separated from the oral rehydrating solution", "Replace milk with only glucose"] },
+                step11Answer: { it: "Continuare con i pasti di latte normali, separati temporalmente dalla soluzione reidratante orale", en: "Continue with normal milk meals, temporally separated from the oral rehydrating solution" },
+                step11Feedbacks: {
+                    it: {
+                        "Sospendere completamente il latte fino a guarigione": "Errato. Il digiuno prolungato danneggia i villi intestinali e priva il vitello dell'energia necessaria per guarire.",
+                        "Diluire il latte al 50% con acqua": "Una pratica comune in passato, ma oggi si preferisce fornire un pasto completo per massimizzare l'apporto energetico.",
+                        "Continuare con i pasti di latte normali, separati temporalmente dalla soluzione reidratante orale": "Corretto. È fondamentale continuare a fornire l'apporto calorico del latte per supportare il metabolismo e la riparazione intestinale. I pasti di latte vanno somministrati a distanza di almeno 2 ore da quelli con la soluzione reidratante.",
+                        "Sostituire il latte con solo glucosio": "Insufficiente. Il glucosio fornisce energia, ma il latte offre un profilo nutrizionale completo (grassi, proteine) insostituibile."
+                    },
+                    en: {
+                        "Completely withhold milk until recovery": "Incorrect. Prolonged fasting damages the intestinal villi and deprives the calf of the energy needed to heal.",
+                        "Dilute milk 50% with water": "A common practice in the past, but now a full meal is preferred to maximize energy intake.",
+                        "Continue with normal milk meals, temporally separated from the oral rehydrating solution": "Correct. It is crucial to continue providing the caloric intake of milk to support metabolism and intestinal repair. Milk meals should be given at least 2 hours apart from the oral rehydrating solution.",
+                        "Replace milk with only glucose": "Insufficient. Glucose provides energy, but milk offers a complete nutritional profile (fats, proteins) that is irreplaceable."
+                    }
+                },
+                 step12Title: { it: "Domanda 9: Prevenzione in Mandria", en: "Question 9: Herd Prevention" },
+                step12Question: { it: "Per prevenire futuri casi di diarrea neonatale da Rotavirus, quale strategia è più efficace a livello di mandria?", en: "To prevent future cases of neonatal diarrhea from Rotavirus, what is the most effective herd-level strategy?" },
+                step12Options: { it: ["Vaccinare i vitelli alla nascita", "Vaccinare le vacche gravide nell'ultima fase della gestazione", "Somministrare antibiotici nel latte a tutti i vitelli", "Utilizzare solo latte in polvere medicato"], en: ["Vaccinating calves at birth", "Vaccinating pregnant cows in the last stage of gestation", "Administering antibiotics in the milk to all calves", "Using only medicated milk replacer"] },
+                step12Answer: { it: "Vaccinare le vacche gravide nell'ultima fase della gestazione", en: "Vaccinating pregnant cows in the last stage of gestation" },
+                step12Feedbacks: {
+                    it: {
+                        "Vaccinare i vitelli alla nascita": "Inefficace. L'immunità attiva impiega tempo a svilupparsi, mentre il vitello ha bisogno di protezione immediata.",
+                        "Vaccinare le vacche gravide nell'ultima fase della gestazione": "Corretto. La vaccinazione delle madri (vaccinazione in asciutta) aumenta la concentrazione di anticorpi specifici nel colostro, fornendo una protezione passiva efficace al vitello fin dai primi giorni di vita.",
+                        "Somministrare antibiotici nel latte a tutti i vitelli": "Inutile per i virus e promuove l'antibiotico-resistenza.",
+                        "Utilizzare solo latte in polvere medicato": "Non previene le infezioni virali e non sostituisce una corretta gestione del colostro."
+                    },
+                    en: {
+                        "Vaccinating calves at birth": "Ineffective. Active immunity takes time to develop, while the calf needs immediate protection.",
+                        "Vaccinating pregnant cows in the last stage of gestation": "Correct. Vaccinating dams (dry cow vaccination) increases the concentration of specific antibodies in the colostrum, providing effective passive protection to the calf from the first days of life.",
+                        "Administering antibiotics in the milk to all calves": "Useless for viruses and promotes antibiotic resistance.",
+                        "Using only medicated milk replacer": "Does not prevent viral infections and is not a substitute for proper colostrum management."
+                    }
+                },
+                step13Title: { it: "Domanda 10: Prognosi", en: "Question 10: Prognosis" },
+                step13Question: { it: "Con una fluidoterapia endovenosa aggressiva e una terapia specifica, qual è la prognosi per questo vitello?", en: "With aggressive intravenous fluid therapy and specific treatment, what is the prognosis for this calf?" },
+                step13Options: { it: ["Infausta", "Riservata, ma favorevole con un trattamento adeguato", "Eccellente, guarirà senza problemi", "Buona solo se si somministrano steroidi"], en: ["Grave", "Guarded, but favorable with appropriate treatment", "Excellent, it will recover without issues", "Good only if steroids are administered"] },
+                step13Answer: { it: "Riservata, ma favorevole con un trattamento adeguato", en: "Guarded, but favorable with appropriate treatment" },
+                step13Feedbacks: {
+                    it: {
+                        "Infausta": "Troppo pessimistico. Se si interviene tempestivamente per correggere disidratazione e acidosi, molti vitelli sopravvivono.",
+                        "Riservata, ma favorevole con un trattamento adeguato": "Corretto. La prognosi è sempre riservata a causa della gravità degli squilibri metabolici, ma un intervento rapido e corretto aumenta notevolmente le probabilità di successo.",
+                        "Eccellente, guarirà senza problemi": "Troppo ottimistico. Un vitello in decubito e disidratato all'8-10% è sempre in una condizione critica.",
+                        "Somministrare steroidi": "Controindicato. Gli steroidi possono peggiorare l'immunosoppressione in un animale con un'infezione attiva."
+                    },
+                    en: {
+                        "Grave": "Too pessimistic. If intervention is timely to correct dehydration and acidosis, many calves survive.",
+                        "Guarded, but favorable with appropriate treatment": "Correct. The prognosis is always guarded due to the severity of the metabolic imbalances, but prompt and correct intervention greatly increases the chances of success.",
+                        "Excellent, it will recover without issues": "Too optimistic. A calf in recumbency and 8-10% dehydrated is always in a critical condition.",
+                        "Good only if steroids are administered": "Contraindicated. Steroids can worsen immunosuppression in an animal with an active infection."
+                    }
+                },
+                step14Title: { it: "Diagnosi Finale", en: "Final Diagnosis" },
+                step14Content: { it: `<p>La diagnosi è <strong>Diarrea Neonatale Complessa</strong> da infezione mista di <strong>Rotavirus</strong> e <strong>Cryptosporidium parvum</strong>, complicata da <strong>disidratazione grave (8-10%)</strong> e <strong>acidosi metabolica</strong> secondaria a fallimento del trasferimento passivo dell'immunità.</p>`, en: `<p>The diagnosis is <strong>Complex Neonatal Diarrhea</strong> from a mixed infection of <strong>Rotavirus</strong> and <strong>Cryptosporidium parvum</strong>, complicated by <strong>severe dehydration (8-10%)</strong> and <strong>metabolic acidosis</strong> secondary to failure of passive transfer of immunity.</p>`},
+                finalQuizTitle: {it: "Quiz Finale - Rivediamo i Concetti Chiave", en: "Final Quiz - Let's Review the Key Concepts"},
+            };
+
+            const finalQuizData = {
+                it: [
+                    { question: "Qual è il principale fattore di rischio per la diarrea neonatale?", options: ["Freddo", "Mancato trasferimento dell'immunità passiva", "Eccesso di latte", "Lettiera umida"], answer: "Mancato trasferimento dell'immunità passiva" },
+                    { question: "Quale agente eziologico è uno zoonosi importante?", options: ["Rotavirus", "Coronavirus", "E. coli K99", "Cryptosporidium parvum"], answer: "Cryptosporidium parvum" },
+                    { question: "Un vitello con il 10% di disidratazione e 50 kg di peso, di quanti litri di fluidi ha bisogno per correggere il deficit?", options: ["1 L", "2.5 L", "5 L", "10 L"], answer: "5 L" },
+                    { question: "Oltre agli elettroliti, quale componente è fondamentale in una soluzione reidratante orale per favorire l'assorbimento di acqua e sodio?", options: ["Antibiotici", "Antinfiammatori", "Glucosio o glicina", "Vitamine liposolubili"], answer: "Glucosio o glicina" },
+                    { question: "L'acidosi metabolica in un vitello diarroico è causata principalmente da:", options: ["Eccessiva produzione di acido cloridrico", "Perdita di bicarbonati con le feci", "Incapacità di assorbire zuccheri", "Eccessiva assunzione di potassio"], answer: "Perdita di bicarbonati con le feci" },
+                    { question: "La vaccinazione delle madri in asciutta contro i patogeni enterici serve a:", options: ["Prevenire la malattia nella madre", "Aumentare la concentrazione di anticorpi nel colostro", "Curare i vitelli già malati", "Ridurre la carica batterica ambientale"], answer: "Aumentare la concentrazione di anticorpi nel colostro" },
+                    { question: "Quale dei seguenti NON è un agente comune di diarrea nei vitelli sotto le 3 settimane di età?", options: ["Rotavirus", "Cryptosporidium", "Eimeria spp. (coccidiosi)", "Coronavirus"], answer: "Eimeria spp. (coccidiosi)" },
+                    { question: "Qual è il modo migliore per valutare la qualità del colostro in allevamento?", options: ["Osservando il colore", "Misurando la densità con un colostrometro o un rifrattometro", "Assaggiandolo", "Misurando la temperatura"], answer: "Misurando la densità con un colostrometro o un rifrattometro" },
+                    { question: "Perché la terapia antibiotica sistemica non è sempre indicata nella diarrea neonatale non complicata?", options: ["Perché è troppo costosa", "Perché la maggior parte degli agenti non sono batteri (virus, protozoi)", "Perché gli antibiotici causano sempre vomito", "Perché non esistono antibiotici efficaci"], answer: "Perché la maggior parte degli agenti non sono batteri (virus, protozoi)" },
+                    { question: "Quale intervento migliora maggiormente la prognosi di un vitello gravemente disidratato e in acidosi?", options: ["Somministrazione di latte caldo", "Somministrazione di FANS", "Fluidoterapia endovenosa con bicarbonato", "Tenere il vitello sotto una lampada riscaldante"], answer: "Fluidoterapia endovenosa con bicarbonato" }
+                ],
+                en: [
+                    { question: "What is the main risk factor for neonatal diarrhea?", options: ["Cold", "Failure of passive transfer of immunity", "Excess milk", "Wet bedding"], answer: "Failure of passive transfer of immunity" },
+                    { question: "Which etiological agent is an important zoonosis?", options: ["Rotavirus", "Coronavirus", "E. coli K99", "Cryptosporidium parvum"], answer: "Cryptosporidium parvum" },
+                    { question: "A 50 kg calf with 10% dehydration needs how many liters of fluids to correct the deficit?", options: ["1 L", "2.5 L", "5 L", "10 L"], answer: "5 L" },
+                    { question: "Besides electrolytes, what component is essential in an oral rehydrating solution to promote water and sodium absorption?", options: ["Antibiotics", "Anti-inflammatories", "Glucose or glycine", "Fat-soluble vitamins"], answer: "Glucose or glycine" },
+                    { question: "Metabolic acidosis in a diarrheic calf is mainly caused by:", options: ["Excessive hydrochloric acid production", "Loss of bicarbonate in the feces", "Inability to absorb sugars", "Excessive potassium intake"], answer: "Loss of bicarbonate in the feces" },
+                    { question: "Vaccinating dams during the dry period against enteric pathogens aims to:", options: ["Prevent the disease in the dam", "Increase the antibody concentration in the colostrum", "Cure already sick calves", "Reduce environmental bacterial load"], answer: "Increase the antibody concentration in the colostrum" },
+                    { question: "Which of the following is NOT a common agent of diarrhea in calves under 3 weeks of age?", options: ["Rotavirus", "Cryptosporidium", "Eimeria spp. (coccidiosis)", "Coronavirus"], answer: "Eimeria spp. (coccidiosis)" },
+                    { question: "What is the best way to assess colostrum quality on a farm?", options: ["Observing its color", "Measuring its density with a colostrometer or refractometer", "Tasting it", "Measuring its temperature"], answer: "Measuring its density with a colostrometer or refractometer" },
+                    { question: "Why is systemic antibiotic therapy not always indicated in uncomplicated neonatal diarrhea?", options: ["Because it is too expensive", "Because most agents are not bacteria (viruses, protozoa)", "Because antibiotics always cause vomiting", "Because there are no effective antibiotics"], answer: "Because most agents are not bacteria (viruses, protozoa)" },
+                    { question: "Which intervention most improves the prognosis for a severely dehydrated and acidotic calf?", options: ["Administering warm milk", "Administering NSAIDs", "Intravenous fluid therapy with bicarbonate", "Keeping the calf under a heat lamp"], answer: "Intravenous fluid therapy with bicarbonate" }
+                ]
+            };
+            
+            const caseStructure = [
+                { type: 'info', titleKey: 'step1Title', contentKey: 'step1Content' },
+                { type: 'question', titleKey: 'step2Title', questionKey: 'step2Question', optionsKey: 'step2Options', answerKey: 'step2Answer', feedbacksKey: 'step2Feedbacks' },
+                { type: 'info', titleKey: 'step3Title', contentKey: 'step3Content' },
+                { type: 'question', titleKey: 'step4Title', questionKey: 'step4Question', optionsKey: 'step4Options', answerKey: 'step4Answer', feedbacksKey: 'step4Feedbacks' },
+                { type: 'question', titleKey: 'step5Title', questionKey: 'step5Question', optionsKey: 'step5Options', answerKey: 'step5Answer', feedbacksKey: 'step5Feedbacks' },
+                { type: 'info', titleKey: 'step6Title', contentKey: 'step6Content' },
+                { type: 'question', titleKey: 'step7Title', questionKey: 'step7Question', optionsKey: 'step7Options', answerKey: 'step7Answer', feedbacksKey: 'step7Feedbacks' },
+                { type: 'question', titleKey: 'step8Title', questionKey: 'step8Question', optionsKey: 'step8Options', answerKey: 'step8Answer', feedbacksKey: 'step8Feedbacks' },
+                { type: 'question', titleKey: 'step9Title', questionKey: 'step9Question', optionsKey: 'step9Options', answerKey: 'step9Answer', feedbacksKey: 'step9Feedbacks' },
+                { type: 'question', titleKey: 'step10Title', questionKey: 'step10Question', optionsKey: 'step10Options', answerKey: 'step10Answer', feedbacksKey: 'step10Feedbacks' },
+                { type: 'question', titleKey: 'step11Title', questionKey: 'step11Question', optionsKey: 'step11Options', answerKey: 'step11Answer', feedbacksKey: 'step11Feedbacks' },
+                { type: 'question', titleKey: 'step12Title', questionKey: 'step12Question', optionsKey: 'step12Options', answerKey: 'step12Answer', feedbacksKey: 'step12Feedbacks' },
+                { type: 'question', titleKey: 'step13Title', questionKey: 'step13Question', optionsKey: 'step13Options', answerKey: 'step13Answer', feedbacksKey: 'step13Feedbacks' },
+                { type: 'info', titleKey: 'step14Title', contentKey: 'step14Content' },
+                { type: 'final_quiz', titleKey: 'finalQuizTitle' }
+            ];
+
+            let currentStep = 0;
+            const caseContainer = document.getElementById('case-container');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const backToIndexBtn = document.getElementById('back-to-index-btn');
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            
+            function renderStep(stepIndex) {
+                const stepData = caseStructure[stepIndex];
+                const lang = currentLanguage;
+                const title = translations[stepData.titleKey]?.[lang] || `Step ${stepIndex + 1}`;
+
+                let contentHtml = `<div class="step-card active p-4" id="step-${stepIndex}"><h2 class="text-3xl font-bold text-violet-700 mb-6 flex items-center">${title} <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>`;
+
+                if (stepData.type === 'info') {
+                    contentHtml += `<div class="prose max-w-none">${translations[stepData.contentKey][lang]}</div>`;
+                } else if (stepData.type === 'question') {
+                    const question = translations[stepData.questionKey][lang];
+                    const options = translations[stepData.optionsKey][lang];
+                    contentHtml += `<h3 class="text-xl font-semibold mb-4">${question}</h3><div class="space-y-3">${options.map(opt => `<button class="option-button w-full text-left p-4 border rounded-lg hover:bg-violet-100" data-answer="${opt}">${opt}</button>`).join('')}</div><p id="feedback-${stepIndex}" class="mt-4 text-sm font-semibold"></p>`;
+                } else if (stepData.type === 'final_quiz') {
+                    contentHtml += `<div id="final-quiz-container" class="space-y-6"></div><div class="mt-6 text-center"><button id="submit-final-quiz" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-700 transition">${translations['submitBtn'][lang]}</button></div><div id="final-quiz-results" class="mt-6 text-center text-xl font-bold"></div>`;
+                }
+
+                contentHtml += `</div>`;
+                caseContainer.innerHTML = contentHtml;
+                if (stepData.type === 'final_quiz') {
+                    loadFinalQuiz(lang);
+                    document.getElementById('submit-final-quiz').addEventListener('click', checkFinalQuiz);
+                }
+                updateNavButtons();
+                addOptionListeners();
+                setupTTSListeners();
+            }
+            
+            function loadFinalQuiz(lang) {
+                const quizContainer = document.getElementById('final-quiz-container');
+                quizContainer.innerHTML = '';
+                finalQuizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `<li class="quiz-option p-2 rounded hover:bg-violet-50"><label class="flex items-center cursor-pointer"><input type="radio" name="final_q${index}" value="${o}" class="mr-3">${o}</label></li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function checkFinalQuiz() {
+                let score = 0;
+                const lang = currentLanguage;
+                const questions = document.querySelectorAll('#final-quiz-container .quiz-question');
+                finalQuizData[lang].forEach((q, index) => {
+                    const selectedInput = document.querySelector(`input[name="final_q${index}"]:checked`);
+                    const options = questions[index].querySelectorAll('.quiz-option');
+                    
+                    options.forEach(optLabel => {
+                        const optInput = optLabel.querySelector('input');
+                        optLabel.classList.remove('incorrect-answer', 'correct-answer');
+                        if (optInput.value === q.answer) {
+                            optLabel.classList.add('correct-answer');
+                        }
+                    });
+
+                    if (selectedInput) {
+                        if (selectedInput.value === q.answer) {
+                            score++;
+                        } else {
+                            selectedInput.closest('.quiz-option').classList.add('incorrect-answer');
+                        }
+                    }
+                });
+                const resultText = lang === 'it' ? `Punteggio finale: ${score} / ${finalQuizData.it.length}` : `Final Score: ${score} / ${finalQuizData.en.length}`;
+                document.getElementById('final-quiz-results').textContent = resultText;
+                
+                prevBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+                backToIndexBtn.classList.remove('hidden');
+            }
+
+            function addOptionListeners() {
+                document.querySelectorAll('.option-button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const stepData = caseStructure[currentStep];
+                        const lang = currentLanguage;
+                        const selectedAnswer = btn.dataset.answer;
+                        const correctAnswer = translations[stepData.answerKey][lang];
+                        const feedbackEl = document.getElementById(`feedback-${currentStep}`);
+                        const feedbackText = translations[stepData.feedbacksKey][lang][selectedAnswer];
+                        
+                        feedbackEl.textContent = feedbackText;
+
+                        if (selectedAnswer === correctAnswer) {
+                            btn.classList.add('correct');
+                            feedbackEl.className = 'mt-4 text-sm font-semibold text-green-600';
+                            document.querySelectorAll('.option-button').forEach(b => b.disabled = true);
+                            nextBtn.disabled = false;
+                        } else {
+                            btn.disabled = true;
+                            btn.classList.add('incorrect');
+                            feedbackEl.className = 'mt-4 text-sm font-semibold text-red-600';
+                        }
+                    });
+                });
+            }
+
+            function updateNavButtons() {
+                prevBtn.disabled = currentStep === 0;
+                const stepData = caseStructure[currentStep];
+                if (stepData.type === 'question') {
+                    const answeredCorrectly = document.querySelector('.option-button.correct');
+                    nextBtn.disabled = !answeredCorrectly;
+                } else {
+                    nextBtn.disabled = currentStep === caseStructure.length - 1;
+                }
+
+                if (stepData.type === 'final_quiz') {
+                    prevBtn.classList.remove('hidden');
+                    nextBtn.classList.add('hidden');
+                    backToIndexBtn.classList.add('hidden');
+                } else {
+                    prevBtn.classList.remove('hidden');
+                    nextBtn.classList.remove('hidden');
+                    backToIndexBtn.classList.add('hidden');
+                }
+            }
+            
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function speak(text, button) {
+                if (activeTTSButton === button) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                    return;
+                }
+                if (synth.speaking) { synth.cancel(); }
+                if (activeTTSButton) { activeTTSButton.classList.remove('playing'); }
+                
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                currentUtterance.onend = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                currentUtterance.onerror = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                synth.speak(currentUtterance);
+                activeTTSButton = button;
+                button.classList.add('playing');
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('.step-card');
+                            const clone = section.cloneNode(true);
+                            clone.querySelectorAll('button, a, .tts-button, h2').forEach(el => el.remove());
+                            let titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = `${titleClone.textContent.trim()}. ${clone.textContent.trim().replace(/\s\s+/g, ' ')}`;
+                        }
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+             const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.textContent = translations[key][lang];
+                    }
+                });
+                
+                renderStep(currentStep);
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            };
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    renderStep(currentStep);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < caseStructure.length - 1) {
+                    currentStep++;
+                    renderStep(currentStep);
+                }
+            });
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+            
+            if (localStorage.getItem('dsa-mode') === 'enabled') {
+                body.classList.add('dsa-mode');
+            }
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
