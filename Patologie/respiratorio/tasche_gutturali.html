@@ -140,9 +140,10 @@
             </div>
         </div>
     </main>
-    <footer id="main-footer" class="bg-teal-900 text-white text-center py-4 mt-10">
-      <p class="container mx-auto px-4 text-xs">Sviluppato con passione per l'istruzione veterinaria. &copy; 2024</p>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-slate-200">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const translations = {
@@ -176,6 +177,7 @@
                 },
                 btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
                 accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
             };
 
             const quizData = {
@@ -214,44 +216,34 @@
 
             // Helper function to stop any active speech
             function stopSpeech() {
-                // By calling cancel, the 'onend' event of the current utterance will fire, cleaning up the state.
                 if (synth.speaking) {
                     synth.cancel();
                 }
             }
             
             function speak(text, button) {
-                // CASE 1: The user clicks the SAME button that is already active.
                 if (activeTTSButton === button && currentUtterance) {
                     if (synth.paused) {
-                        // If it's paused, resume speaking.
                         synth.resume();
                         button.classList.add('playing');
                     } else if (synth.speaking) {
-                        // If it's currently speaking, pause it.
                         synth.pause();
                         button.classList.remove('playing');
                     }
-                    return; // Stop the function here.
+                    return; 
                 }
 
-                // CASE 2: The user clicks a NEW button (or it's the very first click).
-                // First, stop any speech that might be playing or paused from another button.
                 stopSpeech();
                 
-                // Although stopSpeech() will trigger onend, we can remove the class here for faster UI feedback.
                 if(activeTTSButton) {
                     activeTTSButton.classList.remove('playing');
                 }
 
-                // Create a new speech object
                 currentUtterance = new SpeechSynthesisUtterance(text);
                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
                 
-                // Define what happens when the speech finishes
                 currentUtterance.onend = () => {
                     if (button) button.classList.remove('playing');
-                    // Reset state when speech is done
                     activeTTSButton = null;
                     currentUtterance = null;
                 };
@@ -259,12 +251,10 @@
                 currentUtterance.onerror = (event) => {
                     console.error('An error occurred with speech synthesis:', event);
                     if (button) button.classList.remove('playing');
-                     // Reset state on error
                     activeTTSButton = null;
                     currentUtterance = null;
                 };
 
-                // Update the state to the new button and start speaking
                 activeTTSButton = button;
                 button.classList.add('playing');
                 synth.speak(currentUtterance);
