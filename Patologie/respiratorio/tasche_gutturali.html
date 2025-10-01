@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patologie delle Tasche Gutturali - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0fdfa; color: #134e4a; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #0d9488; color: #0f766e; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #34495e;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .quiz-question { border: 1px solid #ccfbf1; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #f0fdfa; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"], canvas { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-teal-50">
+
+    <header id="main-header" class="bg-teal-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Respiratorie</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-teal-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-teal-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Patologie Respiratorie</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-teal-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-teal-800" data-lang-key="pageTitle">Patologie delle Tasche Gutturali</h1>
+                <p class="text-lg text-teal-700 mt-2" data-lang-key="pageSubtitle">Gestione delle principali affezioni di queste strutture uniche dell'equino.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-teal-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none text-teal-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-teal-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                     <a href="infografica_tasche_gutturali_cavallo.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-teal-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-teal-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona di un cavallo">🐴</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-teal-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica Dettagliata</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca qui per una guida visuale completa sulle patologie delle tasche gutturali.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-teal-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-teal-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-teal-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-teal-500 text-white rounded-full hover:bg-teal-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                            </svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" />
+                            </svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-teal-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-teal-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_tasche_gutturali.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-teal-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-teal-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="bg-teal-900 text-white text-center py-4 mt-10">
+      <p class="container mx-auto px-4 text-xs">Sviluppato con passione per l'istruzione veterinaria. &copy; 2024</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Patologie Respiratorie", en: "Respiratory Diseases" },
+                backToIndexText: { it: "Indice Patologie Respiratorie", en: "Respiratory Pathology Index" },
+                pageTitle: { it: "Patologie delle Tasche Gutturali", en: "Guttural Pouch Diseases" },
+                pageSubtitle: { it: "Gestione delle principali affezioni di queste strutture uniche dell'equino.", en: "Management of the main conditions of these unique equine structures." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: `<h3 class="text-2xl font-semibold mb-3">Introduzione alle Tasche Gutturali</h3><p>Le tasche gutturali sono diverticoli ventrali delle tube uditive (o di Eustachio), strutture anatomiche uniche degli equidi. A causa della loro stretta vicinanza a strutture anatomiche vitali, come le arterie carotidi (interna ed esterna), l'arteria mascellare e numerosi nervi cranici (glossofaringeo, vago, accessorio, ipoglosso e facciale), le patologie che le colpiscono possono avere conseguenze molto gravi per l'animale.</p><div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Immagine Endoscopica Normale</p><img src="endoscopia_normale.jpg" alt="Immagine endoscopica normale di una tasca gutturale" class="w-full max-w-md mx-auto rounded-lg shadow-md"><p class="text-center text-xs text-gray-500 mt-1">immagine endoscopica normale dell'interno di una tasca gutturale.</p></div><h3 class="text-2xl font-semibold mt-6 mb-3">Principali Patologie</h3><h4 class="text-xl font-semibold mt-4 mb-2">1. Empiema delle Tasche Gutturali</h4><p>L'empiema consiste nell'accumulo di materiale purulento (pus) all'interno di una o entrambe le tasche.</p><p class="mt-2"><strong>Causa:</strong> È spesso una complicanza secondaria a infezioni delle prime vie aeree, in particolare l'adenite equina (causata da <em>Streptococcus equi equi</em>).</p><p class="mt-2"><strong>Segni Clinici:</strong></p><ul><li>Scolo nasale purulento, monolaterale o bilaterale.</li><li>Linfoadenopatia (ingrossamento dei linfonodi sottomandibolari e retrofaringei).</li><li>Nei casi cronici, il pus può solidificarsi formando concrezioni chiamate <strong>condroidi</strong>.</li></ul><p class="mt-2"><strong>Terapia:</strong> La gestione prevede lavaggi delle tasche tramite endoscopio e l'utilizzo di antibiotici, somministrati sia per via sistemica che locale.</p><div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Immagine Endoscopica di Empiema</p><img src="empiema_endoscopia.jpg" alt="Immagine endoscopica di empiema della tasca gutturale" class="w-full max-w-md mx-auto rounded-lg shadow-md"><p class="text-center text-xs text-gray-500 mt-1">Materiale purulento e condroidi all'interno della tasca gutturale.</p></div><h4 class="text-xl font-semibold mt-4 mb-2">2. Micosi delle Tasche Gutturali</h4><p>Questa patologia è un'infezione fungina, tipicamente sostenuta da <em>Aspergillus spp.</em>, che colonizza la parete della tasca, solitamente sul "tetto" del compartimento mediale, in corrispondenza dell'arteria carotide interna.</p><p class="mt-2"><strong>Causa:</strong> L'infezione fungina provoca la formazione di una placca difterica che erode progressivamente le strutture sottostanti, in particolare le pareti delle arterie e i nervi.</p><p class="mt-2"><strong>Segni Clinici:</strong></p><ul><li><strong>Epistassi</strong> (sanguinamento dal naso): È il segno più grave e allarmante. Può essere improvvisa, profusa e potenzialmente fatale a causa dell'erosione dell'arteria carotide interna.</li><li><strong>Segni neurologici:</strong> Si possono manifestare sintomi come disfagia (difficoltà a deglutire), sindrome di Horner (ptosi palpebrale, miosi, enoftalmo), e paralisi di altri nervi cranici.</li></ul><p class="mt-2"><strong>Terapia:</strong> La micosi delle tasche gutturali è considerata un'emergenza medica. Il trattamento d'elezione è chirurgico e consiste nell'occlusione (tramite catetere a palloncino o "coil") dell'arteria danneggiata per prevenire un'emorragia fatale.</p><div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Immagine Endoscopica di Micosi</p><img src="micosi_endoscopia.jpg" alt="Immagine endoscopica di micosi della tasca gutturale" class="w-full max-w-md mx-auto rounded-lg shadow-md"><p class="text-center text-xs text-gray-500 mt-1">Placca difterica sopra l'arteria carotide interna.</p></div><h4 class="text-xl font-semibold mt-4 mb-2">3. Timpanismo delle Tasche Gutturali</h4><p>È una condizione che colpisce prevalentemente i puledri, caratterizzata da un accumulo di aria all'interno della tasca che non riesce a fuoriuscire.</p><p class="mt-2"><strong>Causa:</strong> Si ritiene sia dovuta a un difetto funzionale della plica salpingofaringea, che agisce come una valvola unidirezionale, permettendo all'aria di entrare ma non di uscire.</p><p class="mt-2"><strong>Segni Clinici:</strong></p><ul><li>Gonfiore evidente, non dolente e timpanico alla palpazione, localizzato in regione parotidea (subito dietro la mandibola).</li></ul><p class="mt-2"><strong>Terapia:</strong> La risoluzione è tipicamente chirurgica e mira a creare un'apertura permanente per consentire la fuoriuscita dell'aria.</p><div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Immagine Clinica di Timpanismo</p><img src="timpanismo_clinica.jpg" alt="Puledro con gonfiore parotideo dovuto a timpanismo" class="w-full max-w-md mx-auto rounded-lg shadow-md"><p class="text-center text-xs text-gray-500 mt-1">Gonfiore caratteristico in un puledro affetto da timpanismo.</p></div><h4 class="text-xl font-semibold mt-4 mb-2">4. Osteoartropatia Temporoioidea</h4><p>Questa è una patologia degenerativa dell'articolazione tra l'osso stiloide e l'osso temporale del cranio.</p><p class="mt-2"><strong>Causa:</strong> Spesso idiopatica o secondaria a processi infiammatori cronici (es. otite interna). Porta a una fusione (anchilosi) dell'articolazione, che può fratturarsi in seguito a movimenti normali della testa.</p><p class="mt-2"><strong>Segni Clinici:</strong></p><ul><li>Sono prevalentemente neurologici e acuti. Coinvolgono il nervo facciale (VII) e vestibolococleare (VIII), causando paralisi facciale (orecchio e labbro cadente), head tilt (testa ruotata), atassia e nistagmo (movimenti involontari degli occhi).</li></ul><p class="mt-2"><strong>Terapia:</strong> La terapia medica prevede l'uso di antinfiammatori e antibiotici. La chirurgia (es. ceratoidectomia) è spesso risolutiva poiché rimuove la tensione dall'articolazione malata.</p><div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Immagine TC di Osteoartropatia</p><img src="osteoartropatia_tc.jpg" alt="TC dell'articolazione temporoioidea in un cavallo" class="w-full max-w-md mx-auto rounded-lg shadow-md"><p class="text-center text-xs text-gray-500 mt-1">Proliferazione ossea e anchilosi dell'articolazione temporoioidea.</p></div><h3 class="text-2xl font-semibold mt-6 mb-3">Diagnosi</h3><p>La diagnosi delle patologie delle tasche gutturali si basa principalmente sui seguenti approcci:</p><ul><li><strong>Endoscopia:</strong> È l'esame diagnostico d'elezione, poiché permette una visualizzazione diretta dell'interno delle tasche, consentendo di identificare la presenza di pus, condroidi, placche fungine o anomalie strutturali.</li><li><strong>Radiografia e Tomografia Computerizzata (TC):</strong> Questi esami di diagnostica per immagini sono utili per valutare l'estensione delle lesioni e l'eventuale coinvolgimento delle strutture ossee adiacenti (ad esempio, nell'osteoartropatia temporoioidea).</li></ul>`,
+                    en: `<h3 class="text-2xl font-semibold mb-3">Introduction to the Guttural Pouches</h3><p>The guttural pouches are ventral diverticula of the auditory (Eustachian) tubes, anatomical structures unique to equids. Due to their close proximity to vital anatomical structures, such as the carotid arteries (internal and external), the maxillary artery, and numerous cranial nerves (glossopharyngeal, vagus, accessory, hypoglossal, and facial), the pathologies affecting them can have very serious consequences for the animal.</p><div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Normal Endoscopic Image</p><img src="endoscopia_normale.jpg" alt="Normal endoscopic image of a guttural pouch" class="w-full max-w-md mx-auto rounded-lg shadow-md"><p class="text-center text-xs text-gray-500 mt-1">normal endoscopic image of the inside of a guttural pouch.</p></div><h3 class="text-2xl font-semibold mt-6 mb-3">Main Pathologies</h3><h4 class="text-xl font-semibold mt-4 mb-2">1. Guttural Pouch Empyema</h4><p>Empyema consists of the accumulation of purulent material (pus) inside one or both pouches.</p><p class="mt-2"><strong>Cause:</strong> It is often a secondary complication of upper respiratory tract infections, particularly Strangles (caused by <em>Streptococcus equi equi</em>).</p><p class="mt-2"><strong>Clinical Signs:</strong></p><ul><li>Unilateral or bilateral purulent nasal discharge.</li><li>Lymphadenopathy (swelling of the submandibular and retropharyngeal lymph nodes).</li><li>In chronic cases, the pus can solidify to form concretions called <strong>chondroids</strong>.</li></ul><p class="mt-2"><strong>Therapy:</strong> Management involves flushing the pouches via endoscope and the use of antibiotics, administered both systemically and locally.</p><div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Endoscopic Image of Empyema</p><img src="empiema_endoscopia.jpg" alt="Endoscopic image of guttural pouch empyema" class="w-full max-w-md mx-auto rounded-lg shadow-md"><p class="text-center text-xs text-gray-500 mt-1">Purulent material and chondroids inside the guttural pouch.</p></div><h4 class="text-xl font-semibold mt-4 mb-2">2. Guttural Pouch Mycosis</h4><p>This pathology is a fungal infection, typically caused by <em>Aspergillus spp.</em>, which colonizes the pouch wall, usually on the "roof" of the medial compartment over the internal carotid artery.</p><p class="mt-2"><strong>Cause:</strong> The fungal infection causes the formation of a diphtheritic plaque that progressively erodes the underlying structures, particularly the artery walls and nerves.</p><p class="mt-2"><strong>Clinical Signs:</strong></p><ul><li><strong>Epistaxis</strong> (nosebleed): This is the most serious and alarming sign. It can be sudden, profuse, and potentially fatal due to the erosion of the internal carotid artery.</li><li><strong>Neurological signs:</strong> Symptoms such as dysphagia (difficulty swallowing), Horner's syndrome (eyelid drooping, miosis, enophthalmos), and paralysis of other cranial nerves may occur.</li></ul><p class="mt-2"><strong>Therapy:</strong> Guttural pouch mycosis is considered a medical emergency. The treatment of choice is surgical and consists of occlusion (via a balloon catheter or "coil") of the damaged artery to prevent fatal hemorrhage.</p><div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Endoscopic Image of Mycosis</p><img src="micosi_endoscopia.jpg" alt="Endoscopic image of guttural pouch mycosis" class="w-full max-w-md mx-auto rounded-lg shadow-md"><p class="text-center text-xs text-gray-500 mt-1">Diphtheritic plaque over the internal carotid artery.</p></div><h4 class="text-xl font-semibold mt-4 mb-2">3. Guttural Pouch Tympany</h4><p>This is a condition that predominantly affects foals, characterized by an accumulation of air within the pouch that cannot escape.</p><p class="mt-2"><strong>Cause:</strong> It is believed to be due to a functional defect of the salpingopharyngeal fold, which acts as a one-way valve, allowing air to enter but not to exit.</p><p class="mt-2"><strong>Clinical Signs:</strong></p><ul><li>A distinct, non-painful, and tympanic swelling on palpation, located in the parotid region (just behind the jaw).</li></ul><p class="mt-2"><strong>Therapy:</strong> The resolution is typically surgical and aims to create a permanent opening to allow the air to escape.</p><div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Clinical Image of Tympany</p><img src="timpanismo_clinica.jpg" alt="Foal with parotid swelling due to tympany" class="w-full max-w-md mx-auto rounded-lg shadow-md"><p class="text-center text-xs text-gray-500 mt-1">Characteristic swelling in a foal affected by tympany.</p></div><h4 class="text-xl font-semibold mt-4 mb-2">4. Temporohyoid Osteoarthropathy</h4><p>This is a degenerative condition of the joint between the stylohyoid bone and the temporal bone of the skull.</p><p class="mt-2"><strong>Cause:</strong> It is often idiopathic or secondary to chronic inflammatory processes (e.g., otitis interna). It leads to a fusion (ankylosis) of the joint, which can fracture following normal head movements.</p><p class="mt-2"><strong>Clinical Signs:</strong></p><ul><li>They are predominantly neurological and acute. They involve the facial (VII) and vestibulocochlear (VIII) nerves, causing facial paralysis (drooping ear and lip), head tilt, ataxia, and nystagmus (involuntary eye movements).</li></ul><p class="mt-2"><strong>Therapy:</strong> Medical therapy involves the use of anti-inflammatories and antibiotics. Surgery (e.g., ceratohyoidectomy) is often curative as it removes tension from the diseased joint.</p><div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">CT Image of Osteoarthropathy</p><img src="osteoartropatia_tc.jpg" alt="CT of the temporohyoid joint in a horse" class="w-full max-w-md mx-auto rounded-lg shadow-md"><p class="text-center text-xs text-gray-500 mt-1">Bony proliferation and ankylosis of the temporohyoid joint.</p></div><h3 class="text-2xl font-semibold mt-6 mb-3">Diagnosis</h3><p>The diagnosis of guttural pouch pathologies is mainly based on the following approaches:</p><ul><li><strong>Endoscopy:</strong> This is the diagnostic test of choice, as it allows direct visualization of the inside of the pouches, making it possible to identify the presence of pus, chondroids, fungal plaques, or structural abnormalities.</li><li><strong>Radiography and Computed Tomography (CT):</strong> These imaging studies are useful for assessing the extent of the lesions and any involvement of adjacent bone structures (e.g., in temporohyoid osteoarthropathy).</li></ul>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Infografica Dettagliata", en: "View the Detailed Infographic" },
+                infographicLinkDesc: { it: "Clicca qui per una guida visuale completa sulle patologie delle tasche gutturali.", en: "Click here for a complete visual guide on guttural pouch diseases." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Reed SM, Bayly WM, Sellon DC, EQUINE INTERNAL MEDICINE, 4th Edition, Saunders, 2018</li><li>Smith BP, Van Metre DC, Pusterla N, LARGE ANIMAL INTERNAL MEDICINE, 6th Edition, Elsevier, 2021</li><li>McGorum BC, Dixon PM, Robinson NE, Schumacher J, EQUINE RESPIRATORY MEDICINE AND SURGERY, Elsevier, 2006</li>`,
+                    en: `<li>Reed SM, Bayly WM, Sellon DC, EQUINE INTERNAL MEDICINE, 4th Edition, Saunders, 2018</li><li>Smith BP, Van Metre DC, Pusterla N, LARGE ANIMAL INTERNAL MEDICINE, 6th Edition, Elsevier, 2021</li><li>McGorum BC, Dixon PM, Robinson NE, Schumacher J, EQUINE RESPIRATORY MEDICINE AND SURGERY, Elsevier, 2006</li>` 
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Qual è il segno clinico più allarmante della micosi delle tasche gutturali?", options: ["Scolo nasale purulento", "Tosse", "Epistassi profusa", "Febbre"], answer: "Epistassi profusa" },
+                    { question: "L'empiema delle tasche gutturali è spesso una sequela di quale malattia?", options: ["Influenza equina", "Rinite allergica", "Adenite equina", "Polmonite batterica"], answer: "Adenite equina" },
+                    { question: "Quale strumento diagnostico è considerato il gold standard per le patologie delle tasche gutturali?", options: ["Radiografia", "Ecografia", "Endoscopia", "Esame del sangue"], answer: "Endoscopia" },
+                    { question: "Cosa sono i 'condroidi'?", options: ["Tumori della tasca gutturale", "Placche fungine", "Calcoli di pus indurito", "Parassiti specifici"], answer: "Calcoli di pus indurito" },
+                    { question: "Il timpanismo delle tasche gutturali è una condizione tipica di quale categoria di cavalli?", options: ["Cavalli anziani", "Stalloni", "Fattrici gravide", "Puledri"], answer: "Puledri" },
+                    { question: "Quale struttura anatomica divide la tasca gutturale in un compartimento mediale e uno laterale?", options: ["Nervo facciale", "Osso stiloide", "Arteria mascellare", "Plica salpingofaringea"], answer: "Osso stiloide" },
+                    { question: "La sindrome di Horner può essere causata da una lesione a quali nervi nella tasca gutturale?", options: ["Nervo vago", "Tronco simpatico craniale", "Nervo glossofaringeo", "Nervo ipoglosso"], answer: "Tronco simpatico craniale" },
+                    { question: "Qual è l'approccio di emergenza per un'epistassi da micosi della tasca gutturale?", options: ["Creazione di un flap nasofrontale", "Rimozione della placca fungina", "Occlusione dell'arteria carotide", "Drenaggio della tasca gutturale"], answer: "Occlusione dell'arteria carotide" },
+                    { question: "Quale agente eziologico causa l'adenite equina?", options: ["Streptococcus zooepidemicus", "Aspergillus fumigatus", "Streptococcus equi equi", "Rhodococcus equi"], answer: "Streptococcus equi equi" },
+                    { question: "I segni clinici dell'osteoartropatia temporoioidea sono prevalentemente:", options: ["Respiratori", "Gastroenterici", "Neurologici", "Dermatologici"], answer: "Neurologici" }
+                ],
+                en: [
+                    { question: "What is the most alarming clinical sign of guttural pouch mycosis?", options: ["Purulent nasal discharge", "Cough", "Profuse epistaxis", "Fever"], answer: "Profuse epistaxis" },
+                    { question: "Guttural pouch empyema is often a sequela of which disease?", options: ["Equine influenza", "Allergic rhinitis", "Strangles", "Bacterial pneumonia"], answer: "Strangles" },
+                    { question: "Which diagnostic tool is considered the gold standard for guttural pouch diseases?", options: ["Radiography", "Ultrasonography", "Endoscopy", "Blood test"], answer: "Endoscopy" },
+                    { question: "What are 'chondroids'?", options: ["Tumors of the guttural pouch", "Fungal plaques", "Inspissated pus concretions", "Specific parasites"], answer: "Inspissated pus concretions" },
+                    { question: "Guttural pouch tympany is a condition typically seen in which category of horses?", options: ["Geriatric horses", "Stallions", "Pregnant mares", "Foals"], answer: "Foals" },
+                    { question: "Which anatomical structure divides the guttural pouch into medial and lateral compartments?", options: ["Facial nerve", "Stylohyoid bone", "Maxillary artery", "Salpingopharyngeal fold"], answer: "Stylohyoid bone" },
+                    { question: "Horner's syndrome can be caused by damage to which nerves within the guttural pouch?", options: ["Vagus nerve", "Cranial sympathetic trunk", "Glossopharyngeal nerve", "Hypoglossal nerve"], answer: "Cranial sympathetic trunk" },
+                    { question: "What is the emergency approach for epistaxis from guttural pouch mycosis?", options: ["Nasofrontal flap creation", "Removal of the fungal plaque", "Occlusion of the carotid artery", "Guttural pouch drainage"], answer: "Occlusion of the carotid artery" },
+                    { question: "What is the causative agent of Strangles?", options: ["Streptococcus zooepidemicus", "Aspergillus fumigatus", "Streptococcus equi equi", "Rhodococcus equi"], answer: "Streptococcus equi equi" },
+                    { question: "The clinical signs of temporohyoid osteoarthropathy are predominantly:", options: ["Respiratory", "Gastrointestinal", "Neurological", "Dermatological"], answer: "Neurological" }
+                ]
+            };
+            
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            // --- TTS Functions ---
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            // Helper function to stop any active speech
+            function stopSpeech() {
+                // By calling cancel, the 'onend' event of the current utterance will fire, cleaning up the state.
+                if (synth.speaking) {
+                    synth.cancel();
+                }
+            }
+            
+            function speak(text, button) {
+                // CASE 1: The user clicks the SAME button that is already active.
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) {
+                        // If it's paused, resume speaking.
+                        synth.resume();
+                        button.classList.add('playing');
+                    } else if (synth.speaking) {
+                        // If it's currently speaking, pause it.
+                        synth.pause();
+                        button.classList.remove('playing');
+                    }
+                    return; // Stop the function here.
+                }
+
+                // CASE 2: The user clicks a NEW button (or it's the very first click).
+                // First, stop any speech that might be playing or paused from another button.
+                stopSpeech();
+                
+                // Although stopSpeech() will trigger onend, we can remove the class here for faster UI feedback.
+                if(activeTTSButton) {
+                    activeTTSButton.classList.remove('playing');
+                }
+
+                // Create a new speech object
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                // Define what happens when the speech finishes
+                currentUtterance.onend = () => {
+                    if (button) button.classList.remove('playing');
+                    // Reset state when speech is done
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+
+                currentUtterance.onerror = (event) => {
+                    console.error('An error occurred with speech synthesis:', event);
+                    if (button) button.classList.remove('playing');
+                     // Reset state on error
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+
+                // Update the state to the new button and start speaking
+                activeTTSButton = button;
+                button.classList.add('playing');
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+
+            function initHowler() {
+                sound = new Howl({
+                    src: ['audio_tasche_gutturali.mp3'],
+                    html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onloaderror: (id, msg) => {
+                        console.error("Error loading audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = "Errore nel caricamento del file audio.";
+                    },
+                    onplayerror: (id, msg) => {
+                        console.error("Error playing audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = "Impossibile riprodurre il file audio.";
+                    }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+
+            playPauseBtn.addEventListener('click', () => {
+                if (!sound) initHowler();
+                if (sound.playing()) sound.pause(); else sound.play();
+            });
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            let contentToRead = '';
+                            if(section){
+                                const clone = section.cloneNode(true);
+                                clone.querySelectorAll('h2, button, a, img, audio, .tts-button, #quiz, #infografica, #audio, #bibliografia').forEach(el => el.remove());
+                                contentToRead = clone.textContent.trim().replace(/\s\s+/g, ' ');
+                            }
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = `${titleClone.textContent.trim()}. ${contentToRead}`;
+                        } 
+                        else if (parentElement.tagName === 'H3') {
+                               const questionTextNode = parentElement.querySelector('span:first-child');
+                               if (questionTextNode) textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
+                        }
+                        else if (parentElement.closest('label')) {
+                            const label = parentElement.closest('label');
+                            const answerTextNode = label.querySelector('span:first-child');
+                            if (answerTextNode) textToRead = answerTextNode.textContent.trim();
+                        }
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-teal-50">
+                            <label class="flex items-center justify-between w-full cursor-pointer">
+                                <span class="flex-grow pr-4"><input type="radio" name="q${index}" value="${o}" class="mr-3">${o}</span>
+                                <span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                            </label>
+                        </li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                                element.innerHTML = translations[key][lang];
+                        } else {
+                            const ttsButton = element.querySelector('.tts-button');
+                            element.textContent = translations[key][lang];
+                            if(ttsButton) element.appendChild(ttsButton);
+                        }
+                    }
+                });
+                
+                const navAudio = document.querySelector('a[data-lang-key="navAudio"]');
+                const sectionAudio = document.getElementById('audio');
+                if (lang === 'en') {
+                    if(navAudio) navAudio.style.display = 'none';
+                    if(sectionAudio) sectionAudio.style.display = 'none';
+                } else {
+                    if(navAudio) navAudio.style.display = 'block';
+                    if(sectionAudio) sectionAudio.style.display = 'block';
+                }
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                loadQuiz(lang);
+                setupTTSListeners();
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            // Initial setup
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
