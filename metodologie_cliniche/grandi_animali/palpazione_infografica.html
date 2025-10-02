@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- NO SVG or Mermaid JS were used. All diagrams are built with HTML/CSS. All charts are rendered on Canvas via Chart.js. -->
+    <!-- Palette: Brilliant Blues -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -21,12 +23,7 @@
             margin-left: auto;
             margin-right: auto;
             height: 350px;
-            max-height: 450px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 400px;
-            }
+            max-height: 400px;
         }
         .nav-link { transition: color 0.3s; }
         .nav-link:hover { color: #93C5FD; }
@@ -45,7 +42,17 @@
         }
         .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
         .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
-        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode span, .dsa-mode div { color: #34495e; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode span, .dsa-mode div, .dsa-mode li { color: #34495e; }
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -55,11 +62,11 @@
             <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
             <div class="flex items-center space-x-4">
                 <ul class="hidden md:flex space-x-6">
-                    <li><a href="#" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
-                    <li><a href="#" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
-                    <li><a href="#" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
-                    <li><a href="#" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
-                    <li><a href="#" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
                 </ul>
                 <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
                 <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
@@ -70,68 +77,68 @@
     <div class="container mx-auto p-4 md:p-8">
         
         <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-[#0d47a1] mb-4" data-lang-key="pageTitle">Le Mani che "Vedono": Guida alla Palpazione</h1>
+            <h1 class="text-4xl md:text-5xl font-bold text-[#003f5c] mb-4" data-lang-key="pageTitle">Le Mani che "Vedono": Guida alla Palpazione</h1>
             <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-lang-key="pageSubtitle">La palpazione è l'arte di utilizzare il tatto per decifrare i segni clinici nascosti sotto la pelle, trasformando la percezione in diagnosi.</p>
         </header>
 
         <main class="space-y-16">
 
             <section class="bg-white rounded-lg shadow-md p-6 md:p-8">
-                 <h2 class="text-3xl font-bold text-center mb-8 text-[#0d47a1]" data-lang-key="revealTitle">I 5 Parametri Chiave della Palpazione</h2>
-                 <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
-                      <div class="p-4 bg-blue-50 rounded-lg">
-                           <div class="text-4xl mb-2">📐</div>
-                           <h3 class="text-md font-bold" data-lang-key="paramSize">Dimensioni e Forma</h3>
-                      </div>
-                      <div class="p-4 bg-blue-50 rounded-lg">
-                           <div class="text-4xl mb-2">🧱</div>
-                           <h3 class="text-md font-bold" data-lang-key="paramConsistency">Consistenza</h3>
-                      </div>
-                      <div class="p-4 bg-blue-50 rounded-lg">
-                           <div class="text-4xl mb-2">🌡️</div>
-                           <h3 class="text-md font-bold" data-lang-key="paramTemp">Temperatura</h3>
-                      </div>
-                      <div class="p-4 bg-blue-50 rounded-lg">
-                           <div class="text-4xl mb-2">❗</div>
-                           <h3 class="text-md font-bold" data-lang-key="paramTenderness">Dolorabilità</h3>
-                      </div>
-                       <div class="p-4 bg-blue-50 rounded-lg">
-                           <div class="text-4xl mb-2">🔄</div>
-                           <h3 class="text-md font-bold" data-lang-key="paramMobility">Mobilità</h3>
-                      </div>
-                 </div>
+                 <h2 class="text-3xl font-bold text-center mb-8 text-[#003f5c]" data-lang-key="revealTitle">Cosa Rivelano le Mani del Clinico?</h2>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="text-4xl mb-2">📐</div>
+                        <h3 class="text-md font-bold" data-lang-key="paramSize">Dimensioni</h3>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="text-4xl mb-2">🧱</div>
+                        <h3 class="text-md font-bold" data-lang-key="paramConsistency">Consistenza</h3>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="text-4xl mb-2">🌡️</div>
+                        <h3 class="text-md font-bold" data-lang-key="paramTemp">Temperatura</h3>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="text-4xl mb-2">❗</div>
+                        <h3 class="text-md font-bold" data-lang-key="paramTenderness">Dolorabilità</h3>
+                    </div>
+                     <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="text-4xl mb-2">💧</div>
+                        <h3 class="text-md font-bold" data-lang-key="paramFluids">Fluidi</h3>
+                    </div>
+                </div>
             </section>
 
             <section>
-                <h2 class="text-3xl font-bold text-center mb-8 text-[#0d47a1]" data-lang-key="systematicTitle">L'Approccio Sistematico: Testa-Coda</h2>
-                <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10" data-lang-key="systematicSubtitle">La palpazione segue un percorso metodico per garantire che nessuna regione venga trascurata, partendo dalla testa e procedendo caudalmente.</p>
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#003f5c]" data-lang-key="systematicTitle">L'Approccio Sistematico: Testa-Coda</h2>
+                <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10" data-lang-key="systematicSubtitle">La palpazione non è casuale. Segue un percorso metodico per garantire che nessuna regione venga trascurata, partendo dalla testa e procedendo caudalmente.</p>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div class="bg-white rounded-lg shadow-md p-6">
-                        <h3 class="text-xl font-bold mb-3 text-center text-[#1565c0]" data-lang-key="step1Title">1. Testa, Collo e Arti</h3>
-                        <p class="text-sm text-gray-600 mb-4" data-lang-key="step1Desc">Si valutano linfonodi, ghiandole salivari, laringe e trachea (riflesso della tosse). Si ricerca il polso sull'a. facciale. Sugli arti, si esaminano articolazioni e tendini. Fondamentale nel cavallo è il polso digitale per patologie del piede.</p>
+                        <h3 class="text-xl font-bold mb-3 text-center text-[#374c80]" data-lang-key="step1Title">1. Testa, Collo e Arti</h3>
+                        <p class="text-sm text-gray-600 mb-4" data-lang-key="step1Desc">Si inizia valutando i linfonodi (mandibolari, intermandibolari), laringe e trachea. Sugli arti, si palpano articolazioni, tendini e, nel cavallo, il polso digitale, un indicatore cruciale di infiammazione del piede.</p>
                     </div>
                     <div class="bg-white rounded-lg shadow-md p-6">
-                        <h3 class="text-xl font-bold mb-3 text-center text-[#1e88e5]" data-lang-key="step2Title">2. Torace</h3>
-                        <p class="text-sm text-gray-600 mb-4" data-lang-key="step2Desc">Si applica pressione sugli spazi intercostali per evocare dolore (pleurodinia), un segno di pleurite. È anche possibile percepire il "fremito", una vibrazione patologica associata a soffi cardiaci intensi.</p>
+                        <h3 class="text-xl font-bold mb-3 text-center text-[#7a5195]" data-lang-key="step2Title">2. Torace</h3>
+                        <p class="text-sm text-gray-600 mb-4" data-lang-key="step2Desc">Si applica pressione sugli spazi intercostali per evocare dolore (pleurodinia) in caso di pleurite. Si ricerca anche il "fremito", una vibrazione anomala che può essere associata a soffi cardiaci intensi.</p>
                     </div>
                     <div class="bg-white rounded-lg shadow-md p-6">
-                        <h3 class="text-xl font-bold mb-3 text-center text-[#42a5f5]" data-lang-key="step3Title">3. Addome e Linfonodi</h3>
-                        <p class="text-sm text-gray-600 mb-4" data-lang-key="step3Desc">Si valuta la tensione della parete addominale e si esegue il ballottamento per rilevare liquidi. Nel bovino, è cruciale l'esame dei linfonodi esplorabili (prescapolari, precrurali, soprammammari).</p>
+                        <h3 class="text-xl font-bold mb-3 text-center text-[#bc5090]" data-lang-key="step3Title">3. Addome e Linfonodi Superficiali</h3>
+                        <p class="text-sm text-gray-600 mb-4" data-lang-key="step3Desc">La palpazione esterna valuta la tensione della parete. Nei bovini, si completa con l'esame dei linfonodi superficiali (prescapolari, precrurali, soprammammari), sentinelle dello stato di salute generale.</p>
                     </div>
                 </div>
             </section>
 
             <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                  <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-2xl font-bold mb-4 text-[#0d47a1]" data-lang-key="rectalTitle">Focus: Esplorazione Rettale</h3>
-                    <p class="mb-6 text-gray-600" data-lang-key="rectalDesc">Nei grandi animali, è una manualità diagnostica potentissima. Permette di palpare direttamente organi addominali e pelvici, guidando la diagnosi per patologie digestive, urinarie e genitali.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-[#ff764a]" data-lang-key="rectalTitle">Focus: L'Esplorazione Rettale</h3>
+                    <p class="mb-6 text-gray-600" data-lang-key="rectalDesc">Nei grandi animali, l'esplorazione rettale è una delle tecniche diagnostiche più potenti. Permette una valutazione diretta di organi altrimenti inaccessibili, guidando la diagnosi per patologie digestive, urinarie e riproduttive.</p>
                     <div class="chart-container">
                         <canvas id="rectalExamChart"></canvas>
                     </div>
                 </div>
-                 <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-2xl font-bold mb-4 text-[#0d47a1]" data-lang-key="lymphTitle">Linfonodi Bovini: Le Spie del Sistema</h3>
-                    <p class="mb-6 text-gray-600" data-lang-key="lymphDesc">I linfonodi superficiali palpabili nel bovino sono indicatori preziosi. Un loro aumento di volume può segnalare un problema locale o una malattia sistemica. Questo grafico mostra i principali gruppi da esaminare.</p>
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-2xl font-bold mb-4 text-[#ffa600]" data-lang-key="lymphTitle">Linfonodi Bovini: Le Spie del Sistema</h3>
+                    <p class="mb-6 text-gray-600" data-lang-key="lymphDesc">I linfonodi superficiali palpabili nel bovino sono indicatori preziosi. Un loro aumento di volume può segnalare un problema locale o una malattia sistemica. Questo grafico mostra l'importanza relativa di ciascun gruppo linfonodale.</p>
                     <div class="chart-container">
                         <canvas id="lymphNodeChart"></canvas>
                     </div>
@@ -140,179 +147,182 @@
 
         </main>
         
-        <footer id="main-footer" class="text-center mt-16 pt-8 border-t">
-            <p class="text-gray-600" data-lang-key="footerText">&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
+        <footer id="main-footer" class="bg-gray-800 text-white mt-12">
+             <div class="container mx-auto px-6 py-4 text-center">
+                <p data-lang-key="footerText">&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
+            </div>
         </footer>
 
     </div>
 
     <script>
-        const translations = {
-            siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
-            navAnamnesi: { it: 'Anamnesi', en: 'History' },
-            navIspezione: { it: 'Ispezione', en: 'Inspection' },
-            navPalpazione: { it: 'Palpazione', en: 'Palpation' },
-            navPercussione: { it: 'Percussione', en: 'Percussion' },
-            navAuscultazione: { it: 'Auscultazione', en: 'Auscultation' },
-            accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-            pageTitle: { it: 'Le Mani che "Vedono": Guida alla Palpazione', en: 'The Hands that "See": A Guide to Palpation' },
-            pageSubtitle: { it: "La palpazione è l'arte di utilizzare il tatto per decifrare i segni clinici nascosti sotto la pelle, trasformando la percezione in diagnosi.", en: 'Palpation is the art of using touch to decipher clinical signs hidden beneath the skin, transforming perception into diagnosis.' },
-            revealTitle: { it: 'I 5 Parametri Chiave della Palpazione', en: 'The 5 Key Parameters of Palpation' },
-            paramSize: { it: 'Dimensioni e Forma', en: 'Size and Shape' },
-            paramConsistency: { it: 'Consistenza', en: 'Consistency' },
-            paramTemp: { it: 'Temperatura', en: 'Temperature' },
-            paramTenderness: { it: 'Dolorabilità', en: 'Tenderness' },
-            paramMobility: { it: 'Mobilità', en: 'Mobility' },
-            systematicTitle: { it: 'L\'Approccio Sistematico: Testa-Coda', en: 'The Systematic Approach: Head-to-Tail' },
-            systematicSubtitle: { it: 'La palpazione segue un percorso metodico per garantire che nessuna regione venga trascurata, partendo dalla testa e procedendo caudalmente.', en: 'Palpation follows a methodical path to ensure no region is overlooked, starting from the head and proceeding caudally.' },
-            step1Title: { it: '1. Testa, Collo e Arti', en: '1. Head, Neck, and Limbs' },
-            step1Desc: { it: 'Si valutano linfonodi, ghiandole salivari, laringe e trachea (riflesso della tosse). Si ricerca il polso sull\'a. facciale. Sugli arti, si esaminano articolazioni e tendini. Fondamentale nel cavallo è il polso digitale per patologie del piede.', en: 'Lymph nodes, salivary glands, larynx, and trachea (cough reflex) are assessed. The pulse is checked on the facial a. On the limbs, joints and tendons are examined. Crucial in horses is the digital pulse for foot pathologies.' },
-            step2Title: { it: '2. Torace', en: '2. Thorax' },
-            step2Desc: { it: 'Si applica pressione sugli spazi intercostali per evocare dolore (pleurodinia), un segno di pleurite. È anche possibile percepire il "fremito", una vibrazione patologica associata a soffi cardiaci intensi.', en: 'Pressure is applied to the intercostal spaces to elicit pain (pleurodynia), a sign of pleuritis. It is also possible to feel the "thrill," a pathological vibration associated with intense heart murmurs.' },
-            step3Title: { it: '3. Addome e Linfonodi', en: '3. Abdomen and Lymph Nodes' },
-            step3Desc: { it: 'Si valuta la tensione della parete addominale e si esegue il ballottamento per rilevare liquidi. Nel bovino, è cruciale l\'esame dei linfonodi esplorabili (prescapolari, precrurali, soprammammari).', en: 'Abdominal wall tension is assessed, and ballottement is performed to detect fluids. In cattle, the examination of explorable lymph nodes (prescapular, precrural, supramammary) is crucial.' },
-            rectalTitle: { it: 'Focus: Esplorazione Rettale', en: 'Focus: Rectal Palpation' },
-            rectalDesc: { it: 'Nei grandi animali, è una manualità diagnostica potentissima. Permette di palpare direttamente organi addominali e pelvici, guidando la diagnosi per patologie digestive, urinarie e genitali.', en: 'In large animals, it is a very powerful diagnostic skill. It allows for direct palpation of abdominal and pelvic organs, guiding the diagnosis for digestive, urinary, and genital pathologies.' },
-            rectalChartLabel1: { it: 'App. Digerente', en: 'Digestive Sys.' },
-            rectalChartLabel2: { it: 'App. Genitale', en: 'Genital Sys.' },
-            rectalChartLabel3: { it: 'App. Urinario', en: 'Urinary Sys.' },
-            rectalChartLabel4: { it: 'Altre Strutture', en: 'Other Structures' },
-            lymphTitle: { it: 'Linfonodi Bovini: Le Spie del Sistema', en: 'Bovine Lymph Nodes: The System\'s Sentinels' },
-            lymphDesc: { it: 'I linfonodi superficiali palpabili nel bovino sono indicatori preziosi. Un loro aumento di volume può segnalare un problema locale o una malattia sistemica. Questo grafico mostra i principali gruppi da esaminare.', en: 'The palpable superficial lymph nodes in cattle are valuable indicators. An increase in their size can signal a local problem or a systemic disease. This chart shows the main groups to be examined.' },
-            lymphChartLabel1: { it: 'Prescapolari', en: 'Prescapular' },
-            lymphChartLabel2: { it: 'Precrurali', en: 'Precrural' },
-            lymphChartLabel3: { it: 'Sopramammari', en: 'Supramammary' },
-            footerText: { it: '&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Clinical Methodologies. Created by Sara Busechian.' }
-        };
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentLanguage = localStorage.getItem('language') || 'it';
 
-        let currentLanguage = localStorage.getItem('language') || 'it';
-        
-        const accessibilityToggle = document.getElementById('accessibility-toggle');
-        const langToggle = document.getElementById('lang-toggle');
-        const body = document.body;
+            const originalItalianTexts = {};
+            document.querySelectorAll('.translatable-section').forEach((el, index) => {
+                originalItalianTexts[index] = el.innerHTML;
+            });
 
-        const updateLanguage = (lang) => {
-            document.documentElement.lang = lang;
-            langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-            document.querySelectorAll('[data-lang-key]').forEach(element => {
-                const key = element.dataset.langKey;
-                if (translations[key] && translations[key][lang]) {
-                    element.innerHTML = translations[key][lang];
+            const translations = {
+                siteTitle: { en: 'Large Animal Internal Medicine' },
+                navAnamnesi: { en: 'History' },
+                navIspezione: { en: 'Inspection' },
+                navPalpazione: { en: 'Palpation' },
+                navPercussione: { en: 'Percussion' },
+                navAuscultazione: { en: 'Auscultation' },
+                accessibility: { en: 'Accessibility' },
+                footerText: { en: '&copy; 2024 Veterinary Clinical Methodologies. Created by Sara Busechian.' },
+                pageTitle: { it: `Le Mani che "Vedono": Guida alla Palpazione`, en: `The Hands that "See": A Guide to Palpation` },
+                pageSubtitle: { it: "La palpazione è l'arte di utilizzare il tatto per decifrare i segni clinici nascosti sotto la pelle, trasformando la percezione in diagnosi.", en: "Palpation is the art of using touch to decipher clinical signs hidden beneath the skin, transforming perception into diagnosis." },
+                revealTitle: { it: 'Cosa Rivelano le Mani del Clinico?', en: "What Do the Clinician's Hands Reveal?" },
+                paramSize: { it: 'Dimensioni', en: 'Size' },
+                paramConsistency: { it: 'Consistenza', en: 'Consistency' },
+                paramTemp: { it: 'Temperatura', en: 'Temperature' },
+                paramTenderness: { it: 'Dolorabilità', en: 'Tenderness' },
+                paramFluids: { it: 'Fluidi', en: 'Fluids' },
+                systematicTitle: { it: 'L\'Approccio Sistematico: Testa-Coda', en: 'The Systematic Approach: Head-to-Tail' },
+                systematicSubtitle: { it: 'La palpazione non è casuale. Segue un percorso metodico per garantire che nessuna regione venga trascurata, partendo dalla testa e procedendo caudalmente.', en: 'Palpation is not random. It follows a methodical path to ensure no region is overlooked, starting from the head and proceeding caudally.' },
+                step1Title: { it: '1. Testa, Collo e Arti', en: '1. Head, Neck, and Limbs' },
+                step1Desc: { it: 'Si inizia valutando i linfonodi (mandibolari, intermandibolari), laringe e trachea. Sugli arti, si palpano articolazioni, tendini e, nel cavallo, il polso digitale, un indicatore cruciale di infiammazione del piede.', en: 'It begins by assessing lymph nodes (mandibular, intermandibular), larynx, and trachea. On the limbs, joints, tendons, and, in horses, the digital pulse are palpated—a crucial indicator of foot inflammation.' },
+                step2Title: { it: '2. Torace', en: '2. Thorax' },
+                step2Desc: { it: 'Si applica pressione sugli spazi intercostali per evocare dolore (pleurodinia) in caso di pleurite. Si ricerca anche il "fremito", una vibrazione anomala che può essere associata a soffi cardiaci intensi.', en: 'Pressure is applied to the intercostal spaces to elicit pain (pleurodynia) in case of pleuritis. The "thrill," an abnormal vibration associated with intense heart murmurs, is also sought.' },
+                step3Title: { it: '3. Addome e Linfonodi Superficiali', en: '3. Abdomen and Superficial Lymph Nodes' },
+                step3Desc: { it: 'La palpazione esterna valuta la tensione della parete. Nei bovini, si completa con l\'esame dei linfonodi superficiali (prescapolari, precrurali, soprammammari), sentinelle dello stato di salute generale.', en: 'External palpation assesses wall tension. In cattle, this is completed with an examination of superficial lymph nodes (prescapular, precrural, supramammary), which act as sentinels of general health.' },
+                rectalTitle: { it: 'Focus: L\'Esplorazione Rettale', en: 'Focus: Rectal Palpation' },
+                rectalDesc: { it: 'Nei grandi animali, l\'esplorazione rettale è una delle tecniche diagnostiche più potenti. Permette una valutazione diretta di organi altrimenti inaccessibili, guidando la diagnosi per patologie digestive, urinarie e riproduttive.', en: 'In large animals, rectal palpation is one of the most powerful diagnostic techniques. It allows for direct evaluation of otherwise inaccessible organs, guiding diagnosis for digestive, urinary, and reproductive pathologies.' },
+                rectalChartLabel1: { it: 'Apparato Digerente', en: 'Digestive System' },
+                rectalChartLabel2: { it: 'Apparato Riproduttivo', en: 'Reproductive System' },
+                rectalChartLabel3: { it: 'Apparato Urinario', en: 'Urinary System' },
+                rectalChartLabel4: { it: 'Altre Strutture', en: 'Other Structures' },
+                lymphTitle: { it: 'Linfonodi Bovini: Le Spie del Sistema', en: 'Bovine Lymph Nodes: The System\'s Sentinels' },
+                lymphDesc: { it: 'I linfonodi superficiali palpabili nel bovino sono indicatori preziosi. Un loro aumento di volume può segnalare un problema locale o una malattia sistemica. Questo grafico mostra l\'importanza relativa di ciascun gruppo linfonodale.', en: 'The palpable superficial lymph nodes in cattle are valuable indicators. An increase in their size can signal a local problem or a systemic disease. This chart shows the relative importance of each lymph node group.' },
+                lymphChartLabel1: { it: 'Sopramammari', en: 'Supramammary' },
+                lymphChartLabel2: { it: 'Precrurali', en: 'Precrural' },
+                lymphChartLabel3: { it: 'Prescapolari', en: 'Prescapular' },
+                lymphChartLabel4: { it: 'Mandibolari', en: 'Mandibular' },
+            };
+            
+            const wrapLabel = (label) => {
+                const maxLen = 16;
+                if (label.length <= maxLen) return label;
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).trim().length > maxLen && currentLine.length > 0) {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                });
+                lines.push(currentLine);
+                return lines;
+            };
+            
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                return Array.isArray(label) ? label.join(' ') : label;
+            };
+
+            const rectalCtx = document.getElementById('rectalExamChart').getContext('2d');
+            const rectalChart = new Chart(rectalCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Organi Valutabili',
+                        data: [45, 30, 15, 10],
+                        backgroundColor: ['#ef5675', '#ff764a', '#ffa600', '#7a5195'],
+                        borderColor: '#ffffff',
+                        borderWidth: 3,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { font: { size: 14, weight: '600' }, padding: 15 } },
+                        tooltip: { callbacks: { title: tooltipTitleCallback } }
+                    },
+                    cutout: '60%'
                 }
             });
 
-            if (window.rectalChart) {
-                const rectalLabels = [
+            const lymphCtx = document.getElementById('lymphNodeChart').getContext('2d');
+            const lymphChart = new Chart(lymphCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Rilevanza Diagnostica (valore concettuale)',
+                        data: [9, 8, 7, 6],
+                        backgroundColor: ['#003f5c', '#58508d', '#bc5090', '#ff6361'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { title: tooltipTitleCallback } } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { display: false }, grid: { display: false } },
+                        x: { grid: { display: false }, ticks: { color: '#003f5c', font: { weight: '600', size: 14 } } }
+                    }
+                }
+            });
+            
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+
+                rectalChart.data.labels = [
                     translations.rectalChartLabel1[lang],
                     translations.rectalChartLabel2[lang],
                     translations.rectalChartLabel3[lang],
                     translations.rectalChartLabel4[lang]
-                ];
-                window.rectalChart.data.labels = rectalLabels;
-                window.rectalChart.update();
-            }
-            if (window.lymphChart) {
-                 const lymphLabels = [
+                ].map(wrapLabel);
+                rectalChart.update();
+
+                lymphChart.data.labels = [
                     translations.lymphChartLabel1[lang],
                     translations.lymphChartLabel2[lang],
-                    translations.lymphChartLabel3[lang]
-                ];
-                window.lymphChart.data.labels = lymphLabels;
-                window.lymphChart.update();
-            }
-        };
+                    translations.lymphChartLabel3[lang],
+                    translations.lymphChartLabel4[lang]
+                ].map(wrapLabel);
+                lymphChart.update();
+            };
+            
+            const setA11yMode = (enabled) => {
+                document.body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
 
-        langToggle.addEventListener('click', () => {
-            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-            localStorage.setItem('language', currentLanguage);
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                setA11yMode(!document.body.classList.contains('dsa-mode'));
+            });
+            
+            if (localStorage.getItem('dsa-mode') === 'enabled') {
+                setA11yMode(true);
+            }
             updateLanguage(currentLanguage);
         });
-
-        const setA11yMode = (enabled) => {
-            if (enabled) {
-                body.classList.add('dsa-mode');
-                localStorage.setItem('dsa-mode', 'enabled');
-            } else {
-                body.classList.remove('dsa-mode');
-                localStorage.setItem('dsa-mode', 'disabled');
-            }
-        };
-
-        accessibilityToggle.addEventListener('click', () => {
-            const isEnabled = body.classList.contains('dsa-mode');
-            setA11yMode(!isEnabled);
-        });
-        
-        if (localStorage.getItem('dsa-mode') === 'enabled') {
-            setA11yMode(true);
-        }
-
-        const rectalCtx = document.getElementById('rectalExamChart').getContext('2d');
-        window.rectalChart = new Chart(rectalCtx, {
-            type: 'doughnut',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Organi Valutabili',
-                    data: [40, 35, 15, 10],
-                    backgroundColor: ['#1e88e5', '#42a5f5', '#90caf9', '#e3f2fd'],
-                    borderColor: '#ffffff',
-                    borderWidth: 3,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            font: { size: 14, weight: '600' },
-                            padding: 15
-                        }
-                    }
-                },
-                cutout: '60%'
-            }
-        });
-
-        const lymphCtx = document.getElementById('lymphNodeChart').getContext('2d');
-        window.lymphChart = new Chart(lymphCtx, {
-            type: 'bar',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Rilevanza Diagnostica',
-                    data: [8, 9, 10],
-                    backgroundColor: ['#1565c0', '#1e88e5', '#42a5f5'],
-                    borderRadius: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                         ticks: { display: false },
-                         grid: { display: false }
-                    },
-                    x: {
-                         grid: { display: false },
-                        ticks: {
-                            color: '#0d47a1',
-                            font: { weight: '600', size: 14 }
-                        }
-                    }
-                }
-            }
-        });
-
-        updateLanguage(currentLanguage);
     </script>
 </body>
 </html>
+
