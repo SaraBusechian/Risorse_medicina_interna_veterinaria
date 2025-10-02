@@ -110,10 +110,10 @@
                     <div class="p-4 bg-teal-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
                         <button id="audio-play-pause" class="p-3 bg-teal-500 text-white rounded-full hover:bg-teal-600 transition-colors duration-200">
                             <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                             </svg>
                             <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" />
+                                <path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" />
                             </svg>
                         </button>
                         <div class="flex-grow text-center sm:text-left">
@@ -140,9 +140,10 @@
             </div>
         </div>
     </main>
-    <footer id="main-footer" class="bg-teal-900 text-white text-center py-4 mt-10">
-      <p class="container mx-auto px-4 text-xs">Sviluppato con passione per l'istruzione veterinaria. &copy; 2024</p>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-slate-200">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const translations = {
@@ -170,6 +171,7 @@
                 bibliographyContent: { it: `<li>Reed SM, Bayly WM, Sellon DC, EQUINE INTERNAL MEDICINE, 4th Edition, Saunders, 2018</li><li>Smith BP, Van Metre DC, Pusterla N, LARGE ANIMAL INTERNAL MEDICINE, 6th Edition, Elsevier, 2021</li><li>McGorum BC, Dixon PM, Robinson NE, Schumacher J, EQUINE RESPIRATORY MEDICINE AND SURGERY, Elsevier, 2006</li>`, en: `<li>Reed SM, Bayly WM, Sellon DC, EQUINE INTERNAL MEDICINE, 4th Edition, Saunders, 2018</li><li>Smith BP, Van Metre DC, Pusterla N, LARGE ANIMAL INTERNAL MEDICINE, 6th Edition, Elsevier, 2021</li><li>McGorum BC, Dixon PM, Robinson NE, Schumacher J, EQUINE RESPIRATORY MEDICINE AND SURGERY, Elsevier, 2006</li>` },
                 btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
                 accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
             };
 
             const quizData = {
@@ -204,14 +206,13 @@
             let currentUtterance = null;
             let activeTTSButton = null;
 
-            // Inizializza Howl solo dopo che l'utente interagisce con il pulsante
             let sound = null;
 
             function initHowler() {
                 console.log("Inizializzazione Howler.js...");
                 sound = new Howl({
                     src: ['audio_sinusiti.mp3'],
-                    html5: true, // Forze l'utilizzo di HTML5 Audio per lo streaming di file più grandi
+                    html5: true, 
                     onplay: () => {
                         console.log("Audio iniziato a suonare.");
                         playIcon.classList.add('hidden');
@@ -232,7 +233,6 @@
                     },
                     onloaderror: (id, msg) => {
                         console.error("Errore nel caricamento dell'audio:", msg);
-                        // Aggiungi un messaggio chiaro per l'utente in caso di errore
                         const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
                         if (audioDesc) {
                             audioDesc.textContent = "Errore nel caricamento del file audio. Assicurati che 'audio_sinusiti.mp3' sia nella stessa cartella e che il file sia valido.";
@@ -240,7 +240,6 @@
                     },
                     onplayerror: (id, msg) => {
                         console.error("Errore nella riproduzione dell'audio:", msg);
-                        // Aggiungi un messaggio chiaro per l'utente in caso di errore
                         const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
                         if (audioDesc) {
                             audioDesc.textContent = "Impossibile riprodurre il file audio. Assicurati che sia stato caricato correttamente.";
@@ -254,7 +253,6 @@
             const pauseIcon = document.getElementById('pause-icon');
 
             playPauseBtn.addEventListener('click', () => {
-                // Inizializza Howler.js solo al primo click per rispettare le politiche dei browser
                 if (!sound) {
                     initHowler();
                 }
@@ -305,10 +303,10 @@
                             textToRead = `${titleClone.textContent.trim()}. ${contentToRead}`;
                         } 
                         else if (parentElement.tagName === 'H3') {
-                             const questionTextNode = parentElement.querySelector('span:first-child');
-                             if (questionTextNode) {
-                                 textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
-                             }
+                               const questionTextNode = parentElement.querySelector('span:first-child');
+                               if (questionTextNode) {
+                                   textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
+                               }
                         }
                         else if (parentElement.closest('label')) {
                             const label = parentElement.closest('label');
@@ -407,7 +405,7 @@
                             questions[index].classList.add('incorrect');
                         }
                     } else {
-                            questions[index].classList.add('incorrect');
+                        questions[index].classList.add('incorrect');
                     }
                 });
                 const resultsContainer = document.getElementById('quiz-results');
@@ -418,9 +416,7 @@
                 resultsContainer.textContent = resultText[currentLanguage];
             });
             
-            // L'inizializzazione di Howler.js è gestita dal primo click per rispettare le politiche dei browser.
-            // initHowler(); // Questa riga è stata rimossa, l'inizializzazione avviene al click.
-
+            // Initial setup
             updateLanguage(currentLanguage);
         });
     </script>
