@@ -158,6 +158,7 @@
                 summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
                 summaryContent: { 
                     it: `<p>La <strong>bronchite cronica</strong> del cane è una patologia infiammatoria cronica delle basse vie aeree, definita dalla presenza di tosse per almeno due mesi consecutivi, per la quale non è possibile identificare una causa sottostante (diagnosi di esclusione).</p>
+                         <div class="mt-4 p-4 bg-teal-50 rounded-lg border border-teal-200"><p>Questa patologia si differenzia da altre cause di ostruzione delle vie aeree. <a href="confronto_vie_aeree_cane.html" class="text-teal-600 hover:underline font-semibold">Clicca qui per un confronto dettagliato.</a></p></div>
                          <h3 class="text-2xl font-semibold mt-6 mb-3">Fisiopatologia</h3>
                          <p>L'infiammazione cronica, tipicamente <strong>neutrofilica</strong>, porta a modifiche strutturali progressive delle vie aeree:</p>
                          <ul>
@@ -201,6 +202,7 @@
                             </li>
                          </ul>`,
                     en: `<p><strong>Chronic bronchitis</strong> in dogs is a chronic inflammatory disease of the lower airways, defined by the presence of a cough for at least two consecutive months for which no underlying cause can be identified (diagnosis of exclusion).</p>
+                        <div class="mt-4 p-4 bg-teal-50 rounded-lg border border-teal-200"><p>This condition differs from other causes of airway obstruction. <a href="confronto_vie_aeree_cane.html" class="text-teal-600 hover:underline font-semibold">Click here for a detailed comparison.</a></p></div>
                          <h3 class="text-2xl font-semibold mt-6 mb-3">Pathophysiology</h3>
                          <p>Chronic inflammation, typically <strong>neutrophilic</strong>, leads to progressive structural changes in the airways:</p>
                          <ul>
@@ -300,10 +302,8 @@
                 if (activeTTSButton === button && currentUtterance) {
                     if (synth.paused) {
                         synth.resume();
-                        button.classList.add('playing');
                     } else if (synth.speaking) {
                         synth.pause();
-                        button.classList.remove('playing');
                     }
                     return; 
                 }
@@ -312,16 +312,26 @@
                     synth.cancel();
                 }
                 
-                if(activeTTSButton) {
-                    activeTTSButton.classList.remove('playing');
-                }
-
                 currentUtterance = new SpeechSynthesisUtterance(text);
                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
                 
+                currentUtterance.onstart = () => {
+                    if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                    button.classList.add('playing');
+                    activeTTSButton = button;
+                };
+
+                currentUtterance.onpause = () => {
+                    button.classList.remove('playing');
+                };
+
+                currentUtterance.onresume = () => {
+                    button.classList.add('playing');
+                };
+                
                 const cleanup = () => {
+                    button.classList.remove('playing');
                     if(activeTTSButton === button) {
-                        button.classList.remove('playing');
                         activeTTSButton = null;
                         currentUtterance = null;
                     }
@@ -336,8 +346,6 @@
                     cleanup();
                 };
 
-                activeTTSButton = button;
-                button.classList.add('playing');
                 synth.speak(currentUtterance);
             }
 
@@ -509,3 +517,4 @@
     </script>
 </body>
 </html>
+
