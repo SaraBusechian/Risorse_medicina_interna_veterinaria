@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ostruzione Esofagea - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff7ed; /* orange-50 */
+            color: #7c2d12; /* orange-900 */
+        }
+        .nav-link { 
+            transition: all 0.2s; 
+            border-bottom: 2px solid transparent; 
+            padding-bottom: 8px;
+            margin-bottom: -2px;
+        }
+        .nav-link:hover, .nav-link.active { 
+            border-bottom-color: #f97316; /* orange-500 */
+            color: #c2410c; /* orange-700 */
+        }
+        body.dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.05em;
+            line-height: 1.8;
+            color: #1e2d3b;
+            background-color: #f8fafc;
+        }
+        body.dsa-mode h1, body.dsa-mode h2, body.dsa-mode h3 {
+            letter-spacing: normal;
+            color: #9a3412; /* orange-800 */
+        }
+        .tts-button { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin-left: 10px; vertical-align: middle; color: #c2410c; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #ea580c; }
+        .quiz-question { border: 1px solid #fed7aa; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #fff7ed; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        @media print {
+            body { background-color: #ffffff; color: #000000; }
+            header, footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, a[href*="infografica"] { display: none; }
+            main, .content-section, article { all: unset; }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto px-4 py-8 md:py-16">
+        <header class="mb-8 relative">
+             <div class="absolute top-0 right-0 -mt-4 md:-mt-8 flex items-center gap-2">
+                <button id="lang-toggle" class="bg-white text-orange-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-orange-100 transition duration-300 text-sm">EN</button>
+                <button id="dsa-toggle" class="bg-orange-100 text-orange-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-orange-200 transition duration-300 text-sm" data-lang-key="accessibility-btn-text">
+                    Accessibilità
+                </button>
+            </div>
+            <div class="text-left mb-8">
+                <a href="patologie_gastroenteriche.html" class="inline-flex items-center bg-white text-orange-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-orange-50 transition duration-300">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndex">Indice Patologie Digerente</span>
+                </a>
+            </div>
+            <div class="text-center border-b-2 border-orange-200 pb-6">
+                 <h1 class="text-4xl md:text-5xl font-bold text-orange-800" data-lang-key="main-title">Ostruzione Esofagea</h1>
+                 <p class="text-lg text-orange-700 mt-2" data-lang-key="main-subtitle">Gestione di un'urgenza comune nel cavallo.</p>
+            </div>
+        </header>
+
+        <main class="bg-white rounded-lg shadow-lg p-6 md:p-10">
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-orange-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none text-orange-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-orange-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                     <a href="infografica_ostruzione_esofagea.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-orange-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-orange-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona di un cavallo che mangia">🐴</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-orange-800" data-lang-key="infographicLinkTitle">Gestione dell'Ostruzione Esofagea</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca qui per una guida visuale alla gestione del cavallo con ostruzione esofagea.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-orange-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-orange-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-orange-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-orange-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-orange-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors duration-200">
+                            <svg id="play-icon" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-orange-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-orange-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_choke.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-orange-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-orange-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </main>
+        
+        <footer class="text-center mt-16 pt-8 border-t border-orange-100">
+            <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+        </footer>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const translations = {
+            "main-title": { it: "Ostruzione Esofagea", en: "Esophageal Obstruction" },
+            "main-subtitle": { it: "Gestione di un'urgenza comune nel cavallo.", en: "Management of a common emergency in horses." },
+            "backToIndex": { it: "Indice Patologie Digerente", en: "Digestive Pathology Index" },
+            "accessibility-btn-text": { it: "Accessibilità", en: "Accessibility" },
+            "navSummary": { it: "Riassunto", en: "Summary" },
+            "navInfographic": { it: "Infografica", en: "Infographic" },
+            "navQuiz": { it: "Quiz", en: "Quiz" },
+            "navAudio": { it: "Audio", en: "Audio" },
+            "navBibliography": { it: "Bibliografia", en: "Bibliography" },
+            "summaryTitle": { it: "Riassunto Completo", en: "Full Summary" },
+            summaryContent: {
+                it: `
+                    <p class="mb-4">L'<strong>ostruzione esofagea</strong> è un'urgenza veterinaria nel cavallo causata dal blocco del lume esofageo da parte di materiale alimentare. Sebbene l'animale possa ancora respirare, la condizione è molto stressante e può portare a complicazioni gravi se non risolta tempestivamente.</p>
+                    
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-orange-800">Eziologia e Fattori di Rischio</h3>
+                    <p>Le cause più comuni includono:</p>
+                    <ul>
+                        <li><strong>Materiale alimentare secco o inadeguato:</strong> Pellet, cubetti di fieno o polpa di barbabietola non sufficientemente reidratati con acqua si espandono a contatto con la saliva.</li>
+                        <li><strong>Voracità alimentare:</strong> Cavalli che mangiano troppo in fretta senza masticare adeguatamente.</li>
+                        <li><strong>Problemi dentali:</strong> Una masticazione inefficace produce boli alimentari troppo grandi.</li>
+                        <li><strong>Patologie esofagee sottostanti:</strong> Stenosi, diverticoli o disturbi della motilità possono predisporre all'ostruzione.</li>
+                    </ul>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-orange-800">Manifestazioni Cliniche</h3>
+                    <p>I segni clinici sono tipicamente acuti e drammatici:</p>
+                     <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Ptialismo e scolo nasale bilaterale:</strong> Saliva, schiuma e materiale alimentare fuoriescono dalle narici e dalla bocca.</li>
+                        <li><strong>Disfagia e odinofagia:</strong> Il cavallo tenta di deglutire, estendendo il collo e la testa, mostrando dolore.</li>
+                        <li><strong>Tosse.</strong></li>
+                        <li><strong>Ansia e agitazione:</strong> Il cavallo può grattare il terreno o apparire depresso.</li>
+                        <li>Nei casi di ostruzione cervicale, è possibile palpare l'ingombro lungo il solco giugulare sinistro.</li>
+                    </ul>
+
+                     <div class="my-6 p-4 border-l-4 border-red-400 bg-red-50 rounded-lg">
+                        <h4 class="font-bold text-red-800">Rischio Principale: Polmonite Ab Ingestis</h4>
+                        <p class="text-red-700">La complicazione più temuta è la <strong>polmonite da aspirazione</strong>, causata dall'inalazione di saliva e materiale alimentare nelle vie aeree. È una condizione potenzialmente fatale che richiede una terapia antibiotica aggressiva.</p>
+                    </div>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-orange-800">Diagnosi e Terapia in Campo</h3>
+                    <p>La diagnosi è solitamente basata sui segni clinici evidenti. Il tentativo, spesso infruttuoso, di passare una <strong>sonda rinogastrica</strong> conferma la presenza e la localizzazione dell'ostruzione.</p>
+                    <p>L'approccio terapeutico iniziale mira a risolvere l'ostruzione in modo conservativo:</p>
+                    <ol class="list-decimal pl-5 space-y-2">
+                        <li><strong>Sedazione:</strong> È il primo e più importante passo. L'uso di sedativi (es. alfa2-agonisti come detomidina o xilazina) induce il rilassamento della muscolatura esofagea e abbassa la testa del cavallo, riducendo il rischio di aspirazione.</li>
+                        <li><strong>Spasmolitici:</strong> Farmaci come l'N-butilbromuro di joscina (Buscopan) o l'ossitocina possono aiutare a rilassare ulteriormente la muscolatura liscia.</li>
+                        <li><strong>Lavaggio esofageo:</strong> Se la sedazione non è sufficiente, si procede con un cauto lavaggio. Tramite una sonda rinogastrica posizionata fino al punto dell'ostruzione, si pompa delicatamente acqua tiepida per ammorbidire e smuovere il materiale. La testa del cavallo deve essere tenuta bassa per favorire il deflusso del materiale all'esterno.</li>
+                        <li><strong>Terapia di supporto:</strong> Dopo la risoluzione, si raccomanda di tenere il cavallo a digiuno per 24-48 ore, fornendo solo acqua, per poi reintrodurre gradualmente una dieta morbida (es. pastone). I FANS (es. flunixin) aiutano a controllare l'infiammazione e il dolore. L'uso di sucralfato può aiutare a proteggere la mucosa esofagea danneggiata. In caso di sospetta polmonite ab ingestis, è imperativa una terapia antibiotica ad ampio spettro.</li>
+                    </ol>
+                `,
+                en: `
+                    <p class="mb-4"><strong>Esophageal obstruction</strong> is a veterinary emergency in horses caused by the blockage of the esophageal lumen by feed material. Although the animal can still breathe, the condition is very stressful and can lead to serious complications if not resolved promptly.</p>
+                    
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-orange-800">Etiology and Risk Factors</h3>
+                    <p>The most common causes include:</p>
+                    <ul>
+                        <li><strong>Dry or inadequate feed material:</strong> Pellets, hay cubes, or beet pulp that are not sufficiently rehydrated with water expand upon contact with saliva.</li>
+                        <li><strong>Food bolting:</strong> Horses that eat too quickly without proper chewing.</li>
+                        <li><strong>Dental problems:</strong> Ineffective chewing produces oversized feed boli.</li>
+                        <li><strong>Underlying esophageal pathologies:</strong> Strictures, diverticula, or motility disorders can predispose to obstruction.</li>
+                    </ul>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-orange-800">Clinical Manifestations</h3>
+                    <p>Clinical signs are typically acute and dramatic:</p>
+                     <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Ptyalism and bilateral nasal discharge:</strong> Saliva, foam, and feed material exit through the nostrils and mouth.</li>
+                        <li><strong>Dysphagia and odynophagia:</strong> The horse attempts to swallow, extending its neck and head, showing pain.</li>
+                        <li><strong>Coughing.</strong></li>
+                        <li><strong>Anxiety and agitation:</strong> The horse may paw the ground or appear depressed.</li>
+                        <li>In cases of cervical obstruction, the blockage may be palpable along the left jugular furrow.</li>
+                    </ul>
+
+                     <div class="my-6 p-4 border-l-4 border-red-400 bg-red-50 rounded-lg">
+                        <h4 class="font-bold text-red-800">Main Risk: Aspiration Pneumonia</h4>
+                        <p class="text-red-700">The most feared complication is <strong>aspiration pneumonia</strong>, caused by the inhalation of saliva and feed material into the airways. It is a potentially fatal condition that requires aggressive antibiotic therapy.</p>
+                    </div>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-orange-800">Field Diagnosis and Therapy</h3>
+                    <p>Diagnosis is usually based on the obvious clinical signs. The often unsuccessful attempt to pass a <strong>nasogastric tube</strong> confirms the presence and location of the obstruction.</p>
+                    <p>The initial therapeutic approach aims to resolve the obstruction conservatively:</p>
+                    <ol class="list-decimal pl-5 space-y-2">
+                        <li><strong>Sedation:</strong> This is the first and most important step. The use of sedatives (e.g., alpha-2 agonists like detomidine or xylazine) induces relaxation of the esophageal muscles and lowers the horse's head, reducing the risk of aspiration.</li>
+                        <li><strong>Spasmolytics:</strong> Drugs like N-butylscopolammonium bromide (Buscopan) or oxytocin can help further relax the smooth muscles.</li>
+                        <li><strong>Esophageal lavage:</strong> If sedation is not sufficient, a cautious lavage is performed. Using a nasogastric tube positioned at the point of obstruction, warm water is gently pumped to soften and dislodge the material. The horse's head must be kept low to encourage the outflow of material.</li>
+                        <li><strong>Supportive care:</strong> After resolution, it is recommended to withhold food for 24-48 hours, providing only water, and then gradually reintroduce a soft diet (e.g., mash). NSAIDs (e.g., flunixin) help control inflammation and pain. The use of sucralfate can help protect the damaged esophageal mucosa. If aspiration pneumonia is suspected, broad-spectrum antibiotic therapy is imperative.</li>
+                    </ol>
+                `
+            },
+            infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+            infographicLinkTitle: { it: "Gestione dell'Ostruzione Esofagea", en: "Esophageal Obstruction Management" },
+            infographicLinkDesc: { it: "Clicca qui per una guida visuale alla gestione del cavallo con ostruzione esofagea.", en: "Click here for a visual guide to managing a horse with esophageal obstruction." },
+            quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+            quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+            audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+            btnDownloadAudio: { it: "Scarica", en: "Download" },
+            audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+            audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+            bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+            bibliographyContent: {
+                it: `<li>Reed SM, Bayly WM, Sellon DC, EQUINE INTERNAL MEDICINE, 4th Edition, Saunders, 2018</li><li>Smith BP, Van Metre DC, Pusterla N, LARGE ANIMAL INTERNAL MEDICINE, 6th Edition, Elsevier, 2021</li><li>Orsini JA, Divers TJ, EQUINE EMERGENCIES, 4th edition, Elsevier, 2014</li>`,
+                en: `<li>Reed SM, Bayly WM, Sellon DC, EQUINE INTERNAL MEDICINE, 4th Edition, Saunders, 2018</li><li>Smith BP, Van Metre DC, Pusterla N, LARGE ANIMAL INTERNAL MEDICINE, 6th Edition, Elsevier, 2021</li><li>Orsini JA, Divers TJ, EQUINE EMERGENCIES, 4th edition, Elsevier, 2014</li>`
+            },
+            btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+            "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+        };
+
+        const quizData = {
+            it: [
+                { question: "Qual è il primo e più importante passo terapeutico in un cavallo con ostruzione esofagea?", options: ["Somministrare antibiotici", "Tentare immediatamente il lavaggio", "Sedare il cavallo", "Somministrare FANS"], answer: "Sedare il cavallo" },
+                { question: "La complicazione più grave e temuta dell'ostruzione esofagea è:", options: ["La rottura dell'esofago", "La laminite", "La colica", "La polmonite ab ingestis"], answer: "La polmonite ab ingestis" },
+                { question: "Quale segno clinico è quasi patognomonico per l'ostruzione esofagea?", options: ["Febbre alta", "Scolo nasale bilaterale con saliva e cibo", "Aumento della frequenza cardiaca", "Ittero"], answer: "Scolo nasale bilaterale con saliva e cibo" },
+                { question: "Perché è fondamentale tenere la testa del cavallo abbassata durante la sedazione e il lavaggio?", options: ["Per calmarlo meglio", "Per ridurre il rischio di aspirazione di materiale nelle vie aeree", "Per facilitare il passaggio della sonda", "Per diminuire la pressione sanguigna"], answer: "Per ridurre il rischio di aspirazione di materiale nelle vie aeree" },
+                { question: "Quale tipo di alimento è più frequentemente implicato nelle ostruzioni esofagee?", options: ["Erba fresca", "Fieno di prato", "Pellet o mangimi secchi non reidratati con acqua", "Avena in fiocchi"], answer: "Pellet o mangimi secchi non reidratati con acqua" },
+                { question: "Cosa si fa se il passaggio della sonda rinogastrica si blocca?", options: ["Si forza la sonda con decisione", "È la conferma dell'ostruzione e si inizia il protocollo terapeutico", "Si ritira la sonda e si prova con una più grande", "Si sospetta una colica e si tratta per quella"], answer: "È la conferma dell'ostruzione e si inizia il protocollo terapeutico" },
+                { question: "Quale classe di farmaci aiuta a rilassare la muscolatura liscia dell'esofago?", options: ["Antibiotici", "FANS", "Spasmolitici (es. N-butilbromuro di joscina, ossitocina)", "Diuretici"], answer: "Spasmolitici (es. N-butilbromuro di joscina, ossitocina)" },
+                { question: "Dopo la risoluzione di un'ostruzione, quale gestione alimentare è raccomandata?", options: ["Tornare subito alla dieta normale", "Solo fieno secco per 48 ore", "Digiuno per 24-48 ore seguito da una dieta morbida", "Lasciare il cavallo al pascolo"], answer: "Digiuno per 24-48 ore seguito da una dieta morbida" },
+                 { question: "I problemi dentali possono essere una causa predisponente per l'ostruzione esofagea?", options: ["No, non c'è correlazione", "Sì, perché una masticazione inefficace crea boli troppo grandi", "Solo nei cavalli anziani", "No, causano solo coliche"], answer: "Sì, perché una masticazione inefficace crea boli troppo grandi" },
+                { question: "La procedura di lavaggio esofageo si esegue con:", options: ["Olio di vaselina caldo", "Una soluzione elettrolitica fredda", "Acqua tiepida, con delicatezza", "Aria insufflata a pressione"], answer: "Acqua tiepida, con delicatezza" }
+            ],
+            en: [
+                { question: "What is the first and most important therapeutic step in a horse with esophageal obstruction?", options: ["Administer antibiotics", "Immediately attempt lavage", "Sedate the horse", "Administer NSAIDs"], answer: "Sedate the horse" },
+                { question: "The most serious and feared complication of esophageal obstruction is:", options: ["Esophageal rupture", "Laminitis", "Colic", "Aspiration pneumonia"], answer: "Aspiration pneumonia" },
+                { question: "Which clinical sign is almost pathognomonic for esophageal obstruction?", options: ["High fever", "Bilateral nasal discharge with saliva and food", "Increased heart rate", "Jaundice"], answer: "Bilateral nasal discharge with saliva and food" },
+                { question: "Why is it crucial to keep the horse's head lowered during sedation and lavage?", options: ["To calm it down better", "To reduce the risk of aspirating material into the airways", "To facilitate the passage of the tube", "To lower blood pressure"], answer: "To reduce the risk of aspirating material into the airways" },
+                { question: "Which type of feed is most frequently implicated in esophageal obstructions?", options: ["Fresh grass", "Meadow hay", "Pellets or dry feed not rehydrated with water", "Oat flakes"], answer: "Pellets or dry feed not rehydrated with water" },
+                { question: "What should be done if the nasogastric tube gets stuck?", options: ["Force the tube firmly", "It confirms the obstruction, and the therapeutic protocol is initiated", "Withdraw the tube and try a larger one", "Suspect colic and treat for that"], answer: "It confirms the obstruction, and the therapeutic protocol is initiated" },
+                { question: "Which class of drugs helps relax the smooth muscles of the esophagus?", options: ["Antibiotics", "NSAIDs", "Spasmolytics (e.g., N-butylscopolammonium bromide, oxytocin)", "Diuretics"], answer: "Spasmolytics (e.g., N-butylscopolammonium bromide, oxytocin)" },
+                { question: "After resolving an obstruction, what feeding management is recommended?", options: ["Immediately return to the normal diet", "Only dry hay for 48 hours", "Fast for 24-48 hours followed by a soft diet", "Let the horse graze"], answer: "Fast for 24-48 hours followed by a soft diet" },
+                { question: "Can dental problems be a predisposing cause for esophageal obstruction?", options: ["No, there is no correlation", "Yes, because ineffective chewing creates overly large boli", "Only in old horses", "No, they only cause colic"], answer: "Yes, because ineffective chewing creates overly large boli" },
+                { question: "The esophageal lavage procedure is performed with:", options: ["Warm mineral oil", "A cold electrolyte solution", "Warm water, gently", "Pressurized insufflated air"], answer: "Warm water, gently" }
+            ]
+        };
+        
+        let currentLanguage = localStorage.getItem('language') || 'it';
+        
+        const synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let activeTTSButton = null;
+
+        function stopSpeech() {
+            if (synth.speaking || synth.pending) {
+                synth.cancel();
+            }
+        }
+        
+        function speak(text, button) {
+            if (activeTTSButton === button && currentUtterance) {
+                if (synth.paused) {
+                    synth.resume();
+                } else if (synth.speaking) {
+                    synth.pause();
+                }
+                return; 
+            }
+
+            stopSpeech();
+            
+            if(activeTTSButton) {
+                activeTTSButton.classList.remove('playing');
+            }
+
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+            
+            currentUtterance.onstart = () => {
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                button.classList.add('playing');
+                activeTTSButton = button;
+            };
+
+            currentUtterance.onpause = () => {
+                button.classList.remove('playing');
+            };
+
+            currentUtterance.onresume = () => {
+                button.classList.add('playing');
+            };
+
+            const cleanup = () => {
+                button.classList.remove('playing');
+                if(activeTTSButton === button) {
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                }
+            };
+
+            currentUtterance.onend = cleanup;
+            currentUtterance.onerror = (event) => {
+                if (event.error !== 'canceled') {
+                    console.error('An error occurred with speech synthesis:', event.error);
+                }
+                cleanup();
+            };
+            
+            synth.speak(currentUtterance);
+        }
+
+        let sound = null;
+
+        function initHowler() {
+            sound = new Howl({
+                src: ['audio_choke.mp3'], // Placeholder
+                html5: true, 
+                onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                onloaderror: (id, msg) => {
+                     document.querySelector('#audio').innerHTML = `<p class="text-red-600">Errore: file audio non trovato.</p>`;
+                }
+            });
+        }
+
+        const playPauseBtn = document.getElementById('audio-play-pause');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+
+        if(playPauseBtn) {
+            playPauseBtn.addEventListener('click', () => {
+                if (!sound) initHowler();
+                if (sound.playing()) sound.pause(); else sound.play();
+            });
+        }
+
+        function setupTTSListeners() {
+            document.querySelectorAll('.tts-button').forEach(button => {
+                const newButton = button.cloneNode(true);
+                button.parentNode.replaceChild(newButton, button);
+
+                newButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    let textToRead = '';
+                    const parentElement = newButton.parentElement;
+
+                    if (!parentElement) return;
+                    
+                    const h1 = parentElement.closest('h1');
+                    const h2 = parentElement.closest('h2');
+                    const h3 = parentElement.closest('h3');
+                    const label = parentElement.closest('label');
+
+                    if (h1) {
+                        const clone = h1.cloneNode(true);
+                        clone.querySelector('.tts-button')?.remove();
+                        textToRead = clone.textContent.trim();
+                        const sub = h1.nextElementSibling;
+                        if(sub && (sub.matches('p') || sub.dataset.langKey?.includes('subtitle'))) {
+                            textToRead += '. ' + sub.textContent.trim();
+                        }
+                    }
+                    else if (h2) {
+                        const section = h2.closest('section');
+                        let contentToRead = '';
+                        if (section) {
+                            const clone = section.cloneNode(true);
+                            clone.querySelectorAll('h2, button, a, .tts-button, #quiz, #infografica, #audio, #bibliografia').forEach(el => el.remove());
+                            contentToRead = clone.textContent.trim().replace(/\s\s+/g, ' ');
+                        }
+                        const titleClone = h2.cloneNode(true);
+                        titleClone.querySelector('.tts-button')?.remove();
+                        textToRead = `${titleClone.textContent.trim()}. ${contentToRead}`;
+                    }
+                    else if (h3) {
+                        const clone = h3.cloneNode(true);
+                        clone.querySelector('.tts-button')?.remove();
+                        textToRead = clone.textContent.trim().replace(/^\d+\.\s*/, '');
+                    }
+                    else if (label) {
+                         const clone = label.cloneNode(true);
+                         clone.querySelectorAll('.tts-button, input').forEach(el => el.remove());
+                         textToRead = clone.textContent.trim();
+                    }
+                    
+                    if (textToRead) {
+                        speak(textToRead, newButton);
+                    }
+                });
+            });
+        }
+
+        function loadQuiz(lang) {
+            const quizContainer = document.getElementById('quiz-container');
+            if(!quizContainer) return;
+            quizContainer.innerHTML = '';
+            document.getElementById('quiz-results').innerHTML = ''; 
+            quizData[lang].forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-question p-4 rounded-lg';
+                let optionsHtml = q.options.map(o => `
+                    <li class="quiz-option p-2 rounded">
+                        <label class="flex items-center justify-between w-full cursor-pointer">
+                             <span class="flex-grow pr-4"><input type="radio" name="q${index}" value="${o}" class="mr-3">${o}</span>
+                             <span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                        </label>
+                    </li>`).join('');
+                questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        function updateLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+            
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if (translations[key] && translations[key][lang]) {
+                     if (key.includes('Content')) {
+                        element.innerHTML = translations[key][lang];
+                    } else {
+                         const ttsButton = element.querySelector('.tts-button');
+                         element.textContent = translations[key][lang];
+                         if(ttsButton) element.appendChild(ttsButton);
+                    }
+                }
+            });
+            
+            const dsaToggleBtn = document.getElementById('dsa-toggle');
+            if (document.body.classList.contains('dsa-mode')) {
+                dsaToggleBtn.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+            } else {
+                dsaToggleBtn.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+            }
+            loadQuiz(lang);
+            setupTTSListeners();
+        }
+        
+        document.getElementById('lang-toggle').addEventListener('click', () => {
+            stopSpeech();
+            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage(currentLanguage);
+        });
+
+        const dsaToggleBtn = document.getElementById('dsa-toggle');
+        dsaToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dsa-mode');
+             if (document.body.classList.contains('dsa-mode')) {
+                dsaToggleBtn.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+            } else {
+                dsaToggleBtn.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+            }
+        });
+
+        const submitQuizBtn = document.getElementById('submit-quiz');
+        if(submitQuizBtn) {
+            submitQuizBtn.addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                         questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+        }
+        
+        // Initial setup
+        updateLanguage(currentLanguage);
+    });
+    </script>
+</body>
+</html>
+
