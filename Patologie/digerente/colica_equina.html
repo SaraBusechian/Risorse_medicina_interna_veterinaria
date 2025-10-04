@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colica Equina - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff7ed; /* orange-50 */
+            color: #7c2d12; /* orange-900 */
+        }
+        .nav-link { 
+            transition: all 0.2s; 
+            border-bottom: 2px solid transparent; 
+            padding-bottom: 8px;
+            margin-bottom: -2px;
+        }
+        .nav-link:hover, .nav-link.active { 
+            border-bottom-color: #f97316; /* orange-500 */
+            color: #c2410c; /* orange-700 */
+        }
+        body.dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.05em;
+            line-height: 1.8;
+            color: #1e293b;
+            background-color: #f8fafc;
+        }
+        body.dsa-mode h1, body.dsa-mode h2, body.dsa-mode h3 {
+            letter-spacing: normal;
+            color: #9a3412; /* orange-800 */
+        }
+        .tts-button { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin-left: 10px; vertical-align: middle; color: #c2410c; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #ea580c; }
+        .quiz-question { border: 1px solid #fed7aa; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #fff7ed; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        @media print {
+            body { background-color: #ffffff; color: #000000; }
+            header, footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, a[href*="infografica"] { display: none; }
+            main, .content-section, article { all: unset; }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto px-4 py-8 md:py-16">
+        <header class="mb-8 relative">
+             <div class="absolute top-0 right-0 -mt-4 md:-mt-8 flex items-center gap-2">
+                <button id="lang-toggle" class="bg-white text-orange-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-orange-100 transition duration-300 text-sm">EN</button>
+                <button id="dsa-toggle" class="bg-orange-100 text-orange-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-orange-200 transition duration-300 text-sm" data-lang-key="accessibility-btn-text">
+                    Accessibilità
+                </button>
+            </div>
+            <div class="text-left mb-8">
+                <a href="patologie_gastroenteriche.html" class="inline-flex items-center bg-white text-orange-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-orange-50 transition duration-300">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndex">Indice Patologie Digerente</span>
+                </a>
+            </div>
+            <div class="text-center border-b-2 border-orange-200 pb-6">
+                 <h1 class="text-4xl md:text-5xl font-bold text-orange-800" data-lang-key="main-title">Colica Equina</h1>
+                 <p class="text-lg text-orange-700 mt-2" data-lang-key="main-subtitle">Approccio pratico in campo e gestione terapeutica.</p>
+            </div>
+        </header>
+
+        <main class="bg-white rounded-lg shadow-lg p-6 md:p-10">
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-orange-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none text-orange-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-orange-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                     <a href="infografica_colica_equina.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-orange-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-orange-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona di un cavallo">🐎</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-orange-800" data-lang-key="infographicLinkTitle">Schema Decisionale: Colica in Campo</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca qui per una guida visuale all'approccio al cavallo con colica.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-orange-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-orange-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-orange-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-orange-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-orange-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors duration-200">
+                            <svg id="play-icon" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-orange-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-orange-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_colica_equina.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-orange-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-orange-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </main>
+        
+        <footer class="text-center mt-16 pt-8 border-t border-orange-100">
+            <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+        </footer>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const translations = {
+            "main-title": { it: "Colica Equina", en: "Equine Colic" },
+            "main-subtitle": { it: "Approccio pratico in campo e gestione terapeutica.", en: "Field Approach and Therapeutic Management." },
+            "backToIndex": { it: "Indice Patologie Digerente", en: "Digestive Pathology Index" },
+            "accessibility-btn-text": { it: "Accessibilità", en: "Accessibility" },
+            "navSummary": { it: "Riassunto", en: "Summary" },
+            "navInfographic": { it: "Infografica", en: "Infographic" },
+            "navQuiz": { it: "Quiz", en: "Quiz" },
+            "navAudio": { it: "Audio", en: "Audio" },
+            "navBibliography": { it: "Bibliografia", en: "Bibliography" },
+            "summaryTitle": { it: "Riassunto Completo", en: "Full Summary" },
+            summaryContent: {
+                it: `
+                    <p class="mb-4">Il termine <strong>"colica"</strong> descrive la manifestazione di dolore addominale nel cavallo. Non è una diagnosi, ma un sintomo di una vasta gamma di patologie. La sfida per il veterinario in campo è determinare rapidamente la gravità, stabilire una diagnosi presuntiva e, soprattutto, decidere se il caso può essere gestito con terapia medica o se necessita di un immediato referimento a una struttura dove verrà effettuata terapia chirurgica.</p>
+                    
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-orange-800">Approccio in Campo: I Pilastri della Valutazione</h3>
+                    <p>La gestione iniziale si basa su una valutazione rapida e sistematica. I passaggi fondamentali sono:</p>
+                    <ul>
+                        <li><strong>Anamnesi mirata:</strong> Raccogliere informazioni su manifestazioni cliniche, durata, trattamenti precedenti, gestione alimentare e storia clinica.</li>
+                        <li><strong>Esame fisico e valutazione del dolore:</strong> La frequenza cardiaca è il singolo parametro prognostico più importante. Una FC > 60-80 bpm, refrattaria agli analgesici, è un forte indicatore di gravità. Valutare anche mucose, TRC, qualità del polso e motilità intestinale.</li>
+                        <li><strong>Sondaggio naso-gastrico:</strong> È sia diagnostico che terapeutico. La presenza di reflusso gastrico (> 2 litri) indica un'ostruzione del piccolo intestino e controindica la somministrazione di fluidi enterali.</li>
+                        <li><strong>Esplorazione rettale:</strong> Fornisce informazioni cruciali sulla posizione e lo stato di distensione dei visceri. Reperti come anse di piccolo intestino distese, dislocazioni del grosso colon o costipazioni indirizzano la diagnosi.</li>
+                    </ul>
+
+                    <div class="my-6 p-4 border-l-4 border-orange-400 bg-orange-50 rounded-lg">
+                        <h4 class="font-bold text-orange-800">Punto chiave: Medica vs. Chirurgica</h4>
+                        <p class="text-orange-700">La decisione più critica in campo è distinguere una colica che risponderà alla terapia medica da una che richiede un intervento chirurgico. La tabella seguente riassume i criteri principali per questa decisione.</p>
+                    </div>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-orange-800">Criteri per la Decisione Terapeutica</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                            <h4 class="font-bold text-lg text-green-800 mb-2">COLICA MEDICA (Gestibile in Campo)</h4>
+                            <ul class="list-disc pl-5 space-y-1 text-green-700">
+                                <li>Dolore da lieve a moderato, responsivo ai FANS</li>
+                                <li>Frequenza Cardiaca < 60 bpm</li>
+                                <li>Mucose rosee, TRC < 2 sec</li>
+                                <li>Assenza di reflusso gastrico</li>
+                                <li>Motilità intestinale presente (anche se aumentata o diminuita)</li>
+                                <li>Reperti dell'esplorazione rettale non allarmanti (es. costipazione, gas)</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <h4 class="font-bold text-lg text-red-800 mb-2">COLICA CHIRURGICA (Da riferire con urgenza)</h4>
+                            <ul class="list-disc pl-5 space-y-1 text-red-700">
+                                <li>Dolore grave, violento, non responsivo agli analgesici</li>
+                                <li>Frequenza Cardiaca > 60-80 bpm, in aumento</li>
+                                <li>Mucose congeste/cianotiche, TRC > 3 sec</li>
+                                <li>Presenza di reflusso gastrico</li>
+                                <li>Motilità intestinale assente (silenzio addominale)</li>
+                                <li>Reperti dell'esplorazione rettale di anse distese, dislocate, edematose</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-orange-800">Terapia Medica in Campo</h3>
+                    <p>Se i criteri indicano una colica medica, l'approccio terapeutico in campo si concentra su tre obiettivi:</p>
+                    <ol class="list-decimal pl-5 space-y-2">
+                        <li><strong>Controllo del Dolore:</strong> La prima scelta sono i <strong>FANS</strong>, come il <strong>Flunixin Meglumine</strong> (0.5-1.1 mg/kg IV). È cruciale usare un dosaggio appropriato per non mascherare un eventuale peggioramento che indicherebbe la necessità di chirurgia.</li>
+                        <li><strong>Risoluzione della Causa:</strong>
+                            <ul class="list-disc pl-5 mt-2">
+                                <li><strong>Spasmolitici:</strong> L'N-butilbromuro di joscina (Buscopan Compositum®) è utile nelle coliche gassose o spasmodiche.</li>
+                                <li><strong>Fluidoterapia Enterale:</strong> In assenza di reflusso, è la terapia d'elezione per le costipazioni. Si somministrano grandi volumi (5-10 litri) di acqua ed eventualmente olio di vaselina tramite sonda rinogastrica, ripetibili ogni poche ore. Si possono aggiungere lassativi osmotici come il solfato di magnesio.</li>
+                                <li><strong>Fluidoterapia Endovenosa:</strong> Fondamentale in caso di disidratazione e alterazioni della perfusione. La somministrazione di fluidi isotonici (es. Ringer Lattato) aiuta a correggere gli squilibri e a supportare il sistema cardiovascolare.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Supporto Generale:</strong> Mantenere il cavallo in un ambiente sicuro per prevenire traumi. Il movimento controllato (passeggiata a mano) può favorire la motilità.</li>
+                    </ol>
+                `,
+                en: `
+                    <p class="mb-4">The term <strong>"colic"</strong> describes the manifestation of abdominal pain in horses. It is not a diagnosis but a symptom of a wide range of conditions. The challenge for the field veterinarian is to quickly determine the severity, establish a presumptive diagnosis, and, most importantly, decide whether the case can be managed with medical therapy or requires immediate referral to a facility where surgical therapy will be performed.</p>
+                    
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-orange-800">Field Approach: Pillars of Evaluation</h3>
+                    <p>Initial management is based on a rapid and systematic evaluation. The key steps are:</p>
+                    <ul>
+                        <li><strong>Targeted History:</strong> Collect information on clinical manifestations, duration, previous treatments, feeding management, and clinical history.</li>
+                        <li><strong>Physical Exam and Pain Assessment:</strong> Heart rate is the single most important prognostic indicator. A heart rate > 60-80 bpm, refractory to analgesics, is a strong indicator of severity. Also assess mucous membranes, CRT, pulse quality, and gut motility.</li>
+                        <li><strong>Nasogastric Intubation:</strong> This is both diagnostic and therapeutic. The presence of gastric reflux (> 2 liters) indicates a small intestinal obstruction and contraindicates the administration of enteral fluids.</li>
+                        <li><strong>Rectal Examination:</strong> Provides crucial information about the position and distension state of the viscera. Findings such as distended small intestinal loops, large colon displacements, or constipations guide the diagnosis.</li>
+                    </ul>
+
+                    <div class="my-6 p-4 border-l-4 border-orange-400 bg-orange-50 rounded-lg">
+                        <h4 class="font-bold text-orange-800">Key Point: Medical vs. Surgical</h4>
+                        <p class="text-orange-700">The most critical decision in the field is to distinguish a colic that will respond to medical therapy from one that requires surgery. The following table summarizes the main criteria for this decision.</p>
+                    </div>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-orange-800">Criteria for Therapeutic Decision</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+                            <h4 class="font-bold text-lg text-green-800 mb-2">MEDICAL COLIC (Manageable in the Field)</h4>
+                            <ul class="list-disc pl-5 space-y-1 text-green-700">
+                                <li>Mild to moderate pain, responsive to NSAIDs</li>
+                                <li>Heart Rate < 60 bpm</li>
+                                <li>Pink mucous membranes, CRT < 2 sec</li>
+                                <li>Absence of gastric reflux</li>
+                                <li>Gut motility present (even if increased or decreased)</li>
+                                <li>Non-alarming findings on rectal examination (e.g., constipation, gas)</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                            <h4 class="font-bold text-lg text-red-800 mb-2">SURGICAL COLIC (To be referred urgently)</h4>
+                            <ul class="list-disc pl-5 space-y-1 text-red-700">
+                                <li>Severe, violent pain, unresponsive to analgesics</li>
+                                <li>Heart Rate > 60-80 bpm, increasing</li>
+                                <li>Congested/cyanotic mucous membranes, CRT > 3 sec</li>
+                                <li>Presence of gastric reflux</li>
+                                <li>Absent gut motility (abdominal silence)</li>
+                                <li>Findings on rectal examination of distended, displaced, edematous loops</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-orange-800">Field Medical Therapy</h3>
+                    <p>If the criteria indicate a medical colic, the therapeutic approach in the field focuses on three goals:</p>
+                    <ol class="list-decimal pl-5 space-y-2">
+                        <li><strong>Pain Control:</strong> The first choice is <strong>NSAIDs</strong>, such as <strong>Flunixin Meglumine</strong> (0.5-1.1 mg/kg IV). It is crucial to use an appropriate dosage so as not to mask a worsening condition that would indicate the need for surgery.</li>
+                        <li><strong>Resolving the Cause:</strong>
+                            <ul class="list-disc pl-5 mt-2">
+                                <li><strong>Spasmolytics:</strong> N-butylscopolammonium bromide is useful for gas or spasmodic colics.</li>
+                                <li><strong>Enteral Fluid Therapy:</strong> In the absence of reflux, this is the treatment of choice for constipations. Large volumes (5-10 liters) of water and potentially mineral oil are administered via nasogastric tube, repeatable every few hours. Osmotic laxatives like magnesium sulfate can be added.</li>
+                                <li><strong>Intravenous Fluid Therapy:</strong> Essential in cases of dehydration and perfusion alterations. Administering isotonic fluids (e.g., Lactated Ringer's) helps correct imbalances and support the cardiovascular system.</li>
+                            </ul>
+                        </li>
+                        <li><strong>General Support:</strong> Keep the horse in a safe environment to prevent trauma. Controlled movement (hand walking) can promote motility.</li>
+                    </ol>
+                `
+            },
+            infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+            infographicLinkTitle: { it: "Schema Decisionale: Colica in Campo", en: "Decision Tree: Colic in the Field" },
+            infographicLinkDesc: { it: "Clicca qui per una guida visuale all'approccio al cavallo con colica.", en: "Click here for a visual guide to the approach to a horse with colic." },
+            quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+            quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+            audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+            btnDownloadAudio: { it: "Scarica", en: "Download" },
+            audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+            audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+            bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+            bibliographyContent: {
+                it: `<li>Reed SM, Bayly WM, Sellon DC, EQUINE INTERNAL MEDICINE, 4th Edition, Saunders, 2018</li><li>Smith BP, Van Metre DC, Pusterla N, LARGE ANIMAL INTERNAL MEDICINE, 6th Edition, Elsevier, 2021</li><li>Blikslager A, White N, Moore J, Mair T, THE EQUINE ACUTE ABDOMEN, 3rd edition, Wiley-Blackwell, 2017</li>`,
+                en: `<li>Reed SM, Bayly WM, Sellon DC, EQUINE INTERNAL MEDICINE, 4th Edition, Saunders, 2018</li><li>Smith BP, Van Metre DC, Pusterla N, LARGE ANIMAL INTERNAL MEDICINE, 6th Edition, Elsevier, 2021</li><li>Blikslager A, White N, Moore J, Mair T, THE EQUINE ACUTE ABDOMEN, 3rd edition, Wiley-Blackwell, 2017</li>`
+            },
+            btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+            "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+        };
+
+        const quizData = {
+            it: [
+                { question: "Qual è il singolo parametro più importante per valutare la gravità di una colica in campo?", options: ["Temperatura corporea", "Presenza di motilità intestinale", "Frequenza cardiaca", "Colore delle mucose"], answer: "Frequenza cardiaca" },
+                { question: "La presenza di reflusso gastrico al sondaggio naso-gastrico indica più probabilmente:", options: ["Un'ostruzione del grosso colon", "Una colica gassosa", "Un'ostruzione del piccolo intestino", "Una gastrite"], answer: "Un'ostruzione del piccolo intestino" },
+                { question: "Quale di questi segni clinici è un forte indicatore per un referimento chirurgico URGENTE?", options: ["Dolore lieve che risponde al flunixin", "Frequenza cardiaca di 50 bpm", "Assenza di reflusso gastrico", "Dolore violento e refrattario agli analgesici con FC > 80 bpm"], answer: "Dolore violento e refrattario agli analgesici con FC > 80 bpm" },
+                { question: "La terapia d'elezione per una costipazione del grosso colon, in assenza di reflusso, è:", options: ["Somministrazione di FANS ad alte dosi", "Fluidoterapia enterale con sonda rinogastrica", "Chirurgia immediata", "L'uso di spasmolitici"], answer: "Fluidoterapia enterale con sonda rinogastrica" },
+                { question: "Il Flunixin Meglumine in un cavallo con colica si usa primariamente per:", options: ["Risolvere l'ostruzione", "Controllare il dolore e l'infiammazione", "Stimolare la motilità intestinale", "Prevenire la laminite"], answer: "Controllare il dolore e l'infiammazione" },
+                { question: "Un reperto di 'silenzio addominale' all'auscultazione è considerato:", options: ["Un segno normale", "Un segno di colica gassosa", "Un segno prognostico favorevole", "Un segno grave indicativo di ileo"], answer: "Un segno grave indicativo di ileo" },
+                { question: "Quale procedura diagnostica è fondamentale per palpare direttamente i visceri addominali caudali?", options: ["Ecografia addominale", "Sondaggio naso-gastrico", "Esplorazione rettale", "Paracentesi"], answer: "Esplorazione rettale" },
+                { question: "Un cavallo con mucose congeste (rosso scuro) e un TRC > 3 secondi è probabilmente in uno stato di:", options: ["Dolore lieve", "Shock endotossico", "Buona perfusione", "Disidratazione lieve"], answer: "Shock endotossico" },
+                { question: "L'N-butilbromuro di joscina (Buscopan) è più indicato per quale tipo di colica?", options: ["Costipazione del cieco", "Volvolo del piccolo intestino", "Colica spasmodica o gassosa", "Enterite prossimale"], answer: "Colica spasmodica o gassosa" },
+                { question: "La decisione più critica che un veterinario deve prendere in campo di fronte a una colica è:", options: ["Quale FANS utilizzare", "Se il cavallo può mangiare", "Distinguere tra colica medica e chirurgica", "Se fare o meno un'ecografia"], answer: "Distinguere tra colica medica e chirurgica" }
+            ],
+            en: [
+                { question: "What is the single most important parameter for assessing the severity of a colic in the field?", options: ["Body temperature", "Presence of gut motility", "Heart rate", "Mucous membrane color"], answer: "Heart rate" },
+                { question: "The presence of gastric reflux on nasogastric intubation most likely indicates:", options: ["A large colon obstruction", "A gas colic", "A small intestinal obstruction", "Gastritis"], answer: "A small intestinal obstruction" },
+                { question: "Which of these clinical signs is a strong indicator for an URGENT surgical referral?", options: ["Mild pain responding to flunixin", "Heart rate of 50 bpm", "Absence of gastric reflux", "Violent, refractory pain with HR > 80 bpm"], answer: "Violent, refractory pain with HR > 80 bpm" },
+                { question: "The treatment of choice for a large colon constipation, in the absence of reflux, is:", options: ["High-dose NSAID administration", "Enteral fluid therapy via nasogastric tube", "Immediate surgery", "Use of spasmolytics"], answer: "Enteral fluid therapy via nasogastric tube" },
+                { question: "Flunixin Meglumine is primarily used in a colicking horse to:", options: ["Resolve the obstruction", "Control pain and inflammation", "Stimulate gut motility", "Prevent laminitis"], answer: "Control pain and inflammation" },
+                { question: "A finding of 'abdominal silence' on auscultation is considered:", options: ["A normal sign", "A sign of gas colic", "A favorable prognostic sign", "A severe sign indicative of ileus"], answer: "A severe sign indicative of ileus" },
+                { question: "Which diagnostic procedure is essential for directly palpating the caudal abdominal viscera?", options: ["Abdominal ultrasound", "Nasogastric intubation", "Rectal examination", "Abdominocentesis"], answer: "Rectal examination" },
+                { question: "A horse with congested (dark red) mucous membranes and a CRT > 3 seconds is likely in a state of:", options: ["Mild pain", "Endotoxic shock", "Good perfusion", "Mild dehydration"], answer: "Endotoxic shock" },
+                { question: "N-butylscopolammonium bromide (Buscopan) is most indicated for which type of colic?", options: ["Cecal constipation", "Small intestinal volvulus", "Spasmodic or gas colic", "Proximal enteritis"], answer: "Spasmodic or gas colic" },
+                { question: "The most critical decision a veterinarian must make in the field when faced with a colic is:", options: ["Which NSAID to use", "Whether the horse can eat", "To distinguish between a medical and surgical colic", "Whether or not to perform an ultrasound"], answer: "To distinguish between a medical and surgical colic" }
+            ]
+        };
+        
+        let currentLanguage = localStorage.getItem('language') || 'it';
+        
+        const synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let activeTTSButton = null;
+
+        function stopSpeech() {
+            if (synth.speaking || synth.pending) {
+                synth.cancel();
+            }
+        }
+        
+        function speak(text, button) {
+            if (activeTTSButton === button && currentUtterance) {
+                if (synth.paused) {
+                    synth.resume();
+                } else if (synth.speaking) {
+                    synth.pause();
+                }
+                return; 
+            }
+
+            stopSpeech();
+            
+            if(activeTTSButton) {
+                activeTTSButton.classList.remove('playing');
+            }
+
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+            
+            currentUtterance.onstart = () => {
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                button.classList.add('playing');
+                activeTTSButton = button;
+            };
+
+            currentUtterance.onpause = () => {
+                button.classList.remove('playing');
+            };
+
+            currentUtterance.onresume = () => {
+                button.classList.add('playing');
+            };
+
+            const cleanup = () => {
+                button.classList.remove('playing');
+                if(activeTTSButton === button) {
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                }
+            };
+
+            currentUtterance.onend = cleanup;
+            currentUtterance.onerror = (event) => {
+                if (event.error !== 'canceled') {
+                    console.error('An error occurred with speech synthesis:', event.error);
+                }
+                cleanup();
+            };
+            
+            synth.speak(currentUtterance);
+        }
+
+        let sound = null;
+
+        function initHowler() {
+            sound = new Howl({
+                src: ['audio_colica_equina.mp3'], // Placeholder
+                html5: true, 
+                onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                onloaderror: (id, msg) => {
+                     document.querySelector('#audio').innerHTML = `<p class="text-red-600">Errore: file audio non trovato.</p>`;
+                }
+            });
+        }
+
+        const playPauseBtn = document.getElementById('audio-play-pause');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+
+        if(playPauseBtn) {
+            playPauseBtn.addEventListener('click', () => {
+                if (!sound) initHowler();
+                if (sound.playing()) sound.pause(); else sound.play();
+            });
+        }
+
+        function setupTTSListeners() {
+            document.querySelectorAll('.tts-button').forEach(button => {
+                const newButton = button.cloneNode(true);
+                button.parentNode.replaceChild(newButton, button);
+
+                newButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    let textToRead = '';
+                    const parentElement = newButton.parentElement;
+
+                    if (!parentElement) return;
+                    
+                    const h1 = parentElement.closest('h1');
+                    const h2 = parentElement.closest('h2');
+                    const h3 = parentElement.closest('h3');
+                    const label = parentElement.closest('label');
+
+                    // Case 1: Title with a subtitle (H1)
+                    if (h1) {
+                        const clone = h1.cloneNode(true);
+                        clone.querySelector('.tts-button')?.remove();
+                        textToRead = clone.textContent.trim();
+                        const sub = h1.nextElementSibling;
+                        if(sub && (sub.matches('p') || sub.dataset.langKey?.includes('subtitle'))) {
+                            textToRead += '. ' + sub.textContent.trim();
+                        }
+                    }
+                    // Case 2: Section title (H2), read the whole section's text content
+                    else if (h2) {
+                        const section = h2.closest('section');
+                        let contentToRead = '';
+                        if (section) {
+                            const clone = section.cloneNode(true);
+                            clone.querySelectorAll('h2, button, a, .tts-button, #quiz, #infografica, #audio, #bibliografia').forEach(el => el.remove());
+                            contentToRead = clone.textContent.trim().replace(/\s\s+/g, ' ');
+                        }
+                        const titleClone = h2.cloneNode(true);
+                        titleClone.querySelector('.tts-button')?.remove();
+                        textToRead = `${titleClone.textContent.trim()}. ${contentToRead}`;
+                    }
+                    // Case 3: Quiz Question Title (H3)
+                    else if (h3) {
+                        const clone = h3.cloneNode(true);
+                        clone.querySelector('.tts-button')?.remove();
+                        textToRead = clone.textContent.trim().replace(/^\d+\.\s*/, '');
+                    }
+                    // Case 4: Quiz Answer Option (inside a label)
+                    else if (label) {
+                         const clone = label.cloneNode(true);
+                         clone.querySelectorAll('.tts-button, input').forEach(el => el.remove());
+                         textToRead = clone.textContent.trim();
+                    }
+                    
+                    if (textToRead) {
+                        speak(textToRead, newButton);
+                    }
+                });
+            });
+        }
+
+        function loadQuiz(lang) {
+            const quizContainer = document.getElementById('quiz-container');
+            if(!quizContainer) return;
+            quizContainer.innerHTML = '';
+            document.getElementById('quiz-results').innerHTML = ''; 
+            quizData[lang].forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-question p-4 rounded-lg';
+                let optionsHtml = q.options.map(o => `
+                    <li class="quiz-option p-2 rounded">
+                        <label class="flex items-center justify-between w-full cursor-pointer">
+                             <span class="flex-grow pr-4"><input type="radio" name="q${index}" value="${o}" class="mr-3">${o}</span>
+                             <span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                        </label>
+                    </li>`).join('');
+                questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+
+        function updateLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+            
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if (translations[key] && translations[key][lang]) {
+                     if (key.includes('Content')) {
+                        element.innerHTML = translations[key][lang];
+                    } else {
+                         const ttsButton = element.querySelector('.tts-button');
+                         element.textContent = translations[key][lang];
+                         if(ttsButton) element.appendChild(ttsButton);
+                    }
+                }
+            });
+            
+            const dsaToggleBtn = document.getElementById('dsa-toggle');
+            if (document.body.classList.contains('dsa-mode')) {
+                dsaToggleBtn.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+            } else {
+                dsaToggleBtn.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+            }
+            loadQuiz(lang);
+            setupTTSListeners();
+        }
+        
+        document.getElementById('lang-toggle').addEventListener('click', () => {
+            stopSpeech();
+            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage(currentLanguage);
+        });
+
+        const dsaToggleBtn = document.getElementById('dsa-toggle');
+        dsaToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dsa-mode');
+             if (document.body.classList.contains('dsa-mode')) {
+                dsaToggleBtn.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+            } else {
+                dsaToggleBtn.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+            }
+        });
+
+        const submitQuizBtn = document.getElementById('submit-quiz');
+        if(submitQuizBtn) {
+            submitQuizBtn.addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                         questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+        }
+        
+        // Initial setup
+        updateLanguage(currentLanguage);
+    });
+    </script>
+</body>
+</html>
+
