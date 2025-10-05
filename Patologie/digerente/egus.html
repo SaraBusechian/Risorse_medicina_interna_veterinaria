@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGUS - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0fdfa; color: #134e4a; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #0d9488; color: #0f766e; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #34495e;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .quiz-question { border: 1px solid #ccfbf1; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #f0fdfa; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"] { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-teal-50">
+
+    <header id="main-header" class="bg-teal-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Apparato Digerente</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="patologie_gastroenteriche.html" class="inline-flex items-center bg-white text-teal-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-teal-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Patologie Digerente</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-teal-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-teal-800" data-lang-key="pageTitle">Sindrome dell'Ulcera Gastrica Equina (EGUS)<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-teal-700 mt-2" data-lang-key="pageSubtitle">Approfondimento sulla patogenesi, diagnosi e terapia delle ulcere gastriche nel cavallo.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-teal-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none text-teal-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-teal-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                     <a href="infografica_egus.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-teal-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-teal-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona di un cavallo">🐎</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-teal-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica Dettagliata</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca qui per una guida visuale completa sull'EGUS.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-teal-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-teal-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-teal-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-teal-500 text-white rounded-full hover:bg-teal-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                            </svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" />
+                            </svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-teal-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-teal-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_egus.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-teal-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-teal-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-slate-200">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Patologie Apparato Digerente", en: "Digestive System Diseases" },
+                backToIndexText: { it: "Indice Patologie Digerente", en: "Digestive Pathology Index" },
+                pageTitle: { it: "Sindrome dell'Ulcera Gastrica Equina (EGUS)", en: "Equine Gastric Ulcer Syndrome (EGUS)" },
+                pageSubtitle: { it: "Approfondimento sulla patogenesi, diagnosi e terapia delle ulcere gastriche nel cavallo.", en: "In-depth look at the pathogenesis, diagnosis, and therapy of gastric ulcers in horses." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: `<p>La <strong>Sindrome dell'Ulcera Gastrica Equina (EGUS)</strong> è un termine generico che descrive le lesioni ulcerative ed erosive della mucosa gastrica del cavallo. Si suddivide in due patologie distinte in base alla localizzazione anatomica:</p>
+                        <div class="my-4 p-4 border rounded-lg bg-gray-50">
+                            <p class="text-sm font-semibold text-gray-700 mb-2">Anatomia Stomaco Equino</p>
+                            <img src="https://placehold.co/600x400/e2e8f0/334155?text=Anatomia+Stomaco" alt="Anatomia dello stomaco del cavallo, con distinzione tra parte squamosa e ghiandolare" class="w-full max-w-md mx-auto rounded-lg shadow-md">
+                            <p class="text-center text-xs text-gray-500 mt-1">Distinzione tra la porzione squamosa e la porzione ghiandolare.</p>
+                        </div>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Equine Squamous Gastric Disease (ESGD):</strong> Interessa la porzione non-ghiandolare (squamosa) dello stomaco. La causa principale è l'esposizione eccessiva all'acido gastrico. È estremamente comune nei cavalli atleti, a causa di fattori come l'esercizio intenso (che aumenta la pressione addominale e spinge l'acido verso l'alto), il digiuno prolungato, e diete ricche di concentrati.</li>
+                        </ul>
+                        <div class="my-4 p-4 border rounded-lg bg-gray-50">
+                            <p class="text-sm font-semibold text-gray-700 mb-2">Gastroscopia: ESGD</p>
+                            <img src="https://placehold.co/600x400/e2e8f0/334155?text=Ulcere+Squamose" alt="Immagine gastroscopica di ulcere nella porzione squamosa dello stomaco" class="w-full max-w-md mx-auto rounded-lg shadow-md">
+                            <p class="text-center text-xs text-gray-500 mt-1">Lesioni lungo il margo di grado 4/4.</p>
+                        </div>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Equine Glandular Gastric Disease (EGGD):</strong> Interessa la porzione ghiandolare inferiore dello stomaco. La sua patogenesi è meno chiara ma si ritiene legata a un cedimento dei meccanismi di difesa della mucosa (es. produzione di muco e bicarbonati), piuttosto che a un eccesso di acido. Lo stress e l'uso di FANS possono essere fattori predisponenti.</li>
+                        </ul>
+                         <div class="my-4 p-4 border rounded-lg bg-gray-50">
+                            <p class="text-sm font-semibold text-gray-700 mb-2">Gastroscopia: EGGD</p>
+                            <img src="https://placehold.co/600x400/e2e8f0/334155?text=Ulcere+Ghiandolari" alt="Immagine gastroscopica di lesioni nella porzione ghiandolare dello stomaco" class="w-full max-w-md mx-auto rounded-lg shadow-md">
+                            <p class="text-center text-xs text-gray-500 mt-1">Lesioni infiammatorie e ulcerative.</p>
+                        </div>
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Segni Clinici</h3>
+                        <p>I segni clinici sono spesso vaghi e aspecifici, il che può rendere difficile la diagnosi. Includono:</p>
+                        <ul class="list-disc pl-6">
+                            <li>Scarso appetito o appetito capriccioso.</li>
+                            <li>Scadimento della performance sportiva.</li>
+                            <li>Perdita di peso o difficoltà a mantenere la condizione fisica.</li>
+                            <li>Mantello opaco.</li>
+                            <li>Cambiamenti comportamentali come nervosismo o aggressività.</li>
+                            <li>Coliche ricorrenti di bassa intensità, spesso dopo il pasto.</li>
+                            <li>Bruxismo (digrignare i denti).</li>
+                        </ul>
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Diagnosi</h3>
+                        <p>Il <strong>gold standard</strong> per la diagnosi di EGUS è la <strong>gastroscopia</strong>. Questo esame permette di visualizzare direttamente la mucosa gastrica, confermare la presenza di ulcere, localizzarle (parte squamosa vs ghiandolare) e valutarne la gravità (tramite un sistema di punteggio da 0 a 4), orientando così la terapia.</p>
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Terapia e Gestione</h3>
+                        <p>L'approccio terapeutico varia a seconda della localizzazione delle lesioni:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Per la ESGD:</strong> L'obiettivo è la soppressione della produzione acida. Il farmaco di elezione è l'<strong>omeprazolo</strong> (un inibitore di pompa protonica), che ha dimostrato elevata efficacia.</li>
+                            <li><strong>Per la EGGD:</strong> La terapia è più complessa. Spesso si utilizza una combinazione di <strong>omeprazolo e sucralfato</strong> (un protettore della mucosa). In alcuni casi può essere utile il misoprostolo.</li>
+                        </ul>
+                        <p class="mt-2">La <strong>gestione ambientale e dietetica è FONDAMENTALE</strong> per il successo della terapia e la prevenzione delle recidive. Le misure chiave includono:</p>
+                        <ul class="list-disc pl-6">
+                            <li>Aumentare l'accesso al foraggio (fieno o pascolo) per stimolare la salivazione e tamponare l'acidità gastrica.</li>
+                            <li>Ridurre la quantità di carboidrati non strutturali (cereali, mangimi concentrati).</li>
+                            <li>Garantire un accesso costante all'acqua.</li>
+                            <li>Ridurre i fattori di stress e aumentare le ore di permanenza al paddock.</li>
+                        </ul>`,
+                    en: `<p><strong>Equine Gastric Ulcer Syndrome (EGUS)</strong> is a general term describing ulcerative and erosive lesions of the horse's gastric mucosa. It is divided into two distinct diseases based on anatomical location:</p>
+                        <div class="my-4 p-4 border rounded-lg bg-gray-50">
+                            <p class="text-sm font-semibold text-gray-700 mb-2">Equine Stomach Anatomy</p>
+                            <img src="https://placehold.co/600x400/e2e8f0/334155?text=Stomach+Anatomy" alt="Anatomy of the horse stomach, showing the distinction between squamous and glandular parts" class="w-full max-w-md mx-auto rounded-lg shadow-md">
+                            <p class="text-center text-xs text-gray-500 mt-1">Distinction between the squamous and glandular portions.</p>
+                        </div>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Equine Squamous Gastric Disease (ESGD):</strong> Affects the non-glandular (squamous) portion of the stomach. The main cause is excessive exposure to gastric acid. It is extremely common in athletic horses due to factors like intense exercise (which increases abdominal pressure, pushing acid upward), prolonged fasting, and high-concentrate diets.</li>
+                        </ul>
+                        <div class="my-4 p-4 border rounded-lg bg-gray-50">
+                            <p class="text-sm font-semibold text-gray-700 mb-2">Gastroscopy: ESGD</p>
+                            <img src="https://placehold.co/600x400/e2e8f0/334155?text=Squamous+Ulcers" alt="Gastroscopic image of ulcers in the squamous portion of the stomach" class="w-full max-w-md mx-auto rounded-lg shadow-md">
+                            <p class="text-center text-xs text-gray-500 mt-1">Grade 4/4 lesions along the margo plicatus.</p>
+                        </div>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Equine Glandular Gastric Disease (EGGD):</strong> Affects the lower glandular portion of the stomach. Its pathogenesis is less clear but is thought to be related to a failure of mucosal defense mechanisms (e.g., mucus and bicarbonate production), rather than excess acid. Stress and NSAID use can be predisposing factors.</li>
+                        </ul>
+                        <div class="my-4 p-4 border rounded-lg bg-gray-50">
+                            <p class="text-sm font-semibold text-gray-700 mb-2">Gastroscopy: EGGD</p>
+                            <img src="https://placehold.co/600x400/e2e8f0/334155?text=Glandular+Ulcers" alt="Gastroscopic image of lesions in the glandular portion of the stomach" class="w-full max-w-md mx-auto rounded-lg shadow-md">
+                            <p class="text-center text-xs text-gray-500 mt-1">Inflammatory and ulcerative lesions.</p>
+                        </div>
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Clinical Signs</h3>
+                        <p>Clinical signs are often vague and nonspecific, which can make diagnosis difficult. They include:</p>
+                        <ul class="list-disc pl-6">
+                            <li>Poor or picky appetite.</li>
+                            <li>Poor athletic performance.</li>
+                            <li>Weight loss or difficulty maintaining condition.</li>
+                            <li>Dull coat.</li>
+                            <li>Behavioral changes such as nervousness or aggression.</li>
+                            <li>Recurrent, low-grade colic, often after meals.</li>
+                            <li>Bruxism (teeth grinding).</li>
+                        </ul>
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Diagnosis</h3>
+                        <p>The <strong>gold standard</strong> for diagnosing EGUS is <strong>gastroscopy</strong>. This examination allows for direct visualization of the gastric mucosa, confirming the presence of ulcers, localizing them (squamous vs. glandular part), and assessing their severity (using a 0 to 4 scoring system), thus guiding therapy.</p>
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Therapy and Management</h3>
+                        <p>The therapeutic approach varies depending on the location of the lesions:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>For ESGD:</strong> The goal is acid suppression. The drug of choice is <strong>omeprazole</strong> (a proton pump inhibitor), which has proven to be highly effective.</li>
+                            <li><strong>For EGGD:</strong> Therapy is more complex. A combination of <strong>omeprazole and sucralfate</strong> (a mucosal protectant) is often used. Misoprostol may be useful in some cases.</li>
+                        </ul>
+                        <p class="mt-2"><strong>Environmental and dietary management is FUNDAMENTAL</strong> for the success of the therapy and prevention of recurrence. Key measures include:</p>
+                        <ul class="list-disc pl-6">
+                            <li>Increasing access to forage (hay or pasture) to stimulate salivation and buffer gastric acidity.</li>
+                            <li>Reducing the amount of non-structural carbohydrates (grains, concentrated feeds).</li>
+                            <li>Ensuring constant access to water.</li>
+                            <li>Reducing stress factors and increasing turnout time.</li>
+                        </ul>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Infografica Dettagliata", en: "View the Detailed Infographic" },
+                infographicLinkDesc: { it: "Clicca qui per una guida visuale completa sull'EGUS.", en: "Click here for a complete visual guide on EGUS." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Sykes, B.W., et al. (2015). European College of Equine Internal Medicine Consensus Statement—Equine Gastric Ulcer Syndrome in Adult Horses. Journal of Veterinary Internal Medicine, 29(5), 1288-1299.</li><li>Reed SM, Bayly WM, Sellon DC, EQUINE INTERNAL MEDICINE, 4th Edition, Saunders, 2018</li>`,
+                    en: `<li>Sykes, B.W., et al. (2015). European College of Equine Internal Medicine Consensus Statement—Equine Gastric Ulcer Syndrome in Adult Horses. Journal of Veterinary Internal Medicine, 29(5), 1288-1299.</li><li>Reed SM, Bayly WM, Sellon DC, EQUINE INTERNAL MEDICINE, 4th Edition, Saunders, 2018</li>` 
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Qual è il metodo diagnostico 'gold standard' per l'EGUS?", options: ["Esame del sangue", "Ecografia addominale", "Gastroscopia", "Esplorazione rettale"], answer: "Gastroscopia" },
+                    { question: "La patologia della parte squamosa dello stomaco (ESGD) è principalmente causata da:", options: ["Stress psicologico", "Un'infezione batterica", "Un cedimento delle difese della mucosa", "Eccessiva esposizione all'acido gastrico"], answer: "Eccessiva esposizione all'acido gastrico" },
+                    { question: "Qual è il farmaco di elezione per il trattamento della ESGD?", options: ["Sucralfato", "Antibiotici", "Omeprazolo", "Ranitidina"], answer: "Omeprazolo" },
+                    { question: "Quale farmaco viene spesso aggiunto all'omeprazolo per trattare la patologia della parte ghiandolare (EGGD)?", options: ["FANS", "Sucralfato", "Clenbuterolo", "Antiacidi"], answer: "Sucralfato" },
+                    { question: "Quale modifica gestionale è cruciale per la prevenzione e il trattamento dell'EGUS?", options: ["Aumentare la quantità di cereali nella dieta", "Limitare l'accesso all'acqua", "Aumentare l'accesso al foraggio", "Tenere il cavallo a box per più ore"], answer: "Aumentare l'accesso al foraggio" }
+                ],
+                en: [
+                    { question: "What is the 'gold standard' diagnostic method for EGUS?", options: ["Blood test", "Abdominal ultrasound", "Gastroscopy", "Rectal examination"], answer: "Gastroscopy" },
+                    { question: "Equine Squamous Gastric Disease (ESGD) is primarily caused by:", options: ["Psychological stress", "A bacterial infection", "A failure of mucosal defenses", "Excessive exposure to gastric acid"], answer: "Excessive exposure to gastric acid" },
+                    { question: "What is the drug of choice for treating ESGD?", options: ["Sucralfate", "Antibiotics", "Omeprazole", "Ranitidine"], answer: "Omeprazole" },
+                    { question: "Which drug is often added to omeprazole to treat Equine Glandular Gastric Disease (EGGD)?", options: ["NSAIDs", "Sucralfate", "Clenbuterol", "Antacids"], answer: "Sucralfate" },
+                    { question: "Which management change is crucial for the prevention and treatment of EGUS?", options: ["Increasing the amount of grains in the diet", "Limiting access to water", "Increasing access to forage", "Keeping the horse stalled for more hours"], answer: "Increasing access to forage" }
+                ]
+            };
+            
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() {
+                if (synth.speaking) {
+                    synth.cancel();
+                }
+            }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) {
+                        synth.resume();
+                        button.classList.add('playing');
+                    } else if (synth.speaking) {
+                        synth.pause();
+                        button.classList.remove('playing');
+                    }
+                    return; 
+                }
+
+                stopSpeech();
+                
+                if(activeTTSButton) {
+                    activeTTSButton.classList.remove('playing');
+                }
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                currentUtterance.onend = () => {
+                    if (button) button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+
+                currentUtterance.onerror = (event) => {
+                     if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('An error occurred with speech synthesis:', event.error);
+                    }
+                    if (button) button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+
+                activeTTSButton = button;
+                button.classList.add('playing');
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+
+            function initHowler() {
+                sound = new Howl({
+                    src: ['audio_egus.mp3'],
+                    html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onloaderror: (id, msg) => {
+                        console.error("Error loading audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = "Errore nel caricamento del file audio.";
+                    },
+                    onplayerror: (id, msg) => {
+                        console.error("Error playing audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = "Impossibile riprodurre il file audio.";
+                    }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+
+            playPauseBtn.addEventListener('click', () => {
+                if (!sound) initHowler();
+                if (sound.playing()) sound.pause(); else sound.play();
+            });
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        // Case 1: Main H1 Title
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                             const titleClone = parentElement.cloneNode(true);
+                             titleClone.querySelector('.tts-button').remove();
+                             textToRead = titleClone.textContent.trim();
+                             const subtitle = parentElement.nextElementSibling;
+                             if(subtitle && subtitle.dataset.langKey === 'pageSubtitle') {
+                                 textToRead += '. ' + subtitle.textContent.trim();
+                             }
+                        }
+                        // Case 2: H2 Section Titles
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            // If it's the summary section, read the whole content
+                            if (section && section.id === 'riassunto') {
+                                const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    const contentClone = content.cloneNode(true);
+                                    // Remove images for a cleaner TTS reading
+                                    contentClone.querySelectorAll('div, img').forEach(el => el.remove());
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        } 
+                        // Case 3: Quiz Question Title
+                        else if (parentElement.tagName === 'H3') {
+                                const questionTextNode = parentElement.querySelector('span:first-child');
+                                if (questionTextNode) textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
+                        }
+                        // Case 4: Quiz Answer Option
+                        else if (parentElement.closest('label')) {
+                            const label = parentElement.closest('label');
+                            const answerTextNode = label.querySelector('span:first-child');
+                            if (answerTextNode) textToRead = answerTextNode.textContent.trim();
+                        }
+                        
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-teal-50">
+                            <label class="flex items-center justify-between w-full cursor-pointer">
+                                <span class="flex-grow pr-4"><input type="radio" name="q${index}" value="${o}" class="mr-3">${o}</span>
+                                <span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                            </label>
+                        </li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                                element.innerHTML = translations[key][lang];
+                        } else {
+                            const ttsButton = element.querySelector('.tts-button');
+                            element.textContent = translations[key][lang];
+                            if(ttsButton) element.appendChild(ttsButton);
+                        }
+                    }
+                });
+                
+                const navAudio = document.querySelector('a[data-lang-key="navAudio"]');
+                const sectionAudio = document.getElementById('audio');
+                if (lang === 'en') {
+                    if(navAudio) navAudio.style.display = 'none';
+                    if(sectionAudio) sectionAudio.style.display = 'none';
+                } else {
+                    if(navAudio) navAudio.style.display = 'block';
+                    if(sectionAudio) sectionAudio.style.display = 'block';
+                }
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                loadQuiz(lang);
+                setupTTSListeners();
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            // Initial setup
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
+
