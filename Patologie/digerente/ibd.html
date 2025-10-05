@@ -233,8 +233,8 @@
                 audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
                 bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
                 bibliographyContent: { 
-                    it: `<li>Marsilio, S., et al. (2023). ACVIM consensus statement on the diagnosis and distinction of low-grade neoplastic from inflammatory lymphocytic chronic enteropathies in cats. Journal of Veterinary Internal Medicine, 37(3), 833-855.</li><li>Washabau, R. J., et al. (2010). Endoscopic, biopsy, and histopathologic guidelines for the evaluation of gastrointestinal inflammation in companion animals. Journal of veterinary internal medicine, 24(1), 10-26.</li><li>Ettinger, S. J., Feldman, E. C., & Cote, E. (2017). Textbook of veterinary internal medicine. Elsevier health sciences.</li>`,
-                    en: `<li>Marsilio, S., et al. (2023). ACVIM consensus statement on the diagnosis and distinction of low-grade neoplastic from inflammatory lymphocytic chronic enteropathies in cats. Journal of Veterinary Internal Medicine, 37(3), 833-855.</li><li>Washabau, R. J., et al. (2010). Endoscopic, biopsy, and histopathologic guidelines for the evaluation of gastrointestinal inflammation in companion animals. Journal of veterinary internal medicine, 24(1), 10-26.</li><li>Ettinger, S. J., Feldman, E. C., & Cote, E. (2017). Textbook of veterinary internal medicine. Elsevier health sciences.</li>`
+                    it: `<li>Marsilio, S., et al. (2023). ACVIM consensus statement guidelines on diagnosing and distinguishing low-grade neoplastic from inflammatory lymphocytic chronic enteropathies in cats. Journal of Veterinary Internal Medicine, 37(3), 794-816.</li><li>Washabau, R. J., et al. (2010). Endoscopic, biopsy, and histopathologic guidelines for the evaluation of gastrointestinal inflammation in companion animals. Journal of veterinary internal medicine, 24(1), 10-26.</li><li>Ettinger, S. J., Feldman, E. C., & Cote, E. (2017). Textbook of veterinary internal medicine. Elsevier health sciences.</li>`,
+                    en: `<li>Marsilio, S., et al. (2023). ACVIM consensus statement guidelines on diagnosing and distinguishing low-grade neoplastic from inflammatory lymphocytic chronic enteropathies in cats. Journal of Veterinary Internal Medicine, 37(3), 794-816.</li><li>Washabau, R. J., et al. (2010). Endoscopic, biopsy, and histopathologic guidelines for the evaluation of gastrointestinal inflammation in companion animals. Journal of veterinary internal medicine, 24(1), 10-26.</li><li>Ettinger, S. J., Feldman, E. C., & Cote, E. (2017). Textbook of veterinary internal medicine. Elsevier health sciences.</li>`
                 },
                 btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
                 accessibility: { it: "Accessibilità", en: "Accessibility" },
@@ -275,7 +275,7 @@
             let activeTTSButton = null;
 
             function stopSpeech() {
-                if (synth.speaking) {
+                if (synth.speaking || synth.paused) {
                     synth.cancel();
                 }
             }
@@ -284,40 +284,48 @@
                 if (activeTTSButton === button && currentUtterance) {
                     if (synth.paused) {
                         synth.resume();
-                        button.classList.add('playing');
                     } else if (synth.speaking) {
                         synth.pause();
-                        button.classList.remove('playing');
                     }
                     return; 
                 }
 
                 stopSpeech();
                 
-                if(activeTTSButton) {
-                    activeTTSButton.classList.remove('playing');
-                }
-
                 currentUtterance = new SpeechSynthesisUtterance(text);
                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
                 
-                currentUtterance.onend = () => {
-                    if (button) button.classList.remove('playing');
-                    activeTTSButton = null;
-                    currentUtterance = null;
+                currentUtterance.onstart = () => {
+                    if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                    button.classList.add('playing');
+                    activeTTSButton = button;
                 };
+
+                currentUtterance.onpause = () => {
+                    if (button) button.classList.remove('playing');
+                };
+
+                currentUtterance.onresume = () => {
+                    if (button) button.classList.add('playing');
+                };
+
+                const cleanup = () => {
+                    if (button) button.classList.remove('playing');
+                    if(activeTTSButton === button) {
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
+                };
+
+                currentUtterance.onend = cleanup;
 
                 currentUtterance.onerror = (event) => {
                      if (event.error !== 'canceled' && event.error !== 'interrupted') {
                         console.error('An error occurred with speech synthesis:', event.error);
                     }
-                    if (button) button.classList.remove('playing');
-                    activeTTSButton = null;
-                    currentUtterance = null;
+                    cleanup();
                 };
 
-                activeTTSButton = button;
-                button.classList.add('playing');
                 synth.speak(currentUtterance);
             }
 
