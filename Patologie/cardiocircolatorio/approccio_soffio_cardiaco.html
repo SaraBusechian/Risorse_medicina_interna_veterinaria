@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approccio al Soffio Cardiaco - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fff1f2; color: #881337; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #f43f5e; color: #be185d; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdf6f7 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #34495e;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #fffdfd; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .quiz-question { border: 1px solid #fecdd3; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #fff1f2; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"] { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-rose-50">
+
+    <header id="main-header" class="bg-rose-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Cardiocircolatorie</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="patologie_cardiocircolatorio.html" class="inline-flex items-center bg-white text-rose-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-rose-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Patologie Cardiocircolatorie</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-rose-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-rose-800" data-lang-key="pageTitle">Approccio al Soffio Cardiaco<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-rose-700 mt-2" data-lang-key="pageSubtitle">Come caratterizzare un soffio e orientarsi tra le diagnosi differenziali.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none text-rose-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                      <a href="infografica_soffio_cardiaco.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-rose-500">
+                          <div class="flex items-center space-x-6">
+                              <div class="flex-shrink-0 w-24 h-24 bg-rose-500 rounded-lg flex items-center justify-center">
+                                  <span class="text-5xl" role="img" aria-label="Icona di un cuore con stetoscopio">🩺</span>
+                              </div>
+                              <div>
+                                  <h3 class="text-xl font-bold text-rose-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica Dettagliata</h3>
+                                  <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca qui per una guida visuale completa sulla caratterizzazione del soffio cardiaco.</p>
+                              </div>
+                          </div>
+                      </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-rose-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-rose-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-rose-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-rose-500 text-white rounded-full hover:bg-rose-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-rose-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-rose-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_soffio_cardiaco.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-rose-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-rose-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Patologie Cardiocircolatorie", en: "Cardiovascular Diseases" },
+                backToIndexText: { it: "Indice Patologie Cardiocircolatorie", en: "Cardiovascular Pathology Index" },
+                pageTitle: { it: "Approccio al Soffio Cardiaco", en: "Approach to the Heart Murmur" },
+                pageSubtitle: { it: "Come caratterizzare un soffio e orientarsi tra le diagnosi differenziali.", en: "How to characterize a murmur and navigate differential diagnoses." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: `<p>Un <strong>soffio cardiaco</strong> è un suono udibile generato da un flusso sanguigno turbolento. Non è una malattia di per sé, ma un segno clinico fondamentale che indica una potenziale anomalia strutturale o funzionale. La sua corretta caratterizzazione è il primo, cruciale passo per formulare una lista di diagnosi differenziali.</p>
+                         <h3 class="text-2xl font-semibold mt-6 mb-3">Caratterizzazione del Soffio</h3>
+                         <p>Per descrivere un soffio in modo completo, è necessario valutarne 4 caratteristiche fondamentali:</p>
+                         <ol class="list-decimal pl-6 space-y-2">
+                            <li><strong>Timing:</strong> Sistolico (tra S1-S2, il più comune), Diastolico (dopo S2), o Continuo (tutto il ciclo, es. PDA).</li>
+                            <li><strong>Punto di Massima Intensità (PMI):</strong> Il punto dove il soffio è più forte. Aiuta a localizzare l'origine (focolai Mitralico, Aortico, Polmonare, Tricuspidalico).</li>
+                            <li><strong>Intensità:</strong> Su una scala da I a VI. I gradi V e VI sono associati a un <strong>fremito</strong> palpabile.</li>
+                            <li><strong>Configurazione:</strong> La forma del suono, come "a plateau" (es. MVD) o "a diamante" (es. Stenosi subaortica).</li>
+                         </ol>
+                         <h3 class="text-2xl font-semibold mt-6 mb-3">Iter Diagnostico</h3>
+                         <p>Dopo la caratterizzazione, l'<strong>ecocardiografia</strong> è il gold standard per identificare la causa. Le <strong>radiografie del torace</strong> sono cruciali nel sospetto di insufficienza cardiaca congestizia (CHF).</p>
+                         <h3 class="text-2xl font-semibold mt-6 mb-3">Particolarità nel Cavallo</h3>
+                         <p>Nel cavallo, i soffi sono comuni anche in animali sani e atleti (<strong>fisiologici o funzionali</strong>). È fondamentale distinguerli da quelli patologici:</p>
+                         <ul class="list-disc pl-6 space-y-2">
+                             <li><strong>Soffi Fisiologici (comuni):</strong> Solitamente sistolici da eiezione, di bassa intensità (I-III/VI), brevi, con PMI sulla base cardiaca.</li>
+                             <li><strong>Soffi Patologici (comuni):</strong> Rigurgito Mitralico (olo-sistolico, apice sx), Rigurgito Aortico (diastolico, base sx, comune negli anziani), Rigurgito Tricuspidalico (sistolico, lato dx).</li>
+                         </ul>
+                         <p>A differenza dei piccoli animali, i <strong>soffi diastolici</strong> sono un reperto relativamente frequente nel cavallo. L'<strong>ecocardiografia</strong> resta essenziale per determinarne il significato clinico.</p>`,
+                    en: `<p>A <strong>heart murmur</strong> is an audible sound generated by turbulent blood flow. It is not a disease itself but a key clinical sign indicating a potential structural or functional anomaly. Its proper characterization is the first, crucial step in formulating a list of differential diagnoses.</p>
+                         <h3 class="text-2xl font-semibold mt-6 mb-3">Murmur Characterization</h3>
+                         <p>To fully describe a murmur, 4 fundamental characteristics must be assessed:</p>
+                         <ol class="list-decimal pl-6 space-y-2">
+                            <li><strong>Timing:</strong> Systolic (between S1-S2, most common), Diastolic (after S2), or Continuous (entire cycle, e.g., PDA).</li>
+                            <li><strong>Point of Maximum Intensity (PMI):</strong> The point where the murmur is loudest. It helps locate the origin (Mitral, Aortic, Pulmonic, Tricuspid areas).</li>
+                            <li><strong>Intensity:</strong> On a scale from I to VI. Grades V and VI are associated with a palpable <strong>thrill</strong>.</li>
+                            <li><strong>Configuration:</strong> The shape of the sound, like "plateau" (e.g., MVD) or "diamond-shaped" (e.g., Subaortic stenosis).</li>
+                         </ol>
+                         <h3 class="text-2xl font-semibold mt-6 mb-3">Diagnostic Workup</h3>
+                         <p>After characterization, <strong>echocardiography</strong> is the gold standard to identify the cause. <strong>Chest radiographs</strong> are crucial if congestive heart failure (CHF) is suspected.</p>
+                         <h3 class="text-2xl font-semibold mt-6 mb-3">Specifics in the Horse</h3>
+                         <p>In horses, murmurs are common even in healthy, athletic animals (<strong>physiologic or functional</strong>). It's vital to distinguish them from pathological ones:</p>
+                         <ul class="list-disc pl-6 space-y-2">
+                             <li><strong>Physiologic Murmurs (common):</strong> Usually systolic ejection murmurs, low intensity (I-III/VI), short, with PMI at the heart base.</li>
+                             <li><strong>Pathologic Murmurs (common):</strong> Mitral Regurgitation (holosystolic, left apex), Aortic Regurgitation (diastolic, left base, common in older horses), Tricuspid Regurgitation (systolic, right side).</li>
+                         </ul>
+                         <p>Unlike in small animals, <strong>diastolic murmurs</strong> are a relatively frequent finding in horses. <strong>Echocardiography</strong> remains essential to determine their clinical significance.</p>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Infografica Dettagliata", en: "View the Detailed Infographic" },
+                infographicLinkDesc: { it: "Clicca qui per una guida visuale completa sulla caratterizzazione del soffio cardiaco.", en: "Click here for a complete visual guide on heart murmur characterization." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024</li><li>Marr CM, Bowen IM, Cardiology of the Horse, 2nd Edition, Elsevier, 2010</li>`,
+                    en: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024</li><li>Marr CM, Bowen IM, Cardiology of the Horse, 2nd Edition, Elsevier, 2010</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Un soffio sistolico si ausculta:", options: ["Dopo il secondo tono cardiaco (S2)", "Durante tutto il ciclo cardiaco", "Tra il primo (S1) e il secondo (S2) tono cardiaco", "Solo in caso di aritmia"], answer: "Tra il primo (S1) e il secondo (S2) tono cardiaco" },
+                    { question: "Un soffio di grado V/VI è sempre associato a:", options: ["Cianosi", "Un fremito palpabile", "Insufficienza cardiaca congestizia", "Una patologia congenita"], answer: "Un fremito palpabile" },
+                    { question: "Un soffio 'a diamante' (crescendo-decrescendo) è tipico di quale condizione?", options: ["Rigurgito valvolare", "Stenosi (soffio da eiezione)", "Dotto Arterioso Pervio", "Comunicazione interventricolare"], answer: "Stenosi (soffio da eiezione)" },
+                    { question: "Qual è l'esame gold standard per determinare la causa esatta di un soffio cardiaco?", options: ["Radiografia toracica", "Elettrocardiogramma (ECG)", "Ecocardiografia", "Misurazione della pressione arteriosa"], answer: "Ecocardiografia" },
+                    { question: "Quale reperto è frequente e spesso fisiologico in un cavallo atleta?", options: ["Un soffio continuo", "Un soffio diastolico di grado V/VI", "Un soffio sistolico da eiezione di grado I-II/VI", "Un fremito palpabile"], answer: "Un soffio sistolico da eiezione di grado I-II/VI" },
+                    { question: "Un soffio 'continuo' (udibile sia in sistole che in diastole) è patognomonico di quale condizione congenita?", options: ["Stenosi subaortica", "Difetto del setto interventricolare", "Dotto Arterioso Pervio (PDA)", "Tetralogia di Fallot"], answer: "Dotto Arterioso Pervio (PDA)" },
+                    { question: "Nel cavallo anziano, quale soffio patologico è un reperto comune, spesso legato a degenerazione valvolare?", options: ["Rigurgito aortico (diastolico)", "Stenosi polmonare (sistolica)", "Rigurgito mitralico (sistolico)", "Difetto del setto atriale"], answer: "Rigurgito aortico (diastolico)" },
+                    { question: "Un soffio olo-sistolico (a plateau) è tipicamente causato da:", options: ["Un'accelerazione del flusso attraverso una valvola ristretta (stenosi)", "Un rigurgito di sangue attraverso una valvola atrioventricolare incontinente", "Un flusso sanguigno fisiologico in un animale giovane", "Un difetto del setto atriale"], answer: "Un rigurgito di sangue attraverso una valvola atrioventricolare incontinente" },
+                    { question: "Cosa si intende con il termine 'fremito cardiaco'?", options: ["Un suono cardiaco accessorio (galoppo)", "La vibrazione toracica palpabile associata a un soffio molto forte", "Un'aritmia rilevata all'ECG", "Un aumento della frequenza cardiaca"], answer: "La vibrazione toracica palpabile associata a un soffio molto forte" },
+                    { question: "La presenza di un soffio diastolico in un cane è considerata:", options: ["Un reperto sempre fisiologico e di nessuna importanza clinica", "Un reperto comune, specialmente nelle razze brachicefale", "Un reperto raro e quasi sempre indicativo di una patologia significativa", "Un artefatto comune durante l'auscultazione"], answer: "Un reperto raro e quasi sempre indicativo di una patologia significativa" }
+                ],
+                en: [
+                    { question: "A systolic murmur is heard:", options: ["After the second heart sound (S2)", "Throughout the entire cardiac cycle", "Between the first (S1) and second (S2) heart sounds", "Only in cases of arrhythmia"], answer: "Between the first (S1) and second (S2) heart sounds" },
+                    { question: "A grade V/VI murmur is always associated with:", options: ["Cyanosis", "A palpable thrill", "Congestive heart failure", "A congenital condition"], answer: "A palpable thrill" },
+                    { question: "A 'diamond-shaped' (crescendo-decrescendo) murmur is typical of which condition?", options: ["Valvular regurgitation", "Stenosis (ejection murmur)", "Patent Ductus Arteriosus", "Ventricular septal defect"], answer: "Stenosis (ejection murmur)" },
+                    { question: "What is the gold standard examination for determining the exact cause of a heart murmur?", options: ["Chest radiograph", "Electrocardiogram (ECG)", "Echocardiography", "Blood pressure measurement"], answer: "Echocardiography" },
+                    { question: "Which finding is common and often physiologic in an athletic horse?", options: ["A continuous murmur", "A grade V/VI diastolic murmur", "A grade I-II/VI systolic ejection murmur", "A palpable thrill"], answer: "A grade I-II/VI systolic ejection murmur" },
+                    { question: "A 'continuous' murmur (audible in both systole and diastole) is pathognomonic for which congenital condition?", options: ["Subaortic stenosis", "Ventricular septal defect", "Patent Ductus Arteriosus (PDA)", "Tetralogy of Fallot"], answer: "Patent Ductus Arteriosus (PDA)" },
+                    { question: "In an older horse, which pathological murmur is a common finding, often related to valvular degeneration?", options: ["Aortic regurgitation (diastolic)", "Pulmonic stenosis (systolic)", "Mitral regurgitation (systolic)", "Atrial septal defect"], answer: "Aortic regurgitation (diastolic)" },
+                    { question: "A holosystolic (plateau) murmur is typically caused by:", options: ["Acceleration of blood flow across a narrowed valve (stenosis)", "Regurgitation of blood through an incompetent atrioventricular valve", "Physiologic blood flow in a young animal", "An atrial septal defect"], answer: "Regurgitation of blood through an incompetent atrioventricular valve" },
+                    { question: "What is meant by the term 'cardiac thrill'?", options: ["An extra heart sound (gallop rhythm)", "The palpable chest vibration associated with a very loud murmur", "An arrhythmia detected on an ECG", "An increase in heart rate"], answer: "The palpable chest vibration associated with a very loud murmur" },
+                    { question: "The presence of a diastolic murmur in a dog is considered:", options: ["Always a physiological finding with no clinical significance", "A common finding, especially in brachycephalic breeds", "A rare finding and almost always indicative of significant pathology", "A common artifact during auscultation"], answer: "A rare finding and almost always indicative of significant pathology" }
+                ]
+            };
+            
+            // --- GENERIC SCRIPT (DO NOT EDIT BELOW THIS LINE) ---
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() { if (synth.speaking) synth.cancel(); }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                    return; 
+                }
+                stopSpeech();
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                currentUtterance.onend = () => {
+                    if (button) button.classList.remove('playing');
+                    activeTTSButton = null; currentUtterance = null;
+                };
+                currentUtterance.onerror = (event) => {
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') console.error('TTS Error:', event.error);
+                    if (button) button.classList.remove('playing');
+                    activeTTSButton = null; currentUtterance = null;
+                };
+                activeTTSButton = button; button.classList.add('playing');
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+            function initHowler() {
+                const audioFile = document.querySelector('#audio a[download]').href;
+                if (!audioFile) return;
+                sound = new Howl({
+                    src: [audioFile], html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onloaderror: (id, msg) => { console.error("Error loading audio:", msg); },
+                    onplayerror: (id, msg) => { console.error("Error playing audio:", msg); }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            if(playPauseBtn) playPauseBtn.addEventListener('click', () => {
+                if (!sound) initHowler();
+                if(sound) { if (sound.playing()) sound.pause(); else sound.play(); }
+            });
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                            const subtitle = parentElement.nextElementSibling;
+                            if(subtitle && subtitle.dataset.langKey === 'pageSubtitle') {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    const contentClone = content.cloneNode(true);
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        }
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                if(!quizContainer) return;
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-rose-50">
+                            <label class="flex items-center w-full cursor-pointer">
+                                <input type="radio" name="q${index}" value="${o}" class="mr-3">${o}
+                            </label>
+                        </li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2">${index + 1}. ${q.question}</h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            const ttsButton = element.querySelector('.tts-button');
+                            const textNode = [...element.childNodes].find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim());
+                            if (textNode) {
+                                textNode.textContent = translations[key][lang];
+                            } else {
+                                element.textContent = translations[key][lang];
+                            }
+                            if(ttsButton) element.appendChild(ttsButton);
+                        }
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                loadQuiz(lang);
+                setupTTSListeners();
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            const submitQuizBtn = document.getElementById('submit-quiz');
+            if (submitQuizBtn) submitQuizBtn.addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            updateLanguage(currentLanguage);
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('article section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            sections.forEach(sec => observer.observe(sec));
+        });
+    </script>
+</body>
+</html>
+
+
