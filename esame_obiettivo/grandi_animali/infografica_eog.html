@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: Esame Obiettivo Generale (EOG)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
+        .flow-step { transition: transform 0.3s, box-shadow 0.3s; }
+        .flow-step:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .flow-arrow { color: #003f5c; }
+        .nav-link { transition: color 0.3s; }
+        .nav-link:hover { color: #93C5FD; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #000000 !important;
+            background-image: none !important;
+        }
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
+            color: #ffffff !important;
+        }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
+        .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode div { color: #34495e; }
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                 <a href="esame_obiettivo.html" class="nav-link font-semibold" data-lang-key="navBack">Indice Esami</a>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#003f5c] mb-4" data-lang-key="pageTitle">L'EOG in un Colpo d'Occhio</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-lang-key="pageSubtitle">Una guida visiva al processo sistematico di valutazione della salute di un grande animale.</p>
+        </header>
+
+        <main class="space-y-16">
+            <section>
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#003f5c]" data-lang-key="flowTitle">Flusso Operativo dell'EOG</h2>
+                <div class="flex flex-col md:flex-row md:items-stretch items-center justify-center gap-4 text-center">
+                    <!-- Step 1 -->
+                    <div class="flow-step bg-white rounded-lg shadow-md p-6 border-t-4 border-[#003f5c] w-full md:w-auto md:flex-1">
+                        <h3 class="font-bold text-xl mb-2" data-lang-key="step1Title">1. Valutazione a Distanza</h3>
+                        <p class="text-sm" data-lang-key="step1Desc">Osserva sensorio, postura, BCS e comportamento prima di avvicinarti.</p>
+                    </div>
+                    <!-- Arrow for mobile -->
+                    <div class="flow-arrow text-3xl md:hidden">↓</div>
+                    <!-- Arrow for desktop -->
+                    <div class="flow-arrow text-3xl hidden md:flex items-center justify-center">→</div>
+                    <!-- Step 2 -->
+                    <div class="flow-step bg-white rounded-lg shadow-md p-6 border-t-4 border-[#7a5195] w-full md:w-auto md:flex-1">
+                        <h3 class="font-bold text-xl mb-2" data-lang-key="step2Title">2. Parametri Vitali</h3>
+                        <p class="text-sm" data-lang-key="step2Desc">Misura la triade: Temperatura, Polso (FC) e Frequenza Respiratoria (FR).</p>
+                    </div>
+                    <!-- Arrow for mobile -->
+                    <div class="flow-arrow text-3xl md:hidden">↓</div>
+                    <!-- Arrow for desktop -->
+                    <div class="flow-arrow text-3xl hidden md:flex items-center justify-center">→</div>
+                    <!-- Step 3 -->
+                    <div class="flow-step bg-white rounded-lg shadow-md p-6 border-t-4 border-[#ff764a] w-full md:w-auto md:flex-1">
+                        <h3 class="font-bold text-xl mb-2" data-lang-key="step3Title">3. Mucose e Perfusione</h3>
+                        <p class="text-sm" data-lang-key="step3Desc">Ispeziona colore, umidità e Tempo di Riempimento Capillare (TRC).</p>
+                    </div>
+                    <!-- Arrow for mobile -->
+                    <div class="flow-arrow text-3xl md:hidden">↓</div>
+                    <!-- Arrow for desktop -->
+                    <div class="flow-arrow text-3xl hidden md:flex items-center justify-center">→</div>
+                    <!-- Step 4 -->
+                    <div class="flow-step bg-white rounded-lg shadow-md p-6 border-t-4 border-[#ffa600] w-full md:w-auto md:flex-1">
+                        <h3 class="font-bold text-xl mb-2" data-lang-key="step4Title">4. Cute e Linfonodi</h3>
+                        <p class="text-sm" data-lang-key="step4Desc">Valuta l'idratazione (plica cutanea), il mantello e palpa i linfonodi esplorabili.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="bg-white rounded-lg shadow-md p-6 h-full">
+                    <h3 class="text-2xl font-bold mb-4 text-[#003f5c] text-center" data-lang-key="chart1Title">Parametri Vitali di Riferimento (Adulti)</h3>
+                    <div class="relative h-80">
+                        <canvas id="vitalSignsChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6 h-full">
+                    <h3 class="text-2xl font-bold mb-4 text-[#7a5195] text-center" data-lang-key="chart2Title">Interpretazione Colore Mucose</h3>
+                    <div class="space-y-4 mt-6">
+                        <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-[#FFC0CB] mr-4 border"></div><div data-lang-key="mucosa1"><strong>Rosa:</strong> Normale</div></div>
+                        <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-[#F5F5DC] mr-4 border"></div><div data-lang-key="mucosa2"><strong>Pallide:</strong> Anemia, shock</div></div>
+                        <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-[#FFFFE0] mr-4 border"></div><div data-lang-key="mucosa3"><strong>Itteriche (Gialle):</strong> Problemi epatici</div></div>
+                        <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-[#ADD8E6] mr-4 border"></div><div data-lang-key="mucosa4"><strong>Cianotiche (Bluastre):</strong> Ipossia</div></div>
+                        <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-[#DC143C] mr-4 border"></div><div data-lang-key="mucosa5"><strong>Congeste (Rosso Scuro):</strong> Shock, sepsi</div></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-center mb-2 text-emerald-700" data-lang-key="herdTitle">La Prospettiva sulla Mandria: Oltre il Singolo</h2>
+                <p class="text-center text-gray-600 max-w-2xl mx-auto mb-8" data-lang-key="herdDesc">In allevamento, l'EOG si estende all'ambiente e al gruppo per identificare problemi collettivi.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div class="p-4 bg-emerald-50 rounded-lg">
+                        <div class="text-emerald-600 mb-2">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                        </div>
+                        <h3 class="font-bold" data-lang-key="herd1Title">Valutazione Ambientale</h3>
+                        <p class="text-sm text-gray-600" data-lang-key="herd1Desc">Spazio, lettiera, pulizia, ventilazione.</p>
+                    </div>
+                     <div class="p-4 bg-emerald-50 rounded-lg">
+                        <div class="text-emerald-600 mb-2">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                        </div>
+                        <h3 class="font-bold" data-lang-key="herd2Title">Comportamento Collettivo</h3>
+                        <p class="text-sm text-gray-600" data-lang-key="herd2Desc">Apatia, agitazione, interazioni sociali.</p>
+                    </div>
+                     <div class="p-4 bg-emerald-50 rounded-lg">
+                        <div class="text-emerald-600 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                        </div>
+                        <h3 class="font-bold" data-lang-key="herd3Title">Indicatori Nutrizionali</h3>
+                        <p class="text-sm text-gray-600" data-lang-key="herd3Desc">Riempimento ruminale, BCS medio, ruminazione.</p>
+                    </div>
+                     <div class="p-4 bg-emerald-50 rounded-lg">
+                        <div class="text-emerald-600 mb-2">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                        </div>
+                        <h3 class="font-bold" data-lang-key="herd4Title">Esame Feci di Gruppo</h3>
+                        <p class="text-sm text-gray-600" data-lang-key="herd4Desc">Consistenza e omogeneità nelle corsie.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer id="main-footer" class="bg-gray-800 text-white mt-12">
+             <div class="container mx-auto px-6 py-4 text-center">
+                 <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
+             </div>
+        </footer>
+    </div>
+
+    <script>
+        const translations = {
+            siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Veterinary Semeiotics L.A.' },
+            navBack: { it: 'Indice Esami', en: 'Exams Index' },
+            accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+            pageTitle: { it: "L'EOG in un Colpo d'Occhio", en: "The GPE at a Glance" },
+            pageSubtitle: { it: "Una guida visiva al processo sistematico di valutazione della salute di un grande animale.", en: "A visual guide to the systematic process of assessing a large animal's health." },
+            flowTitle: { it: "Flusso Operativo dell'EOG", en: "GPE Operational Flow" },
+            step1Title: { it: "1. Valutazione a Distanza", en: "1. Distance Assessment" },
+            step1Desc: { it: "Osserva sensorio, postura, BCS e comportamento prima di avvicinarti.", en: "Observe mental status, posture, BCS, and behavior before approaching." },
+            step2Title: { it: "2. Parametri Vitali", en: "2. Vital Signs" },
+            step2Desc: { it: "Misura la triade: Temperatura, Polso (FC) e Frequenza Respiratoria (FR).", en: "Measure the triad: Temperature, Pulse (HR), and Respiratory Rate (RR)." },
+            step3Title: { it: "3. Mucose e Perfusione", en: "3. Mucosa and Perfusion" },
+            step3Desc: { it: "Ispeziona colore, umidità e Tempo di Riempimento Capillare (TRC).", en: "Inspect color, moisture, and Capillary Refill Time (CRT)." },
+            step4Title: { it: "4. Cute e Linfonodi", en: "4. Skin and Lymph Nodes" },
+            step4Desc: { it: "Valuta l'idratazione (plica cutanea), il mantello e palpa i linfonodi esplorabili.", en: "Assess hydration (skin turgor), coat, and palpate explorable lymph nodes." },
+            chart1Title: { it: "Parametri Vitali di Riferimento (Adulti)", en: "Reference Vital Signs (Adults)" },
+            chart2Title: { it: "Interpretazione Colore Mucose", en: "Mucous Membrane Color Interpretation" },
+            mucosa1: { it: "<strong>Rosa:</strong> Normale", en: "<strong>Pink:</strong> Normal" },
+            mucosa2: { it: "<strong>Pallide:</strong> Anemia, shock", en: "<strong>Pale:</strong> Anemia, shock" },
+            mucosa3: { it: "<strong>Itteriche (Gialle):</strong> Problemi epatici", en: "<strong>Icteric (Yellow):</strong> Liver problems" },
+            mucosa4: { it: "<strong>Cianotiche (Bluastre):</strong> Ipossia", en: "<strong>Cyanotic (Bluish):</strong> Hypoxia" },
+            mucosa5: { it: "<strong>Congeste (Rosso Scuro):</strong> Shock, sepsi", en: "<strong>Congested (Dark Red):</strong> Shock, sepsis" },
+            herdTitle: { it: "La Prospettiva sulla Mandria: Oltre il Singolo", en: "The Herd Perspective: Beyond the Individual" },
+            herdDesc: { it: "In allevamento, l'EOG si estende all'ambiente e al gruppo per identificare problemi collettivi.", en: "On a farm, the GPE extends to the environment and the group to identify collective problems." },
+            herd1Title: { it: "Valutazione Ambientale", en: "Environmental Assessment" },
+            herd1Desc: { it: "Spazio, lettiera, pulizia, ventilazione.", en: "Space, bedding, cleanliness, ventilation." },
+            herd2Title: { it: "Comportamento Collettivo", en: "Collective Behavior" },
+            herd2Desc: { it: "Apatia, agitazione, interazioni sociali.", en: "Apathy, agitation, social interactions." },
+            herd3Title: { it: "Indicatori Nutrizionali", en: "Nutritional Indicators" },
+            herd3Desc: { it: "Riempimento ruminale, BCS medio, ruminazione.", en: "Rumen fill, average BCS, rumination." },
+            herd4Title: { it: "Esame Feci di Gruppo", en: "Group Fecal Exam" },
+            herd4Desc: { it: "Consistenza e omogeneità nelle corsie.", en: "Consistency and homogeneity in the alleys." },
+            footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' },
+            chartTemp: { it: 'Temperatura (°C)', en: 'Temperature (°C)' },
+            chartHR: { it: 'Freq. Cardiaca (bpm)', en: 'Heart Rate (bpm)' },
+            chartRR: { it: 'Freq. Respiratoria (apm)', en: 'Resp. Rate (bpm)' }
+        };
+
+        let currentLanguage = localStorage.getItem('language') || 'it';
+        const accessibilityToggle = document.getElementById('accessibility-toggle');
+        const langToggle = document.getElementById('lang-toggle');
+        const body = document.body;
+        const synth = window.speechSynthesis;
+        let vitalSignsChart;
+
+        function setupTTSListeners() {
+            document.querySelectorAll('.tts-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const parent = e.currentTarget.parentNode;
+                    const clone = parent.cloneNode(true);
+                    if (clone.querySelector('.tts-button')) {
+                        clone.querySelector('.tts-button').remove();
+                    }
+                    const textToRead = clone.textContent.trim().replace(/\s+/g, ' ');
+                    if (textToRead) speak(textToRead, e.currentTarget);
+                });
+            });
+        }
+
+        function createChart(lang) {
+            const ctx = document.getElementById('vitalSignsChart').getContext('2d');
+            if(vitalSignsChart) {
+                vitalSignsChart.destroy();
+            }
+            vitalSignsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Bovino', 'Equino'],
+                    datasets: [
+                        {
+                            label: translations.chartTemp[lang],
+                            data: [38.5, 38.0],
+                            backgroundColor: '#ef5675',
+                            yAxisID: 'y',
+                        },
+                        {
+                            label: translations.chartHR[lang],
+                            data: [70, 40],
+                            backgroundColor: '#7a5195',
+                            yAxisID: 'y1',
+                        },
+                         {
+                            label: translations.chartRR[lang],
+                            data: [20, 12],
+                            backgroundColor: '#ffa600',
+                            yAxisID: 'y1',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: { display: true, text: '°C' },
+                            min: 35,
+                            max: 40
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: { display: true, text: 'atti/min' },
+                            min: 0,
+                            max: 80,
+                            grid: { drawOnChartArea: false }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y;
+                                        if (context.dataset.yAxisID === 'y') label += ' °C';
+                                        else label += ' /min';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        const updateLanguage = (lang) => {
+            document.documentElement.lang = lang;
+            langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if (translations[key] && translations[key][lang]) {
+                    element.innerHTML = translations[key][lang];
+                }
+            });
+            createChart(lang);
+            setupTTSListeners();
+        };
+
+        const setA11yMode = (enabled) => {
+            if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); } 
+            else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+        };
+
+        langToggle.addEventListener('click', () => {
+            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage(currentLanguage);
+        });
+
+        accessibilityToggle.addEventListener('click', () => {
+            const isEnabled = body.classList.contains('dsa-mode');
+            setA11yMode(!isEnabled);
+        });
+
+        if (localStorage.getItem('dsa-mode') === 'enabled') {
+            setA11yMode(true);
+        }
+        updateLanguage(currentLanguage);
+    </script>
+</body>
+</html>
+
