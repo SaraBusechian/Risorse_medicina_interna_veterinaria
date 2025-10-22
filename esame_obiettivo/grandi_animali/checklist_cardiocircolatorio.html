@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist: Esame Cardiocircolatorio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .checklist-container { 
+            max-width: 800px; 
+            margin: 2rem auto; 
+            padding: 2rem; 
+            background-color: #ffffff; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+        }
+        h1 { 
+            font-family: 'Lexend', sans-serif; 
+            color: #1e3a8a; 
+            border-bottom: 3px solid #1e3a8a; 
+            padding-bottom: 0.5rem; 
+            font-size: 1.75rem; 
+        }
+        h2 { 
+            font-family: 'Lexend', sans-serif; 
+            color: #1e40af; 
+            border-bottom: 2px solid #dbeafe; 
+            padding-bottom: 0.5rem; 
+            margin-top: 2rem; 
+            font-size: 1.25rem;
+        }
+        .field { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0.75rem 0; 
+            border-bottom: 1px solid #e5e7eb; 
+            flex-wrap: wrap;
+        }
+        .label-area {
+            flex-basis: 60%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-right: 1rem;
+        }
+        .label-area label { 
+            font-weight: 600; 
+            color: #1f2937; 
+            font-size: 1rem;
+        }
+        .label-area .sub-label {
+            font-size: 0.875rem; /* text-sm */
+            color: #6b7280; /* text-gray-500 */
+            font-style: italic;
+            margin-top: 2px;
+        }
+        .input-area { 
+            flex-basis: 40%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-end; 
+        }
+        .field input[type="text"], .field input[type="number"] {
+            border: 1px solid #d1d5db; 
+            border-radius: 0.375rem; 
+            padding: 0.5rem 0.75rem;
+            width: 140px; 
+            text-align: right; 
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .field input:focus { 
+            border-color: #2563eb; 
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25); 
+            outline: none; 
+        }
+        .field .unit { 
+            margin-left: 0.5rem; 
+            color: #4b5563; 
+        }
+        textarea {
+            width: 100%; 
+            border: 1px solid #d1d5db; 
+            border-radius: 0.375rem; 
+            padding: 0.5rem 0.75rem;
+            margin-top: 0.5rem; 
+            min-height: 80px; 
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        textarea:focus { 
+            border-color: #2563eb; 
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25); 
+            outline: none; 
+        }
+        .print-button {
+            display: block; 
+            width: 100%; 
+            text-align: center; 
+            margin-top: 2rem;
+            background-color: #16a34a; 
+            color: #ffffff; 
+            font-weight: 600;
+            padding: 0.75rem; 
+            border-radius: 0.375rem; 
+            transition: background-color 0.2s;
+            cursor: pointer;
+        }
+        .print-button:hover { background-color: #15803d; }
+        
+        /* Stili per Header/Footer e Modalità Accessibilità */
+        .nav-link { transition: color 0.3s; }
+        .nav-link:hover { color: #93C5FD; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #000000 !important;
+            background-image: none !important;
+        }
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
+            color: #ffffff !important;
+        }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
+        .dsa-mode .checklist-container { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode label { color: #34495e; }
+        
+        @media (max-width: 640px) {
+            .field { flex-direction: column; align-items: flex-start; }
+            .label-area { flex-basis: 100%; padding-bottom: 0.5rem; }
+            .input-area { flex-basis: 100%; justify-content: flex-start; width: 100%; }
+            .field input[type="text"], .field input[type="number"] { width: 100%; }
+        }
+
+        @media print {
+            body { background-color: #ffffff; margin: 0; padding: 0; }
+            .checklist-container { box-shadow: none; border: none; margin: 0; max-width: 100%; padding: 0; }
+            .print-button, #main-header, #main-footer { display: none; } /* NASCONDE HEADER E FOOTER */
+            h1 { font-size: 1.5rem; }
+            h2 { font-size: 1.25rem; }
+            .field input[type="text"], .field input[type="number"] { 
+                border-bottom: 1px solid #000; 
+                border-top: 0; 
+                border-left: 0; 
+                border-right: 0; 
+                border-radius: 0; 
+                text-align: left;
+                padding-left: 0;
+            }
+            .label-area .sub-label { color: #444; }
+            textarea { border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+    
+    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <a href="esame_obiettivo.html" class="nav-link font-semibold" data-lang-key="navBack">Indice Esami</a>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="checklist-container">
+        <h1>Checklist Esame Cardiocircolatorio</h1>
+        
+        <h2>Valutazione a Distanza e Ispezione</h2>
+        <div class="field">
+            <div class="label-area">
+                <label for="edemi">Presenza di Edemi Declivi</label>
+                <span class="sub-label">Sì/No, Localizzazione (es. petto, giogaia, arti)</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="edemi">
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="giugulari">Turgore Vene Giugulari</label>
+                <span class="sub-label">Sì/No, Pulsazioni visibili (polso venoso)</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="giugulari">
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="itto_visibile">Itto Cardiaco Visibile</label>
+                <span class="sub-label">Sì/No (visibile in animali magri)</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="itto_visibile">
+            </div>
+        </div>
+
+        <h2>Valutazione Polso Arterioso</h2>
+        <div class="field">
+            <div class="label-area">
+                <label for="polso_sede">Sede di Rilevazione</label>
+                <span class="sub-label">Es. Facciale, Metatarsale, Coccigea</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="polso_sede">
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="polso_freq">Frequenza</label>
+                <span class="sub-label">Deve essere sincrono con la Frequenza Cardiaca</span>
+            </div>
+            <div class="input-area">
+                <input type="number" id="polso_freq">
+                <span class="unit">bpm</span>
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="polso_ritmo">Ritmo</label>
+                <span class="sub-label">Regolare / Irregolare</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="polso_ritmo">
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="polso_ampiezza">Ampiezza</label>
+                <span class="sub-label">Pieno / Filiforme / Piccolo</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="polso_ampiezza">
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="polso_durezza">Durezza</label>
+                <span class="sub-label">Duro (ipertensione) / Molle (ipotensione)</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="polso_durezza">
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="polso_celerita">Celerità</label>
+                <span class="sub-label">Celere (rapido) / Lento</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="polso_celerita">
+            </div>
+        </div>
+
+        <h2>Auscultazione Cardiaca</h2>
+        <div class="field">
+            <div class="label-area">
+                <label for="fc">Frequenza Cardiaca (FC)</label>
+                <span class="sub-label">Battiti per minuto contati all'auscultazione</span>
+            </div>
+            <div class="input-area">
+                <input type="number" id="fc">
+                <span class="unit">bpm</span>
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="toni">Toni Cardiaci (T1, T2)</label>
+                <span class="sub-label">Netti / Parafonici (attenuati) / Accentuati</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="toni">
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="pmi_sx">PMI Sinistro</label>
+                <span class="sub-label">Polmonare (3°), Aortico (4°), Mitrale (5°)</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="pmi_sx">
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="pmi_dx">PMI Destro</label>
+                <span class="sub-label">Tricuspide (3°-4°)</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="pmi_dx">
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="soffi">Soffi Cardiaci</label>
+                <span class="sub-label">Sì/No, Fase (Sistolico/Diastolico), Intensità (1-6)</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="soffi">
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="aritmie">Aritmie</label>
+                <span class="sub-label">Sì/No (es. Blocco AV, Fibrillazione Atriale)</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="aritmie">
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="sfregamenti">Sfregamenti Pericardici</label>
+                <span class="sub-label">Sì/No (indicativi di pericardite)</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="sfregamenti">
+            </div>
+        </div>
+
+        <h2>Valutazione Perfusione Periferica</h2>
+        <div class="field">
+            <div class="label-area">
+                <label for="mucose_colore">Colore Mucose</label>
+                <span class="sub-label">Rosa, Pallide, Itteriche, Cianotiche, Congeste</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="mucose_colore">
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="trc">Tempo Riempimento Capillare (TRC)</label>
+                <span class="sub-label">Valore normale: &lt; 2 secondi</span>
+            </div>
+            <div class="input-area">
+                <input type="number" id="trc">
+                <span class="unit">sec</span>
+            </div>
+        </div>
+        <div class="field">
+            <div class="label-area">
+                <label for="temp_estremita">Temperatura Estremità</label>
+                <span class="sub-label">Calde / Tiepide / Fredde (es. orecchie, arti)</span>
+            </div>
+            <div class="input-area">
+                <input type="text" id="temp_estremita">
+            </div>
+        </div>
+
+        <h2>Annotazioni Aggiuntive</h2>
+        <div>
+            <textarea id="note" placeholder="Inserisci qui eventuali osservazioni..."></textarea>
+        </div>
+
+        <button class="print-button" onclick="window.print()">Stampa Checklist</button>
+    </div>
+
+    <footer id="main-footer" class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Veterinary Semeiotics L.A.' },
+                navBack: { it: 'Indice Esami', en: 'Exams Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' },
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const accessibilityToggle = document.getElementById('accessibility-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const body = document.body;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+            };
+
+            const setA11yMode = (enabled) => {
+                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); } 
+                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            };
+
+            langToggle.addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            accessibilityToggle.addEventListener('click', () => {
+                const isEnabled = body.classList.contains('dsa-mode');
+                setA11yMode(!isEnabled);
+            });
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') {
+                setA11yMode(true);
+            }
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
+
