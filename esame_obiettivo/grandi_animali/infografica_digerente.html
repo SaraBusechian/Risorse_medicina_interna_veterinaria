@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: Esame Apparato Digerente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
+        .flow-step { transition: transform 0.3s, box-shadow 0.3s; }
+        .flow-step:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .nav-link { transition: color 0.3s; }
+        .nav-link:hover { color: #93C5FD; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #000000 !important;
+            background-image: none !important;
+        }
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
+            color: #ffffff !important;
+        }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
+        .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode div, .dsa-mode li { color: #34495e; }
+        .tts-button { /* Manteniamo lo stile nel caso serva altrove */
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+        .specie-icon { display: inline-block; width: 1.5em; height: 1.5em; margin-right: 0.5em; vertical-align: middle; } /* Icone specie */
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                 <a href="esame_obiettivo.html" class="nav-link font-semibold" data-lang-key="navBack">Indice Esami</a>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#003f5c] mb-4" data-lang-key="pageTitle">L'Esame Digerente: Punti Chiave</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-lang-key="pageSubtitle">Una guida visiva all'approccio sistematico per la valutazione dell'apparato digerente in bovini ed equini.</p>
+        </header>
+
+        <main class="space-y-16">
+            <section>
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#003f5c]" data-lang-key="flowTitle">Le 4 Metodiche Fondamentali</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center items-stretch">
+                    <div class="flow-step bg-white rounded-lg shadow-md p-6 border-t-4 border-[#003f5c]">
+                        <h3 class="font-bold text-xl mb-2" data-lang-key="step1Title">1. Ispezione</h3>
+                        <p class="text-sm" data-lang-key="step1Desc">Addome (forma, volume), cavità orale, feci.</p>
+                    </div>
+                    <div class="flow-step bg-white rounded-lg shadow-md p-6 border-t-4 border-[#7a5195]">
+                        <h3 class="font-bold text-xl mb-2" data-lang-key="step2Title">2. Palpazione</h3>
+                        <p class="text-sm" data-lang-key="step2Desc">Esterna (dolorabilità, tensione) ed Esplorazione Rettale (cruciale).</p>
+                    </div>
+                    <div class="flow-step bg-white rounded-lg shadow-md p-6 border-t-4 border-[#ff764a]">
+                        <h3 class="font-bold text-xl mb-2" data-lang-key="step3Title">3. Percussione</h3>
+                        <p class="text-sm" data-lang-key="step3Desc">Ricerca suoni timpanici (gas) o ottusi (masse/liquidi), "Ping" (Bov), Fegato (Bov).</p>
+                    </div>
+                    <div class="flow-step bg-white rounded-lg shadow-md p-6 border-t-4 border-[#ffa600]">
+                        <h3 class="font-bold text-xl mb-2" data-lang-key="step4Title">4. Auscultazione</h3>
+                        <p class="text-sm" data-lang-key="step4Desc">Valutazione motilità ruminale (Bov) e intestinale (Bov + Eq).</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <div class="bg-white rounded-lg shadow-md p-6 h-full">
+                    <h3 class="text-2xl font-bold mb-4 text-[#7a5195] text-center" data-lang-key="rectalTitle">Esplorazione Rettale: Organi Palpabili</h3>
+                     <div class="mt-6 space-y-4">
+                        <div data-lang-key="rectalBovContent">
+                           {content not shown}
+                        </div>
+                         <div data-lang-key="rectalEqContent">
+                           {content not shown}
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6 h-full">
+                    <h3 class="text-2xl font-bold mb-4 text-[#ff764a] text-center" data-lang-key="percTitle">Percussione: Suoni Chiave</h3>
+                     <p class="text-center text-gray-600 mb-6" data-lang-key="percDesc">La percussione aiuta a "mappare" il contenuto addominale.</p>
+                    <div class="space-y-4 mt-6">
+                        <div class="p-4 rounded-lg bg-blue-50 border border-blue-200" data-lang-key="soundTympanic">
+                            <strong class="text-blue-700">Suono Timpanico:</strong> Presenza di gas (es. meteorismo, dislocazione abomaso, timpanismo cieco).
+                            <!-- TTS Button Removed -->
+                        </div>
+                        <div class="p-4 rounded-lg bg-orange-50 border border-orange-200" data-lang-key="soundDull">
+                            <strong class="text-orange-700">Suono Ottuso:</strong> Organi pieni, masse, liquidi (es. area fegato, rumine pieno, versamento).
+                             <!-- TTS Button Removed -->
+                        </div>
+                         <div class="p-4 rounded-lg bg-red-50 border border-red-200" data-lang-key="soundPing">
+                            <strong class="text-red-700">Suono Metallico ("Ping"):</strong> Organo cavo disteso da gas sotto pressione (LDA/RDA nel Bovino). Si ottiene con percussione-auscultazione.
+                             <!-- TTS Button Removed -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <section class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-center mb-8 text-[#ffa600]" data-lang-key="auscultTitle">Auscultazione Addominale: Cosa Ascoltare?</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div data-lang-key="auscultBovContent">
+                       {content not shown}
+                    </div>
+                     <div data-lang-key="auscultEqContent">
+                        {content not shown}
+                    </div>
+                </div>
+            </section>
+            
+            <section class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-3xl font-bold text-center mb-8 text-purple-700" data-lang-key="complTitle">Metodiche Complementari Utili</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="p-4 bg-purple-50 rounded-lg" data-lang-key="compl1">
+                        <h3 class="font-bold">Sondaggio Gastrico</h3>
+                        <p class="text-sm text-gray-600">Essenziale nel cavallo (reflusso); utile nel bovino.</p>
+                    </div>
+                     <div class="p-4 bg-purple-50 rounded-lg" data-lang-key="compl2">
+                        <h3 class="font-bold">Prove Dolore Reticolare (Bov)</h3>
+                        <p class="text-sm text-gray-600">Prova del garrese, palpazione xifoidea per reticoloperitonite.</p>
+                    </div>
+                     <div class="p-4 bg-purple-50 rounded-lg" data-lang-key="compl3">
+                        <h3 class="font-bold">Esame Liquido Ruminale (Bov)</h3>
+                        <p class="text-sm text-gray-600">Valutazione pH, attività protozoaria, colore, odore.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer id="main-footer" class="bg-gray-800 text-white mt-12">
+             <div class="container mx-auto px-6 py-4 text-center">
+                 <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
+             </div>
+        </footer>
+    </div>
+
+    <script>
+        const translations = {
+            siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Veterinary Semeiotics L.A.' },
+            navBack: { it: 'Indice Esami', en: 'Exams Index' },
+            accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+            pageTitle: { it: "L'Esame Digerente: Punti Chiave", en: "The Digestive Exam: Key Points" },
+            pageSubtitle: { it: "Una guida visiva all'approccio sistematico per la valutazione dell'apparato digerente in bovini ed equini.", en: "A visual guide to the systematic approach for evaluating the digestive system in cattle and horses." },
+            flowTitle: { it: "Le 4 Metodiche Fondamentali", en: "The 4 Fundamental Methods" },
+            step1Title: { it: "1. Ispezione", en: "1. Inspection" },
+            step1Desc: { it: "Addome (forma, volume), cavità orale, feci.", en: "Abdomen (shape, volume), oral cavity, feces." },
+            step2Title: { it: "2. Palpazione", en: "2. Palpation" },
+            step2Desc: { it: "Esterna (dolorabilità, tensione) ed Esplorazione Rettale (cruciale).", en: "External (tenderness, tension) and Rectal Examination (crucial)." },
+            step3Title: { it: "3. Percussione", en: "3. Percussion" },
+            step3Desc: { it: "Ricerca suoni timpanici (gas) o ottusi (masse/liquidi), \"Ping\" (Bov), Fegato (Bov).", en: "Search for tympanic (gas) or dull (masses/fluids) sounds, \"Ping\" (Bov), Liver (Bov)." },
+            step4Title: { it: "4. Auscultazione", en: "4. Auscultation" },
+            step4Desc: { it: "Valutazione motilità ruminale (Bov) e intestinale (Bov + Eq).", en: "Assessment of rumen (Bov) and intestinal (Bov + Eq) motility." },
+            rectalTitle: { it: "Esplorazione Rettale: Organi Palpabili", en: "Rectal Examination: Palpable Organs" },
+            rectalBovContent: { 
+                it: `<h4 class="font-semibold text-lg mb-2 flex items-center"><span class="specie-icon">🐄</span> Bovino:</h4>
+                     <ul class="list-disc list-inside text-sm space-y-1">
+                         <li>Rumine (sacco dorsale/ventrale)</li>
+                         <li>Intestino (anse, a volte abomaso dislocato a dx)</li>
+                         <li>Reni (sinistro mobile), Vescica</li>
+                         <li>Linfonodi iliaci interni</li>
+                         <li>Apparato genitale</li>
+                     </ul>`,
+                 en: `<h4 class="font-semibold text-lg mb-2 flex items-center"><span class="specie-icon">🐄</span> Cattle:</h4>
+                      <ul class="list-disc list-inside text-sm space-y-1">
+                          <li>Rumen (dorsal/ventral sac)</li>
+                          <li>Intestine (loops, sometimes right displaced abomasum)</li>
+                          <li>Kidneys (left mobile), Bladder</li>
+                          <li>Internal iliac lymph nodes</li>
+                          <li>Genital tract</li>
+                      </ul>`
+            }, 
+            rectalEqContent: {
+                it: `<h4 class="font-semibold text-lg mb-2 flex items-center"><span class="specie-icon">🐎</span> Equino:</h4>
+                     <ul class="list-disc list-inside text-sm space-y-1">
+                         <li>Cieco (base, corpo)</li>
+                         <li>Grosso Colon (flessure, tenie, sacculazioni)</li>
+                         <li>Piccolo Colon (scibale)</li>
+                         <li>Milza, Rene Sinistro (a volte destro)</li>
+                         <li>Radice del Mesentere</li>
+                         <li>Anello Inguinale (maschio), Apparato genitale (femmina)</li>
+                     </ul>`,
+                en: `<h4 class="font-semibold text-lg mb-2 flex items-center"><span class="specie-icon">🐎</span> Horse:</h4>
+                     <ul class="list-disc list-inside text-sm space-y-1">
+                         <li>Cecum (base, body)</li>
+                         <li>Large Colon (flexures, bands, sacculations)</li>
+                         <li>Small Colon (fecal balls)</li>
+                         <li>Spleen, Left Kidney (sometimes right)</li>
+                         <li>Root of the Mesentery</li>
+                         <li>Inguinal Ring (male), Genital tract (female)</li>
+                     </ul>`
+            },
+            percTitle: { it: "Percussione: Suoni Chiave", en: "Percussion: Key Sounds" },
+            percDesc: { it: "La percussione aiuta a \"mappare\" il contenuto addominale.", en: "Percussion helps to \"map\" the abdominal content." },
+            soundTympanic: { it: "<strong class=\"text-blue-700\">Suono Timpanico:</strong> Presenza di gas (es. meteorismo, dislocazione abomaso, timpanismo cieco).", en: "<strong class=\"text-blue-700\">Tympanic Sound:</strong> Presence of gas (e.g., bloat, displaced abomasum, cecal tympany)." },
+            soundDull: { it: "<strong class=\"text-orange-700\">Suono Ottuso:</strong> Organi pieni, masse, liquidi (es. area fegato, rumine pieno, versamento).", en: "<strong class=\"text-orange-700\">Dull Sound:</strong> Solid organs, masses, fluids (e.g., liver area, full rumen, effusion)." },
+            soundPing: { it: "<strong class=\"text-red-700\">Suono Metallico (\"Ping\"):</strong> Organo cavo disteso da gas sotto pressione (LDA/RDA nel Bovino). Si ottiene con percussione-auscultazione.", en: "<strong class=\"text-red-700\">Metallic Sound (\"Ping\"):</strong> Gas-distended hollow organ under pressure (LDA/RDA in Cattle). Obtained with auscultation-percussion." },
+            auscultTitle: { it: "Auscultazione Addominale: Cosa Ascoltare?", en: "Abdominal Auscultation: What to Listen For?" },
+            auscultBovContent: {
+                 it: `<h4 class="font-semibold text-xl mb-3 flex items-center"><span class="specie-icon">🐄</span> Bovino:</h4>
+                      <ul class="list-disc list-inside space-y-2">
+                          <li><strong>Motilità Ruminale (Fossa Sx):</strong> Frequenza (1-2 contrazioni/2 min) e intensità.</li>
+                          <li><strong>Abomaso (Area Dx):</strong> Ricerca di suoni di "tintinnio" (dislocazione).</li>
+                          <li><strong>Intestino (Area Dx):</strong> Presenza e qualità dei borborigmi.</li>
+                      </ul>`,
+                en: `<h4 class="font-semibold text-xl mb-3 flex items-center"><span class="specie-icon">🐄</span> Cattle:</h4>
+                      <ul class="list-disc list-inside space-y-2">
+                          <li><strong>Rumen Motility (Left Flank):</strong> Frequency (1-2 contractions/2 min) and intensity.</li>
+                          <li><strong>Abomasum (Right Area):</strong> Search for "tinkling" sounds (displacement).</li>
+                          <li><strong>Intestine (Right Area):</strong> Presence and quality of borborygmi.</li>
+                      </ul>`
+            }, 
+            auscultEqContent: {
+                it: `<h4 class="font-semibold text-xl mb-3 flex items-center"><span class="specie-icon">🐎</span> Equino (4 Quadranti):</h4>
+                     <ul class="list-disc list-inside space-y-2">
+                         <li><strong>Dorsale Sx:</strong> Borborigmi tenui (piccolo intestino).</li>
+                         <li><strong>Dorsale Dx:</strong> Svuotamento cieco ("sciacquone").</li>
+                         <li><strong>Ventrale Dx/Sx:</strong> Motilità grosso colon ("treno").</li>
+                         <li><strong>Assenza suoni = Ileo paralitico!</strong></li>
+                     </ul>`,
+                en: `<h4 class="font-semibold text-xl mb-3 flex items-center"><span class="specie-icon">🐎</span> Horse (4 Quadrants):</h4>
+                     <ul class="list-disc list-inside space-y-2">
+                         <li><strong>Dorsal Left:</strong> Faint borborygmi (small intestine).</li>
+                         <li><strong>Dorsal Right:</strong> Cecal emptying ("flushing").</li>
+                         <li><strong>Ventral Right/Left:</strong> Large colon motility ("train").</li>
+                         <li><strong>Absence of sounds = Paralytic ileus!</strong></li>
+                     </ul>`
+            },
+            complTitle: { it: "Metodiche Complementari Utili", en: "Useful Complementary Methods" },
+            compl1: { it: "<h3 class=\"font-bold\">Sondaggio Gastrico</h3><p class=\"text-sm text-gray-600\">Essenziale nel cavallo (reflusso); utile nel bovino.</p>", en: "<h3 class=\"font-bold\">Gastric Intubation</h3><p class=\"text-sm text-gray-600\">Essential in horses (reflux); useful in cattle.</p>" },
+            compl2: { it: "<h3 class=\"font-bold\">Prove Dolore Reticolare (Bov)</h3><p class=\"text-sm text-gray-600\">Prova del garrese, palpazione xifoidea per reticoloperitonite.</p>", en: "<h3 class=\"font-bold\">Reticular Pain Tests (Bov)</h3><p class=\"text-sm text-gray-600\">Withers pinch, xiphoid palpation for reticuloperitonitis.</p>" },
+            compl3: { it: "<h3 class=\"font-bold\">Esame Liquido Ruminale (Bov)</h3><p class=\"text-sm text-gray-600\">Valutazione pH, attività protozoaria, colore, odore.</p>", en: "<h3 class=\"font-bold\">Rumen Fluid Analysis (Bov)</h3><p class=\"text-sm text-gray-600\">Assessment of pH, protozoal activity, color, odor.</p>" },
+            footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+        };
+
+        let currentLanguage = localStorage.getItem('language') || 'it';
+        const accessibilityToggle = document.getElementById('accessibility-toggle');
+        const langToggle = document.getElementById('lang-toggle');
+        const body = document.body;
+        const synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let activeTTSButton = null;
+
+        function warmUpTTS() {
+            if (synth.getVoices().length === 0) {
+                synth.onvoiceschanged = () => {};
+            }
+        }
+
+       function speak(text, button) {
+            // Pulisce il testo da eventuali tag HTML prima di parlare
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = text; // Usa innerHTML per interpretare i tag
+             tempDiv.querySelectorAll('.tts-button').forEach(btn => btn.remove()); // Rimuove eventuali icone TTS annidate
+            const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+
+            if (!cleanText.trim()) return; // Non parlare se il testo è vuoto
+
+            if (synth.speaking && activeTTSButton === button) {
+                if (synth.paused) { 
+                    synth.resume(); 
+                    button.classList.add('playing'); 
+                } else { 
+                    synth.pause(); 
+                    button.classList.remove('playing'); 
+                }
+            } else {
+                 if (synth.speaking) {
+                    synth.cancel();
+                    // Aggiunge un piccolo ritardo prima di avviare la nuova lettura dopo un cancel
+                    setTimeout(() => {
+                         startSpeaking(cleanText, button);
+                    }, 100); // Ritardo di 100ms
+                } else {
+                    // Se non stava parlando, avvia subito
+                    startSpeaking(cleanText, button);
+                }
+            }
+        }
+
+
+        function startSpeaking(text, button) {
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+            currentUtterance.onend = () => {
+                if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                activeTTSButton = null;
+            };
+            currentUtterance.onerror = (event) => {
+                console.error('Errore SpeechSynthesis:', event.error);
+                if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                activeTTSButton = null;
+            };
+            
+            synth.speak(currentUtterance);
+            
+            // Gestione stato attivo pulsante
+            if (activeTTSButton && activeTTSButton !== button) {
+                 activeTTSButton.classList.remove('playing'); // Rimuove 'playing' dal vecchio pulsante
+            }
+            activeTTSButton = button;
+            button.classList.add('playing');
+        }
+
+
+        function setupTTSListeners() {
+             document.querySelectorAll('.tts-button').forEach(button => {
+                // Rimuove eventuali listener precedenti per evitare duplicazioni
+                const newButton = button.cloneNode(true);
+                button.parentNode.replaceChild(newButton, button);
+
+                newButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const parentElement = newButton.closest('[data-lang-key]'); // Trova il genitore con data-lang-key
+                    if (parentElement) {
+                        const key = parentElement.dataset.langKey;
+                        if (translations[key] && translations[key][currentLanguage]) {
+                           speak(translations[key][currentLanguage], newButton);
+                        }
+                    }
+                });
+            });
+        }
+        
+        const updateLanguage = (lang) => {
+            document.documentElement.lang = lang;
+            langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+            
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if (translations[key] && translations[key][lang]) {
+                    // Gestione speciale per i contenuti complessi (liste, etc.)
+                    if (key === 'rectalBovContent' || key === 'rectalEqContent' || key === 'auscultBovContent' || key === 'auscultEqContent') {
+                         element.innerHTML = translations[key][lang];
+                    } else {
+                         // Gestione standard per altri elementi
+                         const specieIcon = element.querySelector('.specie-icon');
+                         const ttsButtonInside = element.querySelector('.tts-button');
+                         element.innerHTML = translations[key][lang];
+                         if (specieIcon) {
+                             element.insertBefore(specieIcon, element.firstChild);
+                         }
+                         // Non aggiungere TTS per compl1, compl2, compl3 e non reinserire per i suoni
+                         if (ttsButtonInside && element.querySelector('.tts-button') === null && key.startsWith('sound')) {
+                             //Non reinserire il pulsante TTS
+                         } else if (element.querySelector('.tts-button') === null && key.startsWith('sound')) {
+                              // Non aggiungere pulsante TTS
+                         }
+                    }
+                }
+            });
+
+            if (synth.speaking) synth.cancel(); // Ferma la lettura se cambia lingua
+            setupTTSListeners(); // Ricollega i listener ai (potenzialmente nuovi) pulsanti
+        };
+
+        const setA11yMode = (enabled) => {
+            if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); } 
+            else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+        };
+
+        langToggle.addEventListener('click', () => {
+            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage(currentLanguage);
+        });
+
+        accessibilityToggle.addEventListener('click', () => {
+            const isEnabled = body.classList.contains('dsa-mode');
+            setA11yMode(!isEnabled);
+        });
+
+        if (localStorage.getItem('dsa-mode') === 'enabled') {
+            setA11yMode(true);
+        }
+        
+        warmUpTTS();
+        updateLanguage(currentLanguage); // Chiamata iniziale per impostare la lingua e i listener
+
+    </script>
+</body>
+</html>
+
