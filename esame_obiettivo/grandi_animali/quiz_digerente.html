@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interattivo: Esame Apparato Digerente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; }
+        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; }
+        .nav-link { transition: color 0.3s; }
+        .nav-link:hover { color: #93C5FD; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #000000 !important;
+            background-image: none !important;
+        }
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
+            color: #ffffff !important;
+        }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
+        .dsa-mode #quiz-container, .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h2, .dsa-mode p { color: #34495e; }
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                 <a href="esame_obiettivo.html" class="nav-link font-semibold" data-lang-key="navBack">Indice Esami</a>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex items-center justify-center min-h-[calc(100vh-150px)] p-4">
+        <div id="quiz-container" class="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6 md:p-8">
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: Esame Apparato Digerente</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
+                </div>
+                <div class="text-lg text-slate-700 mb-6 min-h-[6rem] flex items-center">
+                    <p id="question-text"></p>
+                    <span id="question-tts-button" class="tts-button">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </span>
+                </div>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-6 hidden">
+                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
+                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
+            </div>
+
+            <div id="results-area" class="text-center hidden">
+                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
+                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+        </div>
+    </main>
+    
+    <footer id="main-footer" class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        const translations = {
+            siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Veterinary Semeiotics L.A.' },
+            navBack: { it: 'Indice Esami', en: 'Exams Index' },
+            accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+            quizTitle: { it: "Quiz: Esame Apparato Digerente", en: 'Quiz: Digestive System Exam' },
+            progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+            btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+            btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
+            resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+            resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+            btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+            footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' },
+            q1: { // Domanda modificata
+                question: { it: "Quale alterazione del profilo addominale è tipica del meteorismo ruminale nel bovino?", en: "Which alteration of the abdominal profile is typical of ruminal bloat in cattle?" },
+                options: [
+                    { text: { it: "Asimmetria marcata (distensione fianco sinistro)", en: "Marked asymmetry (left flank distension)" }, rationale: { it: "Il meteorismo ruminale causa un accumulo di gas nel rumine, che occupa prevalentemente il fianco sinistro, determinando una vistosa asimmetria dell'addome.", en: "Ruminal bloat causes gas accumulation in the rumen, which predominantly occupies the left flank, leading to noticeable abdominal asymmetry." }, isCorrect: true },
+                    { text: { it: "Profilo 'normale'", en: "'Normal' profile" }, rationale: { it: "Un profilo normale indica assenza di distensione significativa.", en: "A normal profile indicates the absence of significant distension." }, isCorrect: false },
+                    { text: { it: "Addome retratto", en: "Tucked-up abdomen" }, rationale: { it: "Un addome retratto è spesso segno di dolore o anoressia prolungata, non di meteorismo.", en: "A tucked-up abdomen is often a sign of pain or prolonged anorexia, not bloat." }, isCorrect: false },
+                    { text: { it: "Simmetria perfetta", en: "Perfect symmetry" }, rationale: { it: "La simmetria indica un riempimento normale o, in casi gravi, una distensione bilaterale (es. idrope), non il tipico meteorismo ruminale.", en: "Symmetry indicates normal filling or, in severe cases, bilateral distension (e.g., hydrops), not typical ruminal bloat." }, isCorrect: false }
+                ]
+            },
+            q2: {
+                question: { it: "Durante l'esplorazione rettale nel cavallo, quale struttura NON è normalmente palpabile?", en: "During rectal examination in a horse, which structure is NOT normally palpable?" },
+                options: [
+                    { text: { it: "Lo stomaco", en: "The stomach" }, rationale: { it: "Lo stomaco del cavallo si trova cranialmente e dorsalmente nell'addome, fuori dalla portata dell'esplorazione rettale.", en: "The horse's stomach is located cranially and dorsally in the abdomen, out of reach of rectal examination." }, isCorrect: true },
+                    { text: { it: "Il rene sinistro", en: "The left kidney" }, rationale: { it: "Il rene sinistro è tipicamente palpabile nel cavallo, sospeso al di sotto delle vertebre lombari.", en: "The left kidney is typically palpable in the horse, suspended below the lumbar vertebrae." }, isCorrect: false },
+                    { text: { it: "La base del cieco", en: "The base of the cecum" }, rationale: { it: "La base del cieco, situata nel fianco destro, è una struttura voluminosa e normalmente palpabile.", en: "The base of the cecum, located in the right flank, is a voluminous and normally palpable structure." }, isCorrect: false },
+                    { text: { it: "Il piccolo colon contenente scibale", en: "The small colon containing fecal balls" }, rationale: { it: "Il piccolo colon, con le sue caratteristiche scibale formate, è regolarmente palpabile nella parte caudale dell'addome.", en: "The small colon, with its characteristic formed fecal balls, is regularly palpable in the caudal part of the abdomen." }, isCorrect: false }
+                ]
+            },
+             q3: {
+                question: { it: "La tecnica della percussione-auscultazione nel bovino è utilizzata principalmente per diagnosticare:", en: "The auscultation-percussion technique in cattle is mainly used to diagnose:" },
+                options: [
+                    { text: { it: "Dislocazione dell'abomaso (LDA/RDA)", en: "Displaced Abomasum (LDA/RDA)" }, rationale: { it: "Il suono metallico ('ping') generato da questa tecnica è patognomonico per un abomaso dislocato e disteso da gas.", en: "The metallic sound ('ping') generated by this technique is pathognomonic for a displaced and gas-distended abomasum." }, isCorrect: true },
+                    { text: { it: "Meteorismo ruminale", en: "Ruminal bloat" }, rationale: { it: "Il meteorismo ruminale causa un suono timpanico diffuso alla percussione semplice, non un 'ping' localizzato.", en: "Ruminal bloat causes a diffuse tympanic sound on simple percussion, not a localized 'ping'." }, isCorrect: false },
+                    { text: { it: "Versamento peritoneale", en: "Peritoneal effusion" }, rationale: { it: "Il versamento peritoneale causa un suono ottuso alla percussione, opposto al 'ping'.", en: "Peritoneal effusion causes a dull sound on percussion, the opposite of a 'ping'." }, isCorrect: false },
+                    { text: { it: "Reticoloperitonite traumatica", en: "Traumatic reticuloperitonitis" }, rationale: { it: "La reticoloperitonite si diagnostica con le prove del dolore e altri segni, non con il 'ping'.", en: "Reticuloperitonitis is diagnosed with pain tests and other signs, not with the 'ping'." }, isCorrect: false }
+                ]
+            },
+            q4: {
+                question: { it: "Qual è la frequenza normale delle contrazioni ruminali primarie nel bovino adulto?", en: "What is the normal frequency of primary ruminal contractions in adult cattle?" },
+                options: [
+                    { text: { it: "1-2 contrazioni ogni 2 minuti", en: "1-2 contractions every 2 minutes" }, rationale: { it: "Questo è il range fisiologico per la motilità ruminale, indicativo di una corretta funzionalità.", en: "This is the physiological range for ruminal motility, indicative of proper function." }, isCorrect: true },
+                    { text: { it: "5-6 contrazioni al minuto", en: "5-6 contractions per minute" }, rationale: { it: "Questa frequenza sarebbe eccessivamente alta (ipermotilità), segno di irritazione o fasi iniziali di alcune patologie.", en: "This frequency would be excessively high (hypermotility), a sign of irritation or early stages of some diseases." }, isCorrect: false },
+                    { text: { it: "1 contrazione ogni 5 minuti", en: "1 contraction every 5 minutes" }, rationale: { it: "Questa frequenza è troppo bassa (ipomotilità o atonia), indicativa di un problema digestivo.", en: "This frequency is too low (hypomotility or atony), indicative of a digestive problem." }, isCorrect: false },
+                    { text: { it: "Assenti per più di 5 minuti", en: "Absent for more than 5 minutes" }, rationale: { it: "L'assenza prolungata di contrazioni (atonia) è un segno grave di blocco digestivo o malattia sistemica.", en: "Prolonged absence of contractions (atony) is a severe sign of digestive blockage or systemic illness." }, isCorrect: false }
+                ]
+            },
+            q5: {
+                question: { it: "L'auscultazione del quadrante addominale dorsale destro nel cavallo permette di valutare principalmente:", en: "Auscultation of the right dorsal abdominal quadrant in the horse primarily allows assessment of:" },
+                options: [
+                    { text: { it: "I suoni di svuotamento del cieco", en: "Cecal emptying sounds" }, rationale: { it: "Questa è l'area anatomica dove il cieco si svuota nell'ileo, producendo caratteristici suoni simili a uno 'sciacquone'.", en: "This is the anatomical area where the cecum empties into the ileum, producing characteristic sounds similar to 'flushing'." }, isCorrect: true },
+                    { text: { it: "La motilità del piccolo intestino", en: "Small intestinal motility" }, rationale: { it: "La motilità del piccolo intestino si apprezza meglio nel quadrante dorsale sinistro.", en: "Small intestinal motility is best appreciated in the left dorsal quadrant." }, isCorrect: false },
+                    { text: { it: "La motilità del grosso colon ventrale", en: "Ventral large colon motility" }, rationale: { it: "La motilità del grosso colon si ausculta nei quadranti ventrali.", en: "Large colon motility is auscultated in the ventral quadrants." }, isCorrect: false },
+                    { text: { it: "La presenza di reflusso gastrico", en: "The presence of gastric reflux" }, rationale: { it: "Il reflusso gastrico non si valuta con l'auscultazione addominale, ma tramite sondaggio naso-gastrico.", en: "Gastric reflux is not assessed by abdominal auscultation, but via nasogastric intubation." }, isCorrect: false }
+                ]
+            },
+            q6: {
+                question: { it: "Quale manovra semeiotica complementare è essenziale in un cavallo con sospetta colica per valutare la presenza di reflusso gastrico?", en: "Which complementary semeiotics maneuver is essential in a horse with suspected colic to assess the presence of gastric reflux?" },
+                options: [
+                    { text: { it: "Sondaggio naso-gastrico", en: "Nasogastric intubation" }, rationale: { it: "Il sondaggio permette di verificare se c'è accumulo di liquido nello stomaco, indicativo di un blocco a valle, e di decomprimerlo.", en: "Intubation allows verification of fluid accumulation in the stomach, indicative of a downstream blockage, and its decompression." }, isCorrect: true },
+                    { text: { it: "Esplorazione rettale", en: "Rectal examination" }, rationale: { it: "L'esplorazione rettale è fondamentale per la colica, ma non valuta direttamente il contenuto gastrico.", en: "Rectal examination is fundamental for colic, but it does not directly assess gastric content." }, isCorrect: false },
+                    { text: { it: "Paracentesi addominale", en: "Abdominocentesis" }, rationale: { it: "La paracentesi analizza il liquido peritoneale, utile per valutare l'integrità intestinale, ma non il reflusso.", en: "Abdominocentesis analyzes peritoneal fluid, useful for assessing intestinal integrity, but not reflux." }, isCorrect: false },
+                    { text: { it: "Manovra di succussione", en: "Succussion maneuver" }, rationale: { it: "La succussione ricerca liquidi liberi in addome, non specificamente nello stomaco.", en: "Succussion looks for free fluid in the abdomen, not specifically in the stomach." }, isCorrect: false }
+                ]
+            },
+             q7: {
+                question: { it: "La 'prova del garrese' nel bovino è utilizzata per evocare dolore associato a quale condizione?", en: "The 'withers pinch test' in cattle is used to elicit pain associated with which condition?" },
+                options: [
+                    { text: { it: "Reticoloperitonite traumatica", en: "Traumatic reticuloperitonitis" }, rationale: { it: "La pressione sul garrese causa un abbassamento riflesso della schiena che, in caso di infiammazione del reticolo e peritoneo, evoca dolore.", en: "Pressure on the withers causes a reflex lowering of the back which, in case of inflammation of the reticulum and peritoneum, elicits pain." }, isCorrect: true },
+                    { text: { it: "Dislocazione dell'abomaso a sinistra", en: "Left displaced abomasum" }, rationale: { it: "La LDA non causa tipicamente dolore alla prova del garrese; si diagnostica con percussione-auscultazione.", en: "LDA does not typically cause pain on the withers pinch test; it is diagnosed by auscultation-percussion." }, isCorrect: false },
+                    { text: { it: "Meteorismo ruminale", en: "Ruminal bloat" }, rationale: { it: "Il meteorismo causa disagio per distensione, ma non dolore focale evocabile con la prova del garrese.", en: "Bloat causes discomfort due to distension, but not focal pain elicitable with the withers pinch test." }, isCorrect: false },
+                    { text: { it: "Enterite", en: "Enteritis" }, rationale: { it: "L'enterite può causare dolore addominale diffuso, ma la prova del garrese è specifica per il reticolo.", en: "Enteritis can cause diffuse abdominal pain, but the withers pinch test is specific for the reticulum." }, isCorrect: false }
+                ]
+            },
+            q8: {
+                question: { it: "Un pH del liquido ruminale pari a 5.0 in un bovino adulto è indicativo di:", en: "A rumen fluid pH of 5.0 in an adult cow is indicative of:" },
+                options: [
+                    { text: { it: "Acidosi ruminale acuta", en: "Acute ruminal acidosis" }, rationale: { it: "Un pH così basso indica un grave stato di acidosi, tipicamente dovuto a un eccessivo consumo di carboidrati fermentescibili.", en: "Such a low pH indicates a severe state of acidosis, typically due to excessive consumption of fermentable carbohydrates." }, isCorrect: true },
+                    { text: { it: "Alcalosi ruminale", en: "Ruminal alkalosis" }, rationale: { it: "L'alcalosi ruminale è caratterizzata da un pH elevato (> 7.0), non basso.", en: "Ruminal alkalosis is characterized by a high pH (> 7.0), not low." }, isCorrect: false },
+                    { text: { it: "Funzionalità ruminale normale", en: "Normal ruminal function" }, rationale: { it: "Il pH ruminale normale in un bovino alimentato con razioni miste è tra 5.8 e 6.8.", en: "The normal ruminal pH in a cow fed mixed rations is between 5.8 and 6.8." }, isCorrect: false },
+                    { text: { it: "Indigestione semplice", en: "Simple indigestion" }, rationale: { it: "L'indigestione semplice può causare un leggero abbassamento del pH, ma raramente scende a valori così bassi come 5.0.", en: "Simple indigestion can cause a slight drop in pH, but it rarely drops to values as low as 5.0." }, isCorrect: false }
+                ]
+            },
+             q9: {
+                question: { it: "L'assenza completa di borborigmi intestinali all'auscultazione dei quattro quadranti nel cavallo è definita:", en: "The complete absence of intestinal borborygmi on auscultation of the four quadrants in a horse is defined as:" },
+                options: [
+                    { text: { it: "Ileo paralitico", en: "Paralytic ileus" }, rationale: { it: "Questa condizione indica una cessazione della motilità intestinale ed è un segno clinico molto grave nel cavallo.", en: "This condition indicates a cessation of intestinal motility and is a very serious clinical sign in the horse." }, isCorrect: true },
+                    { text: { it: "Ipermotilità", en: "Hypermotility" }, rationale: { it: "L'ipermotilità è l'aumento dei suoni intestinali, l'opposto dell'assenza.", en: "Hypermotility is the increase in intestinal sounds, the opposite of absence." }, isCorrect: false },
+                    { text: { it: "Dislocazione del colon", en: "Colon displacement" }, rationale: { it: "Una dislocazione può alterare i suoni, ma non causa necessariamente la loro completa assenza in tutti i quadranti.", en: "A displacement can alter the sounds, but does not necessarily cause their complete absence in all quadrants." }, isCorrect: false },
+                    { text: { it: "Timpanismo cecale", en: "Cecal tympany" }, rationale: { it: "Il timpanismo causa un suono di percussione timpanico, ma non necessariamente silenzio all'auscultazione.", en: "Tympany causes a tympanic percussion sound, but not necessarily silence on auscultation." }, isCorrect: false }
+                ]
+            },
+             q10: {
+                question: { it: "Nella percussione dell'area epatica nel bovino, quale suono ci si aspetta di trovare fisiologicamente?", en: "On percussion of the hepatic area in cattle, which sound is physiologically expected?" },
+                options: [
+                    { text: { it: "Suono ottuso", en: "Dull sound" }, rationale: { it: "Il fegato è un organo parenchimatoso pieno, quindi produce un suono ottuso alla percussione nella sua area di proiezione.", en: "The liver is a solid parenchymatous organ, so it produces a dull sound on percussion in its projection area." }, isCorrect: true },
+                    { text: { it: "Suono timpanico", en: "Tympanic sound" }, rationale: { it: "Il suono timpanico indica presenza di gas, non un organo solido come il fegato.", en: "Tympanic sound indicates the presence of gas, not a solid organ like the liver." }, isCorrect: false },
+                    { text: { it: "Suono iperfonetico", en: "Hyperresonant sound" }, rationale: { it: "L'iperfonesi si riscontra nel polmone in caso di enfisema, non sul fegato.", en: "Hyperresonance is found in the lung in case of emphysema, not over the liver." }, isCorrect: false },
+                    { text: { it: "Suono metallico ('ping')", en: "Metallic sound ('ping')" }, rationale: { it: "Il 'ping' indica un viscere cavo disteso da gas, non il fegato.", en: "The 'ping' indicates a gas-distended hollow viscus, not the liver." }, isCorrect: false }
+                ]
+            }
+        };
+
+        const quizData = Object.keys(translations)
+            .filter(k => /^q\d+$/.test(k))
+            .map(k => translations[k]);
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let shuffledQuestions = [];
+        const synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let activeTTSButton = null;
+
+        const quizContainer = document.getElementById('quiz-container');
+        const questionArea = document.getElementById('question-area');
+        const resultsArea = document.getElementById('results-area');
+        const questionText = document.getElementById('question-text');
+        // Dichiarazione modificata da const a let
+        let questionTTSButton = document.getElementById('question-tts-button'); 
+        const optionsContainer = document.getElementById('options-container');
+        const progressText = document.getElementById('progress-text');
+        const feedbackArea = document.getElementById('feedback-area');
+        const rationaleText = document.getElementById('rationale-text');
+        const nextButton = document.getElementById('next-button');
+        const scoreText = document.getElementById('score-text');
+        const restartButton = document.getElementById('restart-button');
+        
+        let currentLanguage = localStorage.getItem('language') || 'it';
+
+        const accessibilityToggle = document.getElementById('accessibility-toggle');
+        const langToggle = document.getElementById('lang-toggle');
+        const body = document.body;
+
+        // Funzione di "riscaldamento" per il TTS
+        function warmUpTTS() {
+             if (synth.getVoices().length === 0) {
+                 // Pre-carica le voci se non sono già disponibili
+                 synth.getVoices(); 
+                 synth.onvoiceschanged = () => {
+                     // console.log("Voci caricate dopo onvoiceschanged");
+                 };
+             } else {
+                 // console.log("Voci già caricate");
+             }
+        }
+        
+       function speak(text, button) {
+            if (!text || !button) return; // Controllo sicurezza
+
+            // Pulisce il testo da eventuali tag HTML prima di parlare
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = text; // Usa innerHTML per interpretare i tag
+            const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+
+            if (!cleanText.trim()) return; // Non parlare se il testo è vuoto
+
+            if (synth.speaking && activeTTSButton === button) {
+                if (synth.paused) { 
+                    synth.resume(); 
+                    button.classList.add('playing'); 
+                } else { 
+                    synth.pause(); 
+                    button.classList.remove('playing'); 
+                }
+            } else {
+                 if (synth.speaking) {
+                    synth.cancel(); // Cancella la lettura precedente
+                    // Aggiunge un piccolo ritardo prima di avviare la nuova lettura dopo un cancel
+                    setTimeout(() => {
+                         startSpeaking(cleanText, button);
+                    }, 50); // Ritardo ridotto
+                } else {
+                    // Se non stava parlando, avvia subito
+                    startSpeaking(cleanText, button);
+                }
+            }
+        }
+
+        function startSpeaking(text, button) {
+             if (!text || !button) return; // Controllo sicurezza
+            
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+            currentUtterance.onend = () => {
+                if (activeTTSButton === button) { // Controlla se il pulsante è ancora quello attivo
+                     button.classList.remove('playing');
+                     activeTTSButton = null;
+                }
+            };
+            currentUtterance.onerror = (event) => {
+                console.error('Errore SpeechSynthesis:', event.error);
+                 if (activeTTSButton === button) { // Controlla se il pulsante è ancora quello attivo
+                     button.classList.remove('playing');
+                     activeTTSButton = null;
+                 }
+            };
+            
+            synth.speak(currentUtterance);
+            
+            // Gestione stato attivo pulsante
+            if (activeTTSButton && activeTTSButton !== button) {
+                 activeTTSButton.classList.remove('playing'); // Rimuove 'playing' dal vecchio pulsante se diverso
+            }
+            activeTTSButton = button; // Imposta il nuovo pulsante attivo
+            button.classList.add('playing'); // Aggiunge 'playing' al nuovo
+        }
+
+        const updateLanguage = (lang) => {
+            document.documentElement.lang = lang;
+            langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if (translations[key] && translations[key][lang]) {
+                    element.innerHTML = translations[key][lang];
+                }
+            });
+            
+            // Aggiorna la domanda e le opzioni correnti se il quiz è in corso
+            if (shuffledQuestions.length > 0 && questionArea.classList.contains('hidden') === false) {
+                 loadQuestion(true); // Passa true per indicare che è un cambio lingua
+            }
+        };
+
+        langToggle.addEventListener('click', () => {
+            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+            localStorage.setItem('language', currentLanguage);
+            updateLanguage(currentLanguage);
+        });
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            document.documentElement.scrollTop = 0; 
+            document.body.scrollTop = 0;
+
+            currentQuestionIndex = 0;
+            score = 0;
+            shuffledQuestions = shuffleArray([...quizData]);
+            resultsArea.classList.add('hidden');
+            questionArea.classList.remove('hidden');
+            feedbackArea.classList.add('hidden');
+            loadQuestion();
+        }
+        
+        // Modificato loadQuestion per gestire il cambio lingua
+        function loadQuestion(isLangChange = false) { 
+             // Interrompe e resetta TTS solo se NON è un cambio lingua o se il pulsante era attivo
+             if (!isLangChange || (activeTTSButton && activeTTSButton === questionTTSButton)) {
+                 if (synth.speaking) synth.cancel();
+                 if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                 activeTTSButton = null;
+             }
+
+            feedbackArea.classList.add('hidden');
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+            progressText.textContent = translations.progressText[currentLanguage]
+                .replace('{current}', currentQuestionIndex + 1)
+                .replace('{total}', shuffledQuestions.length);
+            
+            questionText.textContent = currentQuestion.question[currentLanguage];
+            
+             // Rimuove il vecchio listener e ne aggiunge uno nuovo per evitare duplicati
+             const newQuestionTTSButton = questionTTSButton.cloneNode(true);
+             questionTTSButton.parentNode.replaceChild(newQuestionTTSButton, questionTTSButton);
+             // Riassegna la variabile qui
+             questionTTSButton = newQuestionTTSButton; 
+             questionTTSButton.onclick = () => speak(currentQuestion.question[currentLanguage], questionTTSButton);
+
+            optionsContainer.innerHTML = '';
+            
+            const shuffledOptions = isLangChange ? currentQuestion.options : shuffleArray([...currentQuestion.options]); // Non mischiare le opzioni se è solo cambio lingua
+
+            shuffledOptions.forEach(option => {
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('flex', 'items-center', 'w-full');
+                
+                const button = document.createElement('button');
+                button.textContent = option.text[currentLanguage];
+                button.classList.add('option-btn', 'w-full', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
+                
+                const ttsButton = document.createElement('span');
+                ttsButton.classList.add('tts-button');
+                ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
+                ttsButton.onclick = (e) => {
+                    e.stopPropagation();
+                    speak(option.text[currentLanguage], ttsButton);
+                };
+                
+                button.onclick = () => selectAnswer(button, option, currentQuestion.options);
+
+                buttonContainer.appendChild(button);
+                buttonContainer.appendChild(ttsButton);
+                optionsContainer.appendChild(buttonContainer);
+            });
+        }
+
+
+        function selectAnswer(button, selectedOption, allOptions) {
+             if (synth.speaking) synth.cancel(); // Ferma TTS se stava parlando
+             if (activeTTSButton) activeTTSButton.classList.remove('playing'); // Resetta stato TTS
+             activeTTSButton = null;
+            
+            const buttons = optionsContainer.querySelectorAll('button.option-btn');
+            
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                const optionDataText = btn.textContent;
+                // Trova l'opzione originale corrispondente al testo del pulsante
+                const originalOption = allOptions.find(opt => opt.text[currentLanguage] === optionDataText);
+                if (originalOption && originalOption.isCorrect) {
+                    btn.classList.add('correct'); // Evidenzia la risposta corretta
+                }
+            });
+
+            if (!selectedOption.isCorrect) {
+                button.classList.add('incorrect'); // Evidenzia la risposta selezionata se sbagliata
+            }
+            
+            score += selectedOption.isCorrect ? 1 : 0;
+            
+            rationaleText.textContent = selectedOption.rationale[currentLanguage];
+            feedbackArea.classList.remove('hidden');
+
+            if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                nextButton.textContent = translations.btnResults[currentLanguage];
+            } else {
+                 nextButton.textContent = translations.btnNext[currentLanguage];
+            }
+        }
+        
+        function showResults() {
+            questionArea.classList.add('hidden');
+            feedbackArea.classList.add('hidden');
+            resultsArea.classList.remove('hidden');
+            scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
+        }
+        
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < shuffledQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        });
+
+        restartButton.addEventListener('click', startQuiz);
+
+        const setA11yMode = (enabled) => {
+            if (enabled) {
+                body.classList.add('dsa-mode');
+                localStorage.setItem('dsa-mode', 'enabled');
+            } else {
+                body.classList.remove('dsa-mode');
+                localStorage.setItem('dsa-mode', 'disabled');
+            }
+        };
+
+        accessibilityToggle.addEventListener('click', () => {
+            const isEnabled = body.classList.contains('dsa-mode');
+            setA11yMode(!isEnabled);
+        });
+
+        if (localStorage.getItem('dsa-mode') === 'enabled') {
+            setA11yMode(true);
+        }
+
+        warmUpTTS(); // Chiama la funzione di riscaldamento all'inizio
+        startQuiz(); // Avvia il quiz
+        updateLanguage(currentLanguage); // Applica la lingua iniziale
+
+    </script>
+</body>
+</html>
+
