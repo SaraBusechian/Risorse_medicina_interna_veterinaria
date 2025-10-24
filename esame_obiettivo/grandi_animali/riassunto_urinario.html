@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titolo specifico per questa pagina -->
+    <title>Riassunto: Esame Apparato Urinario - Semeiotica Vet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stili Generali e dal Template */
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .section-nav-link {
+            transition: background-color 0.3s, color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+        .section-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .section-nav-link.active {
+             background-color: white;
+             color: #1E3A8A;
+             cursor: default;
+        }
+        .content-card {
+             background-color: white;
+             border-radius: 0.75rem;
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+             padding: 1.5rem;
+             margin-top: 2rem;
+        }
+        @media (min-width: 768px) { /* md: */
+            .content-card { padding: 2.5rem; }
+        }
+        #page-header { position: static; }
+        .scrollable-nav {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .scrollable-nav::-webkit-scrollbar { display: none; }
+        .audio-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; background-color: #fff7ed; /* orange-50 */ border-radius: 0.5rem; margin-top: 1.5rem; }
+        .audio-container audio { width: 100%; border-radius: 0.5rem; }
+        .audio-container a { display: inline-flex; align-items: center; justify-content: center; width: 100%; }
+        @media (min-width: 640px) { /* sm: */
+            .audio-container { flex-direction: row; }
+            .audio-container audio { width: auto; flex-grow: 1; }
+            .audio-container a { width: auto; }
+        }
+
+        /* Stili Specifici del Riassunto */
+        #main-content h1, #main-content h2, #main-content h3 { color: #0d47a1; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 2em; }
+        #main-content h1 { text-align: center; font-size: 2.2em; border-bottom: 3px solid #0d47a1; }
+        #main-content h2 { font-size: 1.5rem; /* text-2xl */ }
+        #main-content h3 { font-size: 1.25rem; /* text-xl */ color: #1565c0; border-bottom: none; font-weight: 600; margin-bottom: 0.5rem; }
+        #main-content ul { padding-left: 20px; list-style-type: disc; margin-top: 1rem; margin-bottom: 1rem;}
+         #main-content ul ul { margin-top: 0.5rem; margin-bottom: 0.5rem;}
+        #main-content li { margin-bottom: 10px; }
+        #main-content strong { color: #1565c0; }
+        #main-content .section-block { background-color: #f0f9ff; /* sky-50 */ border-left: 5px solid #0ea5e9; /* sky-500 */ padding: 15px 20px; margin: 20px 0; border-radius: 5px; }
+
+        /* DSA Mode Styles */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
+        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
+        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
+        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
+        .dsa-mode #main-content h1, .dsa-mode #main-content h2, .dsa-mode #main-content h3, .dsa-mode #main-content p, .dsa-mode #main-content li, .dsa-mode #main-content strong { color: #34495e !important; }
+        .dsa-mode #main-content .section-block { background-color: #fefcf7 !important; border-left-color: #5a738e; }
+        .dsa-mode .audio-container { background-color: #f0eade !important; }
+
+        /* TTS Button Styles */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+        .dsa-mode .tts-button { color: #5a738e !important; }
+
+        /* Print Styles */
+        @media print {
+            body { background-color: #fff; margin: 0; padding: 0; font-family: sans-serif; font-size: 11pt; color: #000; }
+            #page-header, #main-footer, #print-button, .tts-button, .audio-container { display: none; }
+            .container { max-width: 100%; padding: 1cm; box-shadow: none; border: none; margin: 0; }
+            .content-card { box-shadow: none; border: none; padding: 0; margin: 0; }
+            #main-content h1, #main-content h2, #main-content h3 { color: #000 !important; border-color: #ccc; margin-top: 1.5em; page-break-after: avoid; }
+            #main-content h1 { font-size: 18pt; text-align: left; }
+            #main-content h2 { font-size: 14pt; }
+            #main-content h3 { font-size: 12pt; border-bottom: none; padding-bottom: 0; margin-bottom: 0.5rem;}
+            #main-content ul { padding-left: 25px; }
+            #main-content li { margin-bottom: 5px; }
+            #main-content strong { color: #000 !important; font-weight: bold; }
+            #main-content .section-block { border: 1px solid #ccc; padding: 10px; margin: 10px 0; background-color: #f9f9f9 !important; page-break-inside: avoid; }
+            div[data-lang-key] { page-break-inside: avoid; margin-bottom: 1.5rem;}
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
+    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
+        <div class="container mx-auto px-6 py-3">
+            <!-- Riga Superiore: Torna all'indice + Controlli -->
+            <div class="flex justify-between items-center mb-4">
+                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
+                 </a>
+                 <div class="flex items-center space-x-2">
+                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
+                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
+                 </div>
+            </div>
+
+            <!-- Titolo della Sezione -->
+            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleUrin">6. Apparato Urinario</h1>
+
+            <!-- Navigazione Interna alla Sezione -->
+            <nav class="scrollable-nav">
+                 <div class="flex space-x-2 pb-2">
+                     <a href="riassunto_urinario.html" class="section-nav-link active" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_urinario.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_urinario.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_urinario.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_urinario.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                     <a href="#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
+                </div>
+            </nav>
+
+        </div>
+    </header>
+    <!-- === FINE HEADER === -->
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto p-4 md:px-8 md:py-12">
+        <!-- Card Contenuto -->
+        <div id="main-content" class="content-card">
+
+             <!-- Contenuto Specifico del Riassunto Urinario -->
+            <h1 data-lang-key="pageTitle"></h1>
+            <p class="section-block" data-lang-key="introText"></p>
+
+            <div data-lang-key="sectionIspezione"></div>
+            <div data-lang-key="sectionPalpazione"></div>
+            <!-- SEZIONE PERCUSSIONE RIMOSSA -->
+            <div data-lang-key="sectionComplementari"></div>
+            <!-- Fine Contenuto Specifico -->
+
+            <!-- Sezione Audio -->
+            <div class="audio-container" id="audio">
+                <audio controls class="rounded-lg">
+                    <!-- Assicurati che il file audio esista con questo nome -->
+                    <source src="audio_riassunto_urinario.mp3" type="audio/mpeg">
+                    Audio non disponibile.
+                </audio>
+                <a href="audio_riassunto_urinario.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition duration-300">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="btnDownloadAudio">Scarica Audio</span>
+                </a>
+            </div>
+
+            <!-- Bottone Stampa -->
+            <div class="mt-12 text-center">
+                 <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center" data-lang-key="btnPrint">
+                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                     <span data-lang-key="btnPrintText">Stampa</span>
+                 </button>
+             </div>
+
+        </div> <!-- Fine content-card -->
+    </main>
+
+    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+             const speakerIconLarge = `<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
+             const speakerIconSmall = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
+             const speakerIconH2 = `<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
+
+            // === TRADUZIONI ===
+            const translations = {
+                // --- Header ---
+                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                sectionTitleUrin: { it: '6. Apparato Urinario', en: '6. Urinary System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navAudio: { it: 'Audio', en: 'Audio' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                // --- Contenuto Riassunto Urinario (MODIFICATO) ---
+                 pageTitle: { it: `Esame dell'Apparato Urinario ${speakerIconLarge}`, en: `Urinary System Examination ${speakerIconLarge}` },
+                 introText: { it: `L'esame dell'apparato urinario è spesso difficile nei grandi animali e si basa molto sui reperti dell'EOG (es. stato di idratazione, presenza di edemi) e sull'<strong>esplorazione rettale</strong>. L'obiettivo è valutare la funzionalità renale e l'integrità delle vie urinarie. ${speakerIconSmall}`, en: `Examination of the urinary system is often difficult in large animals and relies heavily on GPE findings (e.g., hydration status, presence of edema) and <strong>rectal examination</strong>. The goal is to assess renal function and the integrity of the urinary tract. ${speakerIconSmall}` },
+                 sectionIspezione: {
+                     it: `<h2>1. Ispezione${speakerIconH2}</h2>
+                         <p>L'ispezione valuta l'animale a distanza e da vicino, con un focus particolare sull'atto della minzione e sulle urine stesse.</p>
+                         <ul>
+                             <li><strong>Atto della Minzione:</strong> Si osserva se l'animale urina normalmente o se mostra <strong>stranguria</strong> (difficoltà e dolore durante la minzione), <strong>pollachiuria</strong> (aumento della frequenza), <strong>anuria</strong> (assenza di produzione di urina) o <strong>incontinenza</strong>.</li>
+                             <li><strong>Aspetto delle Urine:</strong> Valutare colore e torbidità. Urine rosse possono indicare <strong>ematuria</strong> (sangue), <strong>emoglobinuria</strong> (emoglobina libera) o <strong>mioglobinuria</strong> (danno muscolare). Urine torbide possono indicare cristalli o pus.</li>
+                             <li><strong>Genitali Esterni:</strong> Ispezionare la regione perineale, il prepuzio (maschio) e la vulva (femmina) alla ricerca di scoli, traumi, cristalli (urolitiasi), sangue o ulcere.</li>
+                             <li><strong>Edemi Declivi:</strong> La presenza di edemi ventrali (petto, addome) può essere un segno di perdita di proteine (es. sindrome <strong>nefrosica</strong>) e ipoalbuminemia.</li>
+                             <li><strong>Ispezione del Pene (Cavallo Maschio):</strong> Spesso richiede una sedazione per favorire l'estroflessione. Permette di ispezionare l'esterno del pene, lo sbocco uretrale e la fossetta uretrale (ricerca di smegma accumulato, lesioni).</li>
+                         </ul>`,
+                     en: `<h2>1. Inspection${speakerIconH2}</h2>
+                         <p>Inspection assesses the animal from a distance and up close, with a particular focus on the act of urination and the urine itself.</p>
+                         <ul>
+                             <li><strong>Act of Urination:</strong> Observe if the animal urinates normally or shows <strong>stranguria</strong> (difficulty and pain during urination), <strong>pollakiuria</strong> (increased frequency), <strong>anuria</strong> (absence of urine production), or <strong>incontinence</strong>.</li>
+                             <li><strong>Urine Appearance:</strong> Assess color and turbidity. Red urine may indicate <strong>hematuria</strong> (blood), <strong>hemoglobinuria</strong> (free hemoglobin), or <strong>myoglobinuria</strong> (muscle damage). Turbid urine may indicate crystals or pus.</li>
+                             <li><strong>External Genitalia:</strong> Inspect the perineal region, prepuce (male), and vulva (female) for discharge, trauma, crystals (urolithiasis), blood, or ulcers.</li>
+                             <li><strong>Ventral Edema:</strong> The presence of ventral edema (brisket, abdomen) can be a sign of protein loss (e.g., <strong>nephrotic</strong> syndrome) and hypoalbuminemia.</li>
+                             <li><strong>Penile Inspection (Male Horse):</strong> Often requires sedation to promote extrusion. It allows inspection of the penis exterior, urethral opening, and urethral fossa (checking for accumulated smegma, lesions).</li>
+                         </ul>`
+                 },
+                 sectionPalpazione: {
+                     it: `<h2>2. Palpazione${speakerIconH2}</h2>
+                         <p>L'<strong>esplorazione rettale</strong> è la metodica semeiotica più importante per l'apparato urinario nei grandi animali.</p>
+                         <ul>
+                             <li><strong>Esplorazione Rettale (Bovino):</strong>
+                                 <ul>
+                                     <li><strong>Rene Sinistro:</strong> È mobile e "pendulo", si trova caudalmente nel fianco sinistro. Si valutano dimensioni, forma (lobata), consistenza e dolorabilità.</li>
+                                     <li><strong>Rene Destro:</strong> Normalmente non è palpabile, si trova più cranialmente sotto le coste.</li>
+                                     <li><strong>Vescica:</strong> Palpabile se contiene urina, si valutano pienezza, spessore della parete e presenza di calcoli.</li>
+                                     <li><strong>Ureteri:</strong> Non palpabili se normali. Diventano palpabili se dilatati (es. pielonefrite, ostruzione).</li>
+                                 </ul>
+                             </li>
+                             <li><strong>Esplorazione Rettale (Equino):</strong>
+                                 <ul>
+                                     <li><strong>Rene Sinistro:</strong> È fisso, localizzato caudalmente alla milza. Ha una forma a "fagiolo". Si valuta dimensione, forma e consistenza.</li>
+                                     <li><strong>Rene Destro:</strong> Generalmente non palpabile (troppo craniale).</li>
+                                     <li><strong>Vescica:</strong> Palpabile in posizione pelvica, si valutano pienezza e parete.</li>
+                                 </ul>
+                             </li>
+                             <li><strong>Palpazione Esterna:</strong> Generalmente non diagnostica negli adulti. Nei vitelli o piccoli ruminanti, è possibile palpare esternamente i reni o una vescica molto distesa.</li>
+                         </ul>`,
+                     en: `<h2>2. Palpation${speakerIconH2}</h2>
+                         <p><strong>Rectal examination</strong> is the most important semiotic method for the urinary system in large animals.</p>
+                         <ul>
+                             <li><strong>Rectal Palpation (Bovine):</strong>
+                                 <ul>
+                                     <li><strong>Left Kidney:</strong> It is mobile and "pendulous," located caudally in the left flank. Assess size, shape (lobulated), consistency, and pain.</li>
+                                     <li><strong>Right Kidney:</strong> Not normally palpable, located more cranially under the ribs.</li>
+                                     <li><strong>Bladder:</strong> Palpable if it contains urine; assess fullness, wall thickness, and presence of calculi.</li>
+                                     <li><strong>Ureters:</strong> Not palpable if normal. Become palpable if dilated (e.g., pyelonephritis, obstruction).</li>
+                                 </ul>
+                             </li>
+                             <li><strong>Rectal Palpation (Equine):</strong>
+                                 <ul>
+                                     <li><strong>Left Kidney:</strong> It is fixed, located caudal to the spleen. It has a "bean" shape. Assess size, shape, and consistency.</li>
+                                     <li><strong>Right Kidney:</strong> Generally not palpable (too cranial).</li>
+                                     <li><strong>Bladder:</strong> Palpable in the pelvic position; assess fullness and wall.</li>
+                                 </ul>
+                             </li>
+                             <li><strong>External Palpation:</strong> Generally not diagnostic in adults. In calves or small ruminants, kidneys or a very distended bladder may be externally palpated.</li>
+                         </ul>`
+                 },
+                 sectionComplementari: {
+                     it: `<h2>3. Metodiche Complementari Semeiologiche${speakerIconH2}</h2>
+                         <p>Queste manovre sono essenziali per la raccolta di campioni o per valutare l'integrità delle vie urinarie.</p>
+                         <ul>
+                             <li><strong>Cateterismo Vescicale:</strong> Utilizzato per svuotare la vescica (in caso di ritenzione) o per ottenere un campione di urina sterile per l'analisi e la coltura. La procedura differisce tra maschi e femmine nelle diverse specie.</li>
+                         </ul>`,
+                     en: `<h2>3. Complementary Semeiotic Methods${speakerIconH2}</h2>
+                         <p>These maneuvers are essential for sample collection or assessing the integrity of the urinary tract.</p>
+                         <ul>
+                             <li><strong>Bladder Catheterization:</strong> Used to empty the bladder (in case of retention) or to obtain a sterile urine sample for analysis and culture. The procedure differs between males and females in different species.</li>
+                         </ul>`
+                 },
+                 btnPrint: { it: 'Stampa', en: 'Print' },
+                 btnPrintText: { it: 'Stampa', en: 'Print' },
+                 btnDownloadAudio: { it: 'Scarica Audio', en: 'Download Audio' },
+                // --- Footer ---
+                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+            };
+
+             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
+             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const accessibilityToggle = document.getElementById('accessibility-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+            let voices = [];
+
+            // --- Logica TTS ---
+             function populateVoiceList() {
+                 if (typeof speechSynthesis !== 'undefined') {
+                     voices = synth.getVoices();
+                 }
+            }
+             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                 speechSynthesis.onvoiceschanged = populateVoiceList;
+             }
+             populateVoiceList();
+
+             function speak(text, button) {
+                 const isSameButton = activeTTSButton === button;
+                 if (synth.speaking && isSameButton) {
+                     if (synth.paused) { synth.resume(); button.classList.add('playing'); }
+                     else { synth.pause(); button.classList.remove('playing'); }
+                 } else {
+                     if (synth.speaking) {
+                         if (currentUtterance) currentUtterance.onend = null;
+                         if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                         synth.cancel();
+                     }
+                     setTimeout(() => startSpeaking(text, button), 50);
+                 }
+             }
+             function startSpeaking(text, button) {
+                  if (!text || typeof text !== 'string' || !text.trim()) {
+                    console.error("Testo non valido per TTS:", text);
+                    return;
+                 }
+                 const tempDiv = document.createElement('div');
+                 tempDiv.innerHTML = text;
+                 const ttsIconToRemove = tempDiv.querySelector('.tts-button');
+                 if(ttsIconToRemove) ttsIconToRemove.remove();
+                 const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+                 if (!cleanText.trim()) {
+                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                    return;
+                 }
+
+                 currentUtterance = new SpeechSynthesisUtterance(cleanText);
+                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                 currentUtterance.onend = () => { if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
+                 currentUtterance.onerror = (event) => { console.error("Errore TTS:", event.error); if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
+                 synth.speak(currentUtterance);
+                 if (activeTTSButton && activeTTSButton !== button) { activeTTSButton.classList.remove('playing'); }
+                 activeTTSButton = button;
+                 button.classList.add('playing');
+             }
+             function setupTTSListeners() {
+                 document.querySelectorAll('.tts-button').forEach(button => {
+                     const newButton = button.cloneNode(true);
+                     button.parentNode.replaceChild(newButton, button);
+                     newButton.addEventListener('click', (e) => {
+                         e.stopPropagation();
+                         const parentElement = newButton.parentNode;
+                         let textToRead = '';
+                         let key = parentElement.dataset.langKey; 
+
+                         if (parentElement.tagName === 'H1' || parentElement.tagName === 'P') {
+                             key = parentElement.dataset.langKey;
+                         } else if (parentElement.tagName === 'H2') {
+                             const container = parentElement.closest('[data-lang-key]');
+                             if(container) key = container.dataset.langKey;
+                         }
+
+                         if (key && translations[key] && translations[key][currentLanguage]) {
+                             textToRead = translations[key][currentLanguage];
+                             if (textToRead) {
+                                 speak(textToRead, newButton);
+                             } else { console.warn("Testo vuoto per TTS per la chiave:", key); }
+                         } else { console.warn("Nessuna traduzione trovata per TTS per il pulsante:", newButton, "Key:", key); }
+                     });
+                 });
+             }
+
+            // --- Funzione Aggiornamento Lingua ---
+            const updateLanguage = (lang, previousLang = null) => {
+                 document.documentElement.lang = lang;
+                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+
+                 document.querySelectorAll('[data-lang-key]').forEach(element => {
+                     const key = element.dataset.langKey;
+                     
+                     // Rimuovi la sezione percussione (controllo di sicurezza)
+                     if (key === 'sectionPercussione') {
+                         element.innerHTML = '';
+                         return;
+                     }
+
+                     if (translations[key] && translations[key][lang]) {
+                         const translationText = translations[key][lang];
+
+                         if (key === 'footerText' || key === 'backToIndex' || key === 'btnDownloadAudio') {
+                              const svgIcon = element.querySelector('svg');
+                              element.innerHTML = translationText;
+                              if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
+                                   element.insertBefore(svgIcon, element.firstChild);
+                              }
+                         }
+                         else if (key === 'btnPrint') {
+                              const svgIcon = element.querySelector('svg');
+                              const textSpan = element.querySelector('span[data-lang-key="btnPrintText"]');
+                              if (textSpan) { textSpan.textContent = translations['btnPrintText'][lang]; }
+                              else {
+                                  element.innerHTML = translationText;
+                                   if (svgIcon) element.insertBefore(svgIcon, element.firstChild);
+                              }
+                               element.setAttribute('aria-label', translationText);
+                         }
+                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
+                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
+                             const sectionKey = currentSectionKey || key;
+                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
+                         }
+                         else if (element.id === 'main-content' || element.closest('#main-content')) { 
+                             element.innerHTML = translationText; 
+                         }
+                         else { element.textContent = translationText; }
+                     }
+                 });
+
+                 // Gestione visibilità audio
+                 document.querySelectorAll('.audio-container').forEach(container => {
+                     const audioSource = container.querySelector('audio source');
+                     const downloadLink = container.querySelector('a[download]');
+                     const hasValidSource = audioSource && audioSource.getAttribute('src') && audioSource.getAttribute('src') !== '#';
+                     const hasValidDownload = downloadLink && downloadLink.getAttribute('href') && downloadLink.getAttribute('href') !== '#';
+                     
+                     container.style.display = (lang === 'it' && hasValidSource && hasValidDownload) ? 'flex' : 'none';
+                 });
+
+                 // Reset TTS
+                 if (synth.speaking || synth.pending) synth.cancel();
+                 if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                 activeTTSButton = null;
+                 setTimeout(setupTTSListeners, 50);
+            };
+
+            // --- Logica Modalità Accessibilità ---
+            const setA11yMode = (enabled) => {
+                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
+                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            };
+
+            // --- Event Listeners ---
+            if (langToggle) {
+                langToggle.addEventListener('click', () => {
+                    const previousLanguage = currentLanguage;
+                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                    localStorage.setItem('language', currentLanguage);
+                     if (synth.speaking || synth.pending) synth.cancel();
+                     updateLanguage(currentLanguage, previousLanguage);
+                });
+            } else { console.error("Elemento langToggle non trovato!"); }
+
+            if (accessibilityToggle) {
+                 accessibilityToggle.addEventListener('click', () => {
+                    const isEnabled = body.classList.contains('dsa-mode');
+                    setA11yMode(!isEnabled);
+                });
+            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+
+            // --- Inizializzazione ---
+            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
+            populateVoiceList();
+             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                 speechSynthesis.onvoiceschanged = populateVoiceList;
+             }
+            updateLanguage(currentLanguage);
+
+        });
+    </script>
+
+</body>
+</html>
+
