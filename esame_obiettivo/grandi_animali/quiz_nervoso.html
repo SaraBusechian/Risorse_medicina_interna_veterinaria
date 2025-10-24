@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titolo specifico per questa pagina -->
+    <title>Quiz Interattivo: Sistema Nervoso - Semeiotica Vet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stili Generali e dal Template */
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; } /* Background leggermente grigio */
+        .section-nav-link {
+            transition: background-color 0.3s, color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+        .section-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .section-nav-link.active {
+             background-color: white;
+             color: #1E3A8A;
+             cursor: default;
+        }
+        .content-card {
+             background-color: white;
+             border-radius: 0.75rem;
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+             padding: 1.5rem;
+             margin-top: 2rem;
+             /* Limit max width for quiz consistency */
+             max-width: 48rem; /* max-w-3xl */
+             margin-left: auto;
+             margin-right: auto;
+        }
+        @media (min-width: 768px) { /* md: */
+            .content-card { padding: 2.5rem; }
+        }
+        #page-header { position: static; } /* Rimosso sticky per le pagine interne */
+        .scrollable-nav {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .scrollable-nav::-webkit-scrollbar { display: none; }
+
+        /* Stili Specifici del Quiz */
+        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; border-width: 2px; }
+        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .option-btn.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: 600; }
+        .option-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: 600; }
+         #question-text-container { /* Nuovo container per testo e bottone TTS */
+            display: flex;
+            align-items: flex-start; /* Allinea all'inizio se il testo va a capo */
+            min-height: 4.5rem; /* ~3 righe */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        #question-text {
+            flex-grow: 1; /* Occupa lo spazio disponibile */
+            font-size: 1.125rem; /* text-lg */
+            color: #374151; /* text-slate-700 */
+        }
+
+        /* DSA Mode Styles */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
+        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
+        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
+        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
+        .dsa-mode h2, .dsa-mode p, .dsa-mode button, .dsa-mode #score-text, .dsa-mode #question-text { color: #34495e !important; }
+        .dsa-mode .option-btn { background-color: #fefcf7 !important; border-color: #aeaeae !important; }
+        .dsa-mode .option-btn.correct { background-color: #d1f7d1 !important; border-color: #1a7431 !important; color: #1a7431 !important; }
+        .dsa-mode .option-btn.incorrect { background-color: #f7d1d1 !important; border-color: #a31e1e !important; color: #a31e1e !important; }
+        .dsa-mode #rationale-text { background-color: #f0eade !important; border-color: #dcd7cd !important; }
+
+        /* TTS Button Styles */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 8px; vertical-align: middle; color: #64748b; transition: color 0.2s; flex-shrink: 0; /* Impedisci che si rimpicciolisca */ }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+         .dsa-mode .tts-button { color: #5a738e !important; }
+
+         /* Print Styles - Nascondi quiz */
+        @media print {
+            body { background-color: #fff; }
+            #page-header, #main-footer, #quiz-container { display: none; }
+            .container::before { content: "Il contenuto del quiz non è stampabile."; display: block; text-align: center; font-size: 1.2em; margin-top: 2cm; }
+        }
+
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
+    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
+        <div class="container mx-auto px-6 py-3">
+            <!-- Riga Superiore: Torna all'indice + Controlli -->
+            <div class="flex justify-between items-center mb-4">
+                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
+                 </a>
+                 <div class="flex items-center space-x-2">
+                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
+                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
+                 </div>
+            </div>
+
+            <!-- Titolo della Sezione -->
+            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleNerv">9. Sistema Nervoso</h1>
+
+            <!-- Navigazione Interna alla Sezione -->
+            <nav class="scrollable-nav">
+                 <div class="flex space-x-2 pb-2">
+                     <a href="riassunto_nervoso.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_nervoso.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_nervoso.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_nervoso.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_nervoso.html" class="section-nav-link active" data-lang-key="navQuiz">Quiz</a>
+                     <a href="riassunto_nervoso.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
+                </div>
+            </nav>
+
+        </div>
+    </header>
+    <!-- === FINE HEADER === -->
+
+    <!-- Main Content Container - Usiamo flex per centrare verticalmente il quiz -->
+     <main class="container mx-auto p-4 md:px-8 md:py-12 flex items-center justify-center min-h-[calc(100vh-230px)]">
+         <!-- Card Contenuto Quiz -->
+         <div id="quiz-container" class="content-card w-full">
+
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: Sistema Nervoso</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
+                </div>
+                <!-- Container per Testo Domanda + Bottone TTS -->
+                <div id="question-text-container">
+                    <p id="question-text"></p>
+                    <span id="question-tts-button" class="tts-button">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </span>
+                </div>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-6 hidden">
+                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
+                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
+            </div>
+
+            <div id="results-area" class="text-center hidden">
+                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
+                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+
+         </div> <!-- Fine content-card -->
+    </main>
+
+    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // === TRADUZIONI ===
+            const translations = {
+                // --- Header ---
+                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                sectionTitleNerv: { it: '9. Sistema Nervoso', en: '9. Nervous System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navAudio: { it: 'Audio', en: 'Audio' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                // --- Contenuto Quiz ---
+                 quizTitle: { it: "Quiz: Sistema Nervoso", en: 'Quiz: Nervous System' },
+                 progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+                 btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                 btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
+                 resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                 resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+                 btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                // --- Domande (q1-q10) ---
+                q1: {
+                    question: { it: "Quale dei seguenti segni è più indicativo di una lesione al Cervello Anteriore (Telencefalo/Diencefalo)?", en: "Which of the following signs is most indicative of a Forebrain (Telencephalon/Diencephalon) lesion?" },
+                    options: [
+                        { text: { it: "Andatura in circolo (circoli ampi) e pressione della testa.", en: "Circling (wide circles) and head pressing." }, rationale: { it: "Questi sono i segni classici di una disfunzione del cervello anteriore, che controlla il comportamento e la percezione cosciente.", en: "These are classic signs of forebrain dysfunction, which controls behavior and conscious perception." }, isCorrect: true },
+                        { text: { it: "Atassia ipermetrica (passi 'da soldatino') e tremori della testa.", en: "Hypermetric ataxia ('tin soldier' steps) and head tremors." }, rationale: { it: "Questi segni indicano una disfunzione del cervelletto, che controlla la coordinazione e la misura dei movimenti.", en: "These signs indicate cerebellar dysfunction, which controls coordination and rate/range of movement." }, isCorrect: false },
+                        { text: { it: "Deficit multipli dei nervi cranici (III-XII) e circoli stretti.", en: "Multiple cranial nerve deficits (III-XII) and tight circles." }, rationale: { it: "Questi segni sono tipici di una lesione al tronco encefalico, dove hanno origine i nervi cranici.", en: "These signs are typical of a brainstem lesion, where the cranial nerves originate." }, isCorrect: false },
+                        { text: { it: "Paresi flaccida e atrofia muscolare rapida degli arti posteriori.", en: "Flaccid paresis and rapid muscle atrophy of the hind limbs." }, rationale: { it: "Questi sono segni di una lesione del Motoneurone Inferiore (LMN), localizzata nel midollo spinale lombo-sacrale (L4-S2).", en: "These are signs of a Lower Motor Neuron (LMN) lesion, localized to the lumbosacral spinal cord (L4-S2)." }, isCorrect: false }
+                    ]
+                },
+                q2: {
+                    question: { it: "Un animale che è incosciente ma risponde solo a stimoli dolorosi intensi si definisce:", en: "An animal that is unconscious but responds only to intense painful stimuli is defined as:" },
+                    options: [
+                        { text: { it: "Depresso", en: "Depressed" }, rationale: { it: "Un animale depresso è cosciente, ma risponde lentamente agli stimoli.", en: "A depressed animal is conscious, but responds slowly to stimuli." }, isCorrect: false },
+                        { text: { it: "Comatoso", en: "Comatose" }, rationale: { it: "Un animale comatoso è incosciente e non risponde a NESSUNO stimolo, nemmeno doloroso.", en: "A comatose animal is unconscious and does not respond to ANY stimuli, not even painful ones." }, isCorrect: false },
+                        { text: { it: "Stuporoso", en: "Stuporous" }, rationale: { it: "Corretto. Lo stato di stupore è definito come incoscienza che può essere interrotta solo da stimoli forti o dolorosi.", en: "Correct. A state of stupor is defined as unconsciousness that can only be interrupted by strong or painful stimuli." }, isCorrect: true },
+                        { text: { it: "Atassico", en: "Ataxic" }, rationale: { it: "L'atassia descrive l'incoordinazione del movimento, non il livello di coscienza.", en: "Ataxia describes incoordination of movement, not the level of consciousness." }, isCorrect: false }
+                    ]
+                },
+                 q3: {
+                    question: { it: "Quale dei seguenti scenari descrive correttamente una lesione del Motoneurone Superiore (UMN)?", en: "Which of the following scenarios correctly describes an Upper Motor Neuron (UMN) lesion?" },
+                    options: [
+                        { text: { it: "Paresi flaccida, atrofia muscolare rapida e riflessi spinali assenti.", en: "Flaccid paresis, rapid muscle atrophy, and absent spinal reflexes." }, rationale: { it: "Questa è la triade classica di una lesione del Motoneurone Inferiore (LMN), poiché il nervo che va al muscolo è danneggiato.", en: "This is the classic triad of a Lower Motor Neuron (LMN) lesion, as the nerve going to the muscle is damaged." }, isCorrect: false },
+                        { text: { it: "Paresi spastica (rigida), atrofia muscolare lenta (da disuso) e riflessi spinali aumentati.", en: "Spastic (rigid) paresis, slow muscle atrophy (disuse), and increased spinal reflexes." }, rationale: { it: "Corretto. La lesione UMN rimuove l'inibizione sul midollo spinale, causando spasticità e riflessi esagerati. L'atrofia è lenta.", en: "Correct. The UMN lesion removes inhibition on the spinal cord, causing spasticity and exaggerated reflexes. Atrophy is slow." }, isCorrect: true },
+                        { text: { it: "Sensorio alterato e convulsioni.", en: "Altered mental status and seizures." }, rationale: { it: "Questi sono segni di una lesione al cervello anteriore, non specifici per UMN vs LMN.", en: "These are signs of a forebrain lesion, not specific for UMN vs LMN." }, isCorrect: false },
+                        { text: { it: "Atassia ipermetrica e tremori intenzionali.", en: "Hypermetric ataxia and intention tremors." }, rationale: { it: "Questi sono segni specifici di una lesione al cervelletto.", en: "These are specific signs of a cerebellar lesion." }, isCorrect: false }
+                    ]
+                },
+                q4: {
+                    question: { it: "Un cavallo presenta testa ruotata (head tilt) verso destra e cade verso destra. Quale localizzazione sospetti primariamente?", en: "A horse presents with a head tilt to the right and falls to the right. What location do you primarily suspect?" },
+                    options: [
+                        { text: { it: "Lesione al cervelletto", en: "Cerebellar lesion" }, rationale: { it: "Il cervelletto causa atassia ipermetrica, ma la testa ruotata è il segno distintivo di un problema vestibolare.", en: "The cerebellum causes hypermetric ataxia, but the head tilt is the hallmark of a vestibular problem." }, isCorrect: false },
+                        { text: { it: "Lesione al midollo spinale (C1-C5)", en: "Spinal cord lesion (C1-C5)" }, rationale: { it: "An upper cervical lesion causes ataxia and paresis in all four limbs, but not typically a head tilt.", en: "An upper cervical lesion causes ataxia and paresis in all four limbs, but not typically a head tilt." }, isCorrect: false },
+                        { text: { it: "Lesione al cervello anteriore (destro)", en: "Forebrain lesion (right)" }, rationale: { it: "Una lesione al cervello anteriore può causare circoli ampi, ma la testa ruotata è specifica del sistema vestibolare.", en: "A forebrain lesion can cause wide circles, but the head tilt is specific to the vestibular system." }, isCorrect: false },
+                        { text: { it: "Sindrome vestibolare (destra)", en: "Vestibular syndrome (right)" }, rationale: { it: "Corretto. L'animale 'cade' verso il lato della lesione e inclina la testa verso lo stesso lato. Questo indica un problema al sistema vestibolare (tronco encefalico o orecchio interno).", en: "Correct. The animal 'falls' towards the side of the lesion and tilts its head to the same side. This indicates a problem with the vestibular system (brainstem or inner ear)." }, isCorrect: true }
+                    ]
+                },
+                q5: {
+                    question: { it: "Il riflesso alla minaccia valuta l'integrità di quali due nervi cranici principali?", en: "The menace response assesses the integrity of which two main cranial nerves?" },
+                    options: [
+                        { text: { it: "N. Ottico (II) e N. Oculomotore (III)", en: "Optic (II) and Oculomotor (III)" }, rationale: { it: "Questi due nervi sono testati dal riflesso pupillare alla luce (PLR), non dalla minaccia.", en: "These two nerves are tested by the pupillary light reflex (PLR), not the menace response." }, isCorrect: false },
+                        { text: { it: "N. Ottico (II) e N. Facciale (VII)", en: "Optic (II) and Facial (VII)" }, rationale: { it: "Corretto. Il N. Ottico (II) 'vede' la minaccia, e il N. Facciale (VII) 'esegue' l'ammiccamento (chiusura della palpebra).", en: "Correct. The Optic N. (II) 'sees' the menace, and the Facial N. (VII) 'performs' the blink (eyelid closure)." }, isCorrect: true },
+                        { text: { it: "N. Trigemino (V) e N. Facciale (VII)", en: "Trigeminal (V) and Facial (VII)" }, rationale: { it: "Questa combinazione testa il riflesso palpebrale (toccando la palpebra), non la minaccia (che è una risposta appresa).", en: "This combination tests the palpebral reflex (touching the eyelid), not the menace response (which is a learned response)." }, isCorrect: false },
+                        { text: { it: "N. Facciale (VII) e N. Vestibolococleare (VIII)", en: "Facial (VII) and Vestibulocochlear (VIII)" }, rationale: { it: "Il nervo VIII (Vestibolococleare) è coinvolto nell'equilibrio e nell'udito, non nel riflesso alla minaccia.", en: "The VIIIth nerve (Vestibulocochlear) is involved in balance and hearing, not the menace response." }, isCorrect: false }
+                    ]
+                },
+                 q6: {
+                    question: { it: "Una paralisi dell'orecchio, palpebra e labbro (ptosi auricolare e palpebrale) sullo stesso lato è causata da un danno a quale nervo cranico?", en: "Paralysis of the ear, eyelid, and lip (auricular and palpebral ptosis) on the same side is caused by damage to which cranial nerve?" },
+                    options: [
+                        { text: { it: "N. Trigemino (V)", en: "Trigeminal (V)" }, rationale: { it: "Il Trigemino (V) controlla la sensibilità del muso e i muscoli masticatori, non quelli dell'espressione facciale.", en: "The Trigeminal (V) controls facial sensation and muscles of mastication, not the muscles of facial expression." }, isCorrect: false },
+                        { text: { it: "N. Facciale (VII)", en: "Facial (VII)" }, rationale: { it: "Corretto. Il nervo Facciale (VII) innerva tutti i muscoli dell'espressione facciale, inclusi quelli che muovono palpebra, orecchio e labbro.", en: "Correct. The Facial nerve (VII) innervates all muscles of facial expression, including those that move the eyelid, ear, and lip." }, isCorrect: true },
+                        { text: { it: "N. Vago (X)", en: "Vagus (X)" }, rationale: { it: "Il nervo Vago (X) controlla la faringe, la laringe e gli organi interni, non la faccia.", en: "The Vagus nerve (X) controls the pharynx, larynx, and internal organs, not the face." }, isCorrect: false },
+                        { text: { it: "N. Oculomotore (III)", en: "Oculomotor (III)" }, rationale: { it: "L'Oculomotore (III) muove il globo oculare e la palpebra superiore, ma non l'orecchio o il labbro.", en: "The Oculomotor (III) moves the eyeball and upper eyelid, but not the ear or lip." }, isCorrect: false }
+                    ]
+                },
+                q7: {
+                    question: { it: "Un cavallo mostra atassia e paresi spastica (UMN) negli arti posteriori, ma arti anteriori completamente normali. Dove si trova la lesione?", en: "A horse shows ataxia and spastic paresis (UMN) in the hind limbs, but completely normal forelimbs. Where is the lesion?" },
+                    options: [
+                        { text: { it: "C1-C5 (Cervicale Alto)", en: "C1-C5 (Upper Cervical)" }, rationale: { it: "Una lesione in C1-C5 colpirebbe tutti e quattro gli arti, causando segni UMN sia negli anteriori che nei posteriori.", en: "A lesion in C1-C5 would affect all four limbs, causing UMN signs in both fore and hind limbs." }, isCorrect: false },
+                        { text: { it: "C6-T2 (Intumescenza Cervicale)", en: "C6-T2 (Cervical Intumescence)" }, rationale: { it: "Una lesione qui causerebbe segni LMN negli arti anteriori (perché colpisce i nervi degli arti) e UMN nei posteriori.", en: "A lesion here would cause LMN signs in the forelimbs (as it affects the limb nerves) and UMN signs in the hindlimbs." }, isCorrect: false },
+                        { text: { it: "T3-L3 (Toraco-Lombare)", en: "T3-L3 (Thoracolumbar)" }, rationale: { it: "Corretto. Questa localizzazione è craniale ai nervi degli arti posteriori (quindi segni UMN) ma caudale ai nervi degli arti anteriori (che restano normali).", en: "Correct. This location is cranial to the hind limb nerves (thus UMN signs) but caudal to the forelimb nerves (which remain normal)." }, isCorrect: true },
+                        { text: { it: "L4-S2 (Intumescenza Lombosacrale)", en: "L4-S2 (Lumbosacral Intumescence)" }, rationale: { it: "Una lesione qui colpirebbe i nervi degli arti posteriori, causando segni LMN (paresi flaccida, riflessi assenti), non UMN.", en: "A lesion here would affect the hind limb nerves, causing LMN signs (flaccid paresis, absent reflexes), not UMN." }, isCorrect: false }
+                    ]
+                },
+                q8: {
+                    question: { it: "Un bovino mostra atassia e debolezza flaccida (LMN) negli arti anteriori, e atassia con rigidità (UMN) negli arti posteriori. Dove si trova la lesione?", en: "A cow shows ataxia and flaccid weakness (LMN) in the forelimbs, and ataxia with rigidity (UMN) in the hind limbs. Where is the lesion?" },
+                    options: [
+                        { text: { it: "C1-C5 (Cervicale Alto)", en: "C1-C5 (Upper Cervical)" }, rationale: { it: "Una lesione qui causerebbe segni UMN (spastici) a tutti e quattro gli arti.", en: "A lesion here would cause UMN (spastic) signs in all four limbs." }, isCorrect: false },
+                        { text: { it: "C6-T2 (Intumescenza Cervicale)", en: "C6-T2 (Cervical Intumescence)" }, rationale: { it: "Corretto. Questa lesione danneggia i motoneuroni inferiori (LMN) per gli arti anteriori e le vie dei motoneuroni superiori (UMN) per gli arti posteriori.", en: "Correct. This lesion damages the lower motor neurons (LMN) for the forelimbs and the upper motor neuron (UMN) pathways for the hind limbs." }, isCorrect: true },
+                        { text: { it: "T3-L3 (Toraco-Lombare)", en: "T3-L3 (Thoracolumbar)" }, rationale: { it: "Una lesione qui lascerebbe gli arti anteriori completamente normali.", en: "A lesion here would leave the forelimbs completely normal." }, isCorrect: false },
+                        { text: { it: "Tronco Encefalico", en: "Brainstem" }, rationale: { it: "Una lesione al tronco encefalico causerebbe segni UMN a tutti e quattro gli arti, oltre a deficit dei nervi cranici.", en: "A brainstem lesion would cause UMN signs in all four limbs, plus cranial nerve deficits." }, isCorrect: false }
+                    ]
+                },
+                q9: {
+                    question: { it: "Un ritardo nel test di 'propriocezione cosciente' (es. incrociare gli arti) è spesso il primo segno clinico di:", en: "A delay in the 'conscious proprioception' test (e.g., crossing the limbs) is often the first clinical sign of:" },
+                    options: [
+                        { text: { it: "Una malattia del cervello anteriore", en: "A forebrain disease" }, rationale: { it: "Sebbene una lesione al cervello anteriore possa causare deficit propriocettivi, il segno più precoce di compressione midollare è proprio questo.", en: "Although a forebrain lesion can cause proprioceptive deficits, this is the earliest sign of spinal cord compression." }, isCorrect: false },
+                        { text: { it: "Una malattia cerebellare", en: "A cerebellar disease" }, rationale: { it: "Le lesioni cerebellari causano ipermetria, ma la propriocezione cosciente è spesso intatta.", en: "Cerebellar lesions cause hypermetria, but conscious proprioception is often intact." }, isCorrect: false },
+                        { text: { it: "Una compressione del midollo spinale", en: "Spinal cord compression" }, rationale: { it: "Corretto. Le vie propriocettive sono le più superficiali nel midollo spinale e le prime ad essere compromesse da una compressione (es. Wobbler, ernia).", en: "Correct. The proprioceptive pathways are the most superficial in the spinal cord and the first to be compromised by compression (e.g., Wobbler, herniation)." }, isCorrect: true },
+                        { text: { it: "Una paralisi del nervo facciale", en: "Facial nerve paralysis" }, rationale: { it: "Questa lesione colpisce i muscoli del viso, non la percezione della posizione degli arti.", en: "This lesion affects facial muscles, not the perception of limb position." }, isCorrect: false }
+                    ]
+                },
+                q10: {
+                    question: { it: "Cosa indica un aumento delle cellule (pleiocitosi) nel Liquido Cefalorachidiano (LCR)?", en: "What does an increase in cells (pleocytosis) in the Cerebrospinal Fluid (CSF) indicate?" },
+                    options: [
+                        { text: { it: "Infiammazione o infezione del SNC (meningite, encefalite).", en: "Inflammation or infection of the CNS (meningitis, encephalitis)." }, rationale: { it: "Corretto. La pleiocitosi è la definizione di un aumento di globuli bianchi nel LCR, che sono il segno di un processo infiammatorio o infettivo.", en: "Correct. Pleocytosis is the definition of an increase in white blood cells in the CSF, which is the sign of an inflammatory or infectious process." }, isCorrect: true },
+                        { text: { it: "Una compressione del midollo spinale.", en: "Spinal cord compression." }, rationale: { it: "La compressione può aumentare le proteine (dissociazione albumino-citologica), ma non causa tipicamente un aumento significativo delle cellule.", en: "Compression can increase protein (albuminocytologic dissociation), but doesn't typically cause a significant cell increase." }, isCorrect: false },
+                        { text: { it: "Un campione di LCR normale.", en: "A normal CSF sample." }, rationale: { it: "L'LCR normale è 'acqua di roccia' ed è acellulare o paucicellulare (pochissime cellule).", en: "Normal CSF is 'rock water' and is acellular or paucicellular (very few cells)." }, isCorrect: false },
+                        { text: { it: "Un ictus emorragico.", en: "A hemorrhagic stroke." }, rationale: { it: "Un ictus emorragico causerebbe la presenza di globuli rossi freschi (eritrocromia) o degradati (xantocromia), ma non necessariamente pleiocitosi (aumento di globuli bianchi).", en: "A hemorrhagic stroke would cause the presence of fresh (erythrochromia) or degraded (xanthochromia) red blood cells, but not necessarily pleocytosis (increase in white blood cells)." }, isCorrect: false }
+                    ]
+                },
+                // --- Footer ---
+                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+            };
+
+            const quizData = Object.keys(translations)
+                .filter(k => /^q\d+$/.test(k))
+                .map(k => translations[k]);
+
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let shuffledQuestions = [];
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+            let voices = [];
+
+            // Elementi DOM del Quiz
+            const quizContainer = document.getElementById('quiz-container');
+            const questionArea = document.getElementById('question-area');
+            const resultsArea = document.getElementById('results-area');
+            const questionText = document.getElementById('question-text');
+            let questionTTSButton = document.getElementById('question-tts-button');
+            const optionsContainer = document.getElementById('options-container');
+            const progressText = document.getElementById('progress-text');
+            const feedbackArea = document.getElementById('feedback-area');
+            const rationaleText = document.getElementById('rationale-text');
+            const nextButton = document.getElementById('next-button');
+            const scoreText = document.getElementById('score-text');
+            const restartButton = document.getElementById('restart-button');
+            
+            // Elementi DOM Generali (Header, etc.)
+            const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
+            const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const accessibilityToggle = document.getElementById('accessibility-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const body = document.body;
+
+            // --- Logica TTS ---
+            function populateVoices() {
+                if (typeof speechSynthesis === 'undefined') return;
+                voices = speechSynthesis.getVoices();
+            }
+
+            function speak(text, button) {
+                const isSameButton = activeTTSButton === button;
+                if (synth.speaking && isSameButton) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); }
+                    else { synth.pause(); button.classList.remove('playing'); }
+                } else {
+                    if (synth.speaking) {
+                        if (currentUtterance) currentUtterance.onend = null;
+                        if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                        synth.cancel();
+                    }
+                    setTimeout(() => startSpeaking(text, button), 50);
+                }
+            }
+
+            function startSpeaking(text, button) {
+                 if (!text || typeof text !== 'string' || !text.trim()) {
+                   console.error("Testo non valido per TTS:", text);
+                   return;
+                }
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = text;
+                const ttsIconToRemove = tempDiv.querySelector('.tts-button');
+                if(ttsIconToRemove) ttsIconToRemove.remove();
+                const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+                if (!cleanText.trim()) {
+                   if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                   activeTTSButton = null;
+                   return;
+                }
+
+                currentUtterance = new SpeechSynthesisUtterance(cleanText);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                currentUtterance.onend = () => { if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
+                currentUtterance.onerror = (event) => { 
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error("Errore TTS:", event.error); 
+                    }
+                    if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } 
+                };
+                synth.speak(currentUtterance);
+                if (activeTTSButton && activeTTSButton !== button) { activeTTSButton.classList.remove('playing'); }
+                activeTTSButton = button;
+                button.classList.add('playing');
+            }
+
+            function setupTTSListeners() {
+                const oldQuestionTTSButton = document.getElementById('question-tts-button');
+                if (oldQuestionTTSButton) {
+                    const newQuestionTTSButton = oldQuestionTTSButton.cloneNode(true);
+                    if (oldQuestionTTSButton.parentNode) {
+                        oldQuestionTTSButton.parentNode.replaceChild(newQuestionTTSButton, oldQuestionTTSButton);
+                    }
+                    questionTTSButton = newQuestionTTSButton; 
+                    
+                    questionTTSButton.onclick = () => {
+                        const currentQuestion = shuffledQuestions[currentQuestionIndex];
+                        if (currentQuestion && currentQuestion.question[currentLanguage]) {
+                           speak(currentQuestion.question[currentLanguage], questionTTSButton);
+                        }
+                    };
+                } else {
+                    console.error("Pulsante TTS domanda non trovato durante setupTTSListeners.");
+                }
+
+                optionsContainer.querySelectorAll('.tts-button').forEach(ttsBtn => {
+                     const newTTSButton = ttsBtn.cloneNode(true);
+                     const parentButton = newTTSButton.closest('.option-btn-container')?.querySelector('.option-btn');
+                     if (parentButton) {
+                         const optionText = parentButton.textContent;
+                          const currentQuestion = shuffledQuestions[currentQuestionIndex];
+                          if (currentQuestion) {
+                              const originalOption = currentQuestion.options.find(opt => opt.text[currentLanguage] === optionText);
+                             if (originalOption) {
+                                  newTTSButton.addEventListener('click', (e) => {
+                                      e.stopPropagation();
+                                      speak(originalOption.text[currentLanguage], newTTSButton);
+                                  });
+                             }
+                          }
+                          if (ttsBtn.parentNode) {
+                            ttsBtn.parentNode.replaceChild(newTTSButton, ttsBtn);
+                          }
+                     }
+                });
+            }
+
+
+            // --- Logica Quiz ---
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function startQuiz() {
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+
+                currentQuestionIndex = 0;
+                score = 0;
+                shuffledQuestions = shuffleArray([...quizData]);
+                resultsArea.classList.add('hidden');
+                questionArea.classList.remove('hidden');
+                feedbackArea.classList.add('hidden');
+                loadQuestion();
+            }
+            
+            function loadQuestion(isLangChange = false) {
+                if (synth.speaking) synth.cancel();
+                if (activeTTSButton) {
+                    activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                }
+
+                if (!isLangChange) {
+                    feedbackArea.classList.add('hidden');
+                }
+                
+                if (currentQuestionIndex < 0 || currentQuestionIndex >= shuffledQuestions.length) {
+                    console.error("Indice domanda non valido:", currentQuestionIndex);
+                    return; 
+                }
+                
+                const currentQuestion = shuffledQuestions[currentQuestionIndex];
+
+                progressText.textContent = translations.progressText[currentLanguage]
+                    .replace('{current}', currentQuestionIndex + 1)
+                    .replace('{total}', shuffledQuestions.length);
+                
+                questionText.textContent = currentQuestion.question[currentLanguage];
+                
+                questionTTSButton = document.getElementById('question-tts-button');
+                if (questionTTSButton) {
+                    questionTTSButton.onclick = () => {
+                        speak(currentQuestion.question[currentLanguage], questionTTSButton);
+                    };
+                }
+
+                optionsContainer.innerHTML = ''; 
+
+                const optionsToShow = isLangChange ? [...currentQuestion.options] : shuffleArray([...currentQuestion.options]);
+
+                optionsToShow.forEach(option => {
+                    const buttonContainer = document.createElement('div');
+                    buttonContainer.classList.add('flex', 'items-center', 'w-full', 'option-btn-container');
+
+                    const button = document.createElement('button');
+                    button.textContent = option.text[currentLanguage];
+                    button.classList.add('option-btn', 'flex-grow', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
+                    button.onclick = () => selectAnswer(button, option, currentQuestion.options);
+
+                    const ttsButton = document.createElement('span');
+                    ttsButton.classList.add('tts-button', 'ml-2');
+                    ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
+                    ttsButton.onclick = (e) => {
+                        e.stopPropagation();
+                        speak(option.text[currentLanguage], ttsButton);
+                    };
+
+                    buttonContainer.appendChild(button);
+                    buttonContainer.appendChild(ttsButton);
+                    optionsContainer.appendChild(buttonContainer);
+                });
+
+                if (isLangChange && !feedbackArea.classList.contains('hidden')) {
+                    const rationaleTextContent = rationaleText.textContent; 
+                    const originalOption = currentQuestion.options.find(opt => opt.rationale[currentLanguage] === rationaleTextContent);
+                    
+                    const buttons = optionsContainer.querySelectorAll('button.option-btn');
+                    buttons.forEach(btn => {
+                        btn.disabled = true;
+                        const optionDataText = btn.textContent;
+                        const currentQuestionOptions = shuffledQuestions[currentQuestionIndex]?.options || [];
+                        const currentOptionData = currentQuestionOptions.find(opt => opt.text[lang] === optionDataText);
+                        
+                        if (currentOptionData) {
+                            if (currentOptionData.isCorrect) {
+                                btn.classList.add('correct');
+                            }
+                            if (originalOption && originalOption.text[currentLanguage] === optionDataText && !originalOption.isCorrect) {
+                                btn.classList.add('incorrect');
+                            }
+                        }
+                    });
+                }
+            }
+
+            function selectAnswer(button, selectedOption, allOptions) {
+                if (synth.speaking) synth.cancel();
+                if (activeTTSButton) { activeTTSButton.classList.remove('playing'); activeTTSButton = null; }
+
+                const buttons = optionsContainer.querySelectorAll('button.option-btn');
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    const optionDataText = btn.textContent;
+                    const originalOption = allOptions.find(opt => opt.text[currentLanguage] === optionDataText);
+                    if (originalOption && originalOption.isCorrect) {
+                        btn.classList.add('correct');
+                    }
+                });
+
+                if (!selectedOption.isCorrect) {
+                    button.classList.add('incorrect');
+                }
+                
+                score += selectedOption.isCorrect ? 1 : 0;
+                
+                rationaleText.textContent = selectedOption.rationale[currentLanguage];
+                feedbackArea.classList.remove('hidden');
+
+                if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                    nextButton.textContent = translations.btnResults[currentLanguage];
+                } else {
+                    nextButton.textContent = translations.btnNext[currentLanguage];
+                }
+            }
+
+            function showResults() {
+                questionArea.classList.add('hidden');
+                feedbackArea.classList.add('hidden');
+                resultsArea.classList.remove('hidden');
+                scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
+            }
+
+            // --- Funzione Aggiornamento Lingua (Include Quiz Logic) ---
+            const updateLanguage = (lang, previousLang = null) => {
+                 document.documentElement.lang = lang;
+                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+
+                 document.querySelectorAll('[data-lang-key]').forEach(element => {
+                     const key = element.dataset.langKey;
+                     if (translations[key] && translations[key][lang]) {
+                         const translationText = translations[key][lang];
+
+                         if (key === 'footerText' || key === 'backToIndex') {
+                             const svgIcon = element.querySelector('svg');
+                             element.innerHTML = translationText;
+                             if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
+                                   element.insertBefore(svgIcon, element.firstChild);
+                             }
+                         }
+                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
+                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
+                             const sectionKey = currentSectionKey || key;
+                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
+                         }
+                         else if (element.id !== 'question-text' && element.id !== 'rationale-text') {
+                             element.textContent = translationText;
+                         }
+                     }
+                 });
+
+                 if (shuffledQuestions.length > 0 && currentQuestionIndex < shuffledQuestions.length && !questionArea.classList.contains('hidden')) {
+                     const feedbackWasVisible = !feedbackArea.classList.contains('hidden');
+                     let originalSelectedOption = null;
+
+                     if (feedbackWasVisible) {
+                        const rationaleTextContent = rationaleText.textContent;
+                        const currentQuestion = shuffledQuestions[currentQuestionIndex];
+                        // Cerca il rationale nella lingua precedente
+                        originalSelectedOption = currentQuestion.options.find(opt => opt.rationale[previousLang] === rationaleTextContent);
+                     }
+
+                     loadQuestion(true);
+                     
+                     if (feedbackWasVisible && originalSelectedOption) {
+                         const buttons = optionsContainer.querySelectorAll('button.option-btn');
+                         buttons.forEach(btn => {
+                            btn.disabled = true;
+                            const optionDataText = btn.textContent;
+                            // Cerca l'opzione nel DOM in base al testo nella *nuova* lingua
+                            const currentOptionData = shuffledQuestions[currentQuestionIndex].options.find(opt => opt.text[lang] === optionDataText);
+                            if (currentOptionData) {
+                                if (currentOptionData.isCorrect) {
+                                    btn.classList.add('correct');
+                                }
+                                // Confronta l'opzione trovata nel DOM con quella salvata (originalSelectedOption)
+                                if (currentOptionData.text[lang] === originalSelectedOption.text[lang] && !originalSelectedOption.isCorrect) {
+                                    btn.classList.add('incorrect');
+                                }
+                            }
+                         });
+                         
+                         rationaleText.textContent = originalSelectedOption.rationale[lang];
+                         feedbackArea.classList.remove('hidden');
+
+                         if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                              nextButton.textContent = translations.btnResults[lang];
+                         } else {
+                              nextButton.textContent = translations.btnNext[lang];
+                         }
+                     }
+                 } else if (!resultsArea.classList.contains('hidden')) {
+                      resultsArea.querySelector('h2').textContent = translations.resultsTitle[lang];
+                      resultsArea.querySelector('p[data-lang-key="resultsScore"]').textContent = translations.resultsScore[lang];
+                      restartButton.textContent = translations.btnRestart[lang];
+                 }
+
+                 if (synth.speaking || synth.pending) synth.cancel();
+                 setTimeout(setupTTSListeners, 100);
+            };
+
+            // --- Logica Modalità Accessibilità ---
+            const setA11yMode = (enabled) => {
+                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
+                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            };
+
+            // --- Event Listeners ---
+            if (langToggle) {
+                langToggle.addEventListener('click', () => {
+                    const previousLanguage = currentLanguage;
+                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                    localStorage.setItem('language', currentLanguage);
+                     if (synth.speaking || synth.pending) synth.cancel();
+                    updateLanguage(currentLanguage, previousLanguage);
+                });
+            } else { console.error("Elemento langToggle non trovato!"); }
+
+            if (accessibilityToggle) {
+                 accessibilityToggle.addEventListener('click', () => {
+                    const isEnabled = body.classList.contains('dsa-mode');
+                    setA11yMode(!isEnabled);
+                });
+            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+
+             nextButton.addEventListener('click', () => {
+                 currentQuestionIndex++;
+                 if (currentQuestionIndex < shuffledQuestions.length) {
+                     loadQuestion();
+                 } else {
+                     showResults();
+                 }
+             });
+
+             restartButton.addEventListener('click', startQuiz);
+
+            // --- Inizializzazione ---
+            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
+            populateVoices();
+             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                 speechSynthesis.onvoiceschanged = populateVoices;
+             }
+            startQuiz(); // Avvia il quiz
+            updateLanguage(currentLanguage); // Applica lingua iniziale e setup
+
+        });
+    </script>
+
+</body>
+</html>
+
