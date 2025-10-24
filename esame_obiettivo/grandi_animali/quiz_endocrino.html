@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titolo specifico per questa pagina -->
+    <title>Quiz Interattivo: Sistema Endocrino - Semeiotica Vet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stili Generali e dal Template */
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; } /* Background leggermente grigio */
+        .section-nav-link {
+            transition: background-color 0.3s, color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+        .section-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .section-nav-link.active {
+             background-color: white;
+             color: #1E3A8A;
+             cursor: default;
+        }
+        .content-card {
+             background-color: white;
+             border-radius: 0.75rem;
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+             padding: 1.5rem;
+             margin-top: 2rem;
+             /* Limit max width for quiz consistency */
+             max-width: 48rem; /* max-w-3xl */
+             margin-left: auto;
+             margin-right: auto;
+        }
+        @media (min-width: 768px) { /* md: */
+            .content-card { padding: 2.5rem; }
+        }
+        #page-header { position: static; } /* Rimosso sticky per le pagine interne */
+        .scrollable-nav {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .scrollable-nav::-webkit-scrollbar { display: none; }
+
+        /* Stili Specifici del Quiz */
+        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; border-width: 2px; }
+        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .option-btn.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: 600; }
+        .option-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: 600; }
+         #question-text-container { /* Nuovo container per testo e bottone TTS */
+            display: flex;
+            align-items: flex-start; /* Allinea all'inizio se il testo va a capo */
+            min-height: 4.5rem; /* ~3 righe */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        #question-text {
+            flex-grow: 1; /* Occupa lo spazio disponibile */
+            font-size: 1.125rem; /* text-lg */
+            color: #374151; /* text-slate-700 */
+        }
+
+        /* DSA Mode Styles */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
+        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
+        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
+        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
+        .dsa-mode h2, .dsa-mode p, .dsa-mode button, .dsa-mode #score-text, .dsa-mode #question-text { color: #34495e !important; }
+        .dsa-mode .option-btn { background-color: #fefcf7 !important; border-color: #aeaeae !important; }
+        .dsa-mode .option-btn.correct { background-color: #d1f7d1 !important; border-color: #1a7431 !important; color: #1a7431 !important; }
+        .dsa-mode .option-btn.incorrect { background-color: #f7d1d1 !important; border-color: #a31e1e !important; color: #a31e1e !important; }
+        .dsa-mode #rationale-text { background-color: #f0eade !important; border-color: #dcd7cd !important; }
+
+        /* TTS Button Styles */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 8px; vertical-align: middle; color: #64748b; transition: color 0.2s; flex-shrink: 0; /* Impedisci che si rimpicciolisca */ }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+         .dsa-mode .tts-button { color: #5a738e !important; }
+
+         /* Print Styles - Nascondi quiz */
+        @media print {
+            body { background-color: #fff; }
+            #page-header, #main-footer, #quiz-container { display: none; }
+            .container::before { content: "Il contenuto del quiz non è stampabile."; display: block; text-align: center; font-size: 1.2em; margin-top: 2cm; }
+        }
+
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
+    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
+        <div class="container mx-auto px-6 py-3">
+            <!-- Riga Superiore: Torna all'indice + Controlli -->
+            <div class="flex justify-between items-center mb-4">
+                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
+                 </a>
+                 <div class="flex items-center space-x-2">
+                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
+                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
+                 </div>
+            </div>
+
+            <!-- Titolo della Sezione -->
+            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleEndo">8. Sistema Endocrino</h1>
+
+            <!-- Navigazione Interna alla Sezione -->
+            <nav class="scrollable-nav">
+                 <div class="flex space-x-2 pb-2">
+                     <a href="riassunto_endocrino.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_endocrino.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_endocrino.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_endocrino.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_endocrino.html" class="section-nav-link active" data-lang-key="navQuiz">Quiz</a>
+                     <a href="riassunto_endocrino.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
+                </div>
+            </nav>
+
+        </div>
+    </header>
+    <!-- === FINE HEADER === -->
+
+    <!-- Main Content Container - Usiamo flex per centrare verticalmente il quiz -->
+     <main class="container mx-auto p-4 md:px-8 md:py-12 flex items-center justify-center min-h-[calc(100vh-230px)]">
+         <!-- Card Contenuto Quiz -->
+         <div id="quiz-container" class="content-card w-full">
+
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: Sistema Endocrino</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
+                </div>
+                <!-- Container per Testo Domanda + Bottone TTS -->
+                <div id="question-text-container">
+                    <p id="question-text"></p>
+                    <span id="question-tts-button" class="tts-button">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </span>
+                </div>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-6 hidden">
+                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
+                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
+            </div>
+
+            <div id="results-area" class="text-center hidden">
+                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
+                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+
+         </div> <!-- Fine content-card -->
+    </main>
+
+    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // === TRADUZIONI ===
+            const translations = {
+                // --- Header ---
+                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                sectionTitleEndo: { it: '8. Sistema Endocrino', en: '8. Endocrine System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navAudio: { it: 'Audio', en: 'Audio' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                // --- Contenuto Quiz ---
+                 quizTitle: { it: "Quiz: Sistema Endocrino", en: 'Quiz: Endocrine System' },
+                 progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+                 btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                 btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
+                 resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                 resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+                 btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                // --- Domande (q1-q10) ---
+                q1: {
+                    question: { it: "Quale segno clinico è considerato patognomonico per la PPID (Cushing Equino)?", en: "Which clinical sign is considered pathognomonic for PPID (Equine Cushing's)?" },
+                    options: [
+                        { text: { it: "Obesità e 'cresty neck'.", en: "Obesity and 'cresty neck'." }, rationale: { it: "Questi sono segni classici della Sindrome Metabolica Equina (EMS), non della PPID.", en: "These are classic signs of Equine Metabolic Syndrome (EMS), not PPID." }, isCorrect: false },
+                        { text: { it: "Poliuria e Polidipsia (PU/PD).", en: "Polyuria and Polydipsia (PU/PD)." }, rationale: { it: "La PU/PD è comune nella PPID, ma si verifica anche in molte altre malattie (EMS, diabete, insufficienza renale), quindi non è patognomonica.", en: "PU/PD is common in PPID, but also occurs in many other diseases (EMS, diabetes, renal failure), so it is not pathognomonic." }, isCorrect: false },
+                        { text: { it: "Irsutismo (pelo lungo e riccio che non muta).", en: "Hirsutism (long, curly coat that fails to shed)." }, rationale: { it: "Corretto. L'irsutismo è il segno clinico più specifico e quasi esclusivo della PPID avanzata nel cavallo.", en: "Correct. Hirsutism is the most specific and almost exclusive clinical sign of advanced PPID in the horse." }, isCorrect: true },
+                        { text: { it: "Laminite cronica.", en: "Chronic laminitis." }, rationale: { it: "La laminite è una conseguenza molto comune sia della PPID che della EMS, ma non è specifica solo della PPID.", en: "Laminitis is a very common consequence of both PPID and EMS, but it is not specific only to PPID." }, isCorrect: false }
+                    ]
+                },
+                q2: {
+                    question: { it: "Depositi di grasso anomali, come il 'cresty neck', sono un segno tipico di quale sindrome nel cavallo?", en: "Abnormal fat deposits, such as a 'cresty neck', are a typical sign of which syndrome in the horse?" },
+                    options: [
+                        { text: { it: "Sindrome Metabolica Equina (EMS)", en: "Equine Metabolic Syndrome (EMS)" }, rationale: { it: "Corretto. La EMS è caratterizzata da insulino-resistenza e una predisposizione all'obesità con accumuli di grasso in siti specifici.", en: "Correct. EMS is characterized by insulin resistance and a predisposition to obesity with fat deposits in specific locations." }, isCorrect: true },
+                        { text: { it: "PPID (Cushing Equino)", en: "PPID (Equine Cushing's)" }, rationale: { it: "La PPID è più spesso associata a perdita di massa muscolare e aspetto 'vecchio', sebbene possa coesistere con l'EMS.", en: "PPID is more often associated with muscle wasting and an 'aged' appearance, although it can coexist with EMS." }, isCorrect: false },
+                        { text: { it: "Ipotiroidismo", en: "Hypothyroidism" }, rationale: { it: "L'ipotiroidismo vero è molto raro nel cavallo e i suoi segni (letargia, pelo brutto) sono aspecifici. Non causa 'cresty neck'.", en: "True hypothyroidism is very rare in horses and its signs (lethargy, poor coat) are non-specific. It does not cause a 'cresty neck'." }, isCorrect: false },
+                        { text: { it: "Diabete Mellito", en: "Diabetes Mellitus" }, rationale: { it: "Il Diabete Mellito è estremamente raro nel cavallo ed è associato a iperglicemia e PU/PD, non primariamente a 'cresty neck'.", en: "Diabetes Mellitus is extremely rare in horses and is associated with hyperglycemia and PU/PD, not primarily a 'cresty neck'." }, isCorrect: false }
+                    ]
+                },
+                 q3: {
+                    question: { it: "Qual è l'unica ghiandola endocrina palpabile di routine in un bovino sano?", en: "What is the only endocrine gland routinely palpable in a healthy bovine?" },
+                    options: [
+                        { text: { it: "La ghiandola surrenale", en: "The adrenal gland" }, rationale: { it: "Le ghiandole surrenali sono piccole e situate in profondità nell'addome, non sono palpabili.", en: "The adrenal glands are small and located deep in the abdomen; they are not palpable." }, isCorrect: false },
+                        { text: { it: "L'ipofisi", en: "The pituitary gland" }, rationale: { it: "L'ipofisi si trova alla base del cervello, all'interno del cranio, ed è inaccessibile.", en: "The pituitary gland is located at the base of the brain, inside the skull, and is inaccessible." }, isCorrect: false },
+                        { text: { it: "Il pancreas", en: "The pancreas" }, rationale: { it: "Il pancreas endocrino è una parte diffusa dell'organo e non è palpabile.", en: "The endocrine pancreas is a diffuse part of the organ and is not palpable." }, isCorrect: false },
+                        { text: { it: "La tiroide", en: "The thyroid gland" }, rationale: { it: "Corretto. I lobi della tiroide (o un eventuale gozzo) possono essere palpati nella regione laringea, lungo la trachea.", en: "Correct. The thyroid lobes (or a possible goiter) can be palpated in the laryngeal region, alongside the trachea." }, isCorrect: true }
+                    ]
+                },
+                q4: {
+                    question: { it: "Un cavallo con pelo normale, obesità e laminite cronica è più probabile che soffra di:", en: "A horse with a normal coat, obesity, and chronic laminitis is most likely suffering from:" },
+                    options: [
+                        { text: { it: "PPID (Cushing Equino)", en: "PPID (Equine Cushing's)" }, rationale: { it: "Sebbene la laminite sia comune, l'assenza di irsutismo (pelo normale) e la presenza di obesità rendono la PPID meno probabile della EMS.", en: "Although laminitis is common, the absence of hirsutism (normal coat) and the presence of obesity make PPID less likely than EMS." }, isCorrect: false },
+                        { text: { it: "Sindrome Metabolica Equina (EMS)", en: "Equine Metabolic Syndrome (EMS)" }, rationale: { it: "Corretto. Questa triade (obesità, depositi di grasso anomali, laminite) con un pelo normale è la presentazione classica della EMS.", en: "Correct. This triad (obesity, abnormal fat deposits, laminitis) with a normal coat is the classic presentation of EMS." }, isCorrect: true },
+                        { text: { it: "Diabete Insipido", en: "Diabetes Insipidus" }, rationale: { it: "Il diabete insipido causa PU/PD estrema, ma non obesità o laminite.", en: "Diabetes insipidus causes extreme PU/PD, but not obesity or laminitis." }, isCorrect: false },
+                        { text: { it: "Iperparatiroidismo", en: "Hyperparathyroidism" }, rationale: { it: "L'iperparatiroidismo causa problemi ossei (es. 'testa grossa'), non obesità e laminite.", en: "Hyperparathyroidism causes bone problems (e.g., 'big head'), not obesity and laminitis." }, isCorrect: false }
+                    ]
+                },
+                q5: {
+                    question: { it: "Quale test di laboratorio è lo screening di prima scelta per la PPID (Cushing Equino)?", en: "Which laboratory test is the first-choice screening for PPID (Equine Cushing's)?" },
+                    options: [
+                        { text: { it: "Dosaggio basale di Insulina e Glucosio", en: "Baseline Insulin and Glucose assay" }, rationale: { it: "Questo è il test di screening per la EMS (Sindrome Metabolica Equina), non per la PPID.", en: "This is the screening test for EMS (Equine Metabolic Syndrome), not PPID." }, isCorrect: false },
+                        { text: { it: "Dosaggio basale di ACTH Endogeno", en: "Baseline Endogenous ACTH assay" }, rationale: { it: "Corretto. Un singolo campione di sangue per misurare l'ACTH (specialmente in autunno) è il test di screening più comune e affidabile per la PPID.", en: "Correct. A single blood sample to measure ACTH (especially in the autumn) is the most common and reliable screening test for PPID." }, isCorrect: true },
+                        { text: { it: "Test di stimolazione con TRH", en: "TRH Stimulation Test" }, rationale: { it: "Questo è un test dinamico di seconda linea, usato se il test ACTH basale è equivoco, non è lo screening iniziale.", en: "This is a second-line dynamic test, used if the baseline ACTH test is equivocal, not the initial screening." }, isCorrect: false },
+                        { text: { it: "Misurazione del T4 totale", en: "Total T4 measurement" }, rationale: { it: "Questo test valuta la funzione tiroidea, che non è direttamente correlata alla PPID.", en: "This test assesses thyroid function, which is not directly related to PPID." }, isCorrect: false }
+                    ]
+                },
+                 q6: {
+                    question: { it: "L'Oral Sugar Test (OST) è un test dinamico utilizzato per confermare:", en: "The Oral Sugar Test (OST) is a dynamic test used to confirm:" },
+                    options: [
+                        { text: { it: "Insulino-resistenza (EMS)", en: "Insulin Resistance (EMS)" }, rationale: { it: "Corretto. Si somministra zucchero (o glucosio) e si misura la risposta insulinica; una risposta esagerata (iperinsulinemia) conferma l'insulino-resistenza.", en: "Correct. Sugar (or glucose) is administered, and the insulin response is measured; an exaggerated insulin response (hyperinsulinemia) confirms insulin resistance." }, isCorrect: true },
+                        { text: { it: "PPID (Cushing Equino)", en: "PPID (Equine Cushing's)" }, rationale: { it: "I test per la PPID valutano l'asse ipofisi-surrene (ACTH, cortisolo), non la risposta all'insulina.", en: "Tests for PPID evaluate the pituitary-adrenal axis (ACTH, cortisol), not the insulin response." }, isCorrect: false },
+                        { text: { it: "Diabete Insipido", en: "Diabetes Insipidus" }, rationale: { it: "Il diabete insipido si diagnostica con test di privazione dell'acqua o risposta all'ADH, non con l'OST.", en: "Diabetes insipidus is diagnosed with water deprivation tests or response to ADH, not the OST." }, isCorrect: false },
+                        { text: { it: "Ipotiroidismo", en: "Hypothyroidism" }, rationale: { it: "L'ipotiroidismo richiederebbe un test di stimolazione con TRH o TSH per valutare la tiroide.", en: "Hypothyroidism would require a TRH or TSH stimulation test to assess the thyroid." }, isCorrect: false }
+                    ]
+                },
+                q7: {
+                    question: { it: "Un cavallo con PU/PD e urine costantemente diluite (Peso Specifico 1.005) anche se disidratato, ha un problema relativo a quale ormone?", en: "A horse with PU/PD and persistently dilute urine (Specific Gravity 1.005) even when dehydrated, has a problem related to which hormone?" },
+                    options: [
+                        { text: { it: "Insulina (Diabete Mellito)", en: "Insulin (Diabetes Mellitus)" }, rationale: { it: "Il Diabete Mellito causa PU/PD, ma l'urina sarebbe iper-densa (PS alto) a causa del glucosio, non diluita.", en: "Diabetes Mellitus causes PU/PD, but the urine would be hyper-dense (high SG) due to glucose, not dilute." }, isCorrect: false },
+                        { text: { it: "Ormone Antidiuretico (ADH) (Diabete Insipido)", en: "Antidiuretic Hormone (ADH) (Diabetes Insipidus)" }, rationale: { it: "Corretto. L'ADH è l'ormone che dice ai reni di concentrare l'urina. Se manca (o i reni non rispondono), l'animale produce enormi volumi di urina diluita.", en: "Correct. ADH is the hormone that tells the kidneys to concentrate urine. If it is missing (or the kidneys don't respond), the animal produces huge volumes of dilute urine." }, isCorrect: true },
+                        { text: { it: "ACTH (PPID)", en: "ACTH (PPID)" }, rationale: { it: "La PPID può causare PU/PD, ma spesso per compressione dell'ipofisi o per l'iperglicemia indotta da cortisolo. Il diabete insipido è la causa primaria di urine ipostenuriche.", en: "PPID can cause PU/PD, but often due to pituitary compression or cortisol-induced hyperglycemia. Diabetes insipidus is the primary cause of hyposthenuric urine." }, isCorrect: false },
+                        { text: { it: "Paratormone (Iperparatiroidismo)", en: "Parathyroid Hormone (Hyperparathyroidism)" }, rationale: { it: "L'iperparatiroidismo causa ipercalcemia, che può indurre PU/PD, ma il meccanismo primario è legato all'ADH.", en: "Hyperparathyroidism causes hypercalcemia, which can induce PU/PD, but the primary mechanism is related to ADH." }, isCorrect: false }
+                    ]
+                },
+                q8: {
+                    question: { it: "Cosa significa 'Euthyroid Sick Syndrome'?", en: "What does 'Euthyroid Sick Syndrome' mean?" },
+                    options: [
+                        { text: { it: "Un tumore maligno della tiroide.", en: "A malignant tumor of the thyroid." }, rationale: { it: "Errato. Questo termine descrive una condizione funzionale, non neoplastica.", en: "Incorrect. This term describes a functional condition, not a neoplastic one." }, isCorrect: false },
+                        { text: { it: "Bassi livelli di T4 a causa di un'altra malattia sistemica, non per ipotiroidismo.", en: "Low T4 levels due to another systemic illness, not hypothyroidism." }, rationale: { it: "Corretto. Molte malattie gravi o l'uso di farmaci (es. FANS) possono sopprimere i livelli di T4 senza che la tiroide sia malata.", en: "Correct. Many severe illnesses or drug use (e.g., NSAIDs) can suppress T4 levels without the thyroid itself being diseased." }, isCorrect: true },
+                        { text: { it: "Bassi livelli di T4 dovuti a carenza di iodio nella dieta.", en: "Low T4 levels due to iodine deficiency in the diet." }, rationale: { it: "La carenza di iodio causa ipotiroidismo primario e spesso gozzo, che è una patologia tiroidea vera e propria.", en: "Iodine deficiency causes primary hypothyroidism and often goiter, which is a true thyroid pathology." }, isCorrect: false },
+                        { text: { it: "Alti livelli di T4 (ipertiroidismo).", en: "High T4 levels (hyperthyroidism)." }, rationale: { it: "Questa sindrome è caratterizzata da T4 basso (o normale-basso), non alto.", en: "This syndrome is characterized by low (or normal-low) T4, not high." }, isCorrect: false }
+                    ]
+                },
+                q9: {
+                    question: { it: "L'irsutismo nel cavallo è causato da una disfunzione di quale ghiandola?", en: "Hirsutism in horses is caused by a dysfunction of which gland?" },
+                    options: [
+                        { text: { it: "Tiroide", en: "Thyroid" }, rationale: { it: "Problemi alla tiroide causano alterazioni del mantello (pelo brutto, alopecia), ma non l'irsutismo.", en: "Thyroid problems cause coat changes (poor coat, alopecia), but not hirsutism." }, isCorrect: false },
+                        { text: { it: "Ghiandola Surrenale", en: "Adrenal Gland" }, rationale: { it: "Nel cane, il Cushing è spesso surrenalico, ma nel cavallo il problema primario è nell'ipofisi.", en: "In dogs, Cushing's is often adrenal, but in horses, the primary problem is in the pituitary." }, isCorrect: false },
+                        { text: { it: "Ipofisi (Pars Intermedia)", en: "Pituitary Gland (Pars Intermedia)" }, rationale: { it: "Corretto. La PPID (Cushing Equino) è causata da un tumore (adenoma) della pars intermedia dell'ipofisi, che produce un eccesso di ormoni (tra cui ACTH).", en: "Correct. PPID (Equine Cushing's) is caused by a tumor (adenoma) of the pituitary's pars intermedia, which produces an excess of hormones (including ACTH)." }, isCorrect: true },
+                        { text: { it: "Pancreas", en: "Pancreas" }, rationale: { it: "Il pancreas regola l'insulina (EMS, Diabete Mellito), ma non causa l'irsutismo.", en: "The pancreas regulates insulin (EMS, Diabetes Mellitus), but does not cause hirsutism." }, isCorrect: false }
+                    ]
+                },
+                q10: {
+                    question: { it: "Quale esame di imaging è necessario per visualizzare direttamente un adenoma dell'ipofisi in un cavallo?", en: "Which imaging exam is necessary to directly visualize a pituitary adenoma in a horse?" },
+                    options: [
+                        { text: { it: "Ecografia della testa", en: "Ultrasound of the head" }, rationale: { it: "L'ecografia non può attraversare l'osso cranico per visualizzare il cervello o l'ipofisi.", en: "Ultrasound cannot penetrate the skull bone to visualize the brain or pituitary." }, isCorrect: false },
+                        { text: { it: "Radiografia del cranio", en: "Radiography of the skull" }, rationale: { it: "La radiografia mostra le ossa, ma non fornisce dettagli sui tessuti molli come l'ipofisi.", en: "Radiography shows bones, but provides no detail on soft tissues like the pituitary." }, isCorrect: false },
+                        { text: { it: "TC o Risonanza Magnetica (RM)", en: "CT or Magnetic Resonance Imaging (MRI)" }, rationale: { it: "Corretto. Queste sono le uniche tecniche di imaging avanzate che possono visualizzare le strutture all'interno del cranio, inclusa l'ipofisi.", en: "Correct. These are the only advanced imaging techniques that can visualize structures inside the skull, including the pituitary gland." }, isCorrect: true },
+                        { text: { it: "Endoscopia nasale", en: "Nasal endoscopy" }, rationale: { it: "L'endoscopia visualizza le vie aeree superiori, ma non può raggiungere la base del cervello dove si trova l'ipofisi.", en: "Endoscopy visualizes the upper airways, but cannot reach the base of the brain where the pituitary is located." }, isCorrect: false }
+                    ]
+                },
+                // --- Footer ---
+                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+            };
+
+            const quizData = Object.keys(translations)
+                .filter(k => /^q\d+$/.test(k))
+                .map(k => translations[k]);
+
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let shuffledQuestions = [];
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+            let voices = [];
+
+            // Elementi DOM del Quiz
+            const quizContainer = document.getElementById('quiz-container');
+            const questionArea = document.getElementById('question-area');
+            const resultsArea = document.getElementById('results-area');
+            const questionText = document.getElementById('question-text');
+            let questionTTSButton = document.getElementById('question-tts-button');
+            const optionsContainer = document.getElementById('options-container');
+            const progressText = document.getElementById('progress-text');
+            const feedbackArea = document.getElementById('feedback-area');
+            const rationaleText = document.getElementById('rationale-text');
+            const nextButton = document.getElementById('next-button');
+            const scoreText = document.getElementById('score-text');
+            const restartButton = document.getElementById('restart-button');
+            
+            // Elementi DOM Generali (Header, etc.)
+            const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
+            const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const accessibilityToggle = document.getElementById('accessibility-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const body = document.body;
+
+            // --- Logica TTS ---
+            function populateVoices() {
+                if (typeof speechSynthesis === 'undefined') return;
+                voices = speechSynthesis.getVoices();
+            }
+
+            function speak(text, button) {
+                const isSameButton = activeTTSButton === button;
+                if (synth.speaking && isSameButton) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); }
+                    else { synth.pause(); button.classList.remove('playing'); }
+                } else {
+                    if (synth.speaking) {
+                        if (currentUtterance) currentUtterance.onend = null;
+                        if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                        synth.cancel();
+                    }
+                    setTimeout(() => startSpeaking(text, button), 50);
+                }
+            }
+
+            function startSpeaking(text, button) {
+                 if (!text || typeof text !== 'string' || !text.trim()) {
+                   console.error("Testo non valido per TTS:", text);
+                   return;
+                }
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = text;
+                const ttsIconToRemove = tempDiv.querySelector('.tts-button');
+                if(ttsIconToRemove) ttsIconToRemove.remove();
+                const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+                if (!cleanText.trim()) {
+                   if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                   activeTTSButton = null;
+                   return;
+                }
+
+                currentUtterance = new SpeechSynthesisUtterance(cleanText);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                currentUtterance.onend = () => { if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
+                currentUtterance.onerror = (event) => { 
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error("Errore TTS:", event.error); 
+                    }
+                    if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } 
+                };
+                synth.speak(currentUtterance);
+                if (activeTTSButton && activeTTSButton !== button) { activeTTSButton.classList.remove('playing'); }
+                activeTTSButton = button;
+                button.classList.add('playing');
+            }
+
+            function setupTTSListeners() {
+                // Aggiorna riferimento e listener per il pulsante TTS della domanda
+                const oldQuestionTTSButton = document.getElementById('question-tts-button');
+                if (oldQuestionTTSButton) {
+                    const newQuestionTTSButton = oldQuestionTTSButton.cloneNode(true);
+                    if (oldQuestionTTSButton.parentNode) {
+                        oldQuestionTTSButton.parentNode.replaceChild(newQuestionTTSButton, oldQuestionTTSButton);
+                    }
+                    questionTTSButton = newQuestionTTSButton; // Aggiorna il riferimento globale
+                    
+                    questionTTSButton.onclick = () => { // Sovrascrivi/aggiungi l'onclick
+                        const currentQuestion = shuffledQuestions[currentQuestionIndex];
+                        if (currentQuestion && currentQuestion.question[currentLanguage]) {
+                           speak(currentQuestion.question[currentLanguage], questionTTSButton);
+                        }
+                    };
+                } else {
+                    console.error("Pulsante TTS domanda non trovato durante setupTTSListeners.");
+                }
+
+                // Ricrea listener per i pulsanti delle opzioni
+                optionsContainer.querySelectorAll('.tts-button').forEach(ttsBtn => {
+                     const newTTSButton = ttsBtn.cloneNode(true);
+                     const parentButton = newTTSButton.closest('.option-btn-container')?.querySelector('.option-btn'); // Uso optional chaining
+                     if (parentButton) {
+                         const optionText = parentButton.textContent;
+                          const currentQuestion = shuffledQuestions[currentQuestionIndex];
+                          if (currentQuestion) {
+                              const originalOption = currentQuestion.options.find(opt => opt.text[currentLanguage] === optionText);
+                             if (originalOption) {
+                                  newTTSButton.addEventListener('click', (e) => {
+                                      e.stopPropagation();
+                                      speak(originalOption.text[currentLanguage], newTTSButton);
+                                  });
+                             }
+                          }
+                          if (ttsBtn.parentNode) {
+                            ttsBtn.parentNode.replaceChild(newTTSButton, ttsBtn);
+                          }
+                     }
+                });
+            }
+
+
+            // --- Logica Quiz ---
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function startQuiz() {
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+
+                currentQuestionIndex = 0;
+                score = 0;
+                shuffledQuestions = shuffleArray([...quizData]);
+                resultsArea.classList.add('hidden');
+                questionArea.classList.remove('hidden');
+                feedbackArea.classList.add('hidden');
+                loadQuestion();
+            }
+            
+            function loadQuestion(isLangChange = false) {
+                if (synth.speaking) synth.cancel();
+                if (activeTTSButton) {
+                    activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                }
+
+                if (!isLangChange) {
+                    feedbackArea.classList.add('hidden');
+                }
+                
+                // Assicurati che l'indice non sia fuori limite
+                if (currentQuestionIndex < 0 || currentQuestionIndex >= shuffledQuestions.length) {
+                    console.error("Indice domanda non valido:", currentQuestionIndex);
+                    return; // Esce se l'indice non è valido
+                }
+                
+                const currentQuestion = shuffledQuestions[currentQuestionIndex];
+
+                progressText.textContent = translations.progressText[currentLanguage]
+                    .replace('{current}', currentQuestionIndex + 1)
+                    .replace('{total}', shuffledQuestions.length);
+                
+                questionText.textContent = currentQuestion.question[currentLanguage];
+                
+                questionTTSButton = document.getElementById('question-tts-button');
+                if (questionTTSButton) {
+                    questionTTSButton.onclick = () => {
+                        speak(currentQuestion.question[currentLanguage], questionTTSButton);
+                    };
+                }
+
+                optionsContainer.innerHTML = ''; 
+
+                const optionsToShow = isLangChange ? [...currentQuestion.options] : shuffleArray([...currentQuestion.options]);
+
+                optionsToShow.forEach(option => {
+                    const buttonContainer = document.createElement('div');
+                    buttonContainer.classList.add('flex', 'items-center', 'w-full', 'option-btn-container');
+
+                    const button = document.createElement('button');
+                    button.textContent = option.text[currentLanguage];
+                    button.classList.add('option-btn', 'flex-grow', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
+                    button.onclick = () => selectAnswer(button, option, currentQuestion.options);
+
+                    const ttsButton = document.createElement('span');
+                    ttsButton.classList.add('tts-button', 'ml-2');
+                    ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
+                    ttsButton.onclick = (e) => {
+                        e.stopPropagation();
+                        speak(option.text[currentLanguage], ttsButton);
+                    };
+
+                    buttonContainer.appendChild(button);
+                    buttonContainer.appendChild(ttsButton);
+                    optionsContainer.appendChild(buttonContainer);
+                });
+
+                if (isLangChange && !feedbackArea.classList.contains('hidden')) {
+                    const rationaleTextContent = rationaleText.textContent; 
+                    const originalOption = currentQuestion.options.find(opt => opt.rationale[currentLanguage] === rationaleTextContent);
+                    
+                    const buttons = optionsContainer.querySelectorAll('button.option-btn');
+                    buttons.forEach(btn => {
+                        btn.disabled = true;
+                        const optionDataText = btn.textContent;
+                        // Assicurati che shuffledQuestions[currentQuestionIndex] sia valido
+                        const currentQuestionOptions = shuffledQuestions[currentQuestionIndex]?.options || [];
+                        const currentOptionData = currentQuestionOptions.find(opt => opt.text[lang] === optionDataText);
+                        
+                        if (currentOptionData) {
+                            if (currentOptionData.isCorrect) {
+                                btn.classList.add('correct');
+                            }
+                            if (originalOption && originalOption.text[currentLanguage] === optionDataText && !originalOption.isCorrect) {
+                                btn.classList.add('incorrect');
+                            }
+                        }
+                    });
+                }
+            }
+
+            function selectAnswer(button, selectedOption, allOptions) {
+                if (synth.speaking) synth.cancel();
+                if (activeTTSButton) { activeTTSButton.classList.remove('playing'); activeTTSButton = null; }
+
+                const buttons = optionsContainer.querySelectorAll('button.option-btn');
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    const optionDataText = btn.textContent;
+                    const originalOption = allOptions.find(opt => opt.text[currentLanguage] === optionDataText);
+                    if (originalOption && originalOption.isCorrect) {
+                        btn.classList.add('correct');
+                    }
+                });
+
+                if (!selectedOption.isCorrect) {
+                    button.classList.add('incorrect');
+                }
+                
+                score += selectedOption.isCorrect ? 1 : 0;
+                
+                rationaleText.textContent = selectedOption.rationale[currentLanguage];
+                feedbackArea.classList.remove('hidden');
+
+                if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                    nextButton.textContent = translations.btnResults[currentLanguage];
+                } else {
+                    nextButton.textContent = translations.btnNext[currentLanguage];
+                }
+            }
+
+            function showResults() {
+                questionArea.classList.add('hidden');
+                feedbackArea.classList.add('hidden');
+                resultsArea.classList.remove('hidden');
+                scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
+            }
+
+            // --- Funzione Aggiornamento Lingua (Include Quiz Logic) ---
+            const updateLanguage = (lang, previousLang = null) => {
+                 document.documentElement.lang = lang;
+                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+
+                 document.querySelectorAll('[data-lang-key]').forEach(element => {
+                     const key = element.dataset.langKey;
+                     if (translations[key] && translations[key][lang]) {
+                         const translationText = translations[key][lang];
+
+                         if (key === 'footerText' || key === 'backToIndex') {
+                             const svgIcon = element.querySelector('svg');
+                             element.innerHTML = translationText;
+                             if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
+                                   element.insertBefore(svgIcon, element.firstChild);
+                             }
+                         }
+                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
+                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
+                             const sectionKey = currentSectionKey || key;
+                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
+                         }
+                         else if (element.id !== 'question-text' && element.id !== 'rationale-text') {
+                             element.textContent = translationText;
+                         }
+                     }
+                 });
+
+                 if (shuffledQuestions.length > 0 && currentQuestionIndex < shuffledQuestions.length && !questionArea.classList.contains('hidden')) {
+                     const feedbackWasVisible = !feedbackArea.classList.contains('hidden');
+                     let originalSelectedOption = null;
+
+                     if (feedbackWasVisible) {
+                        const rationaleTextContent = rationaleText.textContent;
+                        const currentQuestion = shuffledQuestions[currentQuestionIndex];
+                        // Cerca il rationale nella lingua precedente
+                        originalSelectedOption = currentQuestion.options.find(opt => opt.rationale[previousLang] === rationaleTextContent);
+                     }
+
+                     loadQuestion(true);
+                     
+                     if (feedbackWasVisible && originalSelectedOption) {
+                         const buttons = optionsContainer.querySelectorAll('button.option-btn');
+                         buttons.forEach(btn => {
+                            btn.disabled = true;
+                            const optionDataText = btn.textContent;
+                            // Cerca l'opzione nel DOM in base al testo nella *nuova* lingua
+                            const currentOptionData = shuffledQuestions[currentQuestionIndex].options.find(opt => opt.text[lang] === optionDataText);
+                            if (currentOptionData) {
+                                if (currentOptionData.isCorrect) {
+                                    btn.classList.add('correct');
+                                }
+                                // Confronta l'opzione trovata nel DOM con quella salvata (originalSelectedOption)
+                                if (currentOptionData.text[lang] === originalSelectedOption.text[lang] && !originalSelectedOption.isCorrect) {
+                                    btn.classList.add('incorrect');
+                                }
+                            }
+                         });
+                         
+                         rationaleText.textContent = originalSelectedOption.rationale[lang];
+                         feedbackArea.classList.remove('hidden');
+
+                         if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                              nextButton.textContent = translations.btnResults[lang];
+                         } else {
+                              nextButton.textContent = translations.btnNext[lang];
+                         }
+                     }
+                 } else if (!resultsArea.classList.contains('hidden')) {
+                      resultsArea.querySelector('h2').textContent = translations.resultsTitle[lang];
+                      resultsArea.querySelector('p[data-lang-key="resultsScore"]').textContent = translations.resultsScore[lang];
+                      restartButton.textContent = translations.btnRestart[lang];
+                 }
+
+                 if (synth.speaking || synth.pending) synth.cancel();
+                 setTimeout(setupTTSListeners, 100);
+            };
+
+            // --- Logica Modalità Accessibilità ---
+            const setA11yMode = (enabled) => {
+                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
+                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            };
+
+            // --- Event Listeners ---
+            if (langToggle) {
+                langToggle.addEventListener('click', () => {
+                    const previousLanguage = currentLanguage;
+                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                    localStorage.setItem('language', currentLanguage);
+                     if (synth.speaking || synth.pending) synth.cancel();
+                    updateLanguage(currentLanguage, previousLanguage);
+                });
+            } else { console.error("Elemento langToggle non trovato!"); }
+
+            if (accessibilityToggle) {
+                 accessibilityToggle.addEventListener('click', () => {
+                    const isEnabled = body.classList.contains('dsa-mode');
+                    setA11yMode(!isEnabled);
+                });
+            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+
+             nextButton.addEventListener('click', () => {
+                 currentQuestionIndex++;
+                 if (currentQuestionIndex < shuffledQuestions.length) {
+                     loadQuestion();
+                 } else {
+                     showResults();
+                 }
+             });
+
+             restartButton.addEventListener('click', startQuiz);
+
+            // --- Inizializzazione ---
+            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
+            populateVoices();
+             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                 speechSynthesis.onvoiceschanged = populateVoices;
+             }
+            startQuiz(); // Avvia il quiz
+            updateLanguage(currentLanguage); // Applica lingua iniziale e setup
+
+        });
+    </script>
+
+</body>
+</html>
