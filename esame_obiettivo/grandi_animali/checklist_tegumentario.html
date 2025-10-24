@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titolo specifico per questa pagina -->
+    <title>Checklist: Esame Apparato Tegumentario - Semeiotica Vet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stili Generali e dal Template */
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .section-nav-link {
+            transition: background-color 0.3s, color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+        .section-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .section-nav-link.active {
+             background-color: white;
+             color: #1E3A8A;
+             cursor: default;
+        }
+        .content-card {
+             background-color: white;
+             border-radius: 0.75rem;
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+             padding: 1.5rem;
+             margin-top: 2rem;
+             max-width: 64rem; /* Aumentato per checklist complesse */
+             margin-left: auto;
+             margin-right: auto;
+        }
+        @media (min-width: 768px) { /* md: */
+            .content-card { padding: 2.5rem; }
+        }
+        #page-header { position: static; }
+        .scrollable-nav {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .scrollable-nav::-webkit-scrollbar { display: none; }
+
+        /* Stili Specifici Checklist */
+         #main-content h1 {
+             font-family: 'Lexend', sans-serif;
+             color: #1e3a8a;
+             border-bottom: 3px solid #1e3a8a;
+             padding-bottom: 0.5rem;
+             font-size: 1.75rem; /* text-2xl */
+             text-align: center;
+             margin-bottom: 1.5rem; /* mb-6 */
+        }
+         #main-content h2 {
+             font-family: 'Lexend', sans-serif;
+             color: #1e40af;
+             border-bottom: 2px solid #dbeafe;
+             padding-bottom: 0.5rem;
+             margin-top: 2rem;
+             font-size: 1.25rem; /* text-xl */
+             font-weight: 600; /* font-semibold */
+             margin-bottom: 1rem; /* mb-4 */
+        }
+         #main-content h3 {
+             font-family: 'Lexend', sans-serif;
+             color: #1e3a8a;
+             font-size: 1.1rem; /* leggermente più grande di label */
+             font-weight: 600;
+             margin-top: 1.5rem; /* mt-6 */
+             padding-top: 1rem; /* pt-4 */
+             border-top: 1px solid #e5e7eb; /* border-t */
+             margin-bottom: 1rem; /* mb-4 */
+        }
+         #main-content h4 { /* Per Bovino/Equino */
+             font-family: 'Lexend', sans-serif;
+             color: #1e3a8a;
+             font-size: 1.125rem; /* text-lg */
+             font-weight: 600;
+             margin-top: 1rem;
+             margin-bottom: 0.5rem;
+             text-align: center;
+             border-bottom: 1px solid #dbeafe;
+             padding-bottom: 0.5rem;
+        }
+         #main-content section:first-of-type h2 { margin-top: 0; }
+         #main-content h3:first-of-type { margin-top: 0.5rem; border-top: none; padding-top: 0;}
+
+         label { display: block; font-weight: 600; margin-top: 10px; color: #374151; /* gray-700 */ }
+         .description { font-size: 0.85em; color: #6b7280; /* gray-500 */ margin-bottom: 5px; margin-top: 2px; }
+         textarea {
+             width: 100%; padding: 8px; border: 1px solid #d1d5db; /* gray-300 */
+             border-radius: 4px; min-height: 50px; margin-bottom: 15px; font-size: 0.9em;
+             background-color: #fff; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+         textarea:focus {
+             border-color: #2563eb; /* blue-600 */
+             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+             outline: none;
+        }
+         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+
+         #print-button {
+             display: inline-flex; align-items: center; text-align: center;
+             margin-top: 2rem; background-color: #16a34a; /* green-600 */ color: #ffffff;
+             font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.375rem;
+             transition: background-color 0.2s; cursor: pointer;
+        }
+         #print-button:hover { background-color: #15803d; /* green-700 */ }
+
+        /* STILI PER CHECKLIST LESIONI (da checklist nervoso) */
+        .checklist-item {
+           display: flex;
+           align-items: center;
+           margin-bottom: 0.5rem; /* 8px */
+        }
+        .checklist-item input[type="checkbox"] {
+            width: 1.15rem; /* 18px */
+            height: 1.15rem; /* 18px */
+            margin-right: 0.5rem; /* 8px */
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .checklist-item label {
+            font-weight: 500; /* medium */
+            color: #374151; /* gray-700 */
+            margin-top: 0; /* Resetta lo stile label */
+            font-size: 0.875rem; /* text-sm */
+            line-height: 1.4;
+            cursor: pointer;
+        }
+        .location-box {
+            padding: 1rem; 
+            border-radius: 0.5rem; 
+            background-color: #f9fafb; /* gray-50 */
+            border: 1px solid #e5e7eb; /* gray-200 */
+        }
+        #main-content .grid-container h3 { 
+            margin-top: 0;
+            border-top: none;
+            padding-top: 0;
+            margin-bottom: 0.75rem; /* 12px */
+            font-size: 1.125rem; /* text-lg */
+        }
+        .location-box h3.loc-primary { color: #2563eb; } /* blue-600 */
+        .location-box h3.loc-secondary { color: #78716c; } /* stone-500 */
+
+
+        /* DSA Mode Styles */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
+        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
+        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
+        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
+        .dsa-mode #main-content h1, .dsa-mode #main-content h2, .dsa-mode #main-content h3, .dsa-mode #main-content h4, .dsa-mode label, .dsa-mode .description, .dsa-mode textarea, .dsa-mode input { color: #34495e !important; }
+        .dsa-mode textarea, .dsa-mode input { background-color: #fdf8f0 !important; border-color: #e0e0e0 !important; }
+        .dsa-mode .checklist-item label { color: #34495e; }
+        .dsa-mode .location-box { background-color: #fefcf7 !important; border-color: #d1d5db; }
+
+
+        /* Print Styles */
+        @media print {
+            body { background-color: #ffffff; margin: 0; padding: 0; font-family: sans-serif; font-size: 10pt; color: #000; }
+            #page-header, #main-footer, #print-button { display: none; }
+            .container { max-width: 100%; padding: 1cm; margin: 0; }
+            .content-card { box-shadow: none; border: none; padding: 0; margin: 0; }
+            #main-content h1 { font-size: 16pt; text-align: center; border-color: #000; color: #000 !important; margin-bottom: 1.5rem; }
+            #main-content h2 { font-size: 12pt; border-color: #ccc; color: #000 !important; margin-top: 1.5rem; page-break-after: avoid; }
+            #main-content h3, #main-content h4 { font-size: 11pt; color: #000 !important; border-top-color: #ccc; margin-top: 1rem; padding-top: 0.5rem; border-top: none; padding-bottom: 0; margin-bottom: 0.5rem;}
+            .grid-container { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+            label { font-size: 10pt; color: #000 !important; }
+            .description { color: #555 !important; font-size: 8pt;}
+            textarea { border: 1px dotted #999; padding: 4px; font-size: 10pt; background: #f9f9f9 !important; min-height: 40px; color: #000 !important; }
+            section { page-break-inside: avoid; margin-bottom: 1rem;}
+            .checklist-item input[type="checkbox"] { display: none; }
+            .checklist-item label { font-weight: normal; font-size: 9pt; }
+            .location-box { border: 1px solid #ccc; background: #f9f9f9 !important; page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
+    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
+        <div class="container mx-auto px-6 py-3">
+            <!-- Riga Superiore: Torna all'indice + Controlli -->
+            <div class="flex justify-between items-center mb-4">
+                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
+                 </a>
+                 <div class="flex items-center space-x-2">
+                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
+                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
+                 </div>
+            </div>
+
+            <!-- Titolo della Sezione -->
+            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleTegu">10. Apparato Tegumentario</h1>
+
+            <!-- Navigazione Interna alla Sezione -->
+            <nav class="scrollable-nav">
+                 <div class="flex space-x-2 pb-2">
+                     <a href="riassunto_tegumentario.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_tegumentario.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_tegumentario.html" class="section-nav-link active" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_tegumentario.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_tegumentario.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                     <a href="riassunto_tegumentario.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
+                </div>
+            </nav>
+
+        </div>
+    </header>
+    <!-- === FINE HEADER === -->
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto p-4 md:px-8 md:py-12">
+        <!-- Card Contenuto -->
+        <div id="main-content" class="content-card">
+
+            <!-- Contenuto Specifico Checklist -->
+            <h1 data-lang-key="pageTitle">Checklist: Esame Dermatologico</h1>
+
+             <section>
+                 <h2 data-lang-key="sectionAnamnesi">1. Anamnesi Dermatologica</h2>
+                 <div class="grid-container">
+                     <div>
+                         <label data-lang-key="fldPrurito">Prurito (Sintomo Principale)</label>
+                         <p class="description" data-lang-key="fldPruritoDesc">Presente/Assente? Stagionale? Localizzazione?</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                     <div>
+                         <label data-lang-key="fldEvoluzione">Evoluzione Lesioni</label>
+                         <p class="description" data-lang-key="fldEvoluzioneDesc">Come sono iniziate? Stanno peggiorando?</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                      <div>
+                         <label data-lang-key="fldContagio">Contagiosità</label>
+                         <p class="description" data-lang-key="fldContagioDesc">Altri animali o persone colpite?</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                      <div>
+                         <label data-lang-key="fldAmbiente">Ambiente e Dieta</label>
+                         <p class="description" data-lang-key="fldAmbienteDesc">Cambiamenti recenti? Nuova lettiera/alimento?</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                 </div>
+             </section>
+
+              <section>
+                 <h2 data-lang-key="sectionIspPalp">2. Ispezione e Palpazione Generale</h2>
+                 <div class="grid-container">
+                     <div>
+                         <label data-lang-key="fldMantello">Qualità del Mantello</label>
+                         <p class="description" data-lang-key="fldMantelloDesc">Lucentezza, alopecia, irsutismo, forfora (scaglie).</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                     <div>
+                         <label data-lang-key="fldPruritoPalp">Evocazione Prurito</label>
+                         <p class="description" data-lang-key="fldPruritoPalpDesc">Risposta al grattamento (es. riflesso orecchio-podale).</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                     <div>
+                         <label data-lang-key="fldConsistenza">Consistenza e Temperatura</label>
+                         <p class="description" data-lang-key="fldConsistenzaDesc">Lesioni calde/fredde, dure/molli, adese?</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                 </div>
+             </section>
+             
+             <!-- SEZIONE LESIONI (NUOVA) -->
+             <section>
+                <h2 data-lang-key="sectionLesioni">3. Tipi di Lesione (Osservate)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div class="location-box">
+                        <h3 class="loc-primary" data-lang-key="lesPrimarie">Lesioni Primarie</h3>
+                        <div class="checklist-item"><input type="checkbox" id="cb_p_1"><label for="cb_p_1" data-lang-key="cbP1">Macula / Papula</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="cb_p_2"><label for="cb_p_2" data-lang-key="cbP2">Pustola</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="cb_p_3"><label for="cb_p_3" data-lang-key="cbP3">Vescicola / Bolla</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="cb_p_4"><label for="cb_p_4" data-lang-key="cbP4">Pomfo (Orticaria)</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="cb_p_5"><label for="cb_p_5" data-lang-key="cbP5">Nodulo / Tumore</label></div>
+                    </div>
+                    <div class="location-box">
+                        <h3 class="loc-secondary" data-lang-key="lesSecondarie">Lesioni Secondarie</h3>
+                        <div class="checklist-item"><input type="checkbox" id="cb_s_1"><label for="cb_s_1" data-lang-key="cbS1">Crosta</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="cb_s_2"><label for="cb_s_2" data-lang-key="cbS2">Scaglia (Forfora)</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="cb_s_3"><label for="cb_s_3" data-lang-key="cbS3">Erosione / Ulcera</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="cb_s_4"><label for="cb_s_4" data-lang-key="cbS4">Alopecia</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="cb_s_5"><label for="cb_s_5" data-lang-key="cbS5">Lichenificazione (Ispessimento)</label></div>
+                    </div>
+                </div>
+             </section>
+
+             <!-- SEZIONE MAPPA (NUOVA) -->
+             <section>
+                <h2 data-lang-key="sectionDistribuzione">4. Mappa della Distribuzione (Localizzazione)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Colonna Cavallo -->
+                    <div>
+                        <h4 data-lang-key="mapCavallo">Cavallo</h4>
+                        <div class="mt-4 space-y-4">
+                            <div>
+                                <label data-lang-key="mapRegTesta">Testa / Collo / Criniera</label>
+                                <textarea rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label data-lang-key="mapRegTroncoD">Tronco / Dorso / Groppa</label>
+                                <textarea rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label data-lang-key="mapRegTroncoV">Ventre / Inguine / Garrese</label>
+                                <textarea rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label data-lang-key="mapRegArti">Arti (specialmente distali)</label>
+                                <textarea rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label data-lang-key="mapRegCoda">Base Coda / Perineo</label>
+                                <textarea rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Colonna Bovino -->
+                    <div>
+                        <h4 data-lang-key="mapBovino">Bovino</h4>
+                         <div class="mt-4 space-y-4">
+                            <div>
+                                <label data-lang-key="mapRegTestaBov">Testa / Collo / Giogaia</label>
+                                <textarea rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label data-lang-key="mapRegTroncoDBov">Tronco / Dorso / Groppa</label>
+                                <textarea rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label data-lang-key="mapRegVentreMam">Ventre / Mammella</label>
+                                <textarea rows="2"></textarea>
+                            </div>
+                            <div>
+                                <label data-lang-key="mapRegArtiBov">Arti / Spazi Interdigitali</label>
+                                <textarea rows="2"></textarea>
+                            </div>
+                            <div>
+                                <!-- *** CORREZIONE APPLICATA QUI *** -->
+                                <label data-lang-key="mapRegCodaBov">Base Coda / Perineo</label>
+                                <textarea rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </section>
+
+             <section>
+                 <h2 data-lang-key="sectionMetodiche">5. Metodiche Semeiologiche (Eseguite)</h2>
+                 <div class="grid-container">
+                     <div>
+                         <label data-lang-key="metRaschiato">Raschiato Cutaneo</label>
+                         <p class="description" data-lang-key="metRaschiatoDesc">Superficiale e/o profondo. Reperti?</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                     <div>
+                         <label data-lang-key="metScotch">Scotch Test (Nastro Adesivo)</label>
+                         <p class="description" data-lang-key="metScotchDesc">Pidocchi, <i>Oxyuris</i>, detriti. Reperti?</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                     <div>
+                         <label data-lang-key="metTrico">Esame Tricoscopico (Pelo)</label>
+                         <p class="description" data-lang-key="metTricoDesc">Fusti, uova, spore fungine. Reperti?</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                     <div>
+                         <label data-lang-key="metCito">Esame Citologico</label>
+                         <p class="description" data-lang-key="metCitoDesc">Batteri, lieviti, cellule infiammatorie. Reperti?</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                      <div>
+                         <label data-lang-key="metWood">Lampada di Wood</label>
+                         <p class="description" data-lang-key="metWoodDesc">Fluorescenza verde-giallastra (sospetta dermatofitosi)?</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                      <div>
+                         <label data-lang-key="metBiopsia">Biopsia Cutanea</label>
+                         <p class="description" data-lang-key="metBiopsiaDesc">Eseguita? (Per istopatologia).</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                 </div>
+             </section>
+            <!-- Fine Contenuto Specifico Checklist -->
+
+             <!-- Bottone Stampa -->
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center" data-lang-key="btnPrint">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="btnPrintText">Stampa Checklist</span>
+                </button>
+            </div>
+
+        </div> <!-- Fine content-card -->
+    </main>
+
+    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // === TRADUZIONI ===
+            const translations = {
+                // --- Header ---
+                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                sectionTitleTegu: { it: '10. Apparato Tegumentario', en: '10. Integumentary System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navAudio: { it: 'Audio', en: 'Audio' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                // --- Contenuto Checklist ---
+                 pageTitle: { it: "Checklist: Esame Dermatologico", en: "Checklist: Dermatological Exam" },
+                 sectionAnamnesi: { it: "1. Anamnesi Dermatologica", en: "1. Dermatological History" },
+                 fldPrurito: { it: "Prurito (Sintomo Principale)", en: "Pruritus (Main Symptom)" },
+                 fldPruritoDesc: { it: "Presente/Assente? Stagionale? Localizzazione?", en: "Present/Absent? Seasonal? Location?" },
+                 fldEvoluzione: { it: "Evoluzione Lesioni", en: "Lesion Evolution" },
+                 fldEvoluzioneDesc: { it: "Come sono iniziate? Stanno peggiorando?", en: "How did they start? Are they worsening?" },
+                 fldContagio: { it: "Contagiosità", en: "Contagiousness" },
+                 fldContagioDesc: { it: "Altri animali o persone colpite?", en: "Other animals or people affected?" },
+                 fldAmbiente: { it: "Ambiente e Dieta", en: "Environment and Diet" },
+                 fldAmbienteDesc: { it: "Cambiamenti recenti? Nuova lettiera/alimento?", en: "Recent changes? New bedding/feed?" },
+                 
+                 sectionIspPalp: { it: "2. Ispezione e Palpazione Generale", en: "2. General Inspection and Palpation" },
+                 fldMantello: { it: "Qualità del Mantello", en: "Coat Quality" },
+                 fldMantelloDesc: { it: "Lucentezza, alopecia, irsutismo, forfora (scaglie).", en: "Shine, alopecia, hirsutism, dandruff (scales)." },
+                 fldPruritoPalp: { it: "Evocazione Prurito", en: "Elicitation of Pruritus" },
+                 fldPruritoPalpDesc: { it: "Risposta al grattamento (es. riflesso orecchio-podale).", en: "Response to scratching (e.g., pinnal-pedal reflex)." },
+                 fldConsistenza: { it: "Consistenza e Temperatura", en: "Consistency and Temperature" },
+                 fldConsistenzaDesc: { it: "Lesioni calde/fredde, dure/molli, adese?", en: "Lesions hot/cold, hard/soft, adhered?" },
+
+                 sectionLesioni: { it: "3. Tipi di Lesione (Osservate)", en: "3. Lesion Types (Observed)" },
+                 lesPrimarie: { it: "Lesioni Primarie", en: "Primary Lesions" },
+                 lesSecondarie: { it: "Lesioni Secondarie", en: "Secondary Lesions" },
+                 cbP1: { it: "Macula / Papula", en: "Macule / Papule" },
+                 cbP2: { it: "Pustola", en: "Pustule" },
+                 cbP3: { it: "Vescicola / Bolla", en: "Vesicle / Bulla" },
+                 cbP4: { it: "Pomfo (Orticaria)", en: "Wheal (Urticaria)" },
+                 cbP5: { it: "Nodulo / Tumore", en: "Nodule / Tumor" },
+                 cbS1: { it: "Crosta", en: "Crust" },
+                 cbS2: { it: "Scaglia (Forfora)", en: "Scale (Dandruff)" },
+                 cbS3: { it: "Erosione / Ulcera", en: "Erosion / Ulcer" },
+                 cbS4: { it: "Alopecia", en: "Alopecia" },
+                 cbS5: { it: "Lichenificazione (Ispessimento)", en: "Lichenification (Thickening)" },
+
+                 sectionDistribuzione: { it: "4. Mappa della Distribuzione (Localizzazione)", en: "4. Distribution Map (Localization)" },
+                 mapCavallo: { it: "Cavallo", en: "Horse" },
+                 mapBovino: { it: "Bovino", en: "Cattle" },
+                 mapRegTesta: { it: "Testa / Collo / Criniera", en: "Head / Neck / Mane" },
+                 mapRegTroncoD: { it: "Tronco / Dorso / Groppa", en: "Trunk / Dorsum / Croup" },
+                 mapRegTroncoV: { it: "Ventre / Inguine / Garrese", en: "Ventral Abdomen / Inguen / Withers" },
+                 mapRegArti: { it: "Arti (specialmente distali)", en: "Limbs (especially distal)" },
+                 mapRegCoda: { it: "Base Coda / Perineo", en: "Tail Base / Perineum" },
+                 mapRegTestaBov: { it: "Testa / Collo / Giogaia", en: "Head / Neck / Dewlap" },
+                 mapRegTroncoDBov: { it: "Tronco / Dorso / Groppa", en: "Trunk / Dorsum / Croup" },
+                 mapRegVentreMam: { it: "Ventre / Mammella", en: "Ventral Abdomen / Udder" },
+                 mapRegArtiBov: { it: "Arti / Spazi Interdigitali", en: "Limbs / Interdigital Spaces" },
+                 mapRegCodaBov: { it: "Base Coda / Perineo", en: "Tail Base / Perineum" },
+
+                 sectionMetodiche: { it: "5. Metodiche Semeiologiche (Eseguite)", en: "5. Semeiotic Methods (Performed)" },
+                 metRaschiato: { it: "Raschiato Cutaneo", en: "Skin Scrape" },
+                 metRaschiatoDesc: { it: "Superficiale e/o profondo. Reperti?", en: "Superficial and/or deep. Findings?" },
+                 metScotch: { it: "Scotch Test (Nastro Adesivo)", en: "Tape Prep (Adhesive Tape)" },
+                 metScotchDesc: { it: "Pidocchi, <i>Oxyuris</i>, detriti. Reperti?", en: "Lice, <i>Oxyuris</i>, debris. Findings?" },
+                 metTrico: { it: "Esame Tricoscopico (Pelo)", en: "Trichoscopy (Hair Pluck)" },
+                 metTricoDesc: { it: "Fusti, uova, spore fungine. Reperti?", en: "Shafts, eggs, fungal spores. Findings?" },
+                 metCito: { it: "Esame Citologico", en: "Cytology Exam" },
+                 metCitoDesc: { it: "Batteri, lieviti, cellule infiammatorie. Reperti?", en: "Bacteria, yeast, inflammatory cells. Findings?" },
+                 metWood: { it: "Lampada di Wood", en: "Wood's Lamp" },
+                 metWoodDesc: { it: "Fluorescenza verde-giallastra (sospetta dermatofitosi)?", en: "Yellow-green fluorescence (suspect dermatophytosis)?" },
+                 metBiopsia: { it: "Biopsia Cutanea", en: "Skin Biopsy" },
+                 metBiopsiaDesc: { it: "Eseguita? (Per istopatologia).", en: "Performed? (For histopathology)." },
+
+                 btnPrint: { it: 'Stampa', en: 'Print' },
+                 btnPrintText: { it: 'Stampa Checklist', en: 'Print Checklist' },
+                // --- Footer ---
+                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+            };
+
+             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
+             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const accessibilityToggle = document.getElementById('accessibility-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const body = document.body;
+            // No TTS needed
+
+            // --- Funzione Aggiornamento Lingua ---
+             const updateLanguage = (lang, previousLang = null) => {
+                 document.documentElement.lang = lang;
+                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+
+                 document.querySelectorAll('[data-lang-key]').forEach(element => {
+                     const key = element.dataset.langKey;
+                     if (translations[key] && translations[key][lang]) {
+                         const translationText = translations[key][lang];
+
+                         if (key === 'footerText' || key === 'backToIndex') {
+                              const svgIcon = element.querySelector('svg');
+                              element.innerHTML = translationText;
+                              if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) { element.insertBefore(svgIcon, element.firstChild); }
+                         }
+                         else if (key === 'btnPrint') {
+                              const svgIcon = element.querySelector('svg');
+                              const textSpan = element.querySelector('span[data-lang-key="btnPrintText"]');
+                              if (textSpan) { textSpan.textContent = translations['btnPrintText'][lang]; }
+                              else {
+                                  element.innerHTML = translationText;
+                                   if (svgIcon) element.insertBefore(svgIcon, element.firstChild);
+                              }
+                               element.setAttribute('aria-label', translationText);
+                         }
+                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
+                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
+                             const sectionKey = currentSectionKey || key;
+                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
+                         }
+                         // Gestione placeholder
+                         else if (element.tagName === 'TEXTAREA' && key.endsWith('Placeholder')) {
+                             element.placeholder = translationText;
+                         }
+                         // Gestione titoli H3/H4 con span interno (se presenti)
+                         else if ((element.tagName === 'H3' || element.tagName === 'H4') && element.querySelector('span[data-lang-key]')) {
+                             const span = element.querySelector('span[data-lang-key]');
+                             const spanKey = span.dataset.langKey;
+                             if (translations[spanKey] && translations[spanKey][lang]) {
+                                 span.textContent = translations[spanKey][lang];
+                             }
+                         }
+                         // Gestione altri testi semplici (H1/H2 pagina, labels, descriptions, H3/H4 senza span)
+                         else if (element.tagName === 'H1' || element.tagName === 'H2' || element.tagName === 'H3' || element.tagName === 'H4' || element.tagName === 'LABEL' || element.classList.contains('description') || element.tagName === 'SPAN') {
+                             if (!(element.tagName === 'H3' || element.tagName === 'H4') || !element.querySelector('span[data-lang-key]')) {
+                                element.textContent = translationText;
+                             }
+                         }
+                         else {
+                             element.textContent = translationText;
+                         }
+                     }
+                 });
+             };
+
+
+            // --- Logica Modalità Accessibilità ---
+            const setA11yMode = (enabled) => {
+                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
+                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            };
+
+            // --- Event Listeners ---
+            if (langToggle) {
+                langToggle.addEventListener('click', () => {
+                    const previousLanguage = currentLanguage;
+                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                    localStorage.setItem('language', currentLanguage);
+                     updateLanguage(currentLanguage, previousLanguage);
+                });
+            } else { console.error("Elemento langToggle non trovato!"); }
+
+            if (accessibilityToggle) {
+                 accessibilityToggle.addEventListener('click', () => {
+                    const isEnabled = body.classList.contains('dsa-mode');
+                    setA11yMode(!isEnabled);
+                });
+            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+
+            // --- Inizializzazione ---
+            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
+            updateLanguage(currentLanguage);
+
+        });
+    </script>
+
+</body>
+</html>
+
