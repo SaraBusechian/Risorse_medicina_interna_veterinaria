@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titolo specifico per questa pagina -->
+    <title>Riassunto: Esame Sistema Ematopoietico - Semeiotica Vet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stili Generali e dal Template */
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .section-nav-link {
+            transition: background-color 0.3s, color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+        .section-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .section-nav-link.active {
+             background-color: white;
+             color: #1E3A8A;
+             cursor: default;
+        }
+        .content-card {
+             background-color: white;
+             border-radius: 0.75rem;
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+             padding: 1.5rem;
+             margin-top: 2rem;
+        }
+        @media (min-width: 768px) { /* md: */
+            .content-card { padding: 2.5rem; }
+        }
+        #page-header { position: static; }
+        .scrollable-nav {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .scrollable-nav::-webkit-scrollbar { display: none; }
+        .audio-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; background-color: #fff7ed; /* orange-50 */ border-radius: 0.5rem; margin-top: 1.5rem; }
+        .audio-container audio { width: 100%; border-radius: 0.5rem; }
+        .audio-container a { display: inline-flex; align-items: center; justify-content: center; width: 100%; }
+        @media (min-width: 640px) { /* sm: */
+            .audio-container { flex-direction: row; }
+            .audio-container audio { width: auto; flex-grow: 1; }
+            .audio-container a { width: auto; }
+        }
+
+        /* Stili Specifici del Riassunto */
+        #main-content h1, #main-content h2, #main-content h3 { color: #0d47a1; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 2em; }
+        #main-content h1 { text-align: center; font-size: 2.2em; border-bottom: 3px solid #0d47a1; }
+        #main-content h2 { font-size: 1.5rem; /* text-2xl */ }
+        #main-content h3 { font-size: 1.25rem; /* text-xl */ color: #1565c0; border-bottom: none; font-weight: 600; margin-bottom: 0.5rem; }
+        #main-content ul { padding-left: 20px; list-style-type: disc; margin-top: 1rem; margin-bottom: 1rem;}
+         #main-content ul ul { margin-top: 0.5rem; margin-bottom: 0.5rem;}
+        #main-content li { margin-bottom: 10px; }
+        #main-content strong { color: #1565c0; }
+        #main-content .section-block { background-color: #f0f9ff; /* sky-50 */ border-left: 5px solid #0ea5e9; /* sky-500 */ padding: 15px 20px; margin: 20px 0; border-radius: 5px; }
+
+        /* DSA Mode Styles */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
+        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
+        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
+        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
+        .dsa-mode #main-content h1, .dsa-mode #main-content h2, .dsa-mode #main-content h3, .dsa-mode #main-content p, .dsa-mode #main-content li, .dsa-mode #main-content strong { color: #34495e !important; }
+        .dsa-mode #main-content .section-block { background-color: #fefcf7 !important; border-left-color: #5a738e; }
+        .dsa-mode .audio-container { background-color: #f0eade !important; }
+
+        /* TTS Button Styles */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+        .dsa-mode .tts-button { color: #5a738e !important; }
+
+        /* Print Styles */
+        @media print {
+            body { background-color: #fff; margin: 0; padding: 0; font-family: sans-serif; font-size: 11pt; color: #000; }
+            #page-header, #main-footer, #print-button, .tts-button, .audio-container { display: none; }
+            .container { max-width: 100%; padding: 1cm; box-shadow: none; border: none; margin: 0; }
+            .content-card { box-shadow: none; border: none; padding: 0; margin: 0; }
+            #main-content h1, #main-content h2, #main-content h3 { color: #000 !important; border-color: #ccc; margin-top: 1.5em; page-break-after: avoid; }
+            #main-content h1 { font-size: 18pt; text-align: left; }
+            #main-content h2 { font-size: 14pt; }
+            #main-content h3 { font-size: 12pt; border-bottom: none; padding-bottom: 0; margin-bottom: 0.5rem;}
+            #main-content ul { padding-left: 25px; }
+            #main-content li { margin-bottom: 5px; }
+            #main-content strong { color: #000 !important; font-weight: bold; }
+            #main-content .section-block { border: 1px solid #ccc; padding: 10px; margin: 10px 0; background-color: #f9f9f9 !important; page-break-inside: avoid; }
+            div[data-lang-key] { page-break-inside: avoid; margin-bottom: 1.5rem;}
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
+    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
+        <div class="container mx-auto px-6 py-3">
+            <!-- Riga Superiore: Torna all'indice + Controlli -->
+            <div class="flex justify-between items-center mb-4">
+                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
+                 </a>
+                 <div class="flex items-center space-x-2">
+                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
+                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
+                 </div>
+            </div>
+
+            <!-- Titolo della Sezione -->
+            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleHema">7. Sistema Ematopoietico</h1>
+
+            <!-- Navigazione Interna alla Sezione -->
+            <nav class="scrollable-nav">
+                 <div class="flex space-x-2 pb-2">
+                     <a href="riassunto_ematopoietico.html" class="section-nav-link active" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_ematopoietico.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_ematopoietico.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_ematopoietico.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_ematopoietico.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                     <a href="#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
+                </div>
+            </nav>
+
+        </div>
+    </header>
+    <!-- === FINE HEADER === -->
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto p-4 md:px-8 md:py-12">
+        <!-- Card Contenuto -->
+        <div id="main-content" class="content-card">
+
+             <!-- Contenuto Specifico del Riassunto -->
+            <h1 data-lang-key="pageTitle"></h1>
+            <p class="section-block" data-lang-key="introText"></p>
+
+            <div data-lang-key="sectionIspezione"></div>
+            <div data-lang-key="sectionPalpazione"></div>
+            <div data-lang-key="sectionConclusione"></div>
+            <!-- Fine Contenuto Specifico -->
+
+            <!-- Sezione Audio -->
+            <div class="audio-container" id="audio">
+                <audio controls class="rounded-lg">
+                    <source src="audio_riassunto_ematopoietico.mp3" type="audio/mpeg">
+                    Audio non disponibile.
+                </audio>
+                <a href="audio_riassunto_ematopoietico.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition duration-300">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="btnDownloadAudio">Scarica Audio</span>
+                </a>
+            </div>
+
+            <!-- Bottone Stampa -->
+            <div class="mt-12 text-center">
+                 <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center" data-lang-key="btnPrint">
+                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                     <span data-lang-key="btnPrintText">Stampa</span>
+                 </button>
+             </div>
+
+        </div> <!-- Fine content-card -->
+    </main>
+
+    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+             const speakerIconLarge = `<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
+             const speakerIconSmall = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
+             const speakerIconH2 = `<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
+
+            // === TRADUZIONI ===
+            const translations = {
+                // --- Header ---
+                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                sectionTitleHema: { it: '7. Sistema Ematopoietico', en: '7. Hematopoietic System' }, // Nuova chiave
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navAudio: { it: 'Audio', en: 'Audio' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                // --- Contenuto Riassunto Ematopoietico (MODIFICATO) ---
+                 pageTitle: { it: `Esame del Sistema Ematopoietico ${speakerIconLarge}`, en: `Hematopoietic System Examination ${speakerIconLarge}` },
+                 introText: { it: `L'esame del sistema ematopoietico (che produce le cellule del sangue) è in gran parte indiretto. Non è possibile palpare il midollo osseo, quindi l'esame si concentra sulla ricerca dei segni clinici causati da una sua disfunzione: anemia, problemi di coagulazione o alterazioni dei linfonodi. ${speakerIconSmall}`, en: `The examination of the hematopoietic system (which produces blood cells) is largely indirect. It is not possible to palpate the bone marrow, so the exam focuses on finding clinical signs caused by its dysfunction: anemia, coagulation problems, or lymph node alterations. ${speakerIconSmall}` },
+                 sectionIspezione: {
+                     it: `<h2>1. Ispezione (Ricerca di Anemia e Coagulopatie)${speakerIconH2}</h2>
+                         <p>L'ispezione visiva è il pilastro per sospettare un problema ematopoietico.</p>
+                         <h3>Valutazione delle Mucose Apparenti</h3>
+                         <ul>
+                             <li><strong>Pallore:</strong> Il segno clinico più importante di <strong>anemia</strong>. Si valuta su mucose congiuntivali, orali e vulvari.</li>
+                             <li><strong>Ittero:</strong> Mucose gialle. Possono indicare un'anemia emolitica (distruzione dei globuli rossi).</li>
+                             <li><strong>Petecchie/Ecchimosi:</strong> Piccole emorragie puntiformi (petecchie) o più estese (ecchimosi) sulle mucose. Sono un segno classico di <strong>trombocitopenia</strong> (poche piastrine) o problemi di coagulazione.</li>
+                         </ul>
+                         <h3>Ricerca di Emorragie Spontanee</h3>
+                         <ul>
+                             <li><strong>Epistassi</strong> (sangue dal naso), <strong>melena</strong> (sangue digerito nelle feci), <strong>ematuria</strong> (sangue nelle urine) o sanguinamenti prolungati da piccole ferite.</li>
+                         </ul>
+                         <h3>Stato Generale</h3>
+                         <ul>
+                             <li><strong>Debolezza, letargia, intolleranza all'esercizio:</strong> Segni comuni di anemia, dovuti alla scarsa ossigenazione dei tessuti.</li>
+                             <li><strong>Tachicardia e Tachipnea:</strong> Meccanismi compensatori per l'anemia.</li>
+                         </ul>`,
+                     en: `<h2>1. Inspection (Checking for Anemia and Coagulopathies)${speakerIconH2}</h2>
+                         <p>Visual assessment is the cornerstone for suspecting a hematopoietic problem.</p>
+                         <h3>Evaluation of Mucous Membranes</h3>
+                         <ul>
+                             <li><strong>Pallor:</strong> The most important clinical sign of <strong>anemia</strong>. Assessed on conjunctival, oral, and vulvar mucous membranes.</li>
+                             <li><strong>Icterus (Jaundice):</strong> Yellow mucous membranes. May indicate hemolytic anemia (red blood cell destruction).</li>
+                             <li><strong>Petechiae/Ecchymoses:</strong> Pinpoint (petechiae) or more extensive (ecchymoses) hemorrhages on mucous membranes. A classic sign of <strong>thrombocytopenia</strong> (low platelets) or coagulation problems.</li>
+                         </ul>
+                         <h3>Checking for Spontaneous Bleeding</h3>
+                         <ul>
+                             <li><strong>Epistaxis</strong> (nosebleed), <strong>melena</strong> (digested blood in feces), <strong>hematuria</strong> (blood in urine), or prolonged bleeding from small wounds.</li>
+                         </ul>
+                         <h3>General Status</h3>
+                         <ul>
+                             <li><strong>Weakness, lethargy, exercise intolerance:</strong> Common signs of anemia, due to poor tissue oxygenation.</li>
+                             <li><strong>Tachycardia and Tachypnea:</strong> Compensatory mechanisms for anemia.</li>
+                         </ul>`
+                 },
+                 sectionPalpazione: {
+                     it: `<h2>2. Palpazione${speakerIconH2}</h2>
+                         <p>La palpazione è mirata ai siti secondari del sistema ematopoietico e linfatico.</p>
+                         <ul>
+                             <li><strong>Palpazione dei Linfonodi Esterni:</strong> Si valutano tutti i linfonodi accessibili (mandibolari, retrofaringei, prescapolari, precrurali, inguinali). Si ricercano <strong>linfoadenomegalie</strong> (aumento di volume), valutandone dimensioni, consistenza (dura, molle), dolorabilità e mobilità. In caso di linfoadenomegalia generalizzata, è possibile palpare anche linfonodi normalmente non esplorabili. Un aumento generalizzato è sospetto per malattie sistemiche (es. linfosarcoma).</li>
+                             <li><strong>Palpazione della Milza (Esplorazione Rettale):</strong> Nel <strong>cavallo</strong>, il margine caudale della milza è normalmente palpabile per via rettale. Un suo marcato ingrandimento (splenomegalia) può essere rilevato. Nel <strong>bovino</strong>, la milza non è palpabile per via rettale se non in caso di grave ingrandimento.</li>
+                             <li><strong>Ricerca di Edemi:</strong> Un'anemia molto grave può causare ipossia tissutale e trasudazione, portando a edemi declivi.</li>
+                         </ul>`,
+                     en: `<h2>2. Palpation${speakerIconH2}</h2>
+                         <p>Palpation is aimed at the secondary sites of the hematopoietic and lymphatic system.</p>
+                         <ul>
+                             <li><strong>Palpation of External Lymph Nodes:</strong> All accessible lymph nodes are assessed (mandibular, retropharyngeal, prescapular, precrural, inguinal). Look for <strong>lymphadenomegaly</strong> (enlargement), evaluating size, consistency (hard, soft), pain, and mobility. In cases of generalized lymphadenomegaly, it may also be possible to palpate lymph nodes that are not normally palpable. Generalized enlargement is suspicious for systemic diseases (e.g., lymphosarcoma).</li>
+                             <li><strong>Palpation of the Spleen (Rectal Examination):</strong> In the <strong>horse</strong>, the caudal border of the spleen is normally palpable per rectum. A marked enlargement (splenomegaly) can be detected. In <strong>cattle</strong>, the spleen is not rectally palpable unless severely enlarged.</li>
+                             <li><strong>Checking for Edema:</strong> Very severe anemia can cause tissue hypoxia and transudation, leading to ventral edema.</li>
+                         </ul>`
+                 },
+                 sectionConclusione: {
+                     it: `<h2>3. Considerazioni Conclusive${speakerIconH2}</h2>
+                         <p>L'esame clinico del sistema ematopoietico è <strong>limitato e aspecifico</strong>. Reperti come pallore, petecchie o linfoadenomegalia sono forti segnali di allarme.</p>
+                         <p>La diagnosi definitiva e la caratterizzazione del problema (es. anemia rigenerativa vs. non rigenerativa) dipendono interamente dagli <strong>esami collaterali</strong>, in particolare l'<strong>esame emocromocitometrico (CBC)</strong> e l'<strong>esame dello striscio ematico</strong>.</p>`,
+                     en: `<h2>3. Final Considerations${speakerIconH2}</h2>
+                         <p>The clinical examination of the hematopoietic system is <strong>limited and non-specific</strong>. Findings like pallor, petechiae, or lymphadenomegaly are strong warning signs.</p>
+                         <p>The definitive diagnosis and characterization of the problem (e.g., regenerative vs. non-regenerative anemia) depend entirely on <strong>ancillary tests</strong>, particularly the <strong>Complete Blood Count (CBC)</strong> and the <strong>blood smear examination</strong>.</p>`
+                 },
+                 btnPrint: { it: 'Stampa', en: 'Print' },
+                 btnPrintText: { it: 'Stampa', en: 'Print' },
+                 btnDownloadAudio: { it: 'Scarica Audio', en: 'Download Audio' },
+                // --- Footer ---
+                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+            };
+
+             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
+             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const accessibilityToggle = document.getElementById('accessibility-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+            let voices = [];
+
+            // --- Logica TTS ---
+             function populateVoiceList() {
+                 if (typeof speechSynthesis !== 'undefined') {
+                     voices = synth.getVoices();
+                 }
+            }
+             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                 speechSynthesis.onvoiceschanged = populateVoiceList;
+             }
+             populateVoiceList();
+
+             function speak(text, button) {
+                 const isSameButton = activeTTSButton === button;
+                 if (synth.speaking && isSameButton) {
+                     if (synth.paused) { synth.resume(); button.classList.add('playing'); }
+                     else { synth.pause(); button.classList.remove('playing'); }
+                 } else {
+                     if (synth.speaking) {
+                         if (currentUtterance) currentUtterance.onend = null;
+                         if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                         synth.cancel();
+                     }
+                     setTimeout(() => startSpeaking(text, button), 50);
+                 }
+             }
+             function startSpeaking(text, button) {
+                  if (!text || typeof text !== 'string' || !text.trim()) {
+                    console.error("Testo non valido per TTS:", text);
+                    return;
+                 }
+                 const tempDiv = document.createElement('div');
+                 tempDiv.innerHTML = text;
+                 const ttsIconToRemove = tempDiv.querySelector('.tts-button');
+                 if(ttsIconToRemove) ttsIconToRemove.remove();
+                 const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+                 if (!cleanText.trim()) {
+                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                    return;
+                 }
+
+                 currentUtterance = new SpeechSynthesisUtterance(cleanText);
+                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                 currentUtterance.onend = () => { if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
+                 currentUtterance.onerror = (event) => { console.error("Errore TTS:", event.error); if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
+                 synth.speak(currentUtterance);
+                 if (activeTTSButton && activeTTSButton !== button) { activeTTSButton.classList.remove('playing'); }
+                 activeTTSButton = button;
+                 button.classList.add('playing');
+             }
+             function setupTTSListeners() {
+                 document.querySelectorAll('.tts-button').forEach(button => {
+                     const newButton = button.cloneNode(true);
+                     button.parentNode.replaceChild(newButton, button);
+                     newButton.addEventListener('click', (e) => {
+                         e.stopPropagation();
+                         const parentElement = newButton.parentNode;
+                         let textToRead = '';
+                         let key = parentElement.dataset.langKey; 
+
+                         if (parentElement.tagName === 'H1' || parentElement.tagName === 'P') {
+                             key = parentElement.dataset.langKey;
+                         } else if (parentElement.tagName === 'H2') {
+                             const container = parentElement.closest('[data-lang-key]');
+                             if(container) key = container.dataset.langKey;
+                         }
+
+                         if (key && translations[key] && translations[key][currentLanguage]) {
+                             textToRead = translations[key][currentLanguage];
+                             if (textToRead) {
+                                 speak(textToRead, newButton);
+                             } else { console.warn("Testo vuoto per TTS per la chiave:", key); }
+                         } else { console.warn("Nessuna traduzione trovata per TTS per il pulsante:", newButton, "Key:", key); }
+                     });
+                 });
+             }
+
+            // --- Funzione Aggiornamento Lingua ---
+            const updateLanguage = (lang, previousLang = null) => {
+                 document.documentElement.lang = lang;
+                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+
+                 document.querySelectorAll('[data-lang-key]').forEach(element => {
+                     const key = element.dataset.langKey;
+                     if (translations[key] && translations[key][lang]) {
+                         const translationText = translations[key][lang];
+
+                         if (key === 'footerText' || key === 'backToIndex' || key === 'btnDownloadAudio') {
+                              const svgIcon = element.querySelector('svg');
+                              element.innerHTML = translationText;
+                              if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
+                                   element.insertBefore(svgIcon, element.firstChild);
+                              }
+                         }
+                         else if (key === 'btnPrint') {
+                              const svgIcon = element.querySelector('svg');
+                              const textSpan = element.querySelector('span[data-lang-key="btnPrintText"]');
+                              if (textSpan) { textSpan.textContent = translations['btnPrintText'][lang]; }
+                              else {
+                                  element.innerHTML = translationText;
+                                   if (svgIcon) element.insertBefore(svgIcon, element.firstChild);
+                              }
+                               element.setAttribute('aria-label', translationText);
+                         }
+                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
+                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
+                             const sectionKey = currentSectionKey || key;
+                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
+                         }
+                         else if (element.id === 'main-content' || element.closest('#main-content')) { 
+                             element.innerHTML = translationText; 
+                         }
+                         else { element.textContent = translationText; }
+                     }
+                 });
+
+                 // Gestione visibilità audio
+                 document.querySelectorAll('.audio-container').forEach(container => {
+                     const audioSource = container.querySelector('audio source');
+                     const downloadLink = container.querySelector('a[download]');
+                     const hasValidSource = audioSource && audioSource.getAttribute('src') && audioSource.getAttribute('src') !== '#';
+                     const hasValidDownload = downloadLink && downloadLink.getAttribute('href') && downloadLink.getAttribute('href') !== '#';
+                     
+                     container.style.display = (lang === 'it' && hasValidSource && hasValidDownload) ? 'flex' : 'none';
+                 });
+
+                 // Reset TTS
+                 if (synth.speaking || synth.pending) synth.cancel();
+                 if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                 activeTTSButton = null;
+                 setTimeout(setupTTSListeners, 50);
+            };
+
+            // --- Logica Modalità Accessibilità ---
+            const setA11yMode = (enabled) => {
+                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
+                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            };
+
+            // --- Event Listeners ---
+            if (langToggle) {
+                langToggle.addEventListener('click', () => {
+                    const previousLanguage = currentLanguage;
+                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                    localStorage.setItem('language', currentLanguage);
+                     if (synth.speaking || synth.pending) synth.cancel();
+                     updateLanguage(currentLanguage, previousLanguage);
+                });
+            } else { console.error("Elemento langToggle non trovato!"); }
+
+            if (accessibilityToggle) {
+                 accessibilityToggle.addEventListener('click', () => {
+                    const isEnabled = body.classList.contains('dsa-mode');
+                    setA11yMode(!isEnabled);
+                });
+            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+
+            // --- Inizializzazione ---
+            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
+            populateVoiceList();
+             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                 speechSynthesis.onvoiceschanged = populateVoiceList;
+             }
+            updateLanguage(currentLanguage);
+
+        });
+    </script>
+
+</body>
+</html>
+
