@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titolo specifico per questa pagina -->
+    <title>Checklist: Esame Sistema Ematopoietico - Semeiotica Vet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stili Generali e dal Template */
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .section-nav-link {
+            transition: background-color 0.3s, color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+        .section-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .section-nav-link.active {
+             background-color: white;
+             color: #1E3A8A;
+             cursor: default;
+        }
+        .content-card {
+             background-color: white;
+             border-radius: 0.75rem;
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+             padding: 1.5rem;
+             margin-top: 2rem;
+             max-width: 56rem; /* Adattato per checklist */
+             margin-left: auto;
+             margin-right: auto;
+        }
+        @media (min-width: 768px) { /* md: */
+            .content-card { padding: 2.5rem; }
+        }
+        #page-header { position: static; }
+        .scrollable-nav {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .scrollable-nav::-webkit-scrollbar { display: none; }
+
+        /* Stili Specifici Checklist (come digerente) */
+         #main-content h1 {
+             font-family: 'Lexend', sans-serif;
+             color: #1e3a8a;
+             border-bottom: 3px solid #1e3a8a;
+             padding-bottom: 0.5rem;
+             font-size: 1.75rem; /* text-2xl */
+             text-align: center;
+             margin-bottom: 1.5rem; /* mb-6 */
+        }
+         #main-content h2 {
+             font-family: 'Lexend', sans-serif;
+             color: #1e40af;
+             border-bottom: 2px solid #dbeafe;
+             padding-bottom: 0.5rem;
+             margin-top: 2rem;
+             font-size: 1.25rem; /* text-xl */
+             font-weight: 600; /* font-semibold */
+             margin-bottom: 1rem; /* mb-4 */
+        }
+         #main-content h3 {
+             font-family: 'Lexend', sans-serif;
+             color: #1e3a8a;
+             font-size: 1.1rem; /* leggermente più grande di label */
+             font-weight: 600;
+             margin-top: 1.5rem; /* mt-6 */
+             padding-top: 1rem; /* pt-4 */
+             border-top: 1px solid #e5e7eb; /* border-t */
+             margin-bottom: 1rem; /* mb-4 */
+        }
+         #main-content section:first-of-type h2 { margin-top: 0; }
+         #main-content h3:first-of-type { margin-top: 0.5rem; border-top: none; padding-top: 0;}
+
+         label { display: block; font-weight: 600; margin-top: 10px; color: #374151; /* gray-700 */ }
+         .description { font-size: 0.85em; color: #6b7280; /* gray-500 */ margin-bottom: 5px; margin-top: 2px; }
+         textarea {
+             width: 100%; padding: 8px; border: 1px solid #d1d5db; /* gray-300 */
+             border-radius: 4px; min-height: 50px; margin-bottom: 15px; font-size: 0.9em;
+             background-color: #fff; transition: border-color 0.2s, box-shadow 0.2s;
+        }
+         textarea:focus {
+             border-color: #2563eb; /* blue-600 */
+             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+             outline: none;
+        }
+         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+
+         #print-button {
+             display: inline-flex; align-items: center; text-align: center;
+             margin-top: 2rem; background-color: #16a34a; /* green-600 */ color: #ffffff;
+             font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.375rem;
+             transition: background-color 0.2s; cursor: pointer;
+        }
+         #print-button:hover { background-color: #15803d; /* green-700 */ }
+
+        /* DSA Mode Styles */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
+        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
+        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
+        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
+        .dsa-mode #main-content h1, .dsa-mode #main-content h2, .dsa-mode #main-content h3, .dsa-mode #main-content h4, .dsa-mode label, .dsa-mode .description, .dsa-mode textarea, .dsa-mode input { color: #34495e !important; }
+        .dsa-mode textarea, .dsa-mode input { background-color: #fdf8f0 !important; border-color: #e0e0e0 !important; }
+
+
+        /* Print Styles */
+        @media print {
+            body { background-color: #ffffff; margin: 0; padding: 0; font-family: sans-serif; font-size: 10pt; color: #000; }
+            #page-header, #main-footer, #print-button { display: none; }
+            .container { max-width: 100%; padding: 1cm; margin: 0; }
+            .content-card { box-shadow: none; border: none; padding: 0; margin: 0; }
+            #main-content h1 { font-size: 16pt; text-align: center; border-color: #000; color: #000 !important; margin-bottom: 1.5rem; }
+            #main-content h2 { font-size: 12pt; border-color: #ccc; color: #000 !important; margin-top: 1.5rem; page-break-after: avoid; }
+            #main-content h3 { font-size: 11pt; color: #000 !important; border-top-color: #ccc; margin-top: 1rem; padding-top: 0.5rem; border-top: 1px solid #ccc;}
+            .grid-container { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+            label { font-size: 10pt; color: #000 !important; }
+            .description { color: #555 !important; font-size: 8pt;}
+            textarea { border: 1px dotted #999; padding: 4px; font-size: 10pt; background: #f9f9f9 !important; min-height: 40px; color: #000 !important; }
+            section { page-break-inside: avoid; margin-bottom: 1rem;}
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
+    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
+        <div class="container mx-auto px-6 py-3">
+            <!-- Riga Superiore: Torna all'indice + Controlli -->
+            <div class="flex justify-between items-center mb-4">
+                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
+                 </a>
+                 <div class="flex items-center space-x-2">
+                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
+                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
+                 </div>
+            </div>
+
+            <!-- Titolo della Sezione -->
+            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleHema">7. Sistema Ematopoietico</h1>
+
+            <!-- Navigazione Interna alla Sezione -->
+            <nav class="scrollable-nav">
+                 <div class="flex space-x-2 pb-2">
+                     <a href="riassunto_ematopoietico.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_ematopoietico.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_ematopoietico.html" class="section-nav-link active" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_ematopoietico.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_ematopoietico.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                     <a href="riassunto_ematopoietico.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
+                </div>
+            </nav>
+
+        </div>
+    </header>
+    <!-- === FINE HEADER === -->
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto p-4 md:px-8 md:py-12">
+        <!-- Card Contenuto -->
+        <div id="main-content" class="content-card">
+
+            <!-- Contenuto Specifico Checklist -->
+            <h1 data-lang-key="pageTitle">Checklist: Esame Sistema Ematopoietico</h1>
+
+             <section>
+                 <h2 data-lang-key="sectionIspezione">1. Ispezione (Segni Indiretti)</h2>
+                 
+                 <h3 data-lang-key="inspTitleMucose">Mucose e Segni Emorragici</h3>
+                 <div class="grid-container">
+                     <div>
+                         <label data-lang-key="inspMucoseColore">Colore Mucose</label>
+                         <p class="description" data-lang-key="inspMucoseColoreDesc">Pallide (anemia), Itteriche (emolisi).</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                     <div>
+                         <label data-lang-key="inspEmorragie">Segni Emorragici</label>
+                         <p class="description" data-lang-key="inspEmorragieDesc">Petecchie, ecchimosi (sospetta trombocitopenia).</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                 </div>
+                 
+                 <h3 data-lang-key="inspTitleGenerale">Stato Generale e Segni Correlati</h3>
+                 <div class="grid-container">
+                     <div>
+                         <label data-lang-key="inspStato">Stato Generale</label>
+                         <p class="description" data-lang-key="inspStatoDesc">Debolezza, letargia, intolleranza all'esercizio.</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                      <div>
+                         <label data-lang-key="inspCompensi">Parametri Compensatori</label>
+                         <p class="description" data-lang-key="inspCompensiDesc">Tachicardia, tachipnea (sospetta anemia).</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                     <div>
+                         <label data-lang-key="inspSanguinamenti">Sanguinamenti Spontanei</label>
+                         <p class="description" data-lang-key="inspSanguinamentiDesc">Epistassi, melena, ematuria.</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                 </div>
+             </section>
+
+              <section>
+                 <h2 data-lang-key="sectionPalpazione">2. Palpazione</h2>
+                 
+                 <h3 data-lang-key="palpTitleLinfonodi">Linfonodi Esterni</h3>
+                 <div class="grid-container">
+                     <div>
+                         <label data-lang-key="palpLinfonodiSiti">Siti Linfonodali</label>
+                         <p class="description" data-lang-key="palpLinfonodiSitiDesc">Mandibolari, retrofaringei, prescapolari, precrurali, inguinali.</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                     <div>
+                         <label data-lang-key="palpLinfonodiCaratt">Caratteristiche (Linfoadenomegalia?)</label>
+                         <p class="description" data-lang-key="palpLinfonodiCarattDesc">Dimensioni, consistenza, mobilità, dolore, generalizzata?</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                 </div>
+
+                 <h3 data-lang-key="palpTitleAltro">Altre Strutture</h3>
+                 <div class="grid-container">
+                     <div>
+                         <label data-lang-key="palpMilza">Palpazione Milza (Rettale)</label>
+                         <p class="description" data-lang-key="palpMilzaDesc">Cavallo: margine palpabile? Bovino: non palpabile.</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                      <div>
+                         <label data-lang-key="palpEdemi">Edemi Declivi</label>
+                         <p class="description" data-lang-key="palpEdemiDesc">Presenti/Assenti (sospetta anemia grave / ipoalbuminemia).</p>
+                         <textarea rows="2"></textarea>
+                     </div>
+                 </div>
+             </section>
+            <!-- Fine Contenuto Specifico Checklist -->
+
+             <!-- Bottone Stampa -->
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center" data-lang-key="btnPrint">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="btnPrintText">Stampa Checklist</span>
+                </button>
+            </div>
+
+        </div> <!-- Fine content-card -->
+    </main>
+
+    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // === TRADUZIONI ===
+            const translations = {
+                // --- Header ---
+                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                sectionTitleHema: { it: '7. Sistema Ematopoietico', en: '7. Hematopoietic System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navAudio: { it: 'Audio', en: 'Audio' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                // --- Contenuto Checklist Ematopoietico ---
+                 pageTitle: { it: "Checklist: Esame Sistema Ematopoietico", en: "Checklist: Hematopoietic System Exam" },
+                 sectionIspezione: { it: "1. Ispezione (Segni Indiretti)", en: "1. Inspection (Indirect Signs)" },
+                 inspTitleMucose: { it: "Mucose e Segni Emorragici", en: "Mucous Membranes and Bleeding Signs" },
+                 inspMucoseColore: { it: "Colore Mucose", en: "Mucous Membrane Color" },
+                 inspMucoseColoreDesc: { it: "Pallide (anemia), Itteriche (emolisi).", en: "Pale (anemia), Icteric (hemolysis)." },
+                 inspEmorragie: { it: "Segni di Emorragia", en: "Bleeding Signs" },
+                 inspEmorragieDesc: { it: "Petecchie, ecchimosi (sospetta trombocitopenia).", en: "Petechiae, ecchymoses (suspect thrombocytopenia)." },
+                 inspTitleGenerale: { it: "Stato Generale e Segni Correlati", en: "General Status and Related Signs" },
+                 inspStato: { it: "Stato Generale", en: "General Status" },
+                 inspStatoDesc: { it: "Debolezza, letargia, intolleranza all'esercizio.", en: "Weakness, lethargy, exercise intolerance." },
+                 inspCompensi: { it: "Parametri Compensatori", en: "Compensatory Parameters" },
+                 inspCompensiDesc: { it: "Tachicardia, tachipnea (sospetta anemia).", en: "Tachycardia, tachypnea (suspect anemia)." },
+                 inspSanguinamenti: { it: "Sanguinamenti Spontanei", en: "Spontaneous Bleeding" },
+                 inspSanguinamentiDesc: { it: "Epistassi, melena, ematuria.", en: "Epistaxis, melena, hematuria." },
+                 
+                 sectionPalpazione: { it: "2. Palpazione", en: "2. Palpation" },
+                 palpTitleLinfonodi: { it: "Linfonodi Esterni", en: "External Lymph Nodes" },
+                 palpLinfonodiSiti: { it: "Siti Linfonodali", en: "Lymph Node Sites" },
+                 palpLinfonodiSitiDesc: { it: "Mandibolari, retrofaringei, prescapolari, precrurali, inguinali.", en: "Mandibular, retropharyngeal, prescapular, precrural, inguinal." },
+                 palpLinfonodiCaratt: { it: "Caratteristiche (Linfoadenomegalia?)", en: "Characteristics (Lymphadenomegaly?)" },
+                 palpLinfonodiCarattDesc: { it: "Dimensioni, consistenza, mobilità, dolore, generalizzata?", en: "Size, consistency, mobility, pain, generalized?" },
+                 palpTitleAltro: { it: "Altre Strutture", en: "Other Structures" },
+                 palpMilza: { it: "Palpazione Milza (Rettale)", en: "Spleen Palpation (Rectal)" },
+                 palpMilzaDesc: { it: "Cavallo: margine palpabile? Bovino: non palpabile.", en: "Horse: palpable margin? Cattle: not palpable." },
+                 palpEdemi: { it: "Edemi Declivi", en: "Ventral Edema" },
+                 palpEdemiDesc: { it: "Presenti/Assenti (sospetta anemia grave / ipoalbuminemia).", en: "Present/Absent (suspect severe anemia / hypoalbuminemia)." },
+
+                 btnPrint: { it: 'Stampa', en: 'Print' },
+                 btnPrintText: { it: 'Stampa Checklist', en: 'Print Checklist' },
+                // --- Footer ---
+                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+            };
+
+             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
+             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const accessibilityToggle = document.getElementById('accessibility-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const body = document.body;
+            // No TTS needed
+
+            // --- Funzione Aggiornamento Lingua ---
+             const updateLanguage = (lang, previousLang = null) => {
+                 document.documentElement.lang = lang;
+                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+
+                 document.querySelectorAll('[data-lang-key]').forEach(element => {
+                     const key = element.dataset.langKey;
+                     if (translations[key] && translations[key][lang]) {
+                         const translationText = translations[key][lang];
+
+                         if (key === 'footerText' || key === 'backToIndex') {
+                              const svgIcon = element.querySelector('svg');
+                              element.innerHTML = translationText;
+                              if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) { element.insertBefore(svgIcon, element.firstChild); }
+                         }
+                         else if (key === 'btnPrint') {
+                              const svgIcon = element.querySelector('svg');
+                              const textSpan = element.querySelector('span[data-lang-key="btnPrintText"]');
+                              if (textSpan) { textSpan.textContent = translations['btnPrintText'][lang]; }
+                              else {
+                                  element.innerHTML = translationText;
+                                   if (svgIcon) element.insertBefore(svgIcon, element.firstChild);
+                              }
+                               element.setAttribute('aria-label', translationText);
+                         }
+                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
+                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
+                             const sectionKey = currentSectionKey || key;
+                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
+                         }
+                         // Gestione titoli H3/H4 con span interno (se presenti)
+                         else if ((element.tagName === 'H3' || element.tagName === 'H4') && element.querySelector('span[data-lang-key]')) {
+                             const span = element.querySelector('span[data-lang-key]');
+                             const spanKey = span.dataset.langKey;
+                             if (translations[spanKey] && translations[spanKey][lang]) {
+                                 span.textContent = translations[spanKey][lang];
+                             }
+                         }
+                         // Gestione altri testi semplici (H1/H2 pagina, labels, descriptions, H3/H4 senza span)
+                         else if (element.tagName === 'H1' || element.tagName === 'H2' || element.tagName === 'H3' || element.tagName === 'H4' || element.tagName === 'LABEL' || element.classList.contains('description') || element.tagName === 'SPAN') {
+                             if (!(element.tagName === 'H3' || element.tagName === 'H4') || !element.querySelector('span[data-lang-key]')) {
+                                element.textContent = translationText;
+                             }
+                         }
+                         else {
+                             element.textContent = translationText;
+                         }
+                     }
+                 });
+             };
+
+
+            // --- Logica Modalità Accessibilità ---
+            const setA11yMode = (enabled) => {
+                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
+                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            };
+
+            // --- Event Listeners ---
+            if (langToggle) {
+                langToggle.addEventListener('click', () => {
+                    const previousLanguage = currentLanguage;
+                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                    localStorage.setItem('language', currentLanguage);
+                     updateLanguage(currentLanguage, previousLanguage);
+                });
+            } else { console.error("Elemento langToggle non trovato!"); }
+
+            if (accessibilityToggle) {
+                 accessibilityToggle.addEventListener('click', () => {
+                    const isEnabled = body.classList.contains('dsa-mode');
+                    setA11yMode(!isEnabled);
+                });
+            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+
+            // --- Inizializzazione ---
+            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
+            updateLanguage(currentLanguage);
+
+        });
+    </script>
+
+</body>
+</html>
+
