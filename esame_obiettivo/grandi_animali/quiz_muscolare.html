@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titolo specifico per questa pagina -->
+    <title>Quiz Interattivo: Apparato Muscolare - Semeiotica Vet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stili Generali e dal Template */
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; } /* Background leggermente grigio */
+        .section-nav-link {
+            transition: background-color 0.3s, color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+        .section-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .section-nav-link.active {
+             background-color: white;
+             color: #1E3A8A;
+             cursor: default;
+        }
+        .content-card {
+             background-color: white;
+             border-radius: 0.75rem;
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+             padding: 1.5rem;
+             margin-top: 2rem;
+             /* Limit max width for quiz consistency */
+             max-width: 48rem; /* max-w-3xl */
+             margin-left: auto;
+             margin-right: auto;
+        }
+        @media (min-width: 768px) { /* md: */
+            .content-card { padding: 2.5rem; }
+        }
+        #page-header { position: static; } /* Rimosso sticky per le pagine interne */
+        .scrollable-nav {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .scrollable-nav::-webkit-scrollbar { display: none; }
+
+        /* Stili Specifici del Quiz */
+        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; border-width: 2px; }
+        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .option-btn.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: 600; }
+        .option-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: 600; }
+         #question-text-container { /* Nuovo container per testo e bottone TTS */
+            display: flex;
+            align-items: flex-start; /* Allinea all'inizio se il testo va a capo */
+            min-height: 4.5rem; /* ~3 righe */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        #question-text {
+            flex-grow: 1; /* Occupa lo spazio disponibile */
+            font-size: 1.125rem; /* text-lg */
+            color: #374151; /* text-slate-700 */
+        }
+
+        /* DSA Mode Styles */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
+        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
+        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
+        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
+        .dsa-mode h2, .dsa-mode p, .dsa-mode button, .dsa-mode #score-text, .dsa-mode #question-text { color: #34495e !important; }
+        .dsa-mode .option-btn { background-color: #fefcf7 !important; border-color: #aeaeae !important; }
+        .dsa-mode .option-btn.correct { background-color: #d1f7d1 !important; border-color: #1a7431 !important; color: #1a7431 !important; }
+        .dsa-mode .option-btn.incorrect { background-color: #f7d1d1 !important; border-color: #a31e1e !important; color: #a31e1e !important; }
+        .dsa-mode #rationale-text { background-color: #f0eade !important; border-color: #dcd7cd !important; }
+
+        /* TTS Button Styles */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 8px; vertical-align: middle; color: #64748b; transition: color 0.2s; flex-shrink: 0; /* Impedisci che si rimpicciolisca */ }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+         .dsa-mode .tts-button { color: #5a738e !important; }
+
+         /* Print Styles - Nascondi quiz */
+        @media print {
+            body { background-color: #fff; }
+            #page-header, #main-footer, #quiz-container { display: none; }
+            .container::before { content: "Il contenuto del quiz non è stampabile."; display: block; text-align: center; font-size: 1.2em; margin-top: 2cm; }
+        }
+
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
+    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
+        <div class="container mx-auto px-6 py-3">
+            <!-- Riga Superiore: Torna all'indice + Controlli -->
+            <div class="flex justify-between items-center mb-4">
+                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
+                 </a>
+                 <div class="flex items-center space-x-2">
+                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
+                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
+                 </div>
+            </div>
+
+            <!-- Titolo della Sezione -->
+            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleMusc">5. Apparato Muscolare</h1>
+
+            <!-- Navigazione Interna alla Sezione -->
+            <nav class="scrollable-nav">
+                 <div class="flex space-x-2 pb-2">
+                     <a href="riassunto_muscolare.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_muscolare.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_muscolare.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_muscolare.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_muscolare.html" class="section-nav-link active" data-lang-key="navQuiz">Quiz</a>
+                     <a href="riassunto_muscolare.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
+                </div>
+            </nav>
+
+        </div>
+    </header>
+    <!-- === FINE HEADER === -->
+
+    <!-- Main Content Container - Usiamo flex per centrare verticalmente il quiz -->
+     <main class="container mx-auto p-4 md:px-8 md:py-12 flex items-center justify-center min-h-[calc(100vh-230px)]">
+         <!-- Card Contenuto Quiz -->
+         <div id="quiz-container" class="content-card w-full">
+
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: Apparato Muscolare</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
+                </div>
+                <!-- Container per Testo Domanda + Bottone TTS -->
+                <div id="question-text-container">
+                    <p id="question-text"></p>
+                    <span id="question-tts-button" class="tts-button">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </span>
+                </div>
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-6 hidden">
+                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
+                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
+            </div>
+
+            <div id="results-area" class="text-center hidden">
+                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
+                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+
+         </div> <!-- Fine content-card -->
+    </main>
+
+    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // === TRADUZIONI ===
+            const translations = {
+                // --- Header ---
+                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                sectionTitleMusc: { it: '5. Apparato Muscolare', en: '5. Muscular System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navAudio: { it: 'Audio', en: 'Audio' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                // --- Contenuto Quiz Muscolare ---
+                 quizTitle: { it: "Quiz: Apparato Muscolare", en: 'Quiz: Muscular System' },
+                 progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+                 btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                 btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
+                 resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                 resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+                 btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                // --- Domande (q1-q10) ---
+                q1: {
+                    // *** INIZIO CORREZIONE ERRORE SINTASSI ***
+                    question: { it: "Durante l'esame dinamico di un cavallo, come si identifica tipicamente una zoppia di un arto anteriore?", en: "During a dynamic exam of a horse, how is a forelimb lameness typically identified?" },
+                    options: [
+                        { text: { it: "L'animale solleva la groppa sul lato dolente ('hip hike').", en: "The animal raises its croup on the painful side ('hip hike')." }, rationale: { it: "L' 'hip hike' è il segno tipico di una zoppia dell'arto posteriore, non anteriore.", en: "The 'hip hike' is the typical sign of a hindlimb lameness, not forelimb." }, isCorrect: false },
+                        { text: { it: "L'animale abbassa la testa quando l'arto sano tocca terra.", en: "The animal lowers its head when the sound limb touches the ground." }, rationale: { it: "Corretto, questo meccanismo ('batte sul sano') serve per alleggerire il carico sull'arto dolente quando questo dovrebbe toccare terra.", en: "Correct, this mechanism ('down on the sound') serves to lighten the load on the painful limb when it would normally hit the ground." }, isCorrect: true },
+                        // *** FINE CORREZIONE ERRORE SINTASSI ***
+                        { text: { it: "L'animale mostra un consumo anomalo del ferro posteriore.", en: "The animal shows abnormal wear on the hind shoe." }, rationale: { it: "Il consumo anomalo è un segno cronico visibile all'ispezione statica, non il segno dinamico primario per l'identificazione.", en: "Abnormal wear is a chronic sign visible on static inspection, not the primary dynamic sign for identification." }, isCorrect: false },
+                        { text: { it: "L'animale ha una risposta positiva alla pinza da zoccolo.", en: "The animal has a positive response to hoof testers." }, rationale: { it: "Questa è una metodica complementare (palpazione), non una valutazione dell'andatura (esame dinamico).", en: "This is a complementary method (palpation), not a gait assessment (dynamic exam)." }, isCorrect: false }
+                    ]
+                },
+                q2: {
+                    question: { it: "Quale enzima muscolare è considerato il più specifico per un danno muscolare ACUTO?", en: "Which muscle enzyme is considered the most specific for ACUTE muscle damage?" },
+                    options: [
+                        { text: { it: "Aspartato Aminotransferasi (AST)", en: "Aspartate Aminotransferase (AST)" }, rationale: { it: "L'AST è presente anche nel fegato e ha un'emivita lunga, rendendolo meno specifico per il danno acuto rispetto alla CK.", en: "AST is also present in the liver and has a long half-life, making it less specific for acute damage compared to CK." }, isCorrect: false },
+                        { text: { it: "Creatina Chinasi (CK o CPK)", en: "Creatine Kinase (CK or CPK)" }, rationale: { it: "Corretto. La CK è altamente specifica per il muscolo e ha un'emivita breve, quindi i suoi livelli aumentano e scendono rapidamente in risposta a un danno acuto.", en: "Correct. CK is highly muscle-specific and has a short half-life, so its levels rise and fall quickly in response to acute damage." }, isCorrect: true },
+                        { text: { it: "Lattato Deidrogenasi (LDH)", en: "Lactate Dehydrogenase (LDH)" }, rationale: { it: "L'LDH è presente in molti tessuti (muscoli, fegato, globuli rossi) ed è molto meno specifico della CK.", en: "LDH is present in many tissues (muscle, liver, red blood cells) and is much less specific than CK." }, isCorrect: false },
+                        { text: { it: "Gamma-glutamil transferasi (GGT)", en: "Gamma-glutamyl transferase (GGT)" }, rationale: { it: "La GGT è un enzima primariamente epatico e biliare, non un indicatore di danno muscolare.", en: "GGT is primarily a liver and biliary enzyme, not an indicator of muscle damage." }, isCorrect: false }
+                    ]
+                },
+                 q3: {
+                    question: { it: "Cosa indica un reperto di AST elevato con CK nei limiti di norma?", en: "What does a finding of high AST with CK within the normal range indicate?" },
+                    options: [
+                        { text: { it: "Un danno muscolare acuto in corso.", en: "An acute, ongoing muscle injury." }, rationale: { it: "In un danno acuto, anche la CK (che ha emivita breve) sarebbe elevata. Se la CK è normale, il danno non è in corso.", en: "In an acute injury, CK (which has a short half-life) would also be elevated. If CK is normal, the damage is not ongoing." }, isCorrect: false },
+                        { text: { it: "Una patologia epatica (AST è anche epatico).", en: "A liver pathology (AST is also hepatic)." }, rationale: { it: "Questa è una possibilità, ma se si sospetta un problema muscolare, esiste un'altra spiegazione.", en: "This is a possibility, but if a muscle problem is suspected, there is another explanation." }, isCorrect: false },
+                        { text: { it: "Un danno muscolare ormai risolto (avvenuto giorni prima).", en: "A resolved muscle injury (occurred days ago)." }, rationale: { it: "Corretto. La CK (emivita breve) è tornata normale, mentre l'AST (emivita lunga) è ancora elevato a causa del danno precedente.", en: "Correct. CK (short half-life) has returned to normal, while AST (long half-life) is still elevated from the previous damage." }, isCorrect: true },
+                        { text: { it: "Un errore di laboratorio, è un risultato impossibile.", en: "A laboratory error, this result is impossible." }, rationale: { it: "Questo pattern è un reperto diagnostico comune e ha un significato clinico preciso.", en: "This pattern is a common diagnostic finding and has a precise clinical meaning." }, isCorrect: false }
+                    ]
+                },
+                q4: {
+                    question: { it: "L'Elettromiografia (EMG) è un esame collaterale utilizzato principalmente per:", en: "Electromyography (EMG) is an ancillary exam used primarily to:" },
+                    options: [
+                        { text: { it: "Identificare la presenza di liquido nelle articolazioni.", en: "Identify the presence of fluid in joints." }, rationale: { it: "L'esame per il liquido articolare è l'ecografia o l'artrocentesi, non l'EMG.", en: "The exam for joint fluid is ultrasound or arthrocentesis, not EMG." }, isCorrect: false },
+                        { text: { it: "Valutare l'architettura delle fibre muscolari.", en: "Assess the architecture of muscle fibers." }, rationale: { it: "L'architettura delle fibre si valuta visivamente con l'ecografia o l'istologia (biopsia).", en: "Fiber architecture is assessed visually with ultrasound or histology (biopsy)." }, isCorrect: false },
+                        { text: { it: "Distinguere una miopatia da una neuropatia.", en: "Distinguish a myopathy from a neuropathy." }, rationale: { it: "Corretto. L'EMG valuta l'attività elettrica del muscolo, che è diversa se il problema è nel muscolo stesso (miopatia) o nel nervo che lo comanda (neuropatia).", en: "Correct. EMG assesses the electrical activity of the muscle, which differs if the problem is in the muscle itself (myopathy) or in the nerve supplying it (neuropathy)." }, isCorrect: true },
+                        { text: { it: "Misurare i livelli di CK e AST.", en: "Measure CK and AST levels." }, rationale: { it: "CK e AST si misurano con un prelievo di sangue (enzimologia sierica).", en: "CK and AST are measured with a blood sample (serum enzymology)." }, isCorrect: false }
+                    ]
+                },
+                q5: {
+                    question: { it: "Cosa significa il reperto di 'mioglobinuria' in un esame delle urine?", en: "What does the finding of 'myoglobinuria' in a urinalysis mean?" },
+                    options: [
+                        { text: { it: "Presenza di globuli rossi nelle urine.", en: "Presence of red blood cells in the urine." }, rationale: { it: "Questo reperto si chiama 'ematuria'. Nella mioglobinuria, il sedimento è privo di globuli rossi.", en: "This finding is called 'hematuria'. In myoglobinuria, the sediment is free of red blood cells." }, isCorrect: false },
+                        { text: { it: "Grave danno muscolare (rabdomiolisi).", en: "Severe muscle damage (rhabdomyolysis)." }, rationale: { it: "Corretto. La mioglobina, una proteina muscolare, viene rilasciata nel sangue dopo un grave danno e filtrata dai reni, colorando le urine di scuro.", en: "Correct. Myoglobin, a muscle protein, is released into the blood after severe damage and filtered by the kidneys, coloring the urine dark." }, isCorrect: true },
+                        { text: { it: "Infezione batterica della vescica.", en: "Bacterial infection of the bladder." }, rationale: { it: "Un'infezione della vescica (cistite) causerebbe piuria (pus) e batteriuria, non mioglobinuria.", en: "A bladder infection (cystitis) would cause pyuria (pus) and bacteriuria, not myoglobinuria." }, isCorrect: false },
+                        { text: { it: "Insufficienza renale cronica.", en: "Chronic renal failure." }, rationale: { it: "L'insufficienza renale altera la densità e la composizione chimica delle urine, ma non causa direttamente mioglobinuria.", en: "Renal failure alters urine density and chemical composition, but does not directly cause myoglobinuria." }, isCorrect: false }
+                    ]
+                },
+                 q6: {
+                    question: { it: "Qual è l'esame d'elezione per visualizzare lesioni acute dei tessuti molli (es. strappo tendineo o ematoma muscolare)?", en: "What is the imaging modality of choice for visualizing acute soft tissue injuries (e.g., tendon tear or muscle hematoma)?" },
+                    options: [
+                        { text: { it: "Radiografia (Rx)", en: "Radiography (X-ray)" }, rationale: { it: "La radiografia è eccellente per le ossa, ma non visualizza bene i tessuti molli come muscoli e tendini.", en: "Radiography is excellent for bones, but does not visualize soft tissues like muscles and tendons well." }, isCorrect: false },
+                        { text: { it: "Tomografia Computerizzata (TC)", en: "Computed Tomography (CT)" }, rationale: { it: "La TC è ottima per l'osso e migliore della Rx per i tessuti molli, ma l'ecografia è più pratica e spesso superiore per tendini e muscoli.", en: "CT is excellent for bone and better than X-ray for soft tissues, but ultrasound is more practical and often superior for tendons and muscles." }, isCorrect: false },
+                        { text: { it: "Elettromiografia (EMG)", en: "Electromyography (EMG)" }, rationale: { it: "L'EMG è un test funzionale (elettrico), non un esame di imaging che mostra l'anatomia o la lesione.", en: "EMG is a functional (electrical) test, not an imaging exam that shows anatomy or the lesion." }, isCorrect: false },
+                        { text: { it: "Ecografia", en: "Ultrasound" }, rationale: { it: "Corretto. L'ecografia è l'esame migliore per valutare l'architettura interna di muscoli e tendini, identificando fibre interrotte, ematomi e infiammazioni.", en: "Correct. Ultrasound is the best exam for assessing the internal architecture of muscles and tendons, identifying torn fibers, hematomas, and inflammation." }, isCorrect: true }
+                    ]
+                },
+                q7: {
+                    question: { it: "Un consumo asimmetrico o eccessivo della punta dello zoccolo in un cavallo, notato all'ispezione, è spesso indice di:", en: "Asymmetrical or excessive wear at the toe of a horse's hoof, noted on inspection, is often an indicator of:" },
+                    options: [
+                        { text: { it: "Una dieta troppo ricca di carboidrati.", en: "A diet too high in carbohydrates." }, rationale: { it: "Una dieta errata è legata a laminite, ma il consumo anomalo è un segno meccanico legato al movimento.", en: "An incorrect diet is linked to laminitis, but abnormal wear is a mechanical sign related to movement." }, isCorrect: false },
+                        { text: { it: "Zoppia cronica o appiombo scorretto.", en: "Chronic lameness or incorrect conformation." }, rationale: { it: "Corretto. L'animale consuma lo zoccolo in modo anomalo per compensare un dolore (zoppia) o a causa di un difetto di appiombo.", en: "Correct. The animal wears the hoof abnormally to compensate for pain (lameness) or due to a conformational fault." }, isCorrect: true },
+                        { text: { it: "Miopatia da accumulo (PSSM).", en: "Storage Myopathy (PSSM)." }, rationale: { it: "La PSSM causa rabdomiolisi (danno muscolare), ma non direttamente un consumo anomalo dello zoccolo.", en: "PSSM causes rhabdomyolysis (muscle damage), but not directly abnormal hoof wear." }, isCorrect: false },
+                        { text: { it: "Artrite settica acuta.", en: "Acute septic arthritis." }, rationale: { it: "Un'artrite acuta causa una zoppia grave (arto sollevato), ma il consumo anomalo è un segno che richiede tempo per svilupparsi.", en: "Acute arthritis causes severe lameness (limb held up), but abnormal wear is a sign that takes time to develop." }, isCorrect: false }
+                    ]
+                },
+                q8: {
+                    question: { it: "Cosa si intende per 'atrofia muscolare da denervazione'?", en: "What is 'denervation muscle atrophy'?" },
+                    options: [
+                        { text: { it: "Un aumento della massa muscolare dovuto all'allenamento.", en: "An increase in muscle mass due to training." }, rationale: { it: "Questo è l'opposto (ipertrofia). L'atrofia è una diminuzione della massa.", en: "This is the opposite (hypertrophy). Atrophy is a decrease in mass." }, isCorrect: false },
+                        { text: { it: "Una diminuzione della massa muscolare dovuta al non utilizzo (es. arto ingessato).", en: "A decrease in muscle mass due to non-use (e.g., limb in a cast)." }, rationale: { it: "Questa è 'atrofia da disuso'. L'atrofia da denervazione è tipicamente più rapida e grave.", en: "This is 'disuse atrophy'. Denervation atrophy is typically faster and more severe." }, isCorrect: false },
+                        { text: { it: "Una diminuzione della massa muscolare dovuta a un danno del nervo che lo controlla.", en: "A decrease in muscle mass due to damage to the nerve that controls it." }, rationale: { it: "Corretto. Se il nervo motore è danneggiato, il muscolo perde lo stimolo trofico e si atrofizza rapidamente.", en: "Correct. If the motor nerve is damaged, the muscle loses its trophic stimulus and atrophies rapidly." }, isCorrect: true },
+                        { text: { it: "Un'infiammazione del muscolo (miosite).", en: "An inflammation of the muscle (myositis)." }, rationale: { it: "La miosite causa gonfiore (inizialmente) e dolore, non è la definizione di atrofia da denervazione.", en: "Myositis causes swelling (initially) and pain; it is not the definition of denervation atrophy." }, isCorrect: false }
+                    ]
+                },
+                q9: {
+                    question: { it: "Un test di flessione positivo in un cavallo (peggioramento della zoppia dopo flessione) indica:", en: "A positive flexion test in a horse (worsening of lameness after flexion) indicates:" },
+                    options: [
+                        { text: { it: "Debolezza muscolare (miopatia).", en: "Muscle weakness (myopathy)." }, rationale: { it: "La debolezza si manifesta con tremori o cedimento, mentre il test di flessione peggiora una zoppia basata sul dolore.", en: "Weakness manifests as tremors or giving way, whereas a flexion test worsens a pain-based lameness." }, isCorrect: false },
+                        { text: { it: "Dolore localizzato nell'articolazione o nelle strutture vicine che sono state flesse.", en: "Pain localized in the joint or nearby structures that were flexed." }, rationale: { it: "Corretto. La flessione mette sotto stress le strutture articolari e tendinee; un peggioramento della zoppia indica dolore in quell'area.", en: "Correct. Flexion stresses the joint and tendon structures; a worsening of lameness indicates pain in that area." }, isCorrect: true },
+                        { text: { it: "Un problema neurologico (atassia).", en: "A neurological problem (ataxia)." }, rationale: { it: "L'atassia (incoordinazione) non peggiora tipicamente con un test di flessione in questo modo.", en: "Ataxia (incoordination) does not typically worsen with a flexion test in this manner." }, isCorrect: false },
+                        { text: { it: "Che l'animale è sano e collaborativo.", en: "That the animal is healthy and cooperative." }, rationale: { it: "Un animale sano non mostra alcun peggioramento della zoppia (che non dovrebbe avere) dopo un test di flessione.", en: "A healthy animal shows no worsening of lameness (which it shouldn't have) after a flexion test." }, isCorrect: false }
+                    ]
+                },
+                q10: {
+                    question: { it: "Quale reperto è considerato patologico durante un'Elettromiografia (EMG) a riposo?", en: "Which finding is considered pathological during an Electromyography (EMG) at rest?" },
+                    options: [
+                        { text: { it: "Silenzio elettrico completo.", en: "Complete electrical silence." }, rationale: { it: "Questo è il reperto normale per un muscolo sano e rilassato.", en: "This is the normal finding for a healthy, relaxed muscle." }, isCorrect: false },
+                        { text: { it: "Un singolo potenziale d'azione quando si muove l'ago.", en: "A single action potential when the needle is moved." }, rationale: { it: "Questa è chiamata 'attività inserzionale' ed è normale; cessa appena l'ago si ferma.", en: "This is called 'insertional activity' and is normal; it ceases as soon as the needle stops." }, isCorrect: false },
+                        { text: { it: "Attività spontanea (es. potenziali di fibrillazione).", en: "Spontaneous activity (e.g., fibrillation potentials)." }, rationale: { it: "Corretto. Qualsiasi attività elettrica persistente in un muscolo a riposo è anomala e indica denervazione o miopatia.", en: "Correct. Any persistent electrical activity in a muscle at rest is abnormal and indicates denervation or myopathy." }, isCorrect: true },
+                        { text: { it: "Un pattern di interferenza completo durante la contrazione.", en: "A full interference pattern during contraction." }, rationale: { it: "Questo è un reperto normale durante una contrazione muscolare volontaria, non a riposo.", en: "This is a normal finding during a voluntary muscle contraction, not at rest." }, isCorrect: false }
+                    ]
+                },
+                // --- Footer ---
+                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+            };
+
+            const quizData = Object.keys(translations)
+                .filter(k => /^q\d+$/.test(k))
+                .map(k => translations[k]);
+
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let shuffledQuestions = [];
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+            let voices = [];
+
+            // Elementi DOM del Quiz
+            const quizContainer = document.getElementById('quiz-container');
+            const questionArea = document.getElementById('question-area');
+            const resultsArea = document.getElementById('results-area');
+            const questionText = document.getElementById('question-text');
+            let questionTTSButton = document.getElementById('question-tts-button');
+            const optionsContainer = document.getElementById('options-container');
+            const progressText = document.getElementById('progress-text');
+            const feedbackArea = document.getElementById('feedback-area');
+            const rationaleText = document.getElementById('rationale-text');
+            const nextButton = document.getElementById('next-button');
+            const scoreText = document.getElementById('score-text');
+            const restartButton = document.getElementById('restart-button');
+            
+            // Elementi DOM Generali (Header, etc.)
+            const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
+            const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const accessibilityToggle = document.getElementById('accessibility-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const body = document.body;
+
+            // --- Logica TTS ---
+            function populateVoices() {
+                if (typeof speechSynthesis === 'undefined') return;
+                voices = speechSynthesis.getVoices();
+            }
+
+            function speak(text, button) {
+                const isSameButton = activeTTSButton === button;
+                if (synth.speaking && isSameButton) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); }
+                    else { synth.pause(); button.classList.remove('playing'); }
+                } else {
+                    if (synth.speaking) {
+                        if (currentUtterance) currentUtterance.onend = null;
+                        if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                        synth.cancel();
+                    }
+                    setTimeout(() => startSpeaking(text, button), 50);
+                }
+            }
+
+            function startSpeaking(text, button) {
+                 if (!text || typeof text !== 'string' || !text.trim()) {
+                   console.error("Testo non valido per TTS:", text);
+                   return;
+                }
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = text;
+                const ttsIconToRemove = tempDiv.querySelector('.tts-button');
+                if(ttsIconToRemove) ttsIconToRemove.remove();
+                const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+                if (!cleanText.trim()) {
+                   if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                   activeTTSButton = null;
+                   return;
+                }
+
+                currentUtterance = new SpeechSynthesisUtterance(cleanText);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                currentUtterance.onend = () => { if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
+                // *** INIZIO CORREZIONE ERRORE ***
+                currentUtterance.onerror = (event) => { 
+                    // Non loggare 'canceled' o 'interrupted' come errori
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error("Errore TTS:", event.error); 
+                    }
+                    if (button === activeTTSButton) { 
+                        button.classList.remove('playing'); 
+                        activeTTSButton = null; 
+                    } 
+                };
+                // *** FINE CORREZIONE ERRORE ***
+                synth.speak(currentUtterance);
+                if (activeTTSButton && activeTTSButton !== button) { activeTTSButton.classList.remove('playing'); }
+                activeTTSButton = button;
+                button.classList.add('playing');
+            }
+
+            function setupTTSListeners() {
+                // Aggiorna riferimento e listener per il pulsante TTS della domanda
+                const oldQuestionTTSButton = document.getElementById('question-tts-button');
+                if (oldQuestionTTSButton) {
+                    const newQuestionTTSButton = oldQuestionTTSButton.cloneNode(true);
+                    if (oldQuestionTTSButton.parentNode) {
+                        oldQuestionTTSButton.parentNode.replaceChild(newQuestionTTSButton, oldQuestionTTSButton);
+                    }
+                    questionTTSButton = newQuestionTTSButton; // Aggiorna il riferimento globale
+                    
+                    questionTTSButton.onclick = () => { // Sovrascrivi/aggiungi l'onclick
+                        const currentQuestion = shuffledQuestions[currentQuestionIndex];
+                        if (currentQuestion && currentQuestion.question[currentLanguage]) {
+                           speak(currentQuestion.question[currentLanguage], questionTTSButton);
+                        }
+                    };
+                } else {
+                    console.error("Pulsante TTS domanda non trovato durante setupTTSListeners.");
+                }
+
+                // Ricrea listener per i pulsanti delle opzioni
+                optionsContainer.querySelectorAll('.tts-button').forEach(ttsBtn => {
+                     const newTTSButton = ttsBtn.cloneNode(true);
+                     const parentButton = newTTSButton.closest('.option-btn-container')?.querySelector('.option-btn'); // Uso optional chaining
+                     if (parentButton) {
+                         const optionText = parentButton.textContent;
+                          const currentQuestion = shuffledQuestions[currentQuestionIndex];
+                          if (currentQuestion) {
+                              const originalOption = currentQuestion.options.find(opt => opt.text[currentLanguage] === optionText);
+                             if (originalOption) {
+                                  newTTSButton.addEventListener('click', (e) => {
+                                      e.stopPropagation();
+                                      speak(originalOption.text[currentLanguage], newTTSButton);
+                                  });
+                             }
+                          }
+                          if (ttsBtn.parentNode) {
+                            ttsBtn.parentNode.replaceChild(newTTSButton, ttsBtn);
+                          }
+                     }
+                });
+            }
+
+
+            // --- Logica Quiz ---
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function startQuiz() {
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+
+                currentQuestionIndex = 0;
+                score = 0;
+                shuffledQuestions = shuffleArray([...quizData]);
+                resultsArea.classList.add('hidden');
+                questionArea.classList.remove('hidden');
+                feedbackArea.classList.add('hidden');
+                loadQuestion();
+            }
+            
+            function loadQuestion(isLangChange = false) {
+                if (synth.speaking) synth.cancel();
+                if (activeTTSButton) {
+                    activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                }
+
+                if (!isLangChange) {
+                    feedbackArea.classList.add('hidden');
+                }
+                
+                // Assicurati che l'indice sia valido
+                if (currentQuestionIndex < 0 || currentQuestionIndex >= shuffledQuestions.length) {
+                    console.error("Indice domanda non valido:", currentQuestionIndex);
+                    return; // Esci se l'indice non è valido
+                }
+                const currentQuestion = shuffledQuestions[currentQuestionIndex];
+                if (!currentQuestion) {
+                    console.error("Domanda non trovata all'indice:", currentQuestionIndex);
+                    return; // Esci se la domanda non esiste
+                }
+
+
+                progressText.textContent = translations.progressText[currentLanguage]
+                    .replace('{current}', currentQuestionIndex + 1)
+                    .replace('{total}', shuffledQuestions.length);
+                
+                questionText.textContent = currentQuestion.question[currentLanguage];
+                
+                questionTTSButton = document.getElementById('question-tts-button');
+                if (questionTTSButton) {
+                    questionTTSButton.onclick = () => {
+                        speak(currentQuestion.question[currentLanguage], questionTTSButton);
+                    };
+                }
+
+                optionsContainer.innerHTML = ''; 
+
+                const optionsToShow = isLangChange ? [...currentQuestion.options] : shuffleArray([...currentQuestion.options]);
+
+                optionsToShow.forEach(option => {
+                    const buttonContainer = document.createElement('div');
+                    buttonContainer.classList.add('flex', 'items-center', 'w-full', 'option-btn-container');
+
+                    const button = document.createElement('button');
+                    button.textContent = option.text[currentLanguage];
+                    button.classList.add('option-btn', 'flex-grow', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
+                    button.onclick = () => selectAnswer(button, option, currentQuestion.options);
+
+                    const ttsButton = document.createElement('span');
+                    ttsButton.classList.add('tts-button', 'ml-2');
+                    ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
+                    ttsButton.onclick = (e) => {
+                        e.stopPropagation();
+                        speak(option.text[currentLanguage], ttsButton);
+                    };
+
+                    buttonContainer.appendChild(button);
+                    buttonContainer.appendChild(ttsButton);
+                    optionsContainer.appendChild(buttonContainer);
+                });
+
+                if (isLangChange && !feedbackArea.classList.contains('hidden')) {
+                    const rationaleTextContent = rationaleText.textContent; 
+                    const originalOption = currentQuestion.options.find(opt => opt.rationale[currentLanguage] === rationaleTextContent);
+                    
+                    const buttons = optionsContainer.querySelectorAll('button.option-btn');
+                    buttons.forEach(btn => {
+                        btn.disabled = true;
+                        const optionDataText = btn.textContent;
+                        // Assicurati che shuffledQuestions[currentQuestionIndex] esista
+                        const currentQuizQuestion = shuffledQuestions[currentQuestionIndex];
+                        if (currentQuizQuestion) {
+                            const currentOptionData = currentQuizQuestion.options.find(opt => opt.text[lang] === optionDataText);
+                            if (currentOptionData) {
+                                if (currentOptionData.isCorrect) {
+                                    btn.classList.add('correct');
+                                }
+                                if (originalOption && originalOption.text[currentLanguage] === optionDataText && !originalOption.isCorrect) {
+                                    btn.classList.add('incorrect');
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            function selectAnswer(button, selectedOption, allOptions) {
+                if (synth.speaking) synth.cancel();
+                if (activeTTSButton) { activeTTSButton.classList.remove('playing'); activeTTSButton = null; }
+
+                const buttons = optionsContainer.querySelectorAll('button.option-btn');
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    const optionDataText = btn.textContent;
+                    const originalOption = allOptions.find(opt => opt.text[currentLanguage] === optionDataText);
+                    if (originalOption && originalOption.isCorrect) {
+                        btn.classList.add('correct');
+                    }
+                });
+
+                if (!selectedOption.isCorrect) {
+                    button.classList.add('incorrect');
+                }
+                
+                score += selectedOption.isCorrect ? 1 : 0;
+                
+                rationaleText.textContent = selectedOption.rationale[currentLanguage];
+                feedbackArea.classList.remove('hidden');
+
+                if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                    nextButton.textContent = translations.btnResults[currentLanguage];
+                } else {
+                    nextButton.textContent = translations.btnNext[currentLanguage];
+                }
+            }
+
+            function showResults() {
+                questionArea.classList.add('hidden');
+                feedbackArea.classList.add('hidden');
+                resultsArea.classList.remove('hidden');
+                scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
+            }
+
+            // --- Funzione Aggiornamento Lingua (Include Quiz Logic) ---
+            const updateLanguage = (lang, previousLang = null) => {
+                 document.documentElement.lang = lang;
+                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+
+                 document.querySelectorAll('[data-lang-key]').forEach(element => {
+                     const key = element.dataset.langKey;
+                     if (translations[key] && translations[key][lang]) {
+                         const translationText = translations[key][lang];
+
+                         if (key === 'footerText' || key === 'backToIndex') {
+                             const svgIcon = element.querySelector('svg');
+                             element.innerHTML = translationText;
+                             if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
+                                   element.insertBefore(svgIcon, element.firstChild);
+                             }
+                         }
+                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
+                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
+                             const sectionKey = currentSectionKey || key;
+                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
+                         }
+                         else if (element.id !== 'question-text' && element.id !== 'rationale-text') {
+                             element.textContent = translationText;
+                         }
+                     }
+                 });
+
+                 if (shuffledQuestions.length > 0 && currentQuestionIndex < shuffledQuestions.length && !questionArea.classList.contains('hidden')) {
+                     const feedbackWasVisible = !feedbackArea.classList.contains('hidden');
+                     let originalSelectedOption = null;
+
+                     if (feedbackWasVisible) {
+                        const rationaleTextContent = rationaleText.textContent;
+                        const currentQuestion = shuffledQuestions[currentQuestionIndex];
+                        if (currentQuestion) {
+                            originalSelectedOption = currentQuestion.options.find(opt => opt.rationale[previousLang] === rationaleTextContent);
+                        }
+                     }
+
+                     loadQuestion(true);
+                     
+                     if (feedbackWasVisible && originalSelectedOption) {
+                         const buttons = optionsContainer.querySelectorAll('button.option-btn');
+                         buttons.forEach(btn => {
+                            btn.disabled = true;
+                            const optionDataText = btn.textContent;
+                            const currentOptionData = shuffledQuestions[currentQuestionIndex].options.find(opt => opt.text[lang] === optionDataText);
+                            if (currentOptionData) {
+                                if (currentOptionData.isCorrect) {
+                                    btn.classList.add('correct');
+                                }
+                                if (currentOptionData.text[lang] === originalSelectedOption.text[lang] && !originalSelectedOption.isCorrect) {
+                                    btn.classList.add('incorrect');
+                                }
+                            }
+                         });
+                         
+                         rationaleText.textContent = originalSelectedOption.rationale[lang];
+                         feedbackArea.classList.remove('hidden');
+
+                         if (currentQuestionIndex === shuffledQuestions.length - 1) {
+                              nextButton.textContent = translations.btnResults[lang];
+                         } else {
+                              nextButton.textContent = translations.btnNext[lang];
+                         }
+                     }
+                 } else if (!resultsArea.classList.contains('hidden')) {
+                      resultsArea.querySelector('h2').textContent = translations.resultsTitle[lang];
+                      resultsArea.querySelector('p[data-lang-key="resultsScore"]').textContent = translations.resultsScore[lang];
+                      restartButton.textContent = translations.btnRestart[lang];
+                 }
+
+                 if (synth.speaking || synth.pending) synth.cancel();
+                 setTimeout(setupTTSListeners, 100);
+            };
+
+            // --- Logica Modalità Accessibilità ---
+            const setA11yMode = (enabled) => {
+                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
+                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            };
+
+            // --- Event Listeners ---
+            if (langToggle) {
+                langToggle.addEventListener('click', () => {
+                    const previousLanguage = currentLanguage;
+                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                    localStorage.setItem('language', currentLanguage);
+                     if (synth.speaking || synth.pending) synth.cancel();
+                    updateLanguage(currentLanguage, previousLanguage);
+                });
+            } else { console.error("Elemento langToggle non trovato!"); }
+
+            if (accessibilityToggle) {
+                 accessibilityToggle.addEventListener('click', () => {
+                    const isEnabled = body.classList.contains('dsa-mode');
+                    setA11yMode(!isEnabled);
+                });
+            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+
+             nextButton.addEventListener('click', () => {
+                 currentQuestionIndex++;
+                 if (currentQuestionIndex < shuffledQuestions.length) {
+                     loadQuestion();
+                 } else {
+                     showResults();
+                 }
+             });
+
+             restartButton.addEventListener('click', startQuiz);
+
+            // --- Inizializzazione ---
+            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
+            populateVoices();
+             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                 speechSynthesis.onvoiceschanged = populateVoices;
+             }
+            startQuiz(); // Avvia il quiz
+            updateLanguage(currentLanguage); // Applica lingua iniziale e setup
+
+        });
+    </script>
+
+</body>
+</html>
+
