@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titolo specifico per questa pagina -->
+    <title>Esami Collaterali: Apparato Tegumentario - Semeiotica Vet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stili Generali e dal Template */
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .section-nav-link {
+            transition: background-color 0.3s, color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+        .section-nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .section-nav-link.active {
+             background-color: white;
+             color: #1E3A8A;
+             cursor: default;
+        }
+        .content-card {
+             background-color: white;
+             border-radius: 0.75rem;
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+             padding: 1.5rem;
+             margin-top: 2rem;
+        }
+        @media (min-width: 768px) { /* md: */
+            .content-card { padding: 2.5rem; }
+        }
+        #page-header { position: static; }
+        .scrollable-nav {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .scrollable-nav::-webkit-scrollbar { display: none; }
+        
+        /* Stili Specifici del Riassunto */
+        #main-content h1, #main-content h2, #main-content h3 { color: #0d47a1; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 2em; }
+        #main-content h1 { text-align: center; font-size: 2.2em; border-bottom: 3px solid #0d47a1; }
+        #main-content h2 { font-size: 1.5rem; /* text-2xl */ }
+        #main-content h3 { font-size: 1.25rem; /* text-xl */ color: #1565c0; border-bottom: none; font-weight: 600; margin-bottom: 0.5rem; }
+        #main-content ul { padding-left: 20px; list-style-type: disc; margin-top: 1rem; margin-bottom: 1rem;}
+         #main-content ul ul { margin-top: 0.5rem; margin-bottom: 0.5rem;}
+        #main-content li { margin-bottom: 10px; }
+        #main-content strong { color: #1565c0; }
+        #main-content .section-block { background-color: #f0f9ff; /* sky-50 */ border-left: 5px solid #0ea5e9; /* sky-500 */ padding: 15px 20px; margin: 20px 0; border-radius: 5px; }
+
+        /* DSA Mode Styles */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
+        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
+        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
+        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
+        .dsa-mode #main-content h1, .dsa-mode #main-content h2, .dsa-mode #main-content h3, .dsa-mode #main-content p, .dsa-mode #main-content li, .dsa-mode #main-content strong { color: #34495e !important; }
+        .dsa-mode #main-content .section-block { background-color: #fefcf7 !important; border-left-color: #5a738e; }
+
+        /* TTS Button Styles */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+        .dsa-mode .tts-button { color: #5a738e !important; }
+
+        /* Print Styles */
+        @media print {
+            body { background-color: #fff; margin: 0; padding: 0; font-family: sans-serif; font-size: 11pt; color: #000; }
+            #page-header, #main-footer, #print-button, .tts-button { display: none; }
+            .container { max-width: 100%; padding: 1cm; box-shadow: none; border: none; margin: 0; }
+            .content-card { box-shadow: none; border: none; padding: 0; margin: 0; }
+            #main-content h1, #main-content h2, #main-content h3 { color: #000 !important; border-color: #ccc; margin-top: 1.5em; page-break-after: avoid; }
+            #main-content h1 { font-size: 18pt; text-align: left; }
+            #main-content h2 { font-size: 14pt; }
+            #main-content h3 { font-size: 12pt; border-bottom: none; padding-bottom: 0; margin-bottom: 0.5rem;}
+            #main-content ul { padding-left: 25px; }
+            #main-content li { margin-bottom: 5px; }
+            #main-content strong { color: #000 !important; font-weight: bold; }
+            #main-content .section-block { border: 1px solid #ccc; padding: 10px; margin: 10px 0; background-color: #f9f9f9 !important; page-break-inside: avoid; }
+            div[data-lang-key] { page-break-inside: avoid; margin-bottom: 1.5rem;}
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
+    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
+        <div class="container mx-auto px-6 py-3">
+            <!-- Riga Superiore: Torna all'indice + Controlli -->
+            <div class="flex justify-between items-center mb-4">
+                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
+                 </a>
+                 <div class="flex items-center space-x-2">
+                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
+                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
+                 </div>
+            </div>
+
+            <!-- Titolo della Sezione -->
+            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleTegu">10. Apparato Tegumentario</h1>
+
+            <!-- Navigazione Interna alla Sezione -->
+            <nav class="scrollable-nav">
+                 <div class="flex space-x-2 pb-2">
+                     <a href="riassunto_tegumentario.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_tegumentario.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_tegumentario.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_tegumentario.html" class="section-nav-link active" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_tegumentario.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                     <a href="riassunto_tegumentario.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
+                </div>
+            </nav>
+
+        </div>
+    </header>
+    <!-- === FINE HEADER === -->
+
+    <!-- Main Content Container -->
+    <main class="container mx-auto p-4 md:px-8 md:py-12">
+        <!-- Card Contenuto -->
+        <div id="main-content" class="content-card">
+
+             <!-- Contenuto Specifico Esami Collaterali -->
+            <h1 data-lang-key="pageTitle"></h1>
+            <p class="section-block" data-lang-key="introText"></p>
+
+            <div data-lang-key="sectionSemeiotic"></div>
+            <div data-lang-key="sectionMicrobiology"></div>
+            <div data-lang-key="sectionBiopsy"></div>
+            <div data-lang-key="sectionAllergy"></div>
+            <div data-lang-key="sectionBlood"></div>
+            <!-- Fine Contenuto Specifico -->
+
+            <!-- Bottone Stampa -->
+            <div class="mt-12 text-center">
+                 <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center" data-lang-key="btnPrint">
+                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                     <span data-lang-key="btnPrintText">Stampa</span>
+                 </button>
+             </div>
+
+        </div> <!-- Fine content-card -->
+    </main>
+
+    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-6 py-4 text-center">
+            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+             const speakerIconLarge = `<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
+             const speakerIconSmall = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
+             const speakerIconH2 = `<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
+
+            // === TRADUZIONI ===
+            const translations = {
+                // --- Header ---
+                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                sectionTitleTegu: { it: '10. Apparato Tegumentario', en: '10. Integumentary System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navAudio: { it: 'Audio', en: 'Audio' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                // --- Contenuto Pagina ---
+                 pageTitle: { it: `Esami Collaterali: Apparato Tegumentario ${speakerIconLarge}`, en: `Ancillary Exams: Integumentary System ${speakerIconLarge}` },
+                 introText: { it: `L'esame clinico e le metodiche semeiologiche (raschiato, citologia) permettono di formulare una lista di diagnosi differenziali. Gli esami collaterali servono a confermare l'agente eziologico o la patogenesi della malattia. ${speakerIconSmall}`, en: `The clinical exam and semeiotic methods (scrape, cytology) allow for formulating a differential diagnosis list. Ancillary exams are used to confirm the etiologic agent or pathogenesis of the disease. ${speakerIconSmall}` },
+                 sectionSemeiotic: {
+                     it: `<h2>1. Test Semeiologici (Già discussi)${speakerIconH2}</h2>
+                         <p>Questi test sono la prima linea diagnostica eseguita direttamente sull'animale e sono stati trattati nel riassunto:</p>
+                         <ul>
+                             <li><strong>Raschiato Cutaneo:</strong> Per acari (es. <i>Sarcoptes</i>, <i>Chorioptes</i>).</li>
+                             <li><strong>Scotch Test:</strong> Per parassiti superficiali (es. pidocchi, <i>Oxyuris</i>).</li>
+                             <li><strong>Esame Tricoscopico:</strong> Per spore fungine (dermatofitosi) o anomalie del pelo.</li>
+                             <li><strong>Lampada di Wood:</strong> Per screening di alcuni dermatofiti.</li>
+                             <li><strong>Esame Citologico:</strong> Per identificare batteri, lieviti (<i>Malassezia</i>) e cellule infiammatorie.</li>
+                         </ul>`,
+                     en: `<h2>1. Semeiotic Tests (Previously Discussed)${speakerIconH2}</h2>
+                         <p>These tests are the first diagnostic line performed directly on the animal and were covered in the summary:</p>
+                         <ul>
+                             <li><strong>Skin Scrape:</strong> For mites (e.g., <i>Sarcoptes</i>, <i>Chorioptes</i>).</li>
+                             <li><strong>Tape Prep:</strong> For superficial parasites (e.g., lice, <i>Oxyuris</i>).</li>
+                             <li><strong>Trichoscopy:</strong> For fungal spores (dermatophytosis) or hair abnormalities.</li>
+                             <li><strong>Wood's Lamp:</strong> For screening some dermatophytes.</li>
+                             <li><strong>Cytology:</strong> To identify bacteria, yeast (<i>Malassezia</i>), and inflammatory cells.</li>
+                         </ul>`
+                 },
+                 sectionMicrobiology: {
+                     it: `<h2>2. Esami Microbiologici${speakerIconH2}</h2>
+                         <p>Servono a identificare in modo definitivo gli agenti infettivi.</p>
+                         <ul>
+                             <li><strong>Esame Colturale Fungino (Dermatofiti):</strong> Campioni di pelo e scaglie vengono posti su terreni specifici (es. DTM - Dermatophyte Test Medium). La crescita di colonie specifiche (spesso con viraggio di colore del terreno) conferma la <strong>dermatofitosi</strong> (tigna).</li>
+                             <li><strong>Esame Colturale Batterico e Antibiogramma:</strong> Essenziale in caso di infezioni cutanee profonde (piodermiti) o che non rispondono alla terapia antibiotica iniziale. Identifica il batterio e testa la sua sensibilità agli antibiotici.</li>
+                         </ul>`,
+                     en: `<h2>2. Microbiological Exams${speakerIconH2}</h2>
+                         <p>Used to definitively identify infectious agents.</p>
+                         <ul>
+                             <li><strong>Fungal Culture (Dermatophyte):</strong> Hair and scale samples are placed on specific media (e.g., DTM - Dermatophyte Test Medium). Growth of specific colonies (often with a color change in the medium) confirms <strong>dermatophytosis</strong> (ringworm).</li>
+                             <li><strong>Bacterial Culture and Sensitivity:</strong> Essential for deep skin infections (pyoderma) or those unresponsive to initial antibiotic therapy. It identifies the bacterium and tests its sensitivity to antibiotics.</li>
+                         </ul>`
+                 },
+                 sectionBiopsy: {
+                     it: `<h2>3. Biopsia Cutanea (Esame Istopatologico)${speakerIconH2}</h2>
+                         <p>È il "gold standard" per la diagnosi di molte malattie dermatologiche complesse, specialmente quelle non infettive.</p>
+                         <ul>
+                             <li><strong>Procedura:</strong> Si preleva un campione di pelle (spesso con un "punch" bioptico) in anestesia locale, includendo il margine della lesione e la pelle sana.</li>
+                             <li><strong>Indicazioni:</strong>
+                                 <ul>
+                                     <li>Sospette malattie <strong>autoimmuni</strong> (es. Pemfigo foliaceo).</li>
+                                     <li>Sospette <strong>neoplasie</strong> (tumori cutanei).</li>
+                                     <li>Infiammazioni nodulari o granulomatose di origine sconosciuta.</li>
+                                     <li>Dermatiti che non rispondono a nessuna terapia.</li>
+                                 </ul>
+                             </li>
+                         </ul>`,
+                     en: `<h2>3. Skin Biopsy (Histopathology)${speakerIconH2}</h2>
+                         <p>This is the "gold standard" for diagnosing many complex dermatological diseases, especially non-infectious ones.</p>
+                         <ul>
+                             <li><strong>Procedure:</strong> A skin sample is collected (often with a biopsy punch) under local anesthesia, including the lesion margin and healthy skin.</li>
+                             <li><strong>Indications:</strong>
+                                 <ul>
+                                     <li>Suspected <strong>autoimmune</strong> diseases (e.g., Pemphigus foliaceus).</li>
+                                     <li>Suspected <strong>neoplasia</strong> (skin tumors).</li>
+                                     <li>Nodular or granulomatous inflammations of unknown origin.</li>
+                                     <li>Dermatitis unresponsive to any therapy.</li>
+                                 </ul>
+                             </li>
+                         </ul>`
+                 },
+                 sectionAllergy: {
+                     it: `<h2>4. Test Allergologici${speakerIconH2}</h2>
+                         <p>Utilizzati per identificare la causa di dermatiti pruriginose croniche (ipersensibilità).</p>
+                         <ul>
+                             <li><strong>Intradermoreazione (Skin Prick Test):</strong> Si inietta una piccola quantità di allergeni (pollini, muffe, insetti) sotto la pelle e si valuta la reazione (pomfo). Utilizzato per allergie ambientali (atopia).</li>
+                             <li><strong>Test Sierologici (Dosaggio IgE):</strong> Misurano gli anticorpi IgE specifici per allergeni nel sangue. Meno affidabili dell'intradermoreazione ma più facili da eseguire.</li>
+                             <li><strong>Dieta ad Eliminazione:</strong> L'unico test affidabile per diagnosticare un'<strong>allergia alimentare</strong>. Consiste nel fornire una dieta con fonti proteiche e carboidratiche mai incontrate prima per 8-12 settimane.</li>
+                         </ul>`,
+                     en: `<h2>4. Allergy Testing${speakerIconH2}</h2>
+                         <p>Used to identify the cause of chronic pruritic dermatitis (hypersensitivity).</p>
+                         <ul>
+                             <li><strong>Intradermal Skin Testing:</strong> A small amount of allergens (pollens, molds, insects) is injected under the skin and the reaction (wheal) is assessed. Used for environmental allergies (atopy).</li>
+                             <li><strong>Serology (IgE Assay):</strong> Measures specific IgE antibodies to allergens in the blood. Less reliable than skin testing but easier to perform.</li>
+                             <li><strong>Elimination Diet:</strong> The only reliable test for diagnosing a <strong>food allergy</strong>. It involves feeding a diet with novel protein and carbohydrate sources for 8-12 weeks.</li>
+                         </ul>`
+                 },
+                 sectionBlood: {
+                     it: `<h2>5. Esami del Sangue${speakerIconH2}</h2>
+                         <p>Utili per identificare cause sistemiche o endocrine che si manifestano con sintomi cutanei.</p>
+                         <ul>
+                             <li><strong>Esame Emocromocitometrico (CBC):</strong> Si ricerca <strong>eosinofilia</strong> (comune in allergie e parassitosi).</li>
+                             <li><strong>Profilo Biochimico:</strong> Si ricercano segni di malattie endocrine (es. iperglicemia, iperinsulinemia in EMS; ACTH elevato in PPID) che possono causare problemi cutanei secondari (es. laminite, irsutismo).</li>
+                         </ul>`,
+                     en: `<h2>5. Blood Tests${speakerIconH2}</h2>
+                         <p>Useful for identifying systemic or endocrine causes manifesting with skin symptoms.</p>
+                         <ul>
+                             <li><strong>Complete Blood Count (CBC):</strong> Look for <strong>eosinophilia</strong> (common in allergies and parasitic infections).</li>
+                             <li><strong>Biochemical Profile:</strong> Look for signs of endocrine diseases (e.g., hyperglycemia, hyperinsulinemia in EMS; high ACTH in PPID) that can cause secondary skin problems (e.g., laminitis, hirsutism).</li>
+                         </ul>`
+                 },
+                 btnPrint: { it: 'Stampa', en: 'Print' },
+                 btnPrintText: { it: 'Stampa', en: 'Print' },
+                // --- Footer ---
+                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+            };
+
+             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
+             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const accessibilityToggle = document.getElementById('accessibility-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+            let voices = [];
+
+            // --- Logica TTS ---
+             function populateVoiceList() {
+                 if (typeof speechSynthesis !== 'undefined') {
+                     voices = synth.getVoices();
+                 }
+            }
+             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                 speechSynthesis.onvoiceschanged = populateVoiceList;
+             }
+             populateVoiceList();
+
+             function speak(text, button) {
+                 const isSameButton = activeTTSButton === button;
+                 if (synth.speaking && isSameButton) {
+                     if (synth.paused) { synth.resume(); button.classList.add('playing'); }
+                     else { synth.pause(); button.classList.remove('playing'); }
+                 } else {
+                     if (synth.speaking) {
+                         if (currentUtterance) currentUtterance.onend = null;
+                         if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                         synth.cancel();
+                     }
+                     setTimeout(() => startSpeaking(text, button), 50);
+                 }
+             }
+             function startSpeaking(text, button) {
+                  if (!text || typeof text !== 'string' || !text.trim()) {
+                    console.error("Testo non valido per TTS:", text);
+                    return;
+                 }
+                 const tempDiv = document.createElement('div');
+                 tempDiv.innerHTML = text;
+                 const ttsIconToRemove = tempDiv.querySelector('.tts-button');
+                 if(ttsIconToRemove) ttsIconToRemove.remove();
+                 const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+                 if (!cleanText.trim()) {
+                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                    return;
+                 }
+
+                 currentUtterance = new SpeechSynthesisUtterance(cleanText);
+                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                 currentUtterance.onend = () => { if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
+                 currentUtterance.onerror = (event) => { 
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error("Errore TTS:", event.error); 
+                    }
+                    if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } 
+                 };
+                 synth.speak(currentUtterance);
+                 if (activeTTSButton && activeTTSButton !== button) { activeTTSButton.classList.remove('playing'); }
+                 activeTTSButton = button;
+                 button.classList.add('playing');
+             }
+             function setupTTSListeners() {
+                 document.querySelectorAll('.tts-button').forEach(button => {
+                     const newButton = button.cloneNode(true);
+                     button.parentNode.replaceChild(newButton, button);
+                     newButton.addEventListener('click', (e) => {
+                         e.stopPropagation();
+                         const parentElement = newButton.parentNode;
+                         let textToRead = '';
+                         let key = parentElement.dataset.langKey; 
+
+                         if (parentElement.tagName === 'H1' || parentElement.tagName === 'P') {
+                             key = parentElement.dataset.langKey;
+                         } else if (parentElement.tagName === 'H2') {
+                             const container = parentElement.closest('[data-lang-key]');
+                             if(container) key = container.dataset.langKey;
+                         }
+
+                         if (key && translations[key] && translations[key][currentLanguage]) {
+                             textToRead = translations[key][currentLanguage];
+                             if (textToRead) {
+                                 speak(textToRead, newButton);
+                             } else { console.warn("Testo vuoto per TTS per la chiave:", key); }
+                         } else { console.warn("Nessuna traduzione trovata per TTS per il pulsante:", newButton, "Key:", key); }
+                     });
+                 });
+             }
+
+            // --- Funzione Aggiornamento Lingua ---
+            const updateLanguage = (lang, previousLang = null) => {
+                 document.documentElement.lang = lang;
+                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+
+                 document.querySelectorAll('[data-lang-key]').forEach(element => {
+                     const key = element.dataset.langKey;
+                     if (translations[key] && translations[key][lang]) {
+                         const translationText = translations[key][lang];
+
+                         if (key === 'footerText' || key === 'backToIndex' || key === 'btnDownloadAudio') {
+                              const svgIcon = element.querySelector('svg');
+                              element.innerHTML = translationText;
+                              if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
+                                   element.insertBefore(svgIcon, element.firstChild);
+                              }
+                         }
+                         else if (key === 'btnPrint') {
+                              const svgIcon = element.querySelector('svg');
+                              const textSpan = element.querySelector('span[data-lang-key="btnPrintText"]');
+                              if (textSpan) { textSpan.textContent = translations['btnPrintText'][lang]; }
+                              else {
+                                  element.innerHTML = translationText;
+                                   if (svgIcon) element.insertBefore(svgIcon, element.firstChild);
+                              }
+                               element.setAttribute('aria-label', translationText);
+                         }
+                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
+                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
+                             const sectionKey = currentSectionKey || key;
+                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
+                         }
+                         else if (element.id === 'main-content' || element.closest('#main-content')) { 
+                             element.innerHTML = translationText; 
+                         }
+                         else { element.textContent = translationText; }
+                     }
+                 });
+
+                 // Reset TTS
+                 if (synth.speaking || synth.pending) synth.cancel();
+                 if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                 activeTTSButton = null;
+                 setTimeout(setupTTSListeners, 50);
+            };
+
+            // --- Logica Modalità Accessibilità ---
+            const setA11yMode = (enabled) => {
+                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
+                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            };
+
+            // --- Event Listeners ---
+            if (langToggle) {
+                langToggle.addEventListener('click', () => {
+                    const previousLanguage = currentLanguage;
+                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                    localStorage.setItem('language', currentLanguage);
+                     if (synth.speaking || synth.pending) synth.cancel();
+                     updateLanguage(currentLanguage, previousLanguage);
+                });
+            } else { console.error("Elemento langToggle non trovato!"); }
+
+            if (accessibilityToggle) {
+                 accessibilityToggle.addEventListener('click', () => {
+                    const isEnabled = body.classList.contains('dsa-mode');
+                    setA11yMode(!isEnabled);
+                });
+            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+
+            // --- Inizializzazione ---
+            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
+            populateVoiceList();
+             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+                 speechSynthesis.onvoiceschanged = populateVoiceList;
+             }
+            updateLanguage(currentLanguage);
+
+        });
+    </script>
+
+</body>
+</html>
