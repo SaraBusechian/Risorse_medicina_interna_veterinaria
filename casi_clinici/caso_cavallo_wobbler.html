@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caso Clinico: Cavallo (Wobbler)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f9ff; }
+        .step-card { display: none; }
+        .step-card.active { display: block; }
+        .option-button { transition: all 0.2s; }
+        .option-button:disabled:not(.correct) { opacity: 0.6; cursor: not-allowed; }
+        .option-button.correct { background-color: #10b981; color: white; border-color: #059669; }
+        .option-button.incorrect { background-color: #ef4444; color: white; border-color: #dc2626; }
+        .tts-button { cursor: pointer; display: inline-flex; align-items: center; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #0369a1; }
+        
+        .quiz-option.correct-answer { background-color: #d1fae5 !important; border-radius: 0.5rem; }
+        .quiz-option.incorrect-answer { background-color: #fee2e2 !important; border-radius: 0.5rem; }
+        
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #34495e;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+    </style>
+</head>
+<body class="text-slate-800">
+    <header id="main-header" class="bg-sky-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Caso Clinico: Mielopatia Cervicale Equina</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+            
+            <div id="case-container">
+                <!-- Steps will be dynamically shown here -->
+            </div>
+
+            <div id="navigation-buttons" class="mt-8 flex justify-between">
+                <button id="prev-btn" class="bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition" disabled>
+                    <span data-lang-key="prevBtn">Precedente</span>
+                </button>
+                <a id="back-to-index-btn" href="index.html" class="hidden bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition">
+                     <span data-lang-key="backToIndex">Torna all'Indice dei Casi</span>
+                </a>
+                <button id="next-btn" class="bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition">
+                    <span data-lang-key="nextBtn">Prosegui</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TRADUZIONI ---
+            const translations = {
+                siteTitle: { it: "Caso Clinico: Mielopatia Cervicale Equina", en: "Clinical Case: Equine Cervical Myelopathy" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                prevBtn: { it: "Precedente", en: "Previous" },
+                nextBtn: { it: "Prosegui", en: "Continue" },
+                submitBtn: { it: "Verifica Risposte", en: "Check Answers" },
+                resultsTitle: { it: "Quiz Finale - Rivediamo i Concetti Chiave", en: "Final Quiz - Let's Review the Key Concepts" },
+                backToIndex: { it: "Torna all'Indice dei Casi", en: "Back to Case Index" },
+
+                // Step 1: Presentazione
+                step1Title: { it: "Presentazione del Caso", en: "Case Presentation" },
+                step1Content: { it: `<p>Vieni chiamato a visitare un <strong>Purosangue Inglese maschio di 2 anni</strong> in un allevamento. L'allenatore riferisce un <strong>calo di performance</strong> e nota che il cavallo "inciampa spesso" con i posteriori. Durante una recente sessione, il cavallo è quasi caduto in <strong>curva stretta</strong>. All'esame, noti un'<strong>atassia simmetrica</strong>, più pronunciata sugli arti posteriori.</p>`, en: `<p>You are called to examine a <strong>2-year-old Thoroughbred colt</strong> at a breeding farm. The trainer reports <strong>poor performance</strong> and notes the horse "stumbles frequently" behind. During a recent session, the horse nearly fell on a <strong>tight turn</strong>. On examination, you note <strong>symmetric ataxia</strong>, more pronounced in the hind limbs.</p>`},
+                
+                // Step 2: Q1 (Tail Pull)
+                step2Title: { it: "Domanda 1: Esame Neurologico", en: "Question 1: Neurological Exam" },
+                step2Question: { it: "Per localizzare la lesione, quale test neurologico è fondamentale per valutare l'atassia e la debolezza degli arti posteriori?", en: "To localize the lesion, which neurological test is essential for assessing ataxia and weakness in the hind limbs?" },
+                step2Options: { it: ["Riflesso palpebrale", "Test di trazione della coda (Tail pull)", "Valutazione dei nervi cranici", "Riflesso cutaneo del tronco"], en: ["Palpebral reflex", "Tail pull test", "Cranial nerve assessment", "Cutaneous trunci reflex"] },
+                step2Answer: { it: "Test di trazione della coda (Tail pull)", en: "Tail pull test" },
+                step2Feedbacks: { 
+                    it: {
+                        "Riflesso palpebrale": "Valuta i nervi cranici V e VII, utili per una lesione cerebrale, ma non per l'atassia degli arti.",
+                        "Test di trazione della coda (Tail pull)": "Corretto. Tirando lateralmente la coda mentre il cavallo cammina, si valuta la sua capacità di resistere e correggere lo squilibrio. Un cavallo con debolezza dei posteriori (paresi) viene spostato facilmente.",
+                        "Valutazione dei nervi cranici": "Importante per escludere un problema cerebrale, ma non è il test principale per l'atassia degli arti.",
+                        "Riflesso cutaneo del tronco": "Valuta i segmenti spinali toraco-lombari, ma il 'tail pull' è più specifico per la debolezza motoria (paresi) degli arti posteriori."
+                    },
+                    en: {
+                        "Palpebral reflex": "Assesses cranial nerves V and VII, useful for a brain lesion, but not for limb ataxia.",
+                        "Tail pull test": "Correct. By pulling the tail laterally as the horse walks, you assess its ability to resist and correct the imbalance. A horse with hind limb weakness (paresis) is easily pulled off balance.",
+                        "Cranial nerve assessment": "Important to rule out a brain problem, but not the primary test for limb ataxia.",
+                        "Cutaneous trunci reflex": "Assesses thoracolumbar spinal segments, but the tail pull is more specific for motor weakness (paresis) of the hind limbs."
+                    }
+                },
+
+                // Step 3: Risultati Esame
+                step3Title: { it: "Risultati dell'Esame", en: "Exam Findings" },
+                step3Content: { it: `<p>L'esame neurologico conferma: <strong>atassia e debolezza di grado 2/5</strong> su tutti e quattro gli arti, ma <strong>peggiore sui posteriori</strong>. Il test di trazione della coda è positivo (facile da spostare). I nervi cranici appaiono normali. Il cavallo non sembra dolente alla palpazione del collo.</p>`, en: `<p>The neurological exam confirms: <strong>Grade 2/5 ataxia and weakness</strong> in all four limbs, but <strong>worse in the hind limbs</strong>. The tail pull test is positive (easy to displace). Cranial nerves appear normal. The horse shows no pain on cervical palpation.</p>`},
+
+                // Step 4: Q2 (Localizzazione)
+                step4Title: { it: "Domanda 2: Localizzazione della Lesione", en: "Question 2: Lesion Localization" },
+                step4Question: { it: "Un'atassia simmetrica e debolezza su tutti e quattro gli arti, peggiore sui posteriori, indica una lesione in quale segmento?", en: "Symmetric ataxia and weakness in all four limbs, worse in the hind limbs, indicates a lesion in which segment?" },
+                step4Options: { it: ["Cervello (es. cerebello)", "Midollo spinale cervicale (C1-T2)", "Midollo spinale toraco-lombare (T3-L3)", "Nervi periferici"], en: ["Brain (e.g., cerebellum)", "Cervical spinal cord (C1-T2)", "Thoracolumbar spinal cord (T3-L3)", "Peripheral nerves"] },
+                step4Answer: { it: "Midollo spinale cervicale (C1-T2)", en: "Cervical spinal cord (C1-T2)" },
+                step4Feedbacks: {
+                    it: {
+                        "Cervello (es. cerebello)": "Una lesione cerebellare causa atassia, ma spesso senza debolezza (paresi).",
+                        "Midollo spinale cervicale (C1-T2)": "Corretto. Le lesioni in questo tratto colpiscono i motoneuroni superiori (UMN) di tutti e quattro gli arti, causando debolezza e atassia. I posteriori sono spesso più colpiti perché i loro tratti nervosi sono più superficiali.",
+                        "Midollo spinale toraco-lombare (T3-L3)": "Errato. Una lesione qui colpirebbe *solo* gli arti posteriori; gli anteriori sarebbero normali.",
+                        "Nervi periferici": "Improbabile. Una lesione dei nervi periferici causerebbe debolezza dei motoneuroni inferiori (LMN) e atrofia, e raramente sarebbe così simmetrica."
+                    },
+                    en: {
+                        "Brain (e.g., cerebellum)": "A cerebellar lesion causes ataxia, but often without weakness (paresis).",
+                        "Cervical spinal cord (C1-T2)": "Correct. Lesions in this tract affect the upper motor neurons (UMN) for all four limbs, causing weakness and ataxia. The hind limbs are often worse because their nerve tracts are more superficial.",
+                        "Thoracolumbar spinal cord (T3-L3)": "Incorrect. A lesion here would affect *only* the hind limbs; the forelimbs would be normal.",
+                        "Peripheral nerves": "Unlikely. A peripheral nerve lesion would cause lower motor neuron (LMN) weakness and atrophy, and would rarely be this symmetrical."
+                    }
+                },
+
+                // Step 5: Q3 (DDx) - NUOVA
+                step5Title: { it: "Domanda 3: Diagnosi Differenziali", en: "Question 3: Differential Diagnoses" },
+                step5Question: { it: "Data la localizzazione cervicale, qual è la diagnosi differenziale più probabile in un cavallo di 2 anni con atassia simmetrica, cronica e non febbrile?", en: "Given the cervical localization, what is the most likely differential diagnosis in a 2-year-old, non-febrile horse with chronic, symmetric ataxia?" },
+                step5Options: { it: ["Mielopatia Stenotica Vertebrale Cervicale (Wobbler)", "Mieloencefalite EHV-1", "Mieloencefalopatia Degenerativa Equina (EDM)", "Trauma cervicale acuto"], en: ["Cervical Vertebral Stenotic Myelopathy (Wobbler)", "EHV-1 Myeloencephalitis", "Equine Degenerative Myeloencephalopathy (EDM)", "Acute cervical trauma"] },
+                step5Answer: { it: "Mielopatia Stenotica Vertebrale Cervicale (Wobbler)", en: "Cervical Vertebral Stenotic Myelopathy (Wobbler)" },
+                step5Feedbacks: {
+                    it: {
+                        "Mielopatia Stenotica Vertebrale Cervicale (Wobbler)": "Corretto. L'età (giovane, in crescita), la razza (Purosangue) e i segni (atassia simmetrica, peggiore sui posteriori) sono la presentazione classica.",
+                        "Mieloencefalite EHV-1": "Possibile, ma di solito è associata a febbre, atassia dei posteriori e paralisi della vescica. Il decorso è più acuto.",
+                        "Mieloencefalopatia Degenerativa Equina (EDM)": "Possibile, causa atassia simmetrica, ma è meno comune della Wobbler e la diagnosi è definitiva solo post-mortem.",
+                        "Trauma cervicale acuto": "Possibile, ma l'anamnesi non riporta un trauma evidente e i segni (spesso asimmetrici) avrebbero un esordio acuto, non cronico."
+                    },
+                    en: {
+                        "Cervical Vertebral Stenotic Myelopathy (Wobbler)": "Correct. The age (young, growing), breed (Thoroughbred), and signs (symmetric ataxia, worse behind) are the classic presentation.",
+                        "EHV-1 Myeloencephalitis": "Possible, but usually associated with fever, hind limb ataxia, and bladder paralysis. The onset is more acute.",
+                        "Equine Degenerative Myeloencephalopathy (EDM)": "Possible, causes symmetric ataxia, but is less common than Wobbler and diagnosis is definitive only post-mortem.",
+                        "Acute cervical trauma": "Possible, but the history does not report an obvious trauma and signs (often asymmetric) would have an acute onset, not chronic."
+                    }
+                },
+
+                // Step 6: Q4 (Fattori di rischio)
+                step6Title: { it: "Domanda 4: Fattori di Rischio", en: "Question 4: Risk Factors" },
+                step6Question: { it: "Quale fattore gestionale è più spesso associato allo sviluppo della MCVS in cavalli giovani?", en: "Which management factor is most often associated with the development of CVSM in young horses?" },
+                step6Options: { it: ["Esercizio fisico insufficiente", "Eccessiva esposizione al sole", "Dieta ad alto contenuto energetico (eccesso di carboidrati) e squilibri minerali", "Scarsa igiene della lettiera"], en: ["Insufficient exercise", "Excessive sun exposure", "High-energy diet (excess carbohydrates) and mineral imbalances", "Poor bedding hygiene"] },
+                step6Answer: { it: "Dieta ad alto contenuto energetico (eccesso di carboidrati) e squilibri minerali", en: "High-energy diet (excess carbohydrates) and mineral imbalances" },
+                step6Feedbacks: {
+                    it: {
+                        "Esercizio fisico insufficiente": "Non è considerato un fattore causale primario.",
+                        "Eccessiva esposizione al sole": "Non correlato.",
+                        "Dieta ad alto contenuto energetico (eccesso di carboidrati) e squilibri minerali": "Corretto. Una crescita troppo rapida, diete ipercaloriche e squilibri (es. basso Rame, alto Zinco) sono fortemente implicati nella malattia ortopedica dello sviluppo (DOD), inclusa la MCVS.",
+                        "Scarsa igiene della lettiera": "Non correlato."
+                    },
+                    en: {
+                        "Insufficient exercise": "Not considered a primary causal factor.",
+                        "Excessive sun exposure": "Unrelated.",
+                        "High-energy diet (excess carbohydrates) and mineral imbalances": "Correct. Excessively rapid growth, high-calorie diets, and imbalances (e.g., low Copper, high Zinc) are strongly implicated in developmental orthopedic disease (DOD), including CVSM.",
+                        "Poor bedding hygiene": "Unrelated."
+                    }
+                },
+
+                // Step 7: Q5 (Rapporto sagittale)
+                step7Title: { it: "Domanda 5: Radiografie Semplici", en: "Question 5: Plain Radiographs" },
+                step7Question: { it: "Prima della mielografia, si eseguono radiografie semplici del collo. Quale misurazione oggettiva si usa per suggerire una stenosi ossea?", en: "Before myelography, plain neck radiographs are taken. What objective measurement is used to suggest bony stenosis?" },
+                step7Options: { it: ["La lunghezza totale del collo", "Il 'rapporto sagittale' (diametro minimo del canale / larghezza del corpo vertebrale)", "L'angolazione tra le vertebre", "La densità ossea"], en: ["The total length of the neck", "The 'sagittal ratio' (minimum canal diameter / width of the vertebral body)", "The angulation between vertebrae", "The bone density"] },
+                step7Answer: { it: "Il 'rapporto sagittale' (diametro minimo del canale / larghezza del corpo vertebrale)", en: "The 'sagittal ratio' (minimum canal diameter / width of the vertebral body)" },
+                step7Feedbacks: {
+                    it: {
+                        "La lunghezza totale del collo": "Non diagnostico.",
+                        "Il 'rapporto sagittale' (diametro minimo del canale / larghezza del corpo vertebrale)": "Corretto. Un rapporto inferiore a certi valori (es. <50-52% per C4-C6) è altamente suggestivo di stenosi e giustifica il passaggio alla mielografia.",
+                        "L'angolazione tra le vertebre": "Importante per l'instabilità, ma il rapporto è la misurazione standard per la stenosi.",
+                        "La densità ossea": "Non pertinente per la stenosi."
+                    },
+                    en: {
+                        "The total length of the neck": "Not diagnostic.",
+                        "The 'sagittal ratio' (minimum canal diameter / width of the vertebral body)": "Correct. A ratio below certain values (e.g., <50-52% for C4-C6) is highly suggestive of stenosis and warrants proceeding to myelography.",
+                        "The angulation between vertebrae": "Important for instability, but the ratio is the standard measurement for stenosis.",
+                        "The bone density": "Not relevant for stenosis."
+                    }
+                },
+
+                // Step 8: Q6 (Mielografia)
+                step8Title: { it: "Domanda 6: Diagnostica per Immagini", en: "Question 6: Diagnostic Imaging" },
+                step8Question: { it: "Qual è l'esame diagnostico 'gold standard' per confermare visivamente una compressione del midollo spinale cervicale?", en: "What is the 'gold standard' diagnostic test to visually confirm spinal cord compression in the neck?" },
+                step8Options: { it: ["Ecografia del collo", "Radiografie semplici del collo", "Radiografie cervicali con mielografia", "Tomografia computerizzata (TC) della testa"], en: ["Ultrasound of the neck", "Plain cervical radiographs", "Cervical radiographs with myelography", "Computed tomography (CT) of the head"] },
+                step8Answer: { it: "Radiografie cervicali con mielografia", en: "Cervical radiographs with myelography" },
+                step8Feedbacks: {
+                    it: {
+                        "Ecografia del collo": "Inutile per visualizzare il midollo spinale.",
+                        "Radiografie semplici del collo": "Utili per una diagnosi *presuntiva* (mostrano la malformazione ossea o l'instabilità), ma non mostrano la compressione.",
+                        "Radiografie cervicali con mielografia": "Corretto. Iniettando mezzo di contrasto nello spazio subaracnoideo, la mielografia permette di visualizzare direttamente la compressione del midollo spinale.",
+                        "Tomografia computerizzata (TC) della testa": "Utile per la testa, ma la lesione è nel collo. Una Mielo-TC sarebbe ottima, ma la Mielografia standard è ancora il gold standard."
+                    },
+                    en: {
+                        "Ultrasound of the neck": "Useless for visualizing the spinal cord.",
+                        "Plain cervical radiographs": "Useful for a *presumptive* diagnosis (they show bone malformation or instability), but they do not show the compression.",
+                        "Cervical radiographs with myelography": "Correct. By injecting contrast medium into the subarachnoid space, myelography allows direct visualization of spinal cord compression.",
+                        "Computed tomography (CT) of the head": "Useful for the head, but the lesion is in the neck. A Myelo-CT would be excellent, but standard Myelography is still the gold standard."
+                    }
+                },
+
+                // Step 9: Risultati Mielo
+                step9Title: { it: "Risultati della Mielografia", en: "Myelography Results" },
+                step9Content: { it: `<p>Le radiografie semplici mostrano un rapporto sagittale ridotto a C5/C6 e C6/C7. La mielografia conferma una <strong>stenosi statica</strong> (presente sia in flessione che in estensione) a livello C5-C6 e una <strong>stenosi dinamica</strong> (presente solo in flessione) a C4-C5.</p>`, en: `<p>Plain radiographs show a reduced sagittal ratio at C5/C6 and C6/C7. Myelography confirms <strong>static stenosis</strong> (present in both flexion and extension) at C5-C6 and <strong>dynamic stenosis</strong> (present only on flexion) at C4-C5.</p>`},
+
+                // Step 10: Q7 (Stenosi Dinamica)
+                step10Title: { it: "Domanda 7: Fisiopatologia", en: "Question 7: Pathophysiology" },
+                step10Question: { it: "Cosa si intende per 'stenosi dinamica'?", en: "What is meant by 'dynamic stenosis'?" },
+                step10Options: { it: ["La compressione è causata da un tumore", "La compressione si verifica solo quando il cavallo si muove", "La compressione si verifica solo quando il collo è in una posizione specifica (di solito flesso)", "La compressione è causata da un'infezione"], en: ["The compression is caused by a tumor", "The compression only occurs when the horse is moving", "The compression only occurs when the neck is in a specific position (usually flexed)", "The compression is caused by an infection"] },
+                step10Answer: { it: "La compressione si verifica solo quando il collo è in una posizione specifica (di solito flesso)", en: "The compression only occurs when the neck is in a specific position (usually flexed)" },
+                step10Feedbacks: {
+                    it: {
+                        "La compressione è causata da un tumore": "Errato. La causa è ossea (malformazione o instabilità).",
+                        "La compressione si verifica solo quando il cavallo si muove": "Impreciso. È la posizione del collo, non il movimento generale, che conta.",
+                        "La compressione si verifica solo quando il collo è in una posizione specifica (di solito flesso)": "Corretto. È tipica dell'instabilità vertebrale; quando il collo si flette, le vertebre si disallineano e comprimono il midollo.",
+                        "La compressione è causata da un'infezione": "Errato. È un problema di sviluppo/degenerativo."
+                    },
+                    en: {
+                        "The compression is caused by a tumor": "Incorrect. The cause is osseous (malformation or instability).",
+                        "The compression only occurs when the horse is moving": "Imprecise. It is the neck's position, not general movement, that matters.",
+                        "The compression only occurs when the neck is in a specific position (usually flexed)": "Correct. This is typical of vertebral instability; when the neck flexes, the vertebrae misalign and compress the cord.",
+                        "The compression is caused by an infection": "Incorrect. This is a developmental/degenerative problem."
+                    }
+                },
+
+                // Step 11: Q8 (Chirurgia)
+                step11Title: { it: "Domanda 8: Terapia Chirurgica", en: "Question 8: Surgical Therapy" },
+                step11Question: { it: "Qual è il trattamento chirurgico 'gold standard' per questa condizione, specialmente per l'instabilità dinamica?", en: "What is the 'gold standard' surgical treatment for this condition, especially for dynamic instability?" },
+                step11Options: { it: ["Iniezione di corticosteroidi nelle faccette articolari", "Stabilizzazione vertebrale ventrale (Ventral stabilization o 'Basket surgery')", "Eutanasia", "Terapia con FANS a lungo termine"], en: ["Corticosteroid injection into the facet joints", "Ventral vertebral stabilization ('Basket surgery')", "Euthanasia", "Long-term NSAID therapy"] },
+                step11Answer: { it: "Stabilizzazione vertebrale ventrale (Ventral stabilization o 'Basket surgery')", en: "Ventral vertebral stabilization ('Basket surgery')" },
+                step11Feedbacks: {
+                    it: {
+                        "Iniezione di corticosteroidi nelle faccette articolari": "Può essere un palliativo per ridurre l'infiammazione (artrosi), ma non risolve la compressione del midollo.",
+                        "Stabilizzazione vertebrale ventrale (Ventral stabilization o 'Basket surgery')": "Corretto. Questa procedura fonde le vertebre instabili, prevenendo il movimento che causa la compressione dinamica.",
+                        "Eutanasia": "È una opzione se la chirurgia non è possibile e l'atassia è grave, ma non è un 'trattamento'.",
+                        "Terapia con FANS a lungo termine": "Parte della gestione medica, ma non è il trattamento correttivo 'gold standard'."
+                    },
+                    en: {
+                        "Corticosteroid injection into the facet joints": "Can be palliative to reduce inflammation (arthritis), but it does not resolve the spinal cord compression.",
+                        "Ventral vertebral stabilization ('Basket surgery')": "Correct. This procedure fuses the unstable vertebrae, preventing the movement that causes dynamic compression.",
+                        "Euthanasia": "This is an option if surgery is not feasible and the ataxia is severe, but it is not a 'treatment'.",
+                        "Long-term NSAID therapy": "Part of medical management, but not the 'gold standard' corrective treatment."
+                    }
+                },
+
+                // Step 12: Q9 (Terapia Medica)
+                step12Title: { it: "Domanda 9: Terapia Medica", en: "Question 9: Medical Therapy" },
+                step12Question: { it: "Se la chirurgia non è un'opzione, in cosa consiste la gestione medica conservativa?", en: "If surgery is not an option, what does conservative medical management consist of?" },
+                step12Options: { 
+                    it: ["Esercizio intenso per rinforzare i muscoli", "Riposo controllato in box o paddock piccolo, FANS e modifica della dieta", "Nessuna opzione, solo eutanasia", "Iniezioni di vitamine ogni giorno"], 
+                    en: ["Intense exercise to strengthen muscles", "Controlled stall or small paddock rest, NSAIDs, and dietary modification", "No option, only euthanasia", "Daily vitamin injections"] 
+                },
+                step12Answer: { it: "Riposo controllato in box o paddock piccolo, FANS e modifica della dieta", en: "Controlled stall or small paddock rest, NSAIDs, and dietary modification" },
+                step12Feedbacks: {
+                    it: {
+                        "Esercizio intenso per rinforzare i muscoli": "Errato. L'esercizio intenso può peggiorare la compressione e aumentare il rischio di cadute catastrofiche.",
+                        "Riposo controllato in box o paddock piccolo, FANS e modifica della dieta": "Corretto. Si mira a ridurre l'infiammazione (FANS), limitare i movimenti rischiosi (riposo) e rallentare la crescita o gestire l'obesità (dieta).",
+                        "Nessuna opzione, solo eutanasia": "Errato. Molti cavalli con atassia lieve possono essere gestiti conservativamente.",
+                        "Iniezioni di vitamine ogni giorno": "Inutile, a meno che non ci sia una diagnosi concomitante di carenza di Vitamina E (associata a EDM)."
+                    },
+                    en: {
+                        "Intense exercise to strengthen muscles": "Incorrect. Intense exercise can worsen compression and increase the risk of catastrophic falls.",
+                        "Controlled stall or small paddock rest, NSAIDs, and dietary modification": "Correct. The aim is to reduce inflammation (NSAIDs), limit risky movements (rest), and slow growth or manage obesity (diet).",
+                        "No option, only euthanasia": "Incorrect. Many horses with mild ataxia can be managed conservatively.",
+                        "Daily vitamin injections": "Useless, unless there is a concurrent diagnosis of Vitamin E deficiency (associated with EDM)."
+                    }
+                },
+
+                // Step 13: Q10 (Prognosi Atletica)
+                step13Title: { it: "Domanda 10: Prognosi Atletica", en: "Question 10: Athletic Prognosis" },
+                step13Question: { it: "Qual è la prognosi per il *ritorno all'attività atletica* in un cavallo con atassia di grado 2 che si sottopone a chirurgia di stabilizzazione?", en: "What is the prognosis for *return to athletic activity* in a horse with grade 2 ataxia that undergoes stabilization surgery?" },
+                step13Options: { it: ["Eccellente (oltre 90% tornano a gareggiare)", "Buona (circa 70-80% tornano a gareggiare)", "Riservata (circa 40-60% migliorano, ma pochi tornano ai livelli precedenti)", "Infausta (meno del 10%)"], en: ["Excellent (over 90% return to competition)", "Good (about 70-80% return to competition)", "Guarded (about 40-60% improve, but few return to previous levels)", "Grave (less than 10%)"] },
+                step13Answer: { it: "Riservata (circa 40-60% migliorano, ma pochi tornano ai livelli precedenti)", en: "Guarded (about 40-60% improve, but few return to previous levels)" },
+                step13Feedbacks: {
+                    it: {
+                        "Eccellente (oltre 90% tornano a gareggiare)": "Errato. La chirurgia mira a fermare la progressione, ma il danno neurologico spesso non è reversibile.",
+                        "Buona (circa 70-80% tornano a gareggiare)": "Troppo ottimista. Questo è il tasso di *miglioramento* di almeno 1 grado, non di ritorno all'atletismo.",
+                        "Riservata (circa 40-60% migliorano, ma pochi tornano ai livelli precedenti)": "Corretto. Molti cavalli migliorano di 1 o 2 gradi, permettendo una vita sicura al pascolo, ma il ritorno alle competizioni ad alto livello è raro. La prognosi è migliore se operati giovani e con deficit lievi.",
+                        "Infausta (meno del 10%)": "Troppo pessimista. Un miglioramento significativo è comune, anche se la funzione completa non viene ripristinata."
+                    },
+                    en: {
+                        "Excellent (over 90% return to competition)": "Incorrect. The surgery aims to stop progression, but the neurological damage is often not reversible.",
+                        "Good (about 70-80% return to competition)": "Too optimistic. This is the rate of *improvement* by at least 1 grade, not return to athleticism.",
+                        "Guarded (about 40-60% improve, but few return to previous levels)": "Correct. Many horses improve by 1 or 2 grades, allowing for a safe life as a pasture animal, but a return to high-level competition is rare. The prognosis is better if operated on when young and with mild deficits.",
+                        "Grave (less than 10%)": "Too pessimistic. Significant improvement is common, even if full function is not restored."
+                    }
+                },
+
+                // Step 14: Diagnosi Finale
+                step14Title: { it: "Diagnosi Finale", en: "Final Diagnosis" },
+                step14Content: { it: `<p>La diagnosi è <strong>Mielopatia Stenotica Vertebrale Cervicale (MCVS)</strong>, o "Sindrome di Wobbler", con compressione dinamica C4-C5 e statica C5-C6.</p>`, en: `<p>The diagnosis is <strong>Cervical Vertebral Stenotic Myelopathy (CVSM)</strong>, or "Wobbler Syndrome," with dynamic compression at C4-C5 and static compression at C5-C6.</p>`},
+                
+                // Step 15: Titolo Quiz Finale
+                step15Title: { it: "Quiz Finale - Rivediamo i Concetti Chiave", en: "Final Quiz - Let's Review the Key Concepts" }
+            };
+
+            // --- QUIZ FINALE ---
+            const finalQuizData = {
+                it: [
+                    { question: "Qual è la fascia d'età più comune per la diagnosi di Wobbler?", options: ["Cavalli anziani (>20 anni)", "Puledri neonati", "Cavalli giovani, in rapida crescita (6 mesi - 3 anni)", "Cavalli di mezza età (8-12 anni)"], answer: "Cavalli giovani, in rapida crescita (6 mesi - 3 anni)" },
+                    { question: "Quale razza è classicamente sovra-rappresentata?", options: ["Pony Shetland", "Avelignese", "Purosangue Inglese e Quarter Horse", "Cavallo Arabo"], answer: "Purosangue Inglese e Quarter Horse" },
+                    { question: "Perché l'atassia è spesso 'peggiore sui posteriori'?", options: ["Perché i nervi posteriori sono più lunghi", "Perché i tratti motori dei posteriori sono più esterni nel midollo cervicale", "Perché il cavallo scalcia", "Perché i posteriori portano più peso"], answer: "Perché i tratti motori dei posteriori sono più esterni nel midollo cervicale" },
+                    { question: "Qual è la principale diagnosi differenziale INFETTIVA per l'atassia simmetrica in Europa?", options: ["Mieloencefalite EHV-1", "West Nile Virus", "Rabbia", "Botulismo"], answer: "Mieloencefalite EHV-1" },
+                    { question: "Cosa si intende per 'stenosi statica'?", options: ["La compressione è presente solo in flessione", "La compressione è causata da tessuto molle", "La compressione è sempre presente, indipendentemente dalla posizione del collo", "Il cavallo non può muoversi"], answer: "La compressione è sempre presente, indipendentemente dalla posizione del collo" },
+                    { question: "Quale test valuta la propriocezione (senso della posizione)?", options: ["Posizionamento anomalo degli arti (CPs)", "Riflesso palpebrale", "Test di trazione della coda", "Riflesso flessorio"], answer: "Posizionamento anomalo degli arti (CPs)" },
+                    { question: "La chirurgia 'basket' mira a...", options: ["Rimuovere l'osso in eccesso", "Sostituire il midollo spinale", "Fondere le vertebre per prevenire il movimento", "Iniettare farmaci"], answer: "Fondere le vertebre per prevenire il movimento" },
+                    { question: "Qual è la prognosi per la *sopravvivenza* (qualità di vita da pascolo) dopo la gestione medica o chirurgica?", options: ["Infausta, la maggior parte peggiora", "Riservata, molti richiedono l'eutanasia", "Buona, la maggior parte si stabilizza e può vivere al pascolo", "Eccellente, tornano tutti normali"], answer: "Buona, la maggior parte si stabilizza e può vivere al pascolo" },
+                    { question: "Qual è il sito di compressione più comune per la stenosi dinamica (instabilità)?", options: ["C1-C2", "C3-C4 / C4-C5", "C7-T1", "T1-T2"], answer: "C3-C4 / C4-C5" },
+                    { question: "Qual è il sito di compressione più comune per la stenosi statica (malformazione)?", options: ["C1-C2", "C3-C4", "C5-C6 / C6-C7", "T1-T2"], answer: "C5-C6 / C6-C7" }
+                ],
+                en: [
+                    { question: "What is the most common age range for Wobbler diagnosis?", options: ["Old horses (>20 years)", "Neonatal foals", "Young, rapidly growing horses (6 months - 3 years)", "Middle-aged horses (8-12 years)"], answer: "Young, rapidly growing horses (6 months - 3 years)" },
+                    { question: "Which breed is classically over-represented?", options: ["Shetland Pony", "Haflinger", "Thoroughbred and Quarter Horse", "Arabian"], answer: "Thoroughbred and Quarter Horse" },
+                    { question: "Why is the lesion 'worse in the hind limbs'?", options: ["Because the hind limb nerves are longer", "Because the hind limb motor tracts are more superficial in the cervical cord", "Because the horse kicks", "Because the hind limbs carry more weight"], answer: "Because the hind limb motor tracts are more superficial in the cervical cord" },
+                    { question: "What is the main INFECTIOUS differential diagnosis for symmetric ataxia in Europe?", options: ["EHV-1 Myeloencephalitis", "West Nile Virus", "Rabies", "Botulism"], answer: "EHV-1 Myeloencephalitis" },
+                    { question: "What does 'static stenosis' mean?", options: ["Compression is only present on flexion", "Compression is caused by soft tissue", "Compression is always present, regardless of neck position", "The horse cannot move"], answer: "Compression is always present, regardless of neck position" },
+                    { question: "Which test assesses proprioception (sense of position)?", options: ["Conscious Proprioception (CP) deficits", "Palpebral reflex", "Tail pull test", "Flexor withdrawal reflex"], answer: "Conscious Proprioception (CP) deficits" },
+                    { question: "The 'basket' surgery aims to...", options: ["Remove excess bone", "Replace the spinal cord", "Fuse the vertebrae to prevent movement", "Inject drugs"], answer: "Fuse the vertebrae to prevent movement" },
+                    { question: "What is the prognosis for *survival* (pasture soundness) after medical or surgical management?", options: ["Grave, most worsen", "Guarded, many require euthanasia", "Good, most stabilize and can live as pasture animals", "Excellent, all return to normal"], answer: "Good, most stabilize and can live as pasture animals" },
+                    { question: "What is the most common site for dynamic (instability) stenosis?", options: ["C1-C2", "C3-C4 / C4-C5", "C7-T1", "T1-T2"], answer: "C3-C4 / C4-C5" },
+                    { question: "What is the most common site for static (malformation) stenosis?", options: ["C1-C2", "C3-C4", "C5-C6 / C6-C7", "T1-T2"], answer: "C5-C6 / C6-C7" }
+                ]
+            };
+            
+            // --- STRUTTURA DEL CASO ---
+            const caseStructure = [
+                { type: 'info', titleKey: 'step1Title', contentKey: 'step1Content' },
+                { type: 'question', titleKey: 'step2Title', questionKey: 'step2Question', optionsKey: 'step2Options', answerKey: 'step2Answer', feedbacksKey: 'step2Feedbacks' },
+                { type: 'info', titleKey: 'step3Title', contentKey: 'step3Content' },
+                { type: 'question', titleKey: 'step4Title', questionKey: 'step4Question', optionsKey: 'step4Options', answerKey: 'step4Answer', feedbacksKey: 'step4Feedbacks' },
+                { type: 'question', titleKey: 'step5Title', questionKey: 'step5Question', optionsKey: 'step5Options', answerKey: 'step5Answer', feedbacksKey: 'step5Feedbacks' },
+                { type: 'question', titleKey: 'step6Title', questionKey: 'step6Question', optionsKey: 'step6Options', answerKey: 'step6Answer', feedbacksKey: 'step6Feedbacks' },
+                { type: 'question', titleKey: 'step7Title', questionKey: 'step7Question', optionsKey: 'step7Options', answerKey: 'step7Answer', feedbacksKey: 'step7Feedbacks' },
+                { type: 'question', titleKey: 'step8Title', questionKey: 'step8Question', optionsKey: 'step8Options', answerKey: 'step8Answer', feedbacksKey: 'step8Feedbacks' },
+                { type: 'info', titleKey: 'step9Title', contentKey: 'step9Content' },
+                { type: 'question', titleKey: 'step10Title', questionKey: 'step10Question', optionsKey: 'step10Options', answerKey: 'step10Answer', feedbacksKey: 'step10Feedbacks' },
+                { type: 'question', titleKey: 'step11Title', questionKey: 'step11Question', optionsKey: 'step11Options', answerKey: 'step11Answer', feedbacksKey: 'step11Feedbacks' },
+                { type: 'question', titleKey: 'step12Title', questionKey: 'step12Question', optionsKey: 'step12Options', answerKey: 'step12Answer', feedbacksKey: 'step12Feedbacks' },
+                { type: 'question', titleKey: 'step13Title', questionKey: 'step13Question', optionsKey: 'step13Options', answerKey: 'step13Answer', feedbacksKey: 'step13Feedbacks' },
+                { type: 'info', titleKey: 'step14Title', contentKey: 'step14Content' },
+                { type: 'final_quiz', titleKey: 'step15Title' } // Step 15
+            ];
+
+            // --- LOGICA DI NAVIGAZIONE ---
+            let currentStep = 0;
+            const caseContainer = document.getElementById('case-container');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const backToIndexBtn = document.getElementById('back-to-index-btn');
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            
+            function renderStep(stepIndex) {
+                const stepData = caseStructure[stepIndex];
+                const lang = currentLanguage;
+                const titleKey = (stepData.type === 'final_quiz') ? stepData.titleKey : stepData.titleKey;
+                const title = translations[titleKey]?.[lang] || `Step ${stepIndex + 1}`;
+
+                let contentHtml = `<div class="step-card active p-4" id="step-${stepIndex}"><h2 class="text-3xl font-bold text-sky-700 mb-6 flex items-center">${title} <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>`;
+
+                if (stepData.type === 'info') {
+                    contentHtml += `<div class="prose max-w-none">${translations[stepData.contentKey][lang]}</div>`;
+                } else if (stepData.type === 'question') {
+                    const question = translations[stepData.questionKey][lang];
+                    const options = translations[stepData.optionsKey][lang];
+                    contentHtml += `<h3 class="text-xl font-semibold mb-4 flex justify-between items-center"><span>${question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><div class="space-y-3">${options.map(opt => `<button class="option-button w-full text-left p-4 border rounded-lg hover:bg-sky-100 flex justify-between items-center" data-answer="${opt}"><span>${opt}</span><span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></button>`).join('')}</div><p id="feedback-${stepIndex}" class="mt-4 text-sm font-semibold"></p>`;
+                } else if (stepData.type === 'final_quiz') {
+                    contentHtml += `<div id="final-quiz-container" class="space-y-6"></div><div class="mt-6 text-center"><button id="submit-final-quiz" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-700 transition">${translations['submitBtn'][lang]}</button></div><div id="final-quiz-results" class="mt-6 text-center text-xl font-bold"></div>`;
+                }
+
+                contentHtml += `</div>`;
+                caseContainer.innerHTML = contentHtml;
+                if (stepData.type === 'final_quiz') {
+                    loadFinalQuiz(lang);
+                    document.getElementById('submit-final-quiz').addEventListener('click', checkFinalQuiz);
+                }
+                updateNavButtons();
+                addOptionListeners();
+                setupTTSListeners();
+            }
+            
+            function loadFinalQuiz(lang) {
+                const quizContainer = document.getElementById('final-quiz-container');
+                quizContainer.innerHTML = '';
+                finalQuizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `<li class="quiz-option p-2 rounded hover:bg-sky-50"><label class="flex items-center cursor-pointer"><input type="radio" name="final_q${index}" value="${o}" class="mr-3">${o}</label></li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function checkFinalQuiz() {
+                let score = 0;
+                const lang = currentLanguage;
+                const questions = document.querySelectorAll('#final-quiz-container .quiz-question');
+                finalQuizData[lang].forEach((q, index) => {
+                    const selectedInput = document.querySelector(`input[name="final_q${index}"]:checked`);
+                    const options = questions[index].querySelectorAll('.quiz-option');
+                    
+                    options.forEach(optLabel => {
+                        const optInput = optLabel.querySelector('input');
+                        optLabel.classList.remove('incorrect-answer', 'correct-answer');
+                        if (optInput.value === q.answer) {
+                            optLabel.classList.add('correct-answer');
+                        }
+                    });
+
+                    if (selectedInput) {
+                        if (selectedInput.value === q.answer) {
+                            score++;
+                        } else {
+                            selectedInput.closest('.quiz-option').classList.add('incorrect-answer');
+                        }
+                    }
+                });
+                const resultText = lang === 'it' ? `Punteggio finale: ${score} / ${finalQuizData.it.length}` : `Final Score: ${score} / ${finalQuizData.en.length}`;
+                document.getElementById('final-quiz-results').textContent = resultText;
+                
+                // --- Logica pulsanti dopo il quiz ---
+                prevBtn.classList.add('hidden'); // Nasconde "Precedente"
+                nextBtn.classList.add('hidden'); // Nasconde "Prosegui"
+                backToIndexBtn.classList.remove('hidden'); // Mostra "Torna all'Indice"
+            }
+
+            function addOptionListeners() {
+                document.querySelectorAll('.option-button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const stepData = caseStructure[currentStep];
+                        const lang = currentLanguage;
+                        const selectedAnswer = btn.dataset.answer;
+                        const correctAnswer = translations[stepData.answerKey][lang];
+                        const feedbackEl = document.getElementById(`feedback-${currentStep}`);
+                        const feedbackText = translations[stepData.feedbacksKey][lang][selectedAnswer];
+                        
+                        feedbackEl.textContent = feedbackText;
+
+                        if (selectedAnswer === correctAnswer) {
+                            btn.classList.add('correct');
+                            feedbackEl.className = 'mt-4 text-sm font-semibold text-green-600';
+                            document.querySelectorAll('.option-button').forEach(b => b.disabled = true);
+                            nextBtn.disabled = false;
+                        } else {
+                            btn.disabled = true;
+                            btn.classList.add('incorrect');
+                            feedbackEl.className = 'mt-4 text-sm font-semibold text-red-600';
+                        }
+                    });
+                });
+            }
+
+            function updateNavButtons() {
+                const stepData = caseStructure[currentStep];
+
+                // Visibilità Tasto PRECEDENTE
+                prevBtn.disabled = currentStep === 0;
+                prevBtn.classList.remove('hidden');
+
+                // Visibilità Tasto PROSEGUI
+                if (stepData.type === 'question') {
+                    const answeredCorrectly = document.querySelector('.option-button.correct');
+                    nextBtn.disabled = !answeredCorrectly;
+                } else {
+                    nextBtn.disabled = false;
+                }
+                nextBtn.classList.remove('hidden');
+
+                // Visibilità Tasto TORNA ALL'INDICE
+                backToIndexBtn.classList.add('hidden');
+
+                // --- Casi Speciali ---
+                // Se sei all'ultimo step (QUIZ)
+                if (stepData.type === 'final_quiz') {
+                    nextBtn.classList.add('hidden');
+                }
+                
+                // Se sei allo step "Diagnosi Finale" (l'ultimo info-step PRIMA del quiz)
+                if (stepData.titleKey === 'step14Title') {
+                    // Non fa nulla di speciale, mostra solo "Precedente" e "Prosegui" (per andare al quiz)
+                }
+            }
+            
+            // --- LOGICA ACCESSIBILITÀ E LINGUA (invariata) ---
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                    return;
+                }
+                if (synth.speaking) { synth.cancel(); }
+                if (activeTTSButton) { activeTTSButton.classList.remove('playing'); }
+                
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                currentUtterance.onend = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                currentUtterance.onerror = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                synth.speak(currentUtterance);
+                activeTTSButton = button;
+                button.classList.add('playing');
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        if (parentElement.tagName === 'H2') { // Title of the step
+                            const section = parentElement.closest('.step-card');
+                            const clone = section.cloneNode(true);
+                            clone.querySelectorAll('button, a, .tts-button, h2, h3, .quiz-question').forEach(el => el.remove()); // Rimuove anche il quiz
+                            let titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = `${titleClone.textContent.trim()}. ${clone.textContent.trim().replace(/\s\s+/g, ' ')}`;
+                        } else if (parentElement.tagName === 'H3') { // Question
+                            const questionClone = parentElement.cloneNode(true);
+                            questionClone.querySelectorAll('.tts-button').forEach(el => el.remove());
+                            textToRead = questionClone.textContent.trim();
+                        } else if (parentElement.classList.contains('option-button')) { // Answer option
+                            const answerClone = parentElement.cloneNode(true);
+                            answerClone.querySelectorAll('.tts-button').forEach(el => el.remove());
+                            textToRead = answerClone.textContent.trim();
+                        }
+                        
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+             const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.textContent = translations[key][lang];
+                    }
+                });
+                
+                renderStep(currentStep);
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            };
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    renderStep(currentStep);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < caseStructure.length - 1) {
+                    currentStep++;
+                    renderStep(currentStep);
+                }
+            });
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                body.classList.toggle('dsa-mode');
+                localStorage.setItem('dsa-mode', body.classList.contains('dsa-mode') ? 'enabled' : 'disabled');
+                updateLanguage(currentLanguage);
+            });
+            
+            if (localStorage.getItem('dsa-mode') === 'enabled') {
+                body.classList.add('dsa-mode');
+            }
+
+            // Init
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
+
