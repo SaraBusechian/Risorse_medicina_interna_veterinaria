@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caso Clinico: Mastite Ovina</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f9ff; }
+        .step-card { display: none; }
+        .step-card.active { display: block; }
+        .option-button { transition: all 0.2s; }
+        .option-button:disabled:not(.correct) { opacity: 0.6; cursor: not-allowed; }
+        .option-button.correct { background-color: #10b981; color: white; border-color: #059669; }
+        .option-button.incorrect { background-color: #ef4444; color: white; border-color: #dc2626; }
+        .tts-button { cursor: pointer; display: inline-flex; align-items: center; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #0369a1; }
+        
+        .quiz-option.correct-answer { background-color: #d1fae5 !important; border-radius: 0.5rem; }
+        .quiz-option.incorrect-answer { background-color: #fee2e2 !important; border-radius: 0.5rem; }
+        
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #34495e;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+    </style>
+</head>
+<body class="text-slate-800">
+    <header id="main-header" class="bg-sky-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Caso Clinico Interattivo</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+            
+            <div id="case-container">
+                <!-- Steps will be dynamically shown here -->
+            </div>
+
+            <div id="navigation-buttons" class="mt-8 flex justify-between">
+                <button id="prev-btn" class="bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition" disabled>
+                    <span data-lang-key="prevBtn">Precedente</span>
+                </button>
+                <a id="back-to-index-btn" href="index.html" class="hidden bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition">
+                     <span data-lang-key="backToIndex">Torna all'Indice dei Casi</span>
+                </a>
+                <button id="next-btn" class="bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition">
+                    <span data-lang-key="nextBtn">Prosegui</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Caso Clinico: Mastite Ovina", en: "Clinical Case: Ovine Mastitis" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                prevBtn: { it: "Precedente", en: "Previous" },
+                nextBtn: { it: "Prosegui", en: "Continue" },
+                submitBtn: { it: "Verifica Risposte", en: "Check Answers" },
+                resultsTitle: { it: "Quiz Finale - Rivediamo i Concetti Chiave", en: "Final Quiz - Let's Review the Key Concepts" },
+                backToIndex: { it: "Torna all'Indice dei Casi", en: "Back to Case Index" },
+
+                step1Title: { it: "Presentazione del Caso", en: "Case Presentation" },
+                step1Content: { it: `<p>Sei in un allevamento ovino e vieni chiamato per una <strong>pecora Lacaune</strong> che ha partorito da 3 giorni. L'allevatore riferisce che è <strong>fortemente abbattuta</strong>, non mangia (anoressia) e presenta una <strong>grave zoppia</strong> posteriore. La temperatura rettale è <strong>41.2°C</strong>.</p>`, en: `<p>You are on a sheep farm, called for a <strong>Lacaune ewe</strong> that lambed 3 days ago. The farmer reports she is <strong>severely depressed</strong>, not eating (anorexia), and shows <strong>severe hind limb lameness</strong>. Rectal temperature is <strong>41.2°C</strong> (106.2°F).</p>`},
+                
+                step2Title: { it: "Domanda 1: Esame Fisico", en: "Question 1: Physical Exam" },
+                step2Question: { it: "Data la zoppia e lo stato febbrile in post-parto, quale distretto anatomico è prioritario esaminare con attenzione?", en: "Given the lameness and febrile state post-partum, which anatomical area is a priority to examine carefully?" },
+                step2Options: { it: ["La bocca, per possibili lesioni (es. Ectima)", "L'articolazione del garretto per artrite settica", "La ghiandola mammaria", "L'ombelico, per onfalite"], en: ["The mouth, for potential lesions (e.g., Orf)", "The hock joint for septic arthritis", "The mammary gland", "The umbilicus, for omphalitis"] },
+                step2Answer: { it: "La ghiandola mammaria", en: "The mammary gland" },
+                step2Feedbacks: { 
+                    it: {
+                        "La bocca, per possibili lesioni (es. Ectima)": "Improbabile che causi una tale febbre e depressione acuta. L'ectima di solito causa lesioni crostose.",
+                        "L'articolazione del garretto per artrite settica": "Questa è un'ottima diagnosi differenziale. L'artrite settica causa zoppia e febbre. Tuttavia, in una pecora in lattazione da 3 giorni, una mastite acuta è *molto più probabile* e può causare una 'zoppia apparente' dovuta al dolore e all'ingombro della mammella. È la prima cosa da escludere.",
+                        "La ghiandola mammaria": "Corretto! Febbre alta, anoressia e depressione in una pecora in lattazione sono altamente suggestivi di mastite acuta. La zoppia è spesso causata dal dolore della mammella ingrossata.",
+                        "L'ombelico, per onfalite": "Riguarda i neonati, non un animale adulto."
+                    },
+                    en: {
+                        "The mouth, for potential lesions (e.g., Orf)": "Unlikely to cause such high fever and acute depression. Orf usually causes crusty lesions.",
+                        "The hock joint for septic arthritis": "This is an excellent differential diagnosis. Septic arthritis does cause lameness and fever. However, in a ewe that is 3 days into lactation, acute mastitis is *far more likely* and can cause 'apparent' lameness due to pain and udder engorgement. It's the first thing to rule out.",
+                        "The mammary gland": "Correct! High fever, anorexia, and depression in a lactating ewe are highly suggestive of acute mastitis. The lameness is often caused by pain from the enlarged udder.",
+                        "The umbilicus, for omphalitis": "This affects newborns, not an adult animal."
+                    }
+                },
+
+                step3Title: { it: "Esame della Mammella", en: "Udder Examination" },
+                step3Content: { it: `<p>All'ispezione, la <strong>metà destra</strong> della mammella è visibilmente ingrossata, dura e calda. Alla mungitura, il latte appare acquoso e con fiocchi. La <strong>metà sinistra</strong>, invece, appare normale. Dopo 12 ore, torni a visitare la pecora: la metà mammaria destra è ora <strong>fredda al tatto, edematosa e di colore bluastro-violaceo</strong>.</p>`, en: `<p>On inspection, the <strong>right half</strong> of the udder is visibly swollen, hard, and hot. Upon milking, the milk appears watery and contains clots. The <strong>left half</strong> appears normal. You return 12 hours later: the right udder half is now <strong>cold to the touch, edematous, and has a bluish-purple discoloration</strong>.</p>`},
+
+                step4Title: { it: "Domanda 2: Diagnosi Differenziale", en: "Question 2: Differential Diagnosis" },
+                step4Question: { it: "La combinazione di segni sistemici gravi, febbre e una mammella che diventa fredda e violacea è patognomonica per quale condizione?", en: "The combination of severe systemic signs, fever, and an udder turning cold and violaceous is pathognomonic for which condition?" },
+                step4Options: { it: ["Mastite catarrale lieve", "Agalassia contagiosa", "Mastite gangrenosa", "Eccesso di produzione lattea"], en: ["Mild catarrhal mastitis", "Contagious agalactia", "Gangrenous mastitis", "Excessive milk production"] },
+                step4Answer: { it: "Mastite gangrenosa", en: "Gangrenous mastitis" },
+                step4Feedbacks: {
+                    it: {
+                        "Mastite catarrale lieve": "Errato. Una mastite lieve non causa segni sistemici così gravi né necrosi del tessuto.",
+                        "Agalassia contagiosa": "Causata da Mycoplasma, è un problema di mandria che causa mastite e artrite, ma raramente questa forma iperacuta e gangrenosa.",
+                        "Mastite gangrenosa": "Corretto. È una forma iperacuta di mastite, spesso letale. La colorazione bluastra ('blue bag') e la freddezza indicano necrosi tissutale dovuta a ischemia.",
+                        "Eccesso di produzione lattea": "Può causare ingorgo, ma non febbre alta, depressione e necrosi."
+                    },
+                    en: {
+                        "Mild catarrhal mastitis": "Incorrect. Mild mastitis does not cause such severe systemic signs or tissue necrosis.",
+                        "Contagious agalactia": "Caused by Mycoplasma, it's a herd problem causing mastitis and arthritis, but rarely this hyperacute, gangrenous form.",
+                        "Gangrenous mastitis": "Correct. This is a hyperacute, often fatal form of mastitis. The bluish discoloration ('blue bag') and coldness indicate tissue necrosis due to ischemia.",
+                        "Excessive milk production": "Can cause engorgement, but not high fever, depression, and necrosis."
+                    }
+                },
+
+                step5Title: { it: "Domanda 3: Agente Eziologico", en: "Question 3: Etiological Agent" },
+                step5Question: { it: "Quale batterio è il principale responsabile della mastite gangrenosa negli ovini?", en: "Which bacterium is the primary agent responsible for gangrenous mastitis in sheep?" },
+                step5Options: { it: ["Staphylococcus aureus (produttore di tossina alfa)", "Mannheimia haemolytica", "Streptococcus uberis", "Escherichia coli"], en: ["Staphylococcus aureus (alpha-toxin producer)", "Mannheimia haemolytica", "Streptococcus uberis", "Escherichia coli"] },
+                step5Answer: { it: "Staphylococcus aureus (produttore di tossina alfa)", en: "Staphylococcus aureus (alpha-toxin producer)" },
+                step5Feedbacks: {
+                    it: {
+                        "Staphylococcus aureus (produttore di tossina alfa)": "Corretto. La tossina alfa prodotta da S. aureus è un potente vasocostrittore che causa trombosi, ischemia e necrosi gangrenosa della mammella.",
+                        "Mannheimia haemolytica": "È un'altra causa importante di mastite grave negli ovini, ma è più classicamente associata a mastite acuta sistemica, non necessariamente gangrenosa come S. aureus.",
+                        "Streptococcus uberis": "Causa comune di mastite, ma generalmente di forma subclinica o clinica lieve/moderata.",
+                        "Escherichia coli": "Una causa importante di mastite coliforme tossica (mastite ambientale), ma la gangrena è il 'marchio di fabbrica' di S. aureus."
+                    },
+                    en: {
+                        "Staphylococcus aureus (alpha-toxin producer)": "Correct. The alpha-toxin produced by S. aureus is a potent vasoconstrictor that causes thrombosis, ischemia, and gangrenous necrosis of the udder.",
+                        "Mannheimia haemolytica": "Another important cause of severe mastitis in sheep, but it's more classically associated with acute systemic mastitis, not necessarily gangrenous like S. aureus.",
+                        "Streptococcus uberis": "A common cause of mastitis, but generally in subclinical or mild/moderate clinical forms.",
+                        "Escherichia coli": "An important cause of toxic coliform mastitis (environmental mastitis), but gangrene is the 'trademark' of S. aureus."
+                    }
+                },
+
+                step6Title: { it: "Domanda 4: Terapia Sistemica", en: "Question 4: Systemic Therapy" },
+                step6Question: { it: "Dato lo stato di shock tossico e sepsi, quale terapia è la più urgente?", en: "Given the state of toxic shock and sepsis, which therapy is the most urgent?" },
+                step6Options: { it: ["Solo mungitura frequente", "Fluidoterapia endovenosa, antibiotici sistemici ad alte dosi e FANS", "Iniezione intramammaria di antibiotici", "Somministrazione di diuretici per ridurre l'edema"], en: ["Frequent milking only", "Intravenous fluid therapy, high-dose systemic antibiotics, and NSAIDs", "Intramammary antibiotic injection", "Administration of diuretics to reduce edema"] },
+                step6Answer: { it: "Fluidoterapia endovenosa, antibiotici sistemici ad alte dosi e FANS", en: "Intravenous fluid therapy, high-dose systemic antibiotics, and NSAIDs" },
+                step6Feedbacks: {
+                    it: {
+                        "Solo mungitura frequente": "Assolutamente insufficiente. L'animale è in setticemia.",
+                        "Fluidoterapia endovenosa, antibiotici sistemici ad alte dosi e FANS": "Corretto. È un'emergenza medica. Bisogna combattere lo shock (fluidi), l'infezione (antibiotici, es. penicillina o ossitetraciclina) e l'infiammazione/dolore (FANS, es. flunixin).",
+                        "Iniezione intramammaria di antibiotici": "Inutile. Non c'è più circolazione sanguigna nel tessuto necrotico, quindi l'antibiotico non può diffondere. La terapia deve essere sistemica.",
+                        "Somministrazione di diuretici per ridurre l'edema": "Controindicato. L'animale è già in shock ipovolemico a causa della disidratazione e della sepsi; un diuretico peggiorerebbe la situazione."
+                    },
+                    en: {
+                        "Frequent milking only": "Absolutely insufficient. The animal is in septicemia.",
+                        "Intravenous fluid therapy, high-dose systemic antibiotics, and NSAIDs": "Correct. This is a medical emergency. You must combat shock (fluids), infection (antibiotics, e.g., penicillin or oxytetracycline), and inflammation/pain (NSAIDs, e.g., flunixin).",
+                        "Intramammary antibiotic injection": "Useless. There is no blood circulation in the necrotic tissue, so the antibiotic cannot diffuse. Therapy must be systemic.",
+                        "Administration of diuretics to reduce edema": "Contraindicated. The animal is already in hypovolemic shock due to dehydration and sepsis; a diuretic would worsen the situation."
+                    }
+                },
+
+                // <!-- NUOVA DOMANDA 5 -->
+                step7Title: { it: "Domanda 5: Gestione degli Agnelli", en: "Question 5: Lamb Management" },
+                step7Question: { it: "Questa pecora ha partorito 3 giorni fa. Qual è la gestione corretta per il/i suo/i agnello/i?", en: "This ewe lambed 3 days ago. What is the correct management for her lamb(s)?" },
+                step7Options: { it: ["Lasciarli con la madre, popperanno dalla mammella sana", "Allontanarli immediatamente e allevarli artificialmente", "Lasciarli con la madre, ma integrare con latte artificiale", "Trattare gli agnelli con antibiotici preventivi"], en: ["Leave them with the dam, they will suckle from the healthy gland", "Remove them immediately and raise them artificially", "Leave them with the dam, but supplement with milk replacer", "Treat the lambs with preventive antibiotics"] },
+                step7Answer: { it: "Allontanarli immediatamente e allevarli artificialmente", en: "Remove them immediately and raise them artificially" },
+                step7Feedbacks: {
+                    it: {
+                        "Lasciarli con la madre, popperanno dalla mammella sana": "Rischiosissimo. L'agnello cercherà di poppare anche dalla mammella malata, ingerendo tossine letali. Inoltre, la madre è setticemica e non può accudirli.",
+                        "Allontanarli immediatamente e allevarli artificialmente": "Corretto. È l'unica opzione sicura. L'ingestione di tossine dalla mammella gangrenosa è spesso fatale per gli agnelli. Devono essere rimossi e alimentati con un sostituto del latte.",
+                        "Lasciarli con la madre, ma integrare con latte artificiale": "Sempre pericoloso, per lo stesso motivo dell'ingestione di tossine.",
+                        "Trattare gli agnelli con antibiotici preventivi": "Non è la priorità. La priorità è salvarli dall'esposizione alle tossine."
+                    },
+                    en: {
+                        "Leave them with the dam, they will suckle from the healthy gland": "Extremely risky. The lamb will try to suckle the sick gland, ingesting lethal toxins. Also, the dam is septic and cannot care for them.",
+                        "Remove them immediately and raise them artificially": "Correct. This is the only safe option. Ingesting toxins from the gangrenous udder is often fatal for lambs. They must be removed and fed milk replacer.",
+                        "Leave them with the dam, but supplement with milk replacer": "Still dangerous, for the same reason of toxin ingestion.",
+                        "Treat the lambs with preventive antibiotics": "This is not the priority. The priority is saving them from toxin exposure."
+                    }
+                },
+                // <!-- FINE NUOVA DOMANDA 5 -->
+
+                // <!-- VECCHIA DOMANDA 5, ORA 6 -->
+                step8Title: { it: "Domanda 6: Terapia Locale", en: "Question 6: Local Therapy" },
+                step8Question: { it: "Qual è la prognosi per la ghiandola mammaria affetta e quale intervento locale è necessario?", en: "What is the prognosis for the affected mammary gland, and what local intervention is necessary?" },
+                step8Options: { it: ["Guarigione completa con terapia antibiotica", "La ghiandola rimarrà funzionale ma produrrà meno latte", "La ghiandola è persa (necrosi) e richiede l'amputazione chirurgica (mastectomia)", "La ghiandola guarirà spontaneamente se l'agnello continua a succhiare"], en: ["Complete recovery with antibiotic therapy", "The gland will remain functional but produce less milk", "The gland is lost (necrosis) and requires surgical amputation (mastectomy)", "The gland will heal spontaneously if the lamb continues to suckle"] },
+                step8Answer: { it: "La ghiandola è persa (necrosi) e richiede l'amputazione chirurgica (mastectomia)", en: "The gland is lost (necrosis) and requires surgical amputation (mastectomy)" },
+                step8Feedbacks: {
+                    it: {
+                        "Guarigione completa con terapia antibiotica": "Impossibile. Il tessuto è necrotico e non può essere recuperato.",
+                        "La ghiandola rimarrà funzionale ma produrrà meno latte": "Errato. La ghiandola è gangrenosa.",
+                        "La ghiandola è persa (necrosi) e richiede l'amputazione chirurgica (mastectomia)": "Corretto. La prognosi per la ghiandola è infausta. La prognosi per la vita dell'animale è riservata. La mammella necrotica agisce come fonte di tossine e batteri e deve essere rimossa chirurgicamente una volta che l'animale è stabilizzato.",
+                        "La ghiandola guarirà spontaneamente se l'agnello continua a succhiare": "Errato. Le tossine presenti nel latte necrotico possono essere letali anche per l'agnello."
+                    },
+                    en: {
+                        "Complete recovery with antibiotic therapy": "Impossible. The tissue is necrotic and cannot be recovered.",
+                        "The gland will remain functional but produce less milk": "Incorrect. The gland is gangrenous.",
+                        "The gland is lost (necrosi) and requires surgical amputation (mastectomy)": "Correct. The prognosis for the gland is grave. The prognosis for the animal's life is guarded. The necrotic udder acts as a source of toxins and bacteria and must be surgically removed once the animal is stabilized.",
+                        "The gland will heal spontaneously if the lamb continues to suckle": "Incorrect. The toxins in the necrotic milk can also be fatal to the lamb."
+                    }
+                },
+                // <!-- FINE VECCHIA DOMANDA 5 -->
+
+                <!-- NUOVA DOMANDA 7 -->
+                step9Title: { it: "Domanda 7: Gestione del Gregge - Isolamento", en: "Question 7: Flock Management - Isolation" },
+                step9Question: { it: "Hai confermato una mastite gangrenosa. Qual è l'azione gestionale più importante da comunicare *immediatamente* all'allevatore per il resto del gregge?", en: "You have confirmed gangrenous mastitis. What is the most important management action to *immediately* communicate to the farmer for the rest of the flock?" },
+                step9Options: { it: ["Isolare la pecora malata e gli agnelli in un box separato", "Vaccinare tutte le pecore", "Iniziare a mungere tutte le pecore due volte al giorno", "Cambiare la lettiera a tutto il gregge"], en: ["Isolate the sick ewe and lambs in a separate pen", "Vaccinate all ewes", "Start milking all ewes twice a day", "Change the bedding for the entire flock"] },
+                step9Answer: { it: "Isolare la pecora malata e gli agnelli in un box separato", en: "Isolate the sick ewe and lambs in a separate pen" },
+                step9Feedbacks: {
+                    it: {
+                        "Isolare la pecora malata e gli agnelli in un box separato": "Corretto. S. aureus è altamente contagioso e può diffondersi rapidamente durante la mungitura o tramite la lettiera. L'isolamento immediato è fondamentale per fermare il focolaio.",
+                        "Vaccinare tutte le pecore": "La vaccinazione (autologa o commerciale) è una strategia a lungo termine, non un intervento di emergenza.",
+                        "Iniziare a mungere tutte le pecore due volte al giorno": "Non pratico per pecore da carne/lattazione non intensiva e non affronta la contagiosità.",
+                        "Cambiare la lettiera a tutto il gregge": "Importante, ma secondario all'isolamento dell'animale infetto che sta spargendo attivamente il batterio."
+                    },
+                    en: {
+                        "Isolate the sick ewe and lambs in a separate pen": "Correct. S. aureus is highly contagious and can spread rapidly during milking or via bedding. Immediate isolation is critical to stop the outbreak.",
+                        "Vaccinate all ewes": "Vaccination (autogenous or commercial) is a long-term strategy, not an emergency intervention.",
+                        "Start milking all ewes twice a day": "Impractical for meat/non-intensive dairy sheep and doesn't address contagiousness.",
+                        "Change the bedding for the entire flock": "Important, but secondary to isolating the infected animal that is actively shedding the bacterium."
+                    }
+                },
+                <!-- FINE NUOVA DOMANDA 7 -->
+
+                <!-- NUOVA DOMANDA 8 (CMT) -->
+                step10Title: { it: "Domanda 8: Gestione Gregge - Diagnostica", en: "Question 8: Flock Management - Diagnostics" },
+                step10Question: { it: "Dopo aver isolato la pecora, sospetti che S. aureus stia circolando. Quale test da campo è il migliore per identificare rapidamente le altre pecore *subclinicamente* infette?", en: "After isolating the ewe, you suspect S. aureus is circulating. What is the best field test to quickly identify other *subclinically* infected ewes?" },
+                step10Options: { it: ["Esame batteriologico del latte di massa", "California Mastitis Test (CMT) su ogni pecora in lattazione", "Esame visivo del latte di tutte le pecore", "Misurazione della temperatura di tutte le pecore"], en: ["Bacterial culture of bulk tank milk", "California Mastitis Test (CMT) on every lactating ewe", "Visual inspection of all ewes' milk", "Measuring the temperature of all ewes"] },
+                step10Answer: { it: "California Mastitis Test (CMT) su ogni pecora in lattazione", en: "California Mastitis Test (CMT) on every lactating ewe" },
+                step10Feedbacks: {
+                    it: {
+                        "Esame batteriologico del latte di massa": "Utile per confermare l'agente, ma non identifica le singole pecore infette (diluizione).",
+                        "California Mastitis Test (CMT) su ogni pecora in lattazione": "Corretto. Il CMT è un test rapido ed economico che stima la conta di cellule somatiche, identificando le pecore con mastite subclinica (portatrici) che agiscono da serbatoio per S. aureus.",
+                        "Esame visivo del latte di tutte le pecore": "Inefficace. La mastite subclinica, per definizione, non mostra alterazioni visibili del latte.",
+                        "Misurazione della temperatura di tutte le pecore": "Inefficace. Le pecore con mastite subclinica non hanno febbre."
+                    },
+                    en: {
+                        "Bacterial culture of bulk tank milk": "Useful for confirming the agent, but it doesn't identify individual infected ewes (dilution).",
+                        "California Mastitis Test (CMT) on every lactating ewe": "Correct. The CMT is a fast, cheap test that estimates somatic cell count, identifying ewes with subclinical mastitis (carriers) that act as a reservoir for S. aureus.",
+                        "Visual inspection of all ewes' milk": "Ineffective. Subclinical mastitis, by definition, shows no visible milk changes.",
+                        "Measuring the temperature of all ewes": "Ineffective. Ewes with subclinical mastitis do not have a fever."
+                    }
+                },
+                <!-- FINE NUOVA DOMANDA 8 -->
+
+                <!-- NUOVA DOMANDA 9 -->
+                step11Title: { it: "Domanda 9: Gestione Gregge - Prevenzione", en: "Question 9: Flock Management - Prevention" },
+                step11Question: { it: "Identifichi diverse altre pecore positive al CMT. Qual è la strategia di controllo a lungo termine più efficace per eradicare S. aureus dal gregge?", en: "You identify several other CMT-positive ewes. What is the most effective long-term control strategy to eradicate S. aureus from the flock?" },
+                step11Options: { it: ["Trattare tutte le pecore con antibiotici nell'alimento", "Riformare (vendere) le pecore cronicamente infette (positive al CMT)", "Vaccinare solo gli agnelli", "Usare solo disinfettanti per la lettiera"], en: ["Treat all ewes with antibiotics in the feed", "Cull (sell) the chronically infected (CMT-positive) ewes", "Vaccinate only the lambs", "Use only bedding disinfectants"] },
+                step11Answer: { it: "Riformare (vendere) le pecore cronicamente infette (positive al CMT)", en: "Cull (sell) the chronically infected (CMT-positive) ewes" },
+                step11Feedbacks: {
+                    it: {
+                        "Trattare tutte le pecore con antibiotici nell'alimento": "Inefficace per la mastite e promuove l'antibiotico-resistenza.",
+                        "Riformare (vendere) le pecore cronicamente infette (positive al CMT)": "Corretto. La mastite da S. aureus è cronica e risponde male alla terapia. Le pecore infette sono un serbatoio permanente. La riforma è spesso l'unica strategia eradicante efficace.",
+                        "Vaccinare solo gli agnelli": "La vaccinazione aiuta a *ridurre* la gravità, ma non previene l'infezione e non elimina i portatori cronici.",
+                        "Usare solo disinfettanti per la lettiera": "L'igiene è fondamentale, ma non è sufficiente da sola per eradicare un'infezione cronica da S. aureus."
+                    },
+                    en: {
+                        "Treat all ewes with antibiotics in the feed": "Ineffective for mastitis and promotes antibiotic resistance.",
+                        "Cull (sell) the chronically infected (CMT-positive) ewes": "Correct. S. aureus mastitis is chronic and responds poorly to therapy. Infected ewes are a permanent reservoir. Culling is often the only effective eradication strategy.",
+                        "Vaccinate only the lambs": "Vaccination helps *reduce* severity, but it doesn't prevent infection and won't eliminate chronic carriers.",
+                        "Use only bedding disinfectants": "Hygiene is crucial, but it's not sufficient on its own to eradicate a chronic S. aureus infection."
+                    }
+                },
+                <!-- FINE NUOVA DOMANDA 9 -->
+
+                <!-- NUOVA DOMANDA 10 -->
+                step12Title: { it: "Domanda 10: Prognosi", en: "Question 10: Prognosis" },
+                step12Question: { it: "Qual è la prognosi per la *sopravvivenza* della pecora, assumendo un trattamento sistemico immediato e aggressivo?", en: "What is the prognosis for the ewe's *survival*, assuming immediate and aggressive systemic treatment?" },
+                step12Options: { it: ["Eccellente, guarirà completamente", "Buona, ma non sarà più produttiva", "Riservata. La sepsi da mastite gangrenosa è spesso letale", "Infausta, l'eutanasia è l'unica opzione"], en: ["Excellent, she will recover completely", "Good, but she will no longer be productive", "Guarded. Sepsis from gangrenous mastitis is often fatal", "Grave, euthanasia is the only option"] },
+                step12Answer: { it: "Riservata. La sepsi da mastite gangrenosa è spesso letale", en: "Guarded. Sepsis from gangrenous mastitis is often fatal" },
+                step12Feedbacks: {
+                    it: {
+                        "Eccellente, guarirà completamente": "Troppo ottimista. La gangrena implica una necrosi tissutale massiva e un rilascio di tossine.",
+                        "Buona, ma non sarà più produttiva": "Ancora troppo ottimista. La sopravvivenza stessa è in dubbio, non solo la produttività.",
+                        "Riservata. La sepsi da mastite gangrenosa è spesso letale": "Corretto. Nonostante la terapia, la tossiemia e la setticemia hanno un'alta mortalità. La prognosi deve sempre essere considerata riservata.",
+                        "Infausta, l'eutanasia è l'unica opzione": "Non necessariamente. Se trattata precocemente e in modo aggressivo (fluidi, shock, chirurgia), l'animale può sopravvivere, anche se la prognosi rimane riservata."
+                    },
+                    en: {
+                        "Excellent, she will recover completely": "Too optimistic. Gangrene implies massive tissue necrosis and toxin release.",
+                        "Good, but she will no longer be productive": "Still too optimistic. Survival itself is in question, not just productivity.",
+                        "Guarded. Sepsis from gangrenous mastitis is often fatal": "Correct. Despite therapy, toxemia and septicemia have a high mortality rate. The prognosis must always be considered guarded.",
+                        "Grave, euthanasia is the only option": "Not necessarily. If treated early and aggressively (fluids, shock, surgery), the animal can survive, although the prognosis remains guarded."
+                    }
+                },
+                <!-- FINE NUOVA DOMANDA 10 -->
+
+
+                <!-- VECCHIO STEP 8, ORA 13 -->
+                step13Title: { it: "Diagnosi Finale", en: "Final Diagnosis" },
+                step13Content: { it: `<p>La diagnosi è <strong>Mastite Gangrenosa Acuta</strong> (detta "Blue Bag") causata da <strong>Staphylococcus aureus</strong> produttore di tossina alfa, con conseguente <strong>Sepsi e Shock Tossico</strong>.</p>`, en: `<p>The diagnosis is <strong>Acute Gangrenous Mastitis</strong> (known as "Blue Bag") caused by <strong>alpha-toxin-producing Staphylococcus aureus</strong>, resulting in <strong>Sepsis and Toxic Shock</strong>.</p>`},
+                
+                <!-- VECCHIO STEP 9, ORA 14 -->
+                step14Title: { it: "Quiz Finale - Rivediamo i Concetti Chiave", en: "Final Quiz - Let's Review the Key Concepts" },
+            };
+
+            const finalQuizData = {
+                it: [
+                    { question: "Qual è l'agente eziologico più comune della mastite gangrenosa ovina?", options: ["Staphylococcus aureus", "Mycoplasma agalactiae", "Escherichia coli", "Streptococcus agalactiae"], answer: "Staphylococcus aureus" },
+                    { question: "Come viene comunemente chiamato il test rapido da campo per la mastite subclinica?", options: ["California Mastitis Test", "Esame batteriologico", "Conta in piastra", "Test del pH"], answer: "California Mastitis Test" },
+                    { question: "La tossina alfa di S. aureus causa gangrena attraverso quale meccanismo?", options: ["Lisi diretta delle cellule", "Intensa vasocostrizione e ischemia", "Febbre alta", "Produzione di gas"], answer: "Intensa vasocostrizione e ischemia" },
+                    { question: "Qual è il trattamento di elezione per la mammella necrotica?", options: ["Antibiotici intramammari", "Impacchi caldi", "Mastectomia (amputazione)", "Mungitura continua"], answer: "Mastectomia (amputazione)" },
+                    { question: "Quale agente, oltre alla mastite, causa comunemente artrite negli ovini?", options: ["Staphylococcus aureus", "Mycoplasma agalactiae", "Pasteurella", "Clostridium"], answer: "Mycoplasma agalactiae" },
+                    { question: "Perché l'iniezione intramammaria è inefficace nella mastite gangrenosa?", options: ["Perché l'antibiotico è sbagliato", "Perché l'ago è troppo corto", "Perché la necrosi impedisce la diffusione del farmaco", "Perché provoca dolore"], answer: "Perché la necrosi impedisce la diffusione del farmaco" },
+                    { question: "Quale segno clinico differenzia la mastite gangrenosa da una mastite acuta semplice?", options: ["Febbre", "Mammella fredda e violacea", "Latte con fiocchi", "Anoressia"], answer: "Mammella fredda e violacea" },
+                    { question: "Qual è la priorità terapeutica in un animale con sepsi da mastite?", options: ["Rimuovere la mammella", "Somministrare antinfiammatori", "Stabilizzazione emodinamica (fluidi) e antibiotici sistemici", "Nutrire l'animale"], answer: "Stabilizzazione emodinamica (fluidi) e antibiotici sistemici" },
+                    { question: "La 'Blue Bag' è un altro nome per:", options: ["Mastite da E. coli", "Agalassia contagiosa", "Mastite gangrenosa", "Mastite subclinica"], answer: "Mastite gangrenosa" },
+                    { question: "È sicuro far poppare gli agnelli dalla mammella affetta?", options: ["Sì, aiuta a drenare l'infezione", "No, le tossine nel latte possono uccidere gli agnelli", "Sì, ma solo se gli agnelli sono vaccinati", "No, solo perché il latte è salato"], answer: "No, le tossine nel latte possono uccidere gli agnelli" }
+                ],
+                en: [
+                    { question: "What is the most common etiological agent of gangrenous mastitis in sheep?", options: ["Staphylococcus aureus", "Mycoplasma agalactiae", "Escherichia coli", "Streptococcus agalactiae"], answer: "Staphylococcus aureus" },
+                    { question: "What is the common name for the rapid field test for subclinical mastitis?", options: ["California Mastitis Test (CMT)", "Bacterial culture", "Plate count", "pH test"], answer: "California Mastitis Test (CMT)" },
+                    { question: "How does S. aureus alpha-toxin cause gangrene?", options: ["Direct cell lysis", "Intense vasoconstriction and ischemia", "High fever", "Gas production"], answer: "Intense vasoconstriction and ischemia" },
+                    { question: "What is the treatment of choice for the necrotic udder?", options: ["Intramammary antibiotics", "Warm compresses", "Mastectomy (amputation)", "Continuous milking"], answer: "Mastectomy (amputation)" },
+                    { question: "Which agent commonly causes arthritis in addition to mastitis in sheep?", options: ["Staphylococcus aureus", "Mycoplasma agalactiae", "Pasteurella", "Clostridium"], answer: "Mycoplasma agalactiae" },
+                    { question: "Why is intramammary injection ineffective in gangrenous mastitis?", options: ["Because the antibiotic is wrong", "Because the needle is too short", "Because necrosis prevents drug diffusion", "Because it causes pain"], answer: "Because necrosis prevents drug diffusion" },
+                    { question: "Which clinical sign differentiates gangrenous mastitis from simple acute mastitis?", options: ["Fever", "Cold and violaceous udder", "Clots in milk", "Anorexia"], answer: "Cold and violaceous udder" },
+                    { question: "What is the therapeutic priority in an animal with sepsis from mastitis?", options: ["Removing the udder", "Administering anti-inflammatories", "Hemodynamic stabilization (fluids) and systemic antibiotics", "Feeding the animal"], answer: "Hemodynamic stabilization (fluids) and systemic antibiotics" },
+                    { question: "'Blue Bag' is another name for:", options: ["E. coli mastitis", "Contagious agalactia", "Gangrenous mastitis", "Subclinical mastitis"], answer: "Gangrenous mastitis" },
+                    { question: "Is it safe to let lambs suckle from the affected udder?", options: ["Yes, it helps drain the infection", "No, toxins in the milk can kill the lambs", "Yes, but only if the lambs are vaccinated", "No, only because the milk is salty"], answer: "No, toxins in the milk can kill the lambs" }
+                ]
+            };
+            
+            const caseStructure = [
+                { type: 'info', titleKey: 'step1Title', contentKey: 'step1Content' },
+                { type: 'question', titleKey: 'step2Title', questionKey: 'step2Question', optionsKey: 'step2Options', answerKey: 'step2Answer', feedbacksKey: 'step2Feedbacks' },
+                { type: 'info', titleKey: 'step3Title', contentKey: 'step3Content' },
+                { type: 'question', titleKey: 'step4Title', questionKey: 'step4Question', optionsKey: 'step4Options', answerKey: 'step4Answer', feedbacksKey: 'step4Feedbacks' },
+                { type: 'question', titleKey: 'step5Title', questionKey: 'step5Question', optionsKey: 'step5Options', answerKey: 'step5Answer', feedbacksKey: 'step5Feedbacks' },
+                { type: 'question', titleKey: 'step6Title', questionKey: 'step6Question', optionsKey: 'step6Options', answerKey: 'step6Answer', feedbacksKey: 'step6Feedbacks' },
+                // <!-- NUOVI STEP AGGIUNTI ALLA STRUTTURA -->
+                { type: 'question', titleKey: 'step7Title', questionKey: 'step7Question', optionsKey: 'step7Options', answerKey: 'step7Answer', feedbacksKey: 'step7Feedbacks' },
+                { type: 'question', titleKey: 'step8Title', questionKey: 'step8Question', optionsKey: 'step8Options', answerKey: 'step8Answer', feedbacksKey: 'step8Feedbacks' },
+                { type: 'question', titleKey: 'step9Title', questionKey: 'step9Question', optionsKey: 'step9Options', answerKey: 'step9Answer', feedbacksKey: 'step9Feedbacks' },
+                { type: 'question', titleKey: 'step10Title', questionKey: 'step10Question', optionsKey: 'step10Options', answerKey: 'step10Answer', feedbacksKey: 'step10Feedbacks' },
+                { type: 'question', titleKey: 'step11Title', questionKey: 'step11Question', optionsKey: 'step11Options', answerKey: 'step11Answer', feedbacksKey: 'step11Feedbacks' },
+                { type: 'question', titleKey: 'step12Title', questionKey: 'step12Question', optionsKey: 'step12Options', answerKey: 'step12Answer', feedbacksKey: 'step12Feedbacks' },
+                // <!-- STEP FINALI RINUMERATI -->
+                { type: 'info', titleKey: 'step13Title', contentKey: 'step13Content' },
+                { type: 'final_quiz', titleKey: 'step14Title' }
+            ];
+
+            let currentStep = 0;
+            const caseContainer = document.getElementById('case-container');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const backToIndexBtn = document.getElementById('back-to-index-btn');
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            
+            function renderStep(stepIndex) {
+                const stepData = caseStructure[stepIndex];
+                const lang = currentLanguage;
+                const title = translations[stepData.titleKey]?.[lang] || `Step ${stepIndex + 1}`;
+
+                let contentHtml = `<div class="step-card active p-4" id="step-${stepIndex}"><h2 class="text-3xl font-bold text-sky-700 mb-6 flex items-center">${title} <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>`;
+
+                if (stepData.type === 'info') {
+                    contentHtml += `<div class="prose max-w-none">${translations[stepData.contentKey][lang]}</div>`;
+                } else if (stepData.type === 'question') {
+                    const question = translations[stepData.questionKey][lang];
+                    const options = translations[stepData.optionsKey][lang];
+                    contentHtml += `<h3 class="text-xl font-semibold mb-4 flex justify-between items-center"><span>${question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><div class="space-y-3">${options.map(opt => `<button class="option-button w-full text-left p-4 border rounded-lg hover:bg-sky-100 flex justify-between items-center" data-answer="${opt}"><span>${opt}</span><span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></button>`).join('')}</div><p id="feedback-${stepIndex}" class="mt-4 text-sm font-semibold"></p>`;
+                } else if (stepData.type === 'final_quiz') {
+                    contentHtml += `<div id="final-quiz-container" class="space-y-6"></div><div class="mt-6 text-center"><button id="submit-final-quiz" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-700 transition">${translations['submitBtn'][lang]}</button></div><div id="final-quiz-results" class="mt-6 text-center text-xl font-bold"></div>`;
+                }
+
+                contentHtml += `</div>`;
+                caseContainer.innerHTML = contentHtml;
+                if (stepData.type === 'final_quiz') {
+                    loadFinalQuiz(lang);
+                    document.getElementById('submit-final-quiz').addEventListener('click', checkFinalQuiz);
+                }
+                updateNavButtons();
+                addOptionListeners();
+                setupTTSListeners();
+            }
+            
+            function loadFinalQuiz(lang) {
+                const quizContainer = document.getElementById('final-quiz-container');
+                quizContainer.innerHTML = '';
+                finalQuizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `<li class="quiz-option p-2 rounded hover:bg-sky-50"><label class="flex items-center cursor-pointer"><input type="radio" name="final_q${index}" value="${o}" class="mr-3">${o}</label></li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function checkFinalQuiz() {
+                let score = 0;
+                const lang = currentLanguage;
+                const questions = document.querySelectorAll('#final-quiz-container .quiz-question');
+                finalQuizData[lang].forEach((q, index) => {
+                    const selectedInput = document.querySelector(`input[name="final_q${index}"]:checked`);
+                    const options = questions[index].querySelectorAll('.quiz-option');
+                    
+                    options.forEach(optLabel => {
+                        const optInput = optLabel.querySelector('input');
+                        optLabel.classList.remove('incorrect-answer', 'correct-answer');
+                        if (optInput.value === q.answer) {
+                            optLabel.classList.add('correct-answer');
+                        }
+                    });
+
+                    if (selectedInput) {
+                        if (selectedInput.value === q.answer) {
+                            score++;
+                        } else {
+                            selectedInput.closest('.quiz-option').classList.add('incorrect-answer');
+                        }
+                    }
+                });
+                const resultText = lang === 'it' ? `Punteggio finale: ${score} / ${finalQuizData.it.length}` : `Final Score: ${score} / ${finalQuizData.en.length}`;
+                document.getElementById('final-quiz-results').textContent = resultText;
+                
+                prevBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+                backToIndexBtn.classList.remove('hidden');
+            }
+
+            function addOptionListeners() {
+                document.querySelectorAll('.option-button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const stepData = caseStructure[currentStep];
+                        const lang = currentLanguage;
+                        const selectedAnswer = btn.dataset.answer;
+                        const correctAnswer = translations[stepData.answerKey][lang];
+                        const feedbackEl = document.getElementById(`feedback-${currentStep}`);
+                        const feedbackText = translations[stepData.feedbacksKey][lang][selectedAnswer];
+                        
+                        feedbackEl.textContent = feedbackText;
+
+                        if (selectedAnswer === correctAnswer) {
+                            btn.classList.add('correct');
+                            feedbackEl.className = 'mt-4 text-sm font-semibold text-green-600';
+                            document.querySelectorAll('.option-button').forEach(b => b.disabled = true);
+                            nextBtn.disabled = false;
+                        } else {
+                            btn.disabled = true;
+                            btn.classList.add('incorrect');
+                            feedbackEl.className = 'mt-4 text-sm font-semibold text-red-600';
+                        }
+                    });
+                });
+            }
+
+            function updateNavButtons() {
+                prevBtn.disabled = currentStep === 0;
+                const stepData = caseStructure[currentStep];
+                if (stepData.type === 'question') {
+                    const answeredCorrectly = document.querySelector('.option-button.correct');
+                    nextBtn.disabled = !answeredCorrectly;
+                } else {
+                    nextBtn.disabled = currentStep === caseStructure.length - 1;
+                }
+
+                if (stepData.type === 'final_quiz') {
+                    prevBtn.classList.remove('hidden');
+                    nextBtn.classList.add('hidden');
+                    backToIndexBtn.classList.add('hidden');
+                } else {
+                    prevBtn.classList.remove('hidden');
+                    nextBtn.classList.remove('hidden');
+                    backToIndexBtn.classList.add('hidden');
+                }
+            }
+            
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                    return;
+                }
+                if (synth.speaking) { synth.cancel(); }
+                if (activeTTSButton) { activeTTSButton.classList.remove('playing'); }
+                
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                currentUtterance.onend = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                currentUtterance.onerror = () => { if (activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                synth.speak(currentUtterance);
+                activeTTSButton = button;
+                button.classList.add('playing');
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        if (parentElement.tagName === 'H2') { // Title of the step
+                            const section = parentElement.closest('.step-card');
+                            const clone = section.cloneNode(true);
+                            clone.querySelectorAll('button, a, .tts-button, h2, h3').forEach(el => el.remove());
+                            let titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = `${titleClone.textContent.trim()}. ${clone.textContent.trim().replace(/\s\s+/g, ' ')}`;
+                        } else if (parentElement.tagName === 'H3') { // Question
+                            const questionClone = parentElement.cloneNode(true);
+                            questionClone.querySelectorAll('.tts-button').forEach(el => el.remove());
+                            textToRead = questionClone.textContent.trim();
+                        } else if (parentElement.classList.contains('option-button')) { // Answer option
+                            const answerClone = parentElement.cloneNode(true);
+                            answerClone.querySelectorAll('.tts-button').forEach(el => el.remove());
+                            textToRead = answerClone.textContent.trim();
+                        }
+                        
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+             const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.textContent = translations[key][lang];
+                    }
+                });
+                
+                renderStep(currentStep);
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            };
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    renderStep(currentStep);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < caseStructure.length - 1) {
+                    currentStep++;
+                    renderStep(currentStep);
+                }
+            });
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+            
+            if (localStorage.getItem('dsa-mode') === 'enabled') {
+                body.classList.add('dsa-mode');
+            }
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
+
+
+
