@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica Terapia Epilessia Idiopatica - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette VIOLA */
+        body { font-family: 'Inter', sans-serif; background-color: #faf5ff; /* purple-50 */ color: #5b21b6; /* purple-800 */ }
+        
+        /* Modalità DSA (Accessibilità) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important; /* slate-50 */
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b; /* slate-800 */
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .flow-box, .dsa-mode .flow-decision, .dsa-mode .flow-result { background-color: #ffffff; border: 1px solid #e2e8f0; color: #1e293b; }
+        .dsa-mode .flow-arrow { color: #64748b; } /* slate-500 */
+        .dsa-mode h1, .dsa-mode h2 { color: #1e293b; }
+        .dsa-mode .flow-result.success { background-color: #dcfce7; border-color: #4ade80; color: #166534; }
+        .dsa-mode .flow-result.fail { background-color: #ffe4e6; border-color: #fb7185; color: #9f1239; }
+
+        /* Stili per la stampa */
+        @media print {
+            #main-header, #main-footer, #back-button, #accessibility-toggle, #lang-toggle { display: none; }
+            body { background-color: #ffffff; color: #000000; }
+            main { padding: 0 !important; margin-top: 2rem; }
+            .flow-box, .flow-decision, .flow-result { 
+                border-color: #000000; 
+                color: #000000; 
+                background-color: #ffffff; 
+                box-shadow: none;
+            }
+            .flow-arrow { color: #000000; }
+            h1, h2 { color: #000000; }
+        }
+
+        /* Stili Diagramma di Flusso */
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem; /* 24px */
+        }
+        .flow-box, .flow-decision, .flow-result {
+            width: 90%;
+            max-width: 600px; /* Larghezza aumentata per più testo */
+            padding: 1rem 1.5rem; /* 16px 24px */
+            border-radius: 0.5rem; /* 8px */
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            border: 1px solid #ede9fe; /* purple-100 */
+        }
+        .flow-box strong { color: #7e22ce; /* purple-700 */ }
+        .flow-box ul { list-style-type: disc; text-align: left; padding-left: 2rem; margin-top: 0.5rem; color: #475569; } /* slate-600 */
+        .dsa-mode .flow-box ul { color: #1e293b; }
+
+        .flow-decision {
+            background-color: #f3e8ff; /* purple-100 */
+            border-color: #c084fc; /* purple-400 */
+            font-weight: 600;
+        }
+        .flow-result.success {
+            background-color: #dcfce7; /* green-100 */
+            border-color: #4ade80; /* green-400 */
+            color: #166534; /* green-800 */
+            font-weight: 700;
+        }
+        .flow-result.fail {
+            background-color: #ffe4e6; /* rose-100 */
+            border-color: #fb7185; /* rose-400 */
+            color: #9f1239; /* rose-800 */
+            font-weight: 700;
+        }
+
+        .flow-arrow {
+            font-size: 2.25rem; /* 36px */
+            line-height: 1;
+            color: #a78bfa; /* purple-300 */
+            font-weight: bold;
+        }
+        .flow-split {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            gap: 1rem;
+        }
+        .flow-path {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            flex-basis: 50%;
+        }
+        /* Stile per il flow-path contenitore quando annidato */
+        .flow-path .flow-path {
+             flex-basis: 100%; /* I path annidati prendono il 100% del loro contenitore */
+             padding: 1rem;
+             border: 2px dashed #ddd6fe; /* purple-200 */
+             border-radius: 0.5rem;
+        }
+        .flow-path-label {
+            font-weight: 600;
+            color: #9333ea; /* purple-600 */
+            padding: 0.25rem 0.75rem;
+            background-color: #ffffff;
+            border-radius: 99px;
+            border: 1px solid #c084fc; /* purple-400 */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-purple-50">
+
+    <header id="main-header" class="bg-purple-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Infografica: Terapia Epilessia</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8" id="back-button">
+            <!-- Link per tornare alla pagina di riassunto -->
+            <a href="epilessia-idiopatica.html" class="inline-flex items-center bg-white text-purple-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-purple-100 transition duration-300" data-lang-key="backToSummary">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+            </a>
+        </div>
+        
+        <h1 class="text-3xl md:text-4xl font-bold text-purple-800 text-center mb-4" data-lang-key="pageTitle">Gestione Terapeutica dell'Epilessia Idiopatica</h1>
+        <h2 class="text-xl text-purple-700 text-center mb-12" data-lang-key="pageSubtitle">Approccio alla terapia cronica nel cane</h2>
+
+        <!-- Contenitore Infografica -->
+        <div class="flow-container" role="figure" aria-label="Diagramma di flusso della gestione terapeutica dell'epilessia idiopatica">
+            
+            <div class="flow-box" data-lang-key="start">
+                <strong>INIZIO:</strong> Diagnosi di Epilessia Idiopatica (Tier 1, 2 o 3)
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-decision" data-lang-key="decision1">
+                <strong>Quando iniziare la terapia?</strong>
+                <ul class="list-disc text-left pl-6 mt-2 text-purple-800 font-normal">
+                    <li data-lang-key="crit1">Stato Epilettico o Cluster Seizures?</li>
+                    <li data-lang-key="crit2">Frequenza > 1-2 crisi / 6 mesi?</li>
+                    <li data-lang-key="crit3">Fase post-ictale grave o prolungata?</li>
+                </ul>
+            </div>
+
+            <!-- Biforcazione -->
+            <div class="flow-split">
+                <!-- Percorso A: NO -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathNo">NO</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-result success" data-lang-key="result1">
+                        <strong>OPZIONE:</strong> Non iniziare la terapia. <br> Monitorare con diario delle crisi.
+                    </div>
+                </div>
+
+                <!-- Percorso B: SI -->
+                <div class="flow-path"> <!-- Questo è il contenitore del percorso B -->
+                    <div class="flow-path-label" data-lang-key="pathYes">SÌ (Uno o più criteri)</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="step1">
+                        <strong>Iniziare MONOTERAPIA (1° Scelta)</strong>
+                         <ul class="list-disc text-left pl-6 mt-2 text-purple-800 font-normal">
+                            <li data-lang-key="drug1"><strong>Fenobarbitale</strong> (efficace, monitoraggio epatico)</li>
+                            <li data-lang-key="drug2"><strong>Imepitoina</strong> (buona sicurezza, meno per crisi gravi)</li>
+                         </ul>
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="step2">
+                        Attendere <strong>steady-state</strong> e rivalutare efficacia (min. 6 mesi). <br> Monitorare livelli sierici (Fenobarbitale).
+                    </div>
+                     <div class="flow-arrow">&darr;</div>
+                    <div class="flow-decision" data-lang-key="decision2">
+                        <strong>Terapia Efficace?</strong> <br> (Riduzione frequenza crisi >50%)
+                    </div>
+                    
+                    <!-- Continuazione Percorso B (ORA ANNIDATO CORRETTAMENTE) -->
+                    <div class="flow-split mt-6 w-full"> <!-- Aggiunto w-full per forzare l'espansione -->
+                         <!-- Percorso B1: SUCCESSO -->
+                        <div class="flow-path">
+                            <div class="flow-path-label" data-lang-key="pathYesSuccess">SÌ (Successo)</div>
+                            <div class="flow-arrow">&darr;</div>
+                            <div class="flow-result success" data-lang-key="result2">
+                                <strong>TERAPIA EFFICACE</strong> <br> Continuare monoterapia e monitoraggio.
+                            </div>
+                        </div>
+                        
+                         <!-- Percorso B2: FALLIMENTO -->
+                        <div class="flow-path">
+                            <div class="flow-path-label" data-lang-key="pathNoFail">NO (Fallimento)</div>
+                            <div class="flow-arrow">&darr;</div>
+                            <div class="flow-box" data-lang-key="step3">
+                                <strong>Iniziare POLITERAPIA (Add-on)</strong>
+                                 <ul class="list-disc text-left pl-6 mt-2 text-purple-800 font-normal">
+                                     <li data-lang-key="drug3">Aggiungere <strong>Levetiracetam</strong> (sicuro, 3/die)</li>
+                                     <li data-lang-key="drug4">Aggiungere <strong>Potassio Bromuro</strong> (lento, 1/die, NO GATTI)</li>
+                                     <li data-lang-key="drug5">Aggiungere <strong>Zonisamide</strong> (2/die)</li>
+                                 </ul>
+                            </div>
+                             <div class="flow-arrow">&darr;</div>
+                            <div class="flow-result fail" data-lang-key="result3">
+                                <strong>PAZIENTE REFRATTARIO</strong> <br> Rivalutare diagnosi, considerare altri farmaci, monitorare attentamente.
+                            </div>
+                        </div>
+                    </div> <!-- Fine Split 2 (annidato) -->
+
+                </div> <!-- Fine Percorso B: SI -->
+            </div> <!-- Fine Biforcazione -->
+
+        </div>
+
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-purple-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TRADUZIONI ---
+            const translations = {
+                siteTitle: { it: "Infografica: Terapia Epilessia", en: "Infographic: Epilepsy Therapy" },
+                backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+                pageTitle: { it: "Gestione Terapeutica dell'Epilessia Idiopatica", en: "Therapeutic Management of Idiopathic Epilepsy" },
+                pageSubtitle: { it: "Approccio alla terapia cronica nel cane", en: "Approach to chronic therapy in the dog" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" },
+                
+                // Labels diagramma
+                start: { it: "<strong>INIZIO:</strong> Diagnosi di Epilessia Idiopatica (Tier 1, 2 o 3)", en: "<strong>START:</strong> Diagnosis of Idiopathic Epilepsy (Tier 1, 2, or 3)" },
+                decision1: { it: `<strong>Quando iniziare la terapia?</strong>
+                                <ul class="list-disc text-left pl-6 mt-2 text-purple-800 font-normal">
+                                    <li data-lang-key="crit1">Stato Epilettico o Cluster Seizures?</li>
+                                    <li data-lang-key="crit2">Frequenza > 1-2 crisi / 6 mesi?</li>
+                                    <li data-lang-key="crit3">Fase post-ictale grave o prolungata?</li>
+                                </ul>`,
+                             en: `<strong>When to start therapy?</strong>
+                                <ul class="list-disc text-left pl-6 mt-2 text-purple-800 font-normal">
+                                    <li data-lang-key="crit1">Status Epilepticus or Cluster Seizures?</li>
+                                    <li data-lang-key="crit2">Frequency > 1-2 seizures / 6 months?</li>
+                                    <li data-lang-key="crit3">Severe or prolonged post-ictal phase?</li>
+                                </ul>`},
+                pathNo: { it: "NO", en: "NO" },
+                pathYes: { it: "SÌ (Uno o più criteri)", en: "YES (One or more criteria)" },
+                result1: { it: "<strong>OPZIONE:</strong> Non iniziare la terapia. <br> Monitorare con diario delle crisi.", en: "<strong>OPTION:</strong> Do not start therapy. <br> Monitor with seizure diary." },
+                step1: { it: `<strong>Iniziare MONOTERAPIA (1° Scelta)</strong>
+                         <ul class="list-disc text-left pl-6 mt-2 text-purple-800 font-normal">
+                            <li data-lang-key="drug1"><strong>Fenobarbitale</strong> (efficace, monitoraggio epatico)</li>
+                            <li data-lang-key="drug2"><strong>Imepitoina</strong> (buona sicurezza, meno per crisi gravi)</li>
+                         </ul>`,
+                         en: `<strong>Start MONOTHERAPY (1st Choice)</strong>
+                         <ul class="list-disc text-left pl-6 mt-2 text-purple-800 font-normal">
+                            <li data-lang-key="drug1"><strong>Phenobarbital</strong> (effective, liver monitoring)</li>
+                            <li data-lang-key="drug2"><strong>Imepitoin</strong> (good safety, less for severe seizures)</li>
+                         </ul>`},
+                step2: { it: "Attendere <strong>steady-state</strong> e rivalutare efficacia (min. 6 mesi). <br> Monitorare livelli sierici (Fenobarbitale).", en: "Wait for <strong>steady-state</strong> and re-evaluate efficacy (min. 6 months). <br> Monitor serum levels (Phenobarbital)." },
+                decision2: { it: "<strong>Terapia Efficace?</strong> <br> (Riduzione frequenza crisi >50%)", en: "<strong>Therapy Effective?</strong> <br> (>50% reduction in seizure frequency)" },
+                pathYesSuccess: { it: "SÌ (Successo)", en: "YES (Success)" },
+                result2: { it: "<strong>TERAPIA EFFICACE</strong> <br> Continuare monoterapia e monitoraggio.", en: "<strong>EFFECTIVE THERAPY</strong> <br> Continue monotherapy and monitoring." },
+                pathNoFail: { it: "NO (Fallimento)", en: "NO (Failure)" },
+                step3: { it: `<strong>Iniziare POLITERAPIA (Add-on)</strong>
+                         <ul class="list-disc text-left pl-6 mt-2 text-purple-800 font-normal">
+                             <li data-lang-key="drug3">Aggiungere <strong>Levetiracetam</strong> (sicuro, 3/die)</li>
+                             <li data-lang-key="drug4">Aggiungere <strong>Potassio Bromuro</strong> (lento, 1/die, NO GATTI)</li>
+                             <li data-lang-key="drug5">Aggiungere <strong>Zonisamide</strong> (2/die)</li>
+                         </ul>`,
+                         en: `<strong>Start POLYTHERAPY (Add-on)</strong>
+                         <ul class="list-disc text-left pl-6 mt-2 text-purple-800 font-normal">
+                             <li data-lang-key="drug3">Add <strong>Levetiracetam</strong> (safe, 3/day)</li>
+                             <li data-lang-key="drug4">Add <strong>Potassium Bromide</strong> (slow, 1/day, NO CATS)</li>
+                             <li data-lang-key="drug5">Add <strong>Zonisamide</strong> (2/day)</li>
+                         </ul>`},
+                result3: { it: "<strong>PAZIENTE REFRATTARIO</strong> <br> Rivalutare diagnosi, considerare altri farmaci, monitorare attentamente.", en: "<strong>REFRACTORY PATIENT</strong> <br> Re-evaluate diagnosis, consider other drugs, monitor closely." }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+            
+            // Initial setup
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
