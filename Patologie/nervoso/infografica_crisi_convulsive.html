@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica Iter Diagnostico Crisi Convulsive - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette VIOLA */
+        body { font-family: 'Inter', sans-serif; background-color: #faf5ff; /* purple-50 */ color: #5b21b6; /* purple-800 */ }
+        
+        /* Modalità DSA (Accessibilità) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important; /* slate-50 */
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b; /* slate-800 */
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .flow-box, .dsa-mode .flow-decision, .dsa-mode .flow-result { background-color: #ffffff; border: 1px solid #e2e8f0; color: #1e293b; }
+        .dsa-mode .flow-arrow { color: #64748b; } /* slate-500 */
+        .dsa-mode h1, .dsa-mode h2 { color: #1e293b; }
+
+        /* Stili per la stampa */
+        @media print {
+            #main-header, #main-footer, #back-button, #accessibility-toggle, #lang-toggle { display: none; }
+            body { background-color: #ffffff; color: #000000; }
+            main { padding: 0 !important; margin-top: 2rem; }
+            .flow-box, .flow-decision, .flow-result { 
+                border-color: #000000; 
+                color: #000000; 
+                background-color: #ffffff; 
+                box-shadow: none;
+            }
+            .flow-arrow { color: #000000; }
+            h1, h2 { color: #000000; }
+        }
+
+        /* Stili Diagramma di Flusso */
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem; /* 24px */
+        }
+        .flow-box, .flow-decision, .flow-result {
+            width: 90%;
+            max-width: 500px;
+            padding: 1rem 1.5rem; /* 16px 24px */
+            border-radius: 0.5rem; /* 8px */
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            border: 1px solid #ede9fe; /* purple-100 */
+        }
+        .flow-box strong { color: #7e22ce; /* purple-700 */ }
+        .flow-decision {
+            background-color: #f3e8ff; /* purple-100 */
+            border-color: #c084fc; /* purple-400 */
+            font-weight: 600;
+        }
+        .flow-result {
+            background-color: #dcfce7; /* green-100 */
+            border-color: #4ade80; /* green-400 */
+            color: #166534; /* green-800 */
+            font-weight: 700;
+        }
+        .flow-result.structural {
+            background-color: #ffe4e6; /* rose-100 */
+            border-color: #fb7185; /* rose-400 */
+            color: #9f1239; /* rose-800 */
+        }
+        .flow-arrow {
+            font-size: 2.25rem; /* 36px */
+            line-height: 1;
+            color: #a78bfa; /* purple-300 */
+            font-weight: bold;
+        }
+        .flow-split {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            gap: 1rem;
+        }
+        .flow-path {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            flex-basis: 50%;
+        }
+        .flow-path-label {
+            font-weight: 600;
+            color: #9333ea; /* purple-600 */
+            padding: 0.25rem 0.75rem;
+            background-color: #ffffff;
+            border-radius: 99px;
+            border: 1px solid #c084fc; /* purple-400 */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .flow-result.idiopathic {
+            background-color: #e0e7ff; /* indigo-100 */
+            border-color: #818cf8; /* indigo-400 */
+            color: #3730a3; /* indigo-800 */
+        }
+        /* Stile per Terapia Box */
+        .flow-therapy {
+            background-color: #dbeafe; /* blue-100 */
+            border-color: #93c5fd; /* blue-300 */
+            color: #1e40af; /* blue-800 */
+            font-weight: 600;
+        }
+        .dsa-mode .flow-therapy {
+             background-color: #ffffff; border: 1px solid #e2e8f0; color: #1e293b;
+        }
+    </style>
+</head>
+<body class="bg-purple-50">
+
+    <header id="main-header" class="bg-purple-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Infografica: Crisi Convulsive</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8" id="back-button">
+            <!-- Link per tornare alla pagina di riassunto -->
+            <a href="crisi-convulsive.html" class="inline-flex items-center bg-white text-purple-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-purple-100 transition duration-300" data-lang-key="backToSummary">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+            </a>
+        </div>
+        
+        <h1 class="text-3xl md:text-4xl font-bold text-purple-800 text-center mb-4" data-lang-key="pageTitle">Iter Diagnostico delle Crisi Convulsive</h1>
+        <h2 class="text-xl text-purple-700 text-center mb-12" data-lang-key="pageSubtitle">Approccio a Tiers per la classificazione eziologica</h2>
+
+        <!-- Contenitore Infografica -->
+        <div class="flow-container" role="figure" aria-label="Diagramma di flusso dell'iter diagnostico per le crisi convulsive">
+            
+            <div class="flow-box" data-lang-key="step1">
+                <strong>INIZIO:</strong> Paziente con Crisi Convulsiva
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-box" data-lang-key="step2">
+                <strong>Anamnesi + Visita Clinica e Neurologica</strong> (tra le crisi)
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-decision" data-lang-key="decision1">
+                Esame neurologico NORMALE?
+            </div>
+
+            <!-- Biforcazione -->
+            <div class="flow-split">
+                <!-- Percorso A: NO (Anormale) -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathNo">NO</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="step3a">
+                        Sospetta <strong>lesione intracranica</strong> (strutturale).
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="step3b">
+                        Procedi direttamente a <strong>Tier 2 (MRI)</strong> e <strong>Tier 3 (LCR)</strong> per conferma.
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                     <div class="flow-result structural" data-lang-key="result1">
+                        <strong>RISULTATO:</strong> EZIOLOGIA STRUTTURALE
+                    </div>
+                </div>
+
+                <!-- Percorso B: SI (Normale) -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathYes">SÌ</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="step4">
+                        <strong>TIER 1:</strong> Esami ematobiochimici completi, elettroliti, ammoniaca/acidi biliari, analisi urine.
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-decision" data-lang-key="decision2">
+                        Tier 1 ANORMALE (es. Ipoglicemia, Shunt)?
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-result" data-lang-key="result2">
+                        <span class="font-bold" data-lang-key="pathYes">SÌ</span> &rarr; <strong>RISULTATO:</strong> CRISI REATTIVA (Tratta la causa)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Continuazione Percorso B -->
+            <div class="flow-arrow">&darr;</div>
+            <div class="flow-box" data-lang-key="step5">
+                <span class="font-bold" data-lang-key="pathNo">NO</span> (Tier 1 Normale) &rarr; Procedi a <strong>TIER 2: Risonanza Magnetica (MRI)</strong>
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-decision" data-lang-key="decision3">
+                MRI ANORMALE (es. Tumore, Ictus, Malformazione)?
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-result structural" data-lang-key="result3">
+                <span class="font-bold" data-lang-key="pathYes">SÌ</span> &rarr; <strong>RISULTATO:</strong> EPILESSIA STRUTTURALE (Tratta la lesione)
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-box" data-lang-key="step6">
+                 <span class="font-bold" data-lang-key="pathNo">NO</span> (MRI Normale) &rarr; Procedi a <strong>TIER 3: Analisi Liquido Cefalorachidiano (LCR)</strong>
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+             <div class="flow-decision" data-lang-key="decision4">
+                Analisi LCR ANORMALE (es. Pleocitosi)?
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+             <div class="flow-result structural" data-lang-key="result4">
+                <span class="font-bold" data-lang-key="pathYes">SÌ</span> &rarr; <strong>RISULTATO:</strong> EPILESSIA STRUTTURALE (Meningoencefalite)
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-result idiopathic" data-lang-key="result5">
+                 <span class="font-bold" data-lang-key="pathNo">NO</span> (Tier 1+2+3 Normali + Età 6m-6a) &rarr; <strong>RISULTATO:</strong> EPILESSIA IDIOPATICA
+            </div>
+
+        </div>
+
+        <!-- NUOVA SEZIONE TERAPIA -->
+        <h2 class="text-3xl md:text-4xl font-bold text-purple-800 text-center mb-4 mt-16" data-lang-key="terapiaTitle">Approccio Terapeutico</h2>
+        <h3 class="text-xl text-purple-700 text-center mb-12" data-lang-key="terapiaSubtitle">Gestione dell'emergenza e terapia cronica</h3>
+
+        <div class="flow-container" role="figure" aria-label="Diagramma di flusso dell'approccio terapeutico">
+            
+            <div class="flow-decision" data-lang-key="terDecision1">
+                Paziente in <strong>Stato Epilettico</strong> (>5 min) o con <strong>Cluster</strong> (≥2 in 24h)?
+            </div>
+
+            <!-- Biforcazione Terapia -->
+            <div class="flow-split">
+                <!-- Percorso A: SI (Emergenza) -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathYesEmergency">SÌ (Emergenza)</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box flow-therapy" data-lang-key="terStep1">
+                        <strong>1. Benzodiazepine</strong> (Diazepam / Midazolam) <br> (EV, IN, IR)
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-decision" data-lang-key="terDecision2">
+                        Crisi terminata?
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box flow-therapy" data-lang-key="terStep2">
+                         <span class="font-bold" data-lang-key="pathNo">NO</span> &rarr; <strong>2. Carico Anticonvulsivante</strong> <br> (Fenobarbitale EV o Levetiracetam EV)
+                    </div>
+                     <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box flow-therapy" data-lang-key="terStep3">
+                         <span class="font-bold" data-lang-key="pathNo">NO</span> &rarr; <strong>3. Crisi Refrattaria</strong> <br> (CRI Midazolam, Propofol, etc.)
+                    </div>
+                </div>
+
+                <!-- Percorso B: NO (Gestione Cronica) -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathNoChronic">NO (Gestione Cronica / Terapia)</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box flow-therapy" data-lang-key="terStep4">
+                        Valutare inizio terapia cronica se: <br>
+                        - Frequenza >1-2 / 6 mesi <br>
+                        - Precedente Stato Epilettico / Cluster <br>
+                        - Eziologia Strutturale nota
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box flow-therapy" data-lang-key="terStep5">
+                        <strong>Farmaci di Prima Scelta:</strong><br>
+                        - <strong>Cane:</strong> Fenobarbitale, Imepitoina, KBr, Levetiracetam<br>
+                        - <strong>Gatto:</strong> Fenobarbitale
+                    </div>
+                     <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box flow-therapy" data-lang-key="terStep6">
+                        <strong>Monitoraggio:</strong> Controlli periodici e livelli sierici.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FINE NUOVA SEZIONE -->
+
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-purple-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TRADUZIONI ---
+            const translations = {
+                siteTitle: { it: "Infografica: Crisi Convulsive", en: "Infographic: Seizures" },
+                backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+                pageTitle: { it: "Iter Diagnostico delle Crisi Convulsive", en: "Diagnostic Approach to Seizures" },
+                pageSubtitle: { it: "Approccio a Tiers per la classificazione eziologica", en: "Tiered Approach for Etiological Classification" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" },
+                
+                // Labels diagramma
+                step1: { it: "<strong>INIZIO:</strong> Paziente con Crisi Convulsiva", en: "<strong>START:</strong> Patient with Seizure" },
+                step2: { it: "<strong>Anamnesi + Visita Clinica e Neurologica</strong> (tra le crisi)", en: "<strong>History + Clinical & Neurological Exam</strong> (inter-ictal)" },
+                result4: { it: "<span class='font-bold' data-lang-key='pathYes'>SÌ</span> &rarr; <strong>RISULTATO:</strong> EPILESSIA STRUTTURALE (Meningoencefalite)", en: "<span class='font-bold' data-lang-key='pathYes'>YES</span> &rarr; <strong>OUTCOME:</strong> STRUCTURAL EPILEPSY (Meningoencephalitis)" },
+                result5: { it: "<span class='font-bold' data-lang-key='pathNo'>NO</span> (Tier 1+2+3 Normali + Età 6m-6a) &rarr; <strong>RISULTATO:</strong> EPILESSIA IDIOPATICA", en: "<span class='font-bold' data-lang-key='pathNo'>NO</span> (Tier 1+2+3 Normal + Age 6m-6y) &rarr; <strong>OUTCOME:</strong> IDIOPATHIC EPILEPSY" },
+
+                // Labels Terapia
+                terapiaTitle: { it: "Approccio Terapeutico", en: "Therapeutic Approach" },
+                terapiaSubtitle: { it: "Gestione dell'emergenza e terapia cronica", en: "Emergency Management and Chronic Therapy" },
+                terDecision1: { it: "Paziente in <strong>Stato Epilettico</strong> (>5 min) o con <strong>Cluster</strong> (≥2 in 24h)?", en: "Patient in <strong>Status Epilepticus</strong> (>5 min) or <strong>Clusters</strong> (≥2 in 24h)?" },
+                pathYesEmergency: { it: "SÌ (Emergenza)", en: "YES (Emergency)" },
+                pathNoChronic: { it: "NO (Gestione Cronica / Terapia)", en: "NO (Chronic Management / Therapy)" },
+                terStep1: { it: "<strong>1. Benzodiazepine</strong> (Diazepam / Midazolam) <br> (EV, IN, IR)", en: "<strong>1. Benzodiazepines</strong> (Diazepam / Midazolam) <br> (IV, IN, IR)" },
+                terDecision2: { it: "Crisi terminata?", en: "Seizure stopped?" },
+                terStep2: { it: "<span class='font-bold' data-lang-key='pathNo'>NO</span> &rarr; <strong>2. Carico Anticonvulsivante</strong> <br> (Fenobarbitale EV o Levetiracetam EV)", en: "<span class='font-bold' data-lang-key='pathNo'>NO</span> &rarr; <strong>2. Anticonvulsant Loading</strong> <br> (Phenobarbital IV or Levetiracetam IV)" },
+                terStep3: { it: "<span class='font-bold' data-lang-key='pathNo'>NO</span> &rarr; <strong>3. Crisi Refrattaria</strong> <br> (CRI Midazolam, Propofol, etc.)", en: "<span class='font-bold' data-lang-key='pathNo'>NO</span> &rarr; <strong>3. Refractory Seizure</strong> <br> (Midazolam CRI, Propofol, etc.)" },
+                terStep4: { it: "Valutare inizio terapia cronica se: <br> - Frequenza >1-2 / 6 mesi <br> - Precedente Stato Epilettico / Cluster <br> - Eziologia Strutturale nota", en: "Evaluate starting chronic therapy if: <br> - Frequency >1-2 / 6 months <br> - Previous Status Epilepticus / Cluster <br> - Known Structural Etiology" },
+                terStep5: { it: "<strong>Farmaci di Prima Scelta:</strong><br> - <strong>Cane:</strong> Fenobarbitale, Imepitoina, KBr, Levetiracetam<br> - <strong>Gatto:</strong> Fenobarbitale", en: "<strong>First-line Drugs:</strong><br> - <strong>Dog:</strong> Phenobarbital, Imepitoin, KBr, Levetiracetam<br> - <strong>Cat:</strong> Phenobarbital" },
+                terStep6: { it: "<strong>Monitoraggio:</strong> Controlli periodici e livelli sierici.", en: "<strong>Monitoring:</strong> Periodic check-ups and serum levels." }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        // Controlla se l'elemento è un contenitore per HTML complesso
+                        // CORREZIONE: Uso innerHTML per tutti per interpretare correttamente i tag <strong>
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+            
+            // Initial setup
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
