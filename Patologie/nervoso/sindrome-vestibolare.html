@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sindrome Vestibolare - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette VIOLA */
+        body { font-family: 'Inter', sans-serif; background-color: #faf5ff; /* purple-50 */ color: #5b21b6; /* purple-800 */ }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; color: #a855f7; /* purple-500 */ }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #9333ea; /* purple-600 */ color: #5b21b6; /* purple-800 */ }
+        
+        /* Modalità DSA (Accessibilità) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important; /* slate-50 */
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b; /* slate-800 */
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #ffffff; border: 1px solid #e2e8f0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #1e293b; }
+        .dsa-mode .prose strong { color: #000000; }
+        .dsa-mode .prose h3 { color: #1e293b; border-bottom-color: #94a3b8; }
+        .dsa-mode .prose h4 { color: #1e293b; }
+        .dsa-mode .nav-link { color: #334155; } /* slate-700 */
+        .dsa-mode .nav-link:hover, .dsa-mode .nav-link.active { border-bottom-color: #334155; color: #000000; }
+        .dsa-mode .quiz-question { border-color: #cbd5e1; }
+        .dsa-mode .quiz-option:hover { background-color: #f1f5f9; }
+
+        /* Bottoni TTS */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #a78bfa; /* purple-400 */ transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #7c3aed; /* purple-600 */ }
+        
+        /* Stili riassunto (prose) */
+        .prose h3 {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 600; /* font-semibold */
+            color: #7e22ce; /* purple-700 */
+            margin-top: 2rem; /* mt-8 */
+            margin-bottom: 1rem; /* mb-4 */
+            padding-bottom: 0.25rem; /* pb-1 */
+            border-bottom: 1px solid #ddd6fe; /* purple-200 */
+        }
+        .prose p, .prose ul {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: #374151; /* gray-700 */
+            margin-bottom: 1.25rem; /* mb-5 */
+        }
+        .prose strong {
+            color: #5b21b6; /* purple-800 */
+            font-weight: 600;
+        }
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.75rem; /* pl-7 */
+        }
+        .prose li {
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        /* Quiz */
+        .quiz-question { border: 1px solid #ddd6fe; /* purple-200 */ transition: all 0.3s; }
+        .quiz-option:hover { background-color: #faf5ff; /* purple-50 */ }
+        .quiz-question.correct { background-color: #dcfce7; border-color: #4ade80; } /* Verde per corretto */
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #f87171; } /* Rosso per errato */
+
+        /* Stili per h4 nel riassunto */
+        .prose h4 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            color: #7e22ce; /* purple-700 */
+            margin-top: 1.5rem; /* mt-6 */
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+        .dsa-mode .prose h4 {
+            color: #1e293b; /* slate-800 */
+        }
+
+        /* Stili per la stampa */
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, a[href*="infografica"], a[href*="index.info"] { display: none; }
+            body, .content-section { background-color: #ffffff !important; color: #000000 !important; }
+            .content-section { box-shadow: none; border: none; }
+            h1, h2, h3, h4, p, li, strong { color: #000000 !important; }
+            .prose h3 { border-color: #000000; }
+        }
+    </style>
+</head>
+<body class="bg-purple-50">
+
+    <header id="main-header" class="bg-purple-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Sistema Nervoso</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <!-- Link per tornare all'indice della neurologia -->
+            <a href="index.info" class="inline-flex items-center bg-white text-purple-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-purple-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Neurologia</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-purple-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-purple-800" data-lang-key="pageTitle">Sindrome Vestibolare (Cane/Gatto)<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-purple-700 mt-2" data-lang-key="pageSubtitle">Distinzione fondamentale tra lesione centrale e periferica.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none" data-lang-key="summaryContent">
+                        
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Definizione e Segni Comuni</h3>
+                        <p>La <strong>Sindrome Vestibolare</strong> è un insieme di segni neurologici causati da una disfunzione del sistema vestibolare, che controlla l'equilibrio e l'orientamento spaziale. La lesione può essere <strong>periferica</strong> (orecchio interno, nervo vestibolo-cocleare - NC VIII) o <strong>centrale</strong> (nuclei vestibolari nel tronco encefalico, cervelletto).</p>
+                        <p>I segni classici della sindrome vestibolare includono:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Atassia Vestibolare:</strong> Incoordinazione con tendenza a cadere o sbandare su un lato, base d'appoggio larga, a volte "rolling" (rotolamento).</li>
+                            <li><strong>Head Tilt (Testa Ruotata):</strong> La testa è inclinata su un lato. Generalmente, il lato verso cui è inclinata la testa è il lato della lesione (specialmente nelle lesioni periferiche).</li>
+                            <li><strong>Nistagmo Patologico:</strong> Movimento ritmico e involontario degli occhi. Può essere spontaneo o posizionale (evocato cambiando la posizione della testa).</li>
+                            <li><strong>Circling:</strong> Deambulazione in circoli stretti, tipicamente verso il lato della lesione.</li>
+                            <li><strong>Strabismo Posizionale:</strong> Deviazione di un occhio (spesso ventrale) quando la testa viene estesa.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Distinzione: Centrale vs. Periferica</h3>
+                        <p>La distinzione tra lesione centrale e periferica è l'obiettivo diagnostico primario e si basa sulla presenza (o assenza) di altri segni neurologici. Una lesione <strong>periferica</strong> coinvolge solo il recettore (orecchio interno) o il nervo (NC VIII). Una lesione <strong>centrale</strong> coinvolge il tronco encefalico e spesso le strutture adiacenti.</p>
+
+                        <h4 class="text-xl font-semibold mt-4 mb-2">Sindrome Vestibolare Periferica</h4>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Stato Mentale:</strong> <strong>Normale</strong>. L'animale è vigile e cosciente (sebbene disorientato o ansioso).</li>
+                            <li><strong>Deficit Propriocettivi (CPs):</strong> <strong>Assenti</strong>. Il paziente sa dove tiene i piedi, anche se barcolla.</li>
+                            <li><strong>Altri Nervi Cranici:</strong> Possono essere coinvolti il <strong>Nervo Facciale (NC VII)</strong> (causando paralisi facciale ipsilaterale) o la <strong>Sindrome di Horner</strong> (ptosi, miosi, enoftalmo), poiché corrono vicino all'orecchio medio.</li>
+                            <li><strong>Nistagmo:</strong> Tipicamente <strong>orizzontale</strong> o <strong>rotatorio</strong>. Non cambia direzione con il cambio di posizione della testa. La fase rapida è opposta al lato della lesione.</li>
+                            <li><strong>Cause Comuni:</strong> Otite interna/media (molto comune), Sindrome Vestibolare Idiopatica (geriatrica nel cane, comune nel gatto), traumi, neoplasie del nervo, polipi (gatto).</li>
+                        </ul>
+
+                        <h4 class="text-xl font-semibold mt-4 mb-2">Sindrome Vestibolare Centrale</h4>
+                         <ul class="list-disc pl-6">
+                            <li><strong>Stato Mentale:</strong> Spesso <strong>alterato</strong> (depresso, stuporoso) a causa del coinvolgimento della formazione reticolare nel tronco encefalico.</li>
+                            <li><strong>Deficit Propriocettivi (CPs):</strong> <strong>Presenti</strong> (ipsilaterali alla lesione). L'animale ha deficit di posizionamento.</li>
+                            <li><strong>Altri Nervi Cranici:</strong> Possono essere coinvolti multipli nervi cranici oltre al VII (es. V, VI, IX, X, XII).</li>
+                            <li><strong>Nistagmo:</strong> Può essere <strong>verticale</strong> (patognomonico di lesione centrale!), orizzontale o rotatorio. Spesso <strong>posizionale</strong> (appare o cambia direzione con il cambio di posizione della testa).</li>
+                            <li><strong>Cause Comuni:</strong> Neoplasie (tronco encefalico, cervelletto), Meningoencefalite (infiammatoria/infettiva, es. GME, FIP, Cimurro), Ictus (infarto), Metronidazolo (tossicità).</li>
+                        </ul>
+                        
+                        <h4 class="text-xl font-semibold mt-4 mb-2">Sindrome Vestibolare Idiopatica</h4>
+                        <p>È una causa comune di sindrome vestibolare <strong>periferica</strong> ad insorgenza acuta. Colpisce tipicamente cani anziani ("sindrome geriatrica") e gatti di qualsiasi età. È una diagnosi di esclusione (soprattutto escludendo un'otite interna). La prognosi è eccellente, con miglioramento spontaneo che inizia entro 72 ore e spesso si risolve in 2-3 settimane (può persistere un lieve head tilt).</p>
+
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                        <a href="infografica_sindrome_vestibolare.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-purple-500">
+                            <div class="flex items-center space-x-6">
+                                <div class="flex-shrink-0 w-24 h-24 bg-purple-500 rounded-lg flex items-center justify-center">
+                                    <!-- Icona Emoji Bussola -->
+                                    <span class="text-5xl" role="img" aria-label="Icona di una bussola">🧭</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-purple-800" data-lang-key="infographicLinkTitle">Visualizza la Localizzazione</h3>
+                                    <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca per una guida visuale alla distinzione tra sindrome centrale e periferica.</p>
+                                </div>
+                            </div>
+                        </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-purple-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-purple-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-purple-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-purple-500 text-white rounded-full hover:bg-purple-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                            </svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" />
+                            </svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-purple-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-purple-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_sindrome_vestibolare.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-purple-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-purple-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TRADUZIONI ---
+            const translations = {
+                siteTitle: { it: "Patologie Sistema Nervoso", en: "Nervous System Diseases" },
+                backToIndexText: { it: "Indice Neurologia", en: "Neurology Index" },
+                pageTitle: { it: "Sindrome Vestibolare (Cane/Gatto)", en: "Vestibular Syndrome (Dog/Cat)" },
+                pageSubtitle: { it: "Distinzione fondamentale tra lesione centrale e periferica.", en: "Key distinction between central and peripheral lesions." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: `<h3 class="text-2xl font-semibold mt-6 mb-3">Definizione e Segni Comuni</h3>
+                        <p>La <strong>Sindrome Vestibolare</strong> è un insieme di segni neurologici causati da una disfunzione del sistema vestibolare, che controlla l'equilibrio e l'orientamento spaziale. La lesione può essere <strong>periferica</strong> (orecchio interno, nervo vestibolo-cocleare - NC VIII) o <strong>centrale</strong> (nuclei vestibolari nel tronco encefalico, cervelletto).</p>
+                        <p>I segni classici della sindrome vestibolare includono:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Atassia Vestibolare:</strong> Incoordinazione con tendenza a cadere o sbandare su un lato, base d'appoggio larga, a volte "rolling" (rotolamento).</li>
+                            <li><strong>Head Tilt (Testa Ruotata):</strong> La testa è inclinata su un lato. Generalmente, il lato verso cui è inclinata la testa è il lato della lesione (specialmente nelle lesioni periferiche).</li>
+                            <li><strong>Nistagmo Patologico:</strong> Movimento ritmico e involontario degli occhi. Può essere spontaneo o posizionale (evocato cambiando la posizione della testa).</li>
+                            <li><strong>Circling:</strong> Deambulazione in circoli stretti, tipicamente verso il lato della lesione.</li>
+                            <li><strong>Strabismo Posizionale:</strong> Deviazione di un occhio (spesso ventrale) quando la testa viene estesa.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Distinzione: Centrale vs. Periferica</h3>
+                        <p>La distinzione tra lesione centrale e periferica è l'obiettivo diagnostico primario e si basa sulla presenza (o assenza) di altri segni neurologici. Una lesione <strong>periferica</strong> coinvolge solo il recettore (orecchio interno) o il nervo (NC VIII). Una lesione <strong>centrale</strong> coinvolge il tronco encefalico e spesso le strutture adiacenti.</p>
+
+                        <h4 class="text-xl font-semibold mt-4 mb-2">Sindrome Vestibolare Periferica</h4>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Stato Mentale:</strong> <strong>Normale</strong>. L'animale è vigile e cosciente (sebbene disorientato o ansioso).</li>
+                            <li><strong>Deficit Propriocettivi (CPs):</strong> <strong>Assenti</strong>. Il paziente sa dove tiene i piedi, anche se barcolla.</li>
+                            <li><strong>Altri Nervi Cranici:</strong> Possono essere coinvolti il <strong>Nervo Facciale (NC VII)</strong> (causando paralisi facciale ipsilaterale) o la <strong>Sindrome di Horner</strong> (ptosi, miosi, enoftalmo), poiché corrono vicino all'orecchio medio.</li>
+                            <li><strong>Nistagmo:</strong> Tipicamente <strong>orizzontale</strong> o <strong>rotatorio</strong>. Non cambia direzione con il cambio di posizione della testa. La fase rapida è opposta al lato della lesione.</li>
+                            <li><strong>Cause Comuni:</strong> Otite interna/media (molto comune), Sindrome Vestibolare Idiopatica (geriatrica nel cane, comune nel gatto), traumi, neoplasie del nervo, polipi (gatto).</li>
+                        </ul>
+
+                        <h4 class="text-xl font-semibold mt-4 mb-2">Sindrome Vestibolare Centrale</h4>
+                         <ul class="list-disc pl-6">
+                            <li><strong>Stato Mentale:</strong> Spesso <strong>alterato</strong> (depresso, stuporoso) a causa del coinvolgimento della formazione reticolare nel tronco encefalico.</li>
+                            <li><strong>Deficit Propriocettivi (CPs):</strong> <strong>Presenti</strong> (ipsilaterali alla lesione). L'animale ha deficit di posizionamento.</li>
+                            <li><strong>Altri Nervi Cranici:</strong> Possono essere coinvolti multipli nervi cranici oltre al VII (es. V, VI, IX, X, XII).</li>
+                            <li><strong>Nistagmo:</strong> Può essere <strong>verticale</strong> (patognomonico di lesione centrale!), orizzontale o rotatorio. Spesso <strong>posizionale</strong> (appare o cambia direzione con il cambio di posizione della testa).</li>
+                            <li><strong>Cause Comuni:</strong> Neoplasie (tronco encefalico, cervelletto), Meningoencefalite (infiammatoria/infettiva, es. GME, FIP, Cimurro), Ictus (infarto), Metronidazolo (tossicità).</li>
+                        </ul>
+                        
+                        <h4 class="text-xl font-semibold mt-4 mb-2">Sindrome Vestibolare Idiopatica</h4>
+                        <p>È una causa comune di sindrome vestibolare <strong>periferica</strong> ad insorgenza acuta. Colpisce tipicamente cani anziani ("sindrome geriatrica") e gatti di qualsiasi età. È una diagnosi di esclusione (soprattutto escludendo un'otite interna). La prognosi è eccellente, con miglioramento spontaneo che inizia entro 72 ore e spesso si risolve in 2-3 settimane (può persistere un lieve head tilt).</p>`,
+                    en: `<h3 class="text-2xl font-semibold mt-6 mb-3">Definition and Common Signs</h3>
+                        <p><strong>Vestibular Syndrome</strong> is a collection of neurological signs caused by a dysfunction of the vestibular system, which controls balance and spatial orientation. The lesion can be <strong>peripheral</strong> (inner ear, vestibulocochlear nerve - CN VIII) or <strong>central</strong> (vestibular nuclei in the brainstem, cerebellum).</p>
+                        <p>The classic signs of vestibular syndrome include:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Vestibular Ataxia:</strong> Incoordination with a tendency to fall or lean to one side, wide-based stance, sometimes "rolling".</li>
+                            <li><strong>Head Tilt:</strong> The head is tilted to one side. Generally, the tilt is towards the side of the lesion (especially in peripheral lesions).</li>
+                            <li><strong>Pathologic Nystagmus:</strong> Rhythmic, involuntary eye movement. Can be spontaneous or positional (elicited by changing head position).</li>
+                            <li><strong>Circling:</strong> Walking in tight circles, typically towards the side of the lesion.</li>
+                            <li><strong>Positional Strabismus:</strong> Deviation of one eye (often ventral) when the head is extended.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Distinction: Central vs. Peripheral</h3>
+                        <p>Distinguishing between a central and peripheral lesion is the primary diagnostic goal and is based on the presence (or absence) of other neurological signs. A <strong>peripheral</strong> lesion involves only the receptor (inner ear) or nerve (CN VIII). A <strong>central</strong> lesion involves the brainstem and often adjacent structures.</p>
+
+                        <h4 class="text-xl font-semibold mt-4 mb-2">Peripheral Vestibular Syndrome</h4>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Mental Status:</strong> <strong>Normal</strong>. The animal is bright and responsive (though disoriented or anxious).</li>
+                            <li><strong>Proprioceptive (CP) Deficits:</strong> <strong>Absent</strong>. The patient knows where their feet are, even if wobbly.</li>
+                            <li><strong>Other Cranial Nerves:</strong> May involve the <strong>Facial Nerve (CN VII)</strong> (causing ipsilateral facial paralysis) or <strong>Horner's Syndrome</strong> (ptosis, miosis, enophthalmos), as they run near the middle ear.</li>
+                            <li><strong>Nystagmus:</strong> Typically <strong>horizontal</strong> or <strong>rotary</strong>. Does not change direction with head position. The fast phase is away from the lesion side.</li>
+                            <li><strong>Common Causes:</strong> Otitis interna/media (very common), Idiopathic Vestibular Syndrome (geriatric in dogs, common in cats), trauma, nerve sheath tumors, polyps (cats).</li>
+                        </ul>
+
+                        <h4 class="text-xl font-semibold mt-4 mb-2">Central Vestibular Syndrome</h4>
+                         <ul class="list-disc pl-6">
+                            <li><strong>Mental Status:</strong> Often <strong>altered</strong> (depressed, stuporous) due to involvement of the brainstem reticular formation.</li>
+                            <li><strong>Proprioceptive (CP) Deficits:</strong> <strong>Present</strong> (ipsilateral to the lesion). The animal has placing deficits.</li>
+                            <li><strong>Other Cranial Nerves:</strong> Multiple cranial nerves beyond VII may be involved (e.g., V, VI, IX, X, XII).</li>
+                            <li><strong>Nystagmus:</strong> Can be <strong>vertical</strong> (pathognomonic for central lesion!), horizontal, or rotary. Often <strong>positional</strong> (appears or changes direction with head position).</li>
+                            <li><strong>Common Causes:</strong> Neoplasia (brainstem, cerebellum), Meningoencephalitis (inflammatory/infectious, e.g., GME, FIP, Distemper), Stroke (infarct), Metronidazole (toxicity).</li>
+                        </ul>
+                        
+                        <h4 class="text-xl font-semibold mt-4 mb-2">Idiopathic Vestibular Syndrome</h4>
+                        <p>A common cause of acute <strong>peripheral</strong> vestibular syndrome. Typically affects older dogs ("geriatric syndrome") and cats of any age. It is a diagnosis of exclusion (especially ruling out otitis interna). The prognosis is excellent, with spontaneous improvement starting within 72 hours and often resolving in 2-3 weeks (a mild head tilt may persist).</p>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza la Localizzazione", en: "View Localization" },
+                infographicLinkDesc: { it: "Clicca per una guida visuale alla distinzione tra sindrome centrale e periferica.", en: "Click for a visual guide to distinguishing central vs. peripheral syndrome." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>De Lahunta A, Glass EN. Veterinary Neuroanatomy and Clinical Neurology. 5th ed. Elsevier, 2021.</li>
+                         <li>Ettinger SJ, Feldman EC, Coté E. Ettinger's Textbook of Veterinary Internal Medicine. 9th ed. Elsevier, 2024.</li>
+                         <li>Lorenz MD, Coates JR, Kent M. Handbook of Veterinary Neurology. 5th ed. Elsevier Saunders, 2011.</li>`,
+                    en: `<li>De Lahunta A, Glass EN. Veterinary Neuroanatomy and Clinical Neurology. 5th ed. Elsevier, 2021.</li>
+                         <li>Ettinger SJ, Feldman EC, Coté E. Ettinger's Textbook of Veterinary Internal Medicine. 9th ed. Elsevier, 2024.</li>
+                         <li>Lorenz MD, Coates JR, Kent M. Handbook of Veterinary Neurology. 5th ed. Elsevier Saunders, 2011.</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            // --- QUIZ DATA ---
+            const quizData = {
+                it: [
+                    { question: "Quale di questi NON è un segno classico della sindrome vestibolare?", options: ["Head tilt", "Nistagmo", "Paresi", "Atassia"], answer: "Paresi" },
+                    { question: "La presenza di deficit propriocettivi (CPs) sposta la localizzazione da...", options: ["Periferica a Centrale", "Centrale a Periferica", "Cerebellare a Spinale", "Spinale a Cerebellare"], answer: "Periferica a Centrale" },
+                    { question: "Un nistagmo di tipo VERTICALE è patognomonico di una lesione...", options: ["Periferica", "Centrale", "Idiopatica", "Orecchio interno"], answer: "Centrale" },
+                    { question: "L'atassia vestibolare idiopatica geriatrica del cane è una malattia...", options: ["Centrale con prognosi infausta", "Periferica con prognosi eccellente", "Cerebellare", "Causata da Metronidazolo"], answer: "Periferica con prognosi eccellente" },
+                    { question: "Quale nervo cranico è spesso coinvolto insieme a una sindrome vestibolare PERIFERICA?", options: ["Nervo Ottico (II)", "Nervo Trigemino (V)", "Nervo Facciale (VII)", "Nervo Vago (X)"], answer: "Nervo Facciale (VII)" },
+                    { question: "Uno stato mentale depresso o stuporoso è più comune in una lesione...", options: ["Periferica", "Centrale", "Idiopatica", "Orecchio medio"], answer: "Centrale" },
+                    { question: "In una lesione periferica, l'head tilt e il circling sono generalmente...", options: ["Verso il lato opposto alla lesione", "Verso il lato della lesione", "Alternanti", "Assenti"], answer: "Verso il lato della lesione" },
+                    { question: "Quale causa è responsabile della sindrome vestibolare centrale ma NON di quella periferica?", options: ["Otite interna", "Polipo nasofaringeo", "Meningoencefalite (GME)", "Sindrome idiopatica"], answer: "Meningoencefalite (GME)" },
+                    { question: "Un nistagmo orizzontale che NON cambia direzione con la posizione della testa è tipico di...", options: ["Lesione Centrale", "Lesione Periferica", "Lesione Cerebellare", "Lesione Spinale"], answer: "Lesione Periferica" },
+                    { question: "La tossicità da quale farmaco può causare una sindrome vestibolare CENTRALE?", options: ["Amoxicillina", "Metronidazolo", "Furosemide", "Fenobarbitale"], answer: "Metronidazolo" }
+                ],
+                en: [
+                    { question: "Which of these is NOT a classic sign of vestibular syndrome?", options: ["Head tilt", "Nystagmus", "Paresis", "Ataxia"], answer: "Paresis" },
+                    { question: "The presence of proprioceptive (CP) deficits shifts the localization from...", options: ["Peripheral to Central", "Central to Peripheral", "Cerebellar to Spinal", "Spinal to Cerebellar"], answer: "Peripheral to Central" },
+                    { question: "A VERTICAL nystagmus is pathognomonic for a... lesion.", options: ["Peripheral", "Central", "Idiopathic", "Inner ear"], answer: "Central" },
+                    { question: "Geriatric idiopathic vestibular syndrome in dogs is a...", options: ["Central disease with a poor prognosis", "Peripheral disease with an excellent prognosis", "Cerebellar disease", "Caused by Metronidazole"], answer: "Peripheral disease with an excellent prognosis" },
+                    { question: "Which cranial nerve is often involved along with a PERIPHERAL vestibular syndrome?", options: ["Optic (II)", "Trigeminal (V)", "Facial (VII)", "Vagus (X)"], answer: "Facial (VII)" },
+                    { question: "A depressed or stuporous mental status is more common in a... lesion.", options: ["Peripheral", "Central", "Idiopathic", "Middle ear"], answer: "Central" },
+                    { question: "In a peripheral lesion, the head tilt and circling are generally...", options: ["Away from the lesion side", "Towards the lesion side", "Alternating", "Absent"], answer: "Towards the lesion side" },
+                    { question: "Which cause is responsible for CENTRAL vestibular syndrome but NOT peripheral?", options: ["Otitis interna", "Nasopharyngeal polyp", "Meningoencephalitis (GME)", "Idiopathic syndrome"], answer: "Meningoencephalitis (GME)" },
+                    { question: "A horizontal nystagmus that does NOT change direction with head position is typical of...", options: ["Central lesion", "Peripheral lesion", "Cerebellar lesion", "Spinal lesion"], answer: "Peripheral lesion" },
+                    { question: "Toxicity from which drug can cause a CENTRAL vestibular syndrome?", options: ["Amoxicillin", "Metronidazole", "Furosemide", "Phenobarbital"], answer: "Metronidazole" }
+                ]
+            };
+            
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() {
+                if (synth.speaking || synth.paused) {
+                    synth.cancel();
+                }
+            }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) {
+                        synth.resume();
+                        button.classList.add('playing');
+                    } else if (synth.speaking) {
+                        synth.pause();
+                        button.classList.remove('playing');
+                    }
+                    return; 
+                }
+
+                stopSpeech();
+                
+                if(activeTTSButton) {
+                    activeTTSButton.classList.remove('playing');
+                }
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                const cleanup = () => {
+                    if (button) button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+
+                currentUtterance.onend = cleanup;
+                currentUtterance.onerror = (event) => {
+                     if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('An error occurred with speech synthesis:', event.error);
+                    }
+                    cleanup();
+                };
+
+                activeTTSButton = button;
+                button.classList.add('playing');
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+
+            function initHowler() {
+                if (sound) { // Se già inizializzato, distruggilo prima di ricreare
+                    sound.unload();
+                }
+                const audioFile = 'audio_sindrome_vestibolare.mp3'; // NOME FILE AUDIO
+                sound = new Howl({
+                    src: [audioFile],
+                    html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onloaderror: (id, msg) => {
+                        console.error("Error loading audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "File audio non trovato." : "Audio file not found.";
+                    },
+                    onplayerror: (id, msg) => {
+                        console.error("Error playing audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "Impossibile riprodurre l'audio." : "Could not play audio.";
+                    }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+
+            playPauseBtn.addEventListener('click', () => {
+                if (!sound || sound.state() === 'unloaded') initHowler();
+                
+                if (sound.playing()) {
+                    sound.pause();
+                } else {
+                    sound.play();
+                }
+            });
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                            const subtitle = parentElement.nextElementSibling;
+                            if(subtitle && subtitle.dataset.langKey === 'pageSubtitle') {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    const contentClone = content.cloneNode(true);
+                                    // Rimuove tag non testuali
+                                    contentClone.querySelectorAll('div, img, figure').forEach(el => el.remove());
+                                    // Sostituisce h3 e h4 con punti per pause
+                                    contentClone.querySelectorAll('h3, h4').forEach(el => {
+                                        el.textContent = '. ' + el.textContent.trim() + '. ';
+                                    });
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        } 
+                        else if (parentElement.tagName === 'H3') {
+                            const questionTextNode = parentElement.querySelector('span:first-child');
+                            if (questionTextNode) textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
+                        }
+                        else if (parentElement.closest('label')) {
+                            const label = parentElement.closest('label');
+                            const answerTextNode = label.querySelector('span:first-child');
+                            if (answerTextNode) textToRead = answerTextNode.textContent.trim();
+                        }
+                        
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-purple-50">
+                            <label class="flex items-center justify-between w-full cursor-pointer">
+                                <span class="flex-grow pr-4"><input type="radio" name="q${index}" value="${o}" class="mr-3 text-purple-600 focus:ring-purple-500">${o}</span>
+                                <span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                            </label>
+                        </li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content') || key === 'bibliographyContent') {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            // Salva il bottone TTS se esiste
+                            const ttsButton = element.querySelector('.tts-button');
+                            element.textContent = translations[key][lang];
+                            // Riaiungi il bottone TTS
+                            if(ttsButton) element.appendChild(ttsButton);
+                        }
+                    }
+                });
+                
+                // Gestione sezione Audio
+                const navAudio = document.querySelector('a[data-lang-key="navAudio"]');
+                const sectionAudio = document.getElementById('audio');
+                if (lang === 'en') {
+                    if(navAudio) navAudio.style.display = 'none';
+                    if(sectionAudio) sectionAudio.style.display = 'none';
+                    if(sound && sound.playing()) sound.stop(); // Ferma l'audio se si cambia in EN
+                } else {
+                    if(navAudio) navAudio.style.display = 'block';
+                    if(sectionAudio) sectionAudio.style.display = 'block';
+                }
+
+                // Aggiorna testo bottone accessibilità
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                
+                loadQuiz(lang);
+                setupTTSListeners(); // Ricollega i listener dopo aver cambiato la lingua
+            }
+            
+            // --- EVENT LISTENERS ---
+
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            // Initial setup
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
