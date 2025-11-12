@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miastenia Gravis - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette VIOLA */
+        body { font-family: 'Inter', sans-serif; background-color: #faf5ff; /* purple-50 */ color: #5b21b6; /* purple-800 */ }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; color: #a855f7; /* purple-500 */ }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #9333ea; /* purple-600 */ color: #5b21b6; /* purple-800 */ }
+        
+        /* Modalità DSA (Accessibilità) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important; /* slate-50 */
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b; /* slate-800 */
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #ffffff; border: 1px solid #e2e8f0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #1e293b; }
+        .dsa-mode .prose strong { color: #000000; }
+        .dsa-mode .prose h3 { color: #1e293b; border-bottom-color: #94a3b8; }
+        .dsa-mode .prose h4 { color: #1e293b; }
+        .dsa-mode .nav-link { color: #334155; } /* slate-700 */
+        .dsa-mode .nav-link:hover, .dsa-mode .nav-link.active { border-bottom-color: #334155; color: #000000; }
+        .dsa-mode .quiz-question { border-color: #cbd5e1; }
+        .dsa-mode .quiz-option:hover { background-color: #f1f5f9; }
+
+        /* Bottoni TTS */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #a78bfa; /* purple-400 */ transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #7c3aed; /* purple-600 */ }
+        
+        /* Stili riassunto (prose) */
+        .prose h3 {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 600; /* font-semibold */
+            color: #7e22ce; /* purple-700 */
+            margin-top: 2rem; /* mt-8 */
+            margin-bottom: 1rem; /* mb-4 */
+            padding-bottom: 0.25rem; /* pb-1 */
+            border-bottom: 1px solid #ddd6fe; /* purple-200 */
+        }
+        .prose p, .prose ul {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: #374151; /* gray-700 */
+            margin-bottom: 1.25rem; /* mb-5 */
+        }
+        .prose strong {
+            color: #5b21b6; /* purple-800 */
+            font-weight: 600;
+        }
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.75rem; /* pl-7 */
+        }
+        .prose li {
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        /* Quiz */
+        .quiz-question { border: 1px solid #ddd6fe; /* purple-200 */ transition: all 0.3s; }
+        .quiz-option:hover { background-color: #faf5ff; /* purple-50 */ }
+        .quiz-question.correct { background-color: #dcfce7; border-color: #4ade80; } /* Verde per corretto */
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #f87171; } /* Rosso per errato */
+
+        /* Stili per h4 nel riassunto */
+        .prose h4 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            color: #7e22ce; /* purple-700 */
+            margin-top: 1.5rem; /* mt-6 */
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+        .dsa-mode .prose h4 {
+            color: #1e293b; /* slate-800 */
+        }
+
+        /* Stili per la stampa */
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, a[href*="infografica"], a[href*="index.info"] { display: none; }
+            body, .content-section { background-color: #ffffff !important; color: #000000 !important; }
+            .content-section { box-shadow: none; border: none; }
+            h1, h2, h3, h4, p, li, strong { color: #000000 !important; }
+            .prose h3 { border-color: #000000; }
+        }
+    </style>
+</head>
+<body class="bg-purple-50">
+
+    <header id="main-header" class="bg-purple-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Sistema Nervoso</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.info" class="inline-flex items-center bg-white text-purple-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-purple-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Neurologia</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-purple-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-purple-800" data-lang-key="pageTitle">Miastenia Gravis<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-purple-700 mt-2" data-lang-key="pageSubtitle">Patologia della giunzione neuromuscolare (acquisita e congenita).</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none" data-lang-key="summaryContent">
+                        
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Definizione e Fisiopatologia</h3>
+                        <p>La <strong>Miastenia Gravis (MG)</strong> è la più comune patologia della giunzione neuromuscolare (giuntopatia) negli animali domestici. È caratterizzata da debolezza muscolare scheletrica che peggiora con l'esercizio e migliora con il riposo. È causata da un malfunzionamento della trasmissione dei segnali tra il nervo e il muscolo.</p>
+                        <p>Esistono due forme principali:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Miastenia Gravis Acquisita (Immuno-mediata):</strong> È la forma più comune nel cane. Il sistema immunitario produce <strong>anticorpi contro i recettori post-sinaptici per l'acetilcolina (AChR)</strong>. Questi anticorpi bloccano o distruggono i recettori, impedendo all'acetilcolina (il neurotrasmettitore) di legarsi e stimolare la contrazione muscolare.</li>
+                            <li><strong>Miastenia Gravis Congenita:</strong> Molto rara. L'animale nasce con un difetto genetico nei componenti della giunzione neuromuscolare (es. carenza di recettori, difetti enzimatici).</li>
+                        </ul>
+                        <p>Nel cane, la MG Acquisita può essere associata a una neoplasia del mediastino craniale, il <strong>timoma</strong> (forma paraneoplastica), che va sempre ricercato tramite radiografie o TC del torace.</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Presentazione Clinica</h3>
+                        <p>La MG può presentarsi in tre forme cliniche:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Forma Focale (circa 40% dei casi):</strong> La debolezza è limitata a gruppi muscolari specifici. Il segno più comune è il <strong>megaesofago</strong> (che causa rigurgito). Possono esserci anche debolezza facciale, palpebrale (ptosi) o faringea/laringea (cambio di voce, disfagia).</li>
+                            <li><strong>Forma Generalizzata (circa 60% dei casi):</strong> Caratterizzata da <strong>debolezza da sforzo</strong>. Il cane appare normale a riposo, ma dopo pochi minuti di esercizio (camminata, corsa) sviluppa un'andatura rigida, tremori muscolari, e infine collassa in decubito (spesso sternale). Dopo pochi minuti di riposo, recupera la forza e ricomincia a muoversi. Molti di questi casi presentano anche megaesofago.</li>
+                            <li><strong>Forma Fulminante:</strong> Rara ma grave. Esordio acuto di paralisi flaccida generalizzata, spesso con insufficienza respiratoria per paralisi dei muscoli intercostali e del diaframma. È un'emergenza medica.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Diagnosi</h3>
+                        <p>La diagnosi si basa sul sospetto clinico (debolezza da sforzo, megaesofago) e confermata da test specifici.</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Test al Cloruro di Edrofonio (Tensilon Test):</strong> Si inietta EV un farmaco anticolinesterasico a breve durata d'azione (edrofonio). Questo farmaco inibisce l'enzima che degrada l'acetilcolina (AChE), aumentando la quantità di ACh nella giunzione. In un paziente miastenico, si osserva un <strong>miglioramento drastico e immediato (entro 30-60 secondi) della forza muscolare</strong>. Un test positivo è altamente suggestivo.</li>
+                            <li><strong>Test sierologico per Anticorpi anti-AChR:</strong> È il <strong>gold standard</strong> per la diagnosi della forma acquisita. Si preleva un campione di siero e si misura la concentrazione di anticorpi contro i recettori dell'acetilcolina.</li>
+                            <li><strong>Elettrodiagnostica (EMG/Stimolazione nervosa):</strong> La stimolazione nervosa ripetitiva mostra un <strong>decremento dell'ampiezza</strong> del potenziale d'azione muscolare, indicativo di affaticamento della giunzione.</li>
+                            <li><strong>Radiografie/TC Torace:</strong> Fondamentali per ricercare un <strong>timoma</strong> e per diagnosticare il <strong>megaesofago</strong> e la polmonite ab ingestis (una complicanza comune).</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Terapia</h3>
+                        <p>La terapia mira a migliorare la trasmissione neuromuscolare e, nella forma acquisita, a sopprimere la risposta immunitaria.</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Farmaci Anticolinesterasici:</strong> Sono il cardine della terapia sintomatica. Il farmaco di scelta è la <strong>Piridostigmina Bromuro</strong> (Mestinon®), somministrata per via orale. Aumenta la quantità di ACh nella giunzione, migliorando la forza muscolare.</li>
+                            <li><strong>Terapia Immunosoppressiva (solo forma Acquisita):</strong> Si usa per ridurre la produzione di anticorpi. Si inizia con <strong>Corticosteroidi (es. Prednisone)</strong>, spesso a dosi immunosoppressive, da scalare gradualmente. L'uso è controverso se è presente polmonite ab ingestis.</li>
+                            <li><strong>Terapia di Supporto:</strong> È cruciale. Include la gestione del megaesofago (alimentazione in posizione verticale, "Bailey chair"), l'uso di antibiotici per la polmonite ab ingestis e, nei casi fulminanti, la ventilazione meccanica.</li>
+                            <li><strong>Timectomia:</strong> Se è presente un timoma, la sua rimozione chirurgica è indicata e può portare alla remissione della malattia.</li>
+                        </ul>
+                        <p>La prognosi è riservata, principalmente a causa della complicanza del megaesofago e della polmonite ab ingestis. Molti cani possono però andare in remissione spontanea (scomparsa degli anticorpi) dopo diversi mesi di terapia.</p>
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                        <a href="infografica_miastenia_gravis.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-purple-500">
+                            <div class="flex items-center space-x-6">
+                                <div class="flex-shrink-0 w-24 h-24 bg-purple-500 rounded-lg flex items-center justify-center">
+                                    <!-- Icona Emoji Cane Batteria -->
+                                    <span class="text-5xl" role="img" aria-label="Icona di un cane con batteria scarica">🐶🔋</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-purple-800" data-lang-key="infographicLinkTitle">Visualizza l'Iter Diagnostico</h3>
+                                    <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca per una guida visuale alla diagnosi e terapia della Miastenia Gravis.</p>
+                                </div>
+                            </div>
+                        </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-purple-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-purple-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-purple-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-purple-500 text-white rounded-full hover:bg-purple-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                            </svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" />
+                            </svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-purple-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-purple-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_miastenia_gravis.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-purple-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-purple-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TRADUZIONI ---
+            const translations = {
+                siteTitle: { it: "Patologie Sistema Nervoso", en: "Nervous System Diseases" },
+                backToIndexText: { it: "Indice Neurologia", en: "Neurology Index" },
+                pageTitle: { it: "Miastenia Gravis", en: "Myasthenia Gravis" },
+                pageSubtitle: { it: "Patologia della giunzione neuromuscolare (acquisita e congenita).", en: "Neuromuscular junction disorder (acquired and congenital)." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: `<h3 class="text-2xl font-semibold mt-6 mb-3">Definizione e Fisiopatologia</h3>
+                        <p>La <strong>Miastenia Gravis (MG)</strong> è la più comune patologia della giunzione neuromuscolare (giuntopatia) negli animali domestici. È caratterizzata da debolezza muscolare scheletrica che peggiora con l'esercizio e migliora con il riposo. È causata da un malfunzionamento della trasmissione dei segnali tra il nervo e il muscolo.</p>
+                        <p>Esistono due forme principali:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Miastenia Gravis Acquisita (Immuno-mediata):</strong> È la forma più comune nel cane. Il sistema immunitario produce <strong>anticorpi contro i recettori post-sinaptici per l'acetilcolina (AChR)</strong>. Questi anticorpi bloccano o distruggono i recettori, impedendo all'acetilcolina (il neurotrasmettitore) di legarsi e stimolare la contrazione muscolare.</li>
+                            <li><strong>Miastenia Gravis Congenita:</strong> Molto rara. L'animale nasce con un difetto genetico nei componenti della giunzione neuromuscolare (es. carenza di recettori, difetti enzimatici).</li>
+                        </ul>
+                        <p>Nel cane, la MG Acquisita può essere associata a una neoplasia del mediastino craniale, il <strong>timoma</strong> (forma paraneoplastica), che va sempre ricercato tramite radiografie o TC del torace.</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Presentazione Clinica</h3>
+                        <p>La MG può presentarsi in tre forme cliniche:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Forma Focale (circa 40% dei casi):</strong> La debolezza è limitata a gruppi muscolari specifici. Il segno più comune è il <strong>megaesofago</strong> (che causa rigurgito). Possono esserci anche debolezza facciale, palpebrale (ptosi) o faringea/laringea (cambio di voce, disfagia).</li>
+                            <li><strong>Forma Generalizzata (circa 60% dei casi):</strong> Caratterizzata da <strong>debolezza da sforzo</strong>. Il cane appare normale a riposo, ma dopo pochi minuti di esercizio (camminata, corsa) sviluppa un'andatura rigida, tremori muscolari, e infine collassa in decubito (spesso sternale). Dopo pochi minuti di riposo, recupera la forza e ricomincia a muoversi. Molti di questi casi presentano anche megaesofago.</li>
+                            <li><strong>Forma Fulminante:</strong> Rara ma grave. Esordio acuto di paralisi flaccida generalizzata, spesso con insufficienza respiratoria per paralisi dei muscoli intercostali e del diaframma. È un'emergenza medica.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Diagnosi</h3>
+                        <p>La diagnosi si basa sul sospetto clinico (debolezza da sforzo, megaesofago) e confermata da test specifici.</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Test al Cloruro di Edrofonio (Tensilon Test):</strong> Si inietta EV un farmaco anticolinesterasico a breve durata d'azione (edrofonio). Questo farmaco inibisce l'enzima che degrada l'acetilcolina (AChE), aumentando la quantità di ACh nella giunzione. In un paziente miastenico, si osserva un <strong>miglioramento drastico e immediato (entro 30-60 secondi) della forza muscolare</strong>. Un test positivo è altamente suggestivo.</li>
+                            <li><strong>Test sierologico per Anticorpi anti-AChR:</strong> È il <strong>gold standard</strong> per la diagnosi della forma acquisita. Si preleva un campione di siero e si misura la concentrazione di anticorpi contro i recettori dell'acetilcolina.</li>
+                            <li><strong>Elettrodiagnostica (EMG/Stimolazione nervosa):</strong> La stimolazione nervosa ripetitiva mostra un <strong>decremento dell'ampiezza</strong> del potenziale d'azione muscolare, indicativo di affaticamento della giunzione.</li>
+                            <li><strong>Radiografie/TC Torace:</strong> Fondamentali per ricercare un <strong>timoma</strong> e per diagnosticare il <strong>megaesofago</strong> e la polmonite ab ingestis (una complicanza comune).</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Terapia</h3>
+                        <p>La terapia mira a migliorare la trasmissione neuromuscolare e, nella forma acquisita, a sopprimere la risposta immunitaria.</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Farmaci Anticolinesterasici:</strong> Sono il cardine della terapia sintomatica. Il farmaco di scelta è la <strong>Piridostigmina Bromuro</strong> (Mestinon®), somministrata per via orale. Aumenta la quantità di ACh nella giunzione, migliorando la forza muscolare.</li>
+                            <li><strong>Terapia Immunosoppressiva (solo forma Acquisita):</strong> Si usa per ridurre la produzione di anticorpi. Si inizia con <strong>Corticosteroidi (es. Prednisone)</strong>, spesso a dosi immunosoppressive, da scalare gradualmente. L'uso è controverso se è presente polmonite ab ingestis.</li>
+                            <li><strong>Terapia di Supporto:</strong> È cruciale. Include la gestione del megaesofago (alimentazione in posizione verticale, "Bailey chair"), l'uso di antibiotici per la polmonite ab ingestis e, nei casi fulminanti, la ventilazione meccanica.</li>
+                            <li><strong>Timectomia:</strong> Se è presente un timoma, la sua rimozione chirurgica è indicata e può portare alla remissione della malattia.</li>
+                        </ul>
+                        <p>La prognosi è riservata, principalmente a causa della complicanza del megaesofago e della polmonite ab ingestis. Molti cani possono però andare in remissione spontanea (scomparsa degli anticorpi) dopo diversi mesi di terapia.</p>`,
+                    en: `<h3 class="text-2xl font-semibold mt-6 mb-3">Definition and Pathophysiology</h3>
+                        <p><strong>Myasthenia Gravis (MG)</strong> is the most common neuromuscular junction disorder (junctionopathy) in domestic animals. It is characterized by skeletal muscle weakness that worsens with exercise and improves with rest. It is caused by a malfunction in signal transmission between the nerve and the muscle.</p>
+                        <p>There are two main forms:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Acquired Myasthenia Gravis (Immune-mediated):</strong> This is the most common form in dogs. The immune system produces <strong>antibodies against post-synaptic acetylcholine receptors (AChR)</strong>. These antibodies block or destroy the receptors, preventing acetylcholine (the neurotransmitter) from binding and stimulating muscle contraction.</li>
+                            <li><strong>Congenital Myasthenia Gravis:</strong> Very rare. The animal is born with a genetic defect in the components of the neuromuscular junction (e.g., receptor deficiency, enzyme defects).</li>
+                        </ul>
+                        <p>In dogs, Acquired MG can be associated with a neoplasm of the cranial mediastinum, the <strong>thymoma</strong> (paraneoplastic form), which should always be screened for via thoracic radiographs or CT.</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Clinical Presentation</h3>
+                        <p>MG can present in three clinical forms:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Focal Form (approx. 40% of cases):</strong> Weakness is limited to specific muscle groups. The most common sign is <strong>megaesophagus</strong> (causing regurgitation). Facial, palpebral (ptosis), or pharyngeal/laryngeal weakness (voice change, dysphagia) may also occur.</li>
+                            <li><strong>Generalized Form (approx. 60% of cases):</strong> Characterized by <strong>exercise-induced weakness</strong>. The dog appears normal at rest, but after a few minutes of exercise (walking, running), it develops a stiff gait, muscle tremors, and finally collapses (often in sternal recumbency). After a few minutes of rest, it regains strength and starts moving again. Many of these cases also have megaesophagus.</li>
+                            <li><strong>Fulminant Form:</strong> Rare but severe. Acute onset of generalized flaccid paralysis, often with respiratory failure due to paralysis of intercostal muscles and the diaphragm. It is a medical emergency.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Diagnosis</h3>
+                        <p>Diagnosis is based on clinical suspicion (exercise-induced weakness, megaesophagus) and confirmed by specific tests.</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Edrophonium Chloride Test (Tensilon Test):</strong> A short-acting anticholinesterase drug (edrophonium) is injected IV. This drug inhibits the enzyme that breaks down acetylcholine (AChE), increasing the amount of ACh in the junction. In a myasthenic patient, a <strong>dramatic and immediate (within 30-60 seconds) improvement in muscle strength</strong> is observed. A positive test is highly suggestive.</li>
+                            <li><strong>AChR Antibody Titer:</strong> This is the <strong>gold standard</strong> for diagnosing the acquired form. A serum sample is taken to measure the concentration of antibodies against acetylcholine receptors.</li>
+                            <li><strong>Electrodiagnostics (EMG/Nerve Stimulation):</strong> Repetitive nerve stimulation shows a <strong>decremental response</strong> (decrement) in the muscle action potential amplitude, indicative of junction fatigue.</li>
+                            <li><strong>Thoracic Radiographs/CT:</strong> Essential to screen for <strong>thymoma</strong> and to diagnose <strong>megaesophagus</strong> and aspiration pneumonia (a common complication).</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Therapy</h3>
+                        <p>Therapy aims to improve neuromuscular transmission and, in the acquired form, suppress the immune response.</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Anticholinesterase Drugs:</strong> The cornerstone of symptomatic therapy. The drug of choice is <strong>Pyridostigmine Bromide</strong> (Mestinon®), administered orally. It increases the amount of ACh in the junction, improving muscle strength.</li>
+                            <li><strong>Immunosuppressive Therapy (Acquired form only):</strong> Used to reduce antibody production. Started with <strong>Corticosteroids (e.g., Prednisone)</strong>, often at immunosuppressive doses, to be tapered gradually. Its use is controversial if aspiration pneumonia is present.</li>
+                            <li><strong>Supportive Care:</strong> This is crucial. It includes managing megaesophagus (vertical feeding, "Bailey chair"), antibiotics for aspiration pneumonia, and, in fulminant cases, mechanical ventilation.</li>
+                            <li><strong>Thymectomy:</strong> If a thymoma is present, surgical removal is indicated and may lead to remission of the disease.</li>
+                        </ul>
+                        <p>Prognosis is guarded, mainly due to the complication of megaesophagus and aspiration pneumonia. However, many dogs can go into spontaneous remission (disappearance of antibodies) after several months of therapy.</p>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Iter Diagnostico", en: "View Diagnostic Workup" },
+                infographicLinkDesc: { it: "Clicca per una guida visuale alla diagnosi e terapia della Miastenia Gravis.", en: "Click for a visual guide to Myasthenia Gravis diagnosis and therapy." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Dewey CW, da Costa RC. Practical Guide to Canine and Feline Neurology. 4th ed. Wiley-Blackwell, 2023.</li>
+                         <li>Ettinger SJ, Feldman EC, Coté E. Ettinger's Textbook of Veterinary Internal Medicine. 9th ed. Elsevier, 2024.</li>
+                         <li>De Lahunta A, Glass EN. Veterinary Neuroanatomy and Clinical Neurology. 5th ed. Elsevier, 2021.</li>`,
+                    en: `<li>Dewey CW, da Costa RC. Practical Guide to Canine and Feline Neurology. 4th ed. Wiley-Blackwell, 2023.</li>
+                         <li>Ettinger SJ, Feldman EC, Coté E. Ettinger's Textbook of Veterinary Internal Medicine. 9th ed. Elsevier, 2024.</li>
+                         <li>De Lahunta A, Glass EN. Veterinary Neuroanatomy and Clinical Neurology. 5th ed. Elsevier, 2021.</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            // --- QUIZ DATA ---
+            const quizData = {
+                it: [
+                    { question: "Qual è la fisiopatologia della Miastenia Gravis ACQUISITA?", options: ["Un difetto genetico dei recettori", "Anticorpi che distruggono i recettori per l'acetilcolina", "Una lesione del nervo periferico", "Una malattia del midollo spinale"], answer: "Anticorpi che distruggono i recettori per l'acetilcolina" },
+                    { question: "Qual è il segno clinico più comune della Miastenia Gravis FOCALE?", options: ["Debolezza da sforzo", "Crisi convulsive", "Megaesofago e rigurgito", "Atassia cerebellare"], answer: "Megaesofago e rigurgito" },
+                    { question: "Il 'Tensilon Test' utilizza quale farmaco?", options: ["Prednisone", "Cloruro di Edrofonio", "Acetilcolina", "Diazepam"], answer: "Cloruro di Edrofonio" },
+                    { question: "Un test al Tensilon positivo in un cane con debolezza da sforzo mostra:", options: ["Nessun cambiamento", "Un peggioramento della debolezza", "Un miglioramento immediato e drastico della forza", "Sedazione profonda"], answer: "Un miglioramento immediato e drastico della forza" },
+                    { question: "Qual è il 'gold standard' per la diagnosi di MG Acquisita?", options: ["Il Tensilon test", "La Risonanza Magnetica", "Il dosaggio degli anticorpi anti-AChR", "L'elettromiografia (EMG)"], answer: "Il dosaggio degli anticorpi anti-AChR" },
+                    { question: "Quale neoplasia è spesso associata alla MG acquisita (sindrome paraneoplastica)?", options: ["Linfoma", "Carcinoma tiroideo", "Timoma", "Insulinoma"], answer: "Timoma" },
+                    { question: "Il farmaco di scelta per la terapia sintomatica cronica della MG è:", options: ["Prednisone", "Piridostigmina Bromuro (Mestinon®)", "Levetiracetam", "Ciclosporina"], answer: "Piridostigmina Bromuro (Mestinon®)" },
+                    { question: "La debolezza da sforzo nella MG Generalizzata è causata da:", options: ["Esaurimento del glucosio muscolare", "Saturazione dei recettori ACh", "Mancanza di rilascio di ACh dal nervo", "Progressivo blocco dei recettori ACh disponibili"], answer: "Progressivo blocco dei recettori ACh disponibili" },
+                    { question: "Qual è la complicanza più pericolosa associata al megaesofago miastenico?", options: ["Diarrea cronica", "Perdita di peso", "Polmonite ab ingestis (da aspirazione)", "Ulcere gastriche"], answer: "Polmonite ab ingestis (da aspirazione)" },
+                    { question: "Perché si usano i corticosteroidi (es. Prednisone) nella MG Acquisita?", options: ["Per aumentare la forza muscolare (effetto anabolico)", "Per trattare la polmonite", "Per sopprimere la risposta immunitaria e ridurre gli anticorpi", "Per stimolare l'appetito"], answer: "Per sopprimere la risposta immunitaria e ridurre gli anticorpi" }
+                ],
+                en: [
+                    { question: "What is the pathophysiology of ACQUIRED Myasthenia Gravis?", options: ["A genetic defect in the receptors", "Antibodies destroying acetylcholine receptors", "A peripheral nerve lesion", "A spinal cord disease"], answer: "Antibodies destroying acetylcholine receptors" },
+                    { question: "What is the most common clinical sign of FOCAL Myasthenia Gravis?", options: ["Exercise-induced weakness", "Seizures", "Megaesophagus and regurgitation", "Cerebellar ataxia"], answer: "Megaesophagus and regurgitation" },
+                    { question: "The 'Tensilon Test' uses which drug?", options: ["Prednisone", "Edrophonium Chloride", "Acetylcholine", "Diazepam"], answer: "Edrophonium Chloride" },
+                    { question: "A positive Tensilon test in a dog with exercise-induced weakness shows:", options: ["No change", "A worsening of weakness", "An immediate and dramatic improvement in strength", "Profound sedation"], answer: "An immediate and dramatic improvement in strength" },
+                    { question: "What is the 'gold standard' for diagnosing Acquired MG?", options: ["The Tensilon test", "Magnetic Resonance Imaging (MRI)", "AChR Antibody Titer", "Electromyography (EMG)"], answer: "AChR Antibody Titer" },
+                    { question: "Which neoplasm is often associated with acquired MG (paraneoplastic syndrome)?", options: ["Lymphoma", "Thyroid carcinoma", "Thymoma", "Insulinoma"], answer: "Thymoma" },
+                    { question: "The drug of choice for chronic symptomatic therapy of MG is:", options: ["Prednisone", "Pyridostigmine Bromide (Mestinon®)", "Levetiracetam", "Cyclosporine"], answer: "Pyridostigmine Bromide (Mestinon®)" },
+                    { question: "Exercise-induced weakness in Generalized MG is caused by:", options: ["Depletion of muscle glucose", "Saturation of ACh receptors", "Lack of ACh release from the nerve", "Progressive blockade of available ACh receptors"], answer: "Progressive blockade of available ACh receptors" },
+                    { question: "What is the most dangerous complication associated with myasthenic megaesophagus?", options: ["Chronic diarrhea", "Weight loss", "Aspiration pneumonia", "Gastric ulcers"], answer: "Aspiration pneumonia" },
+                    { question: "Why are corticosteroids (e.g., Prednisone) used in Acquired MG?", options: ["To increase muscle strength (anabolic effect)", "To treat pneumonia", "To suppress the immune response and reduce antibodies", "To stimulate appetite"], answer: "To suppress the immune response and reduce antibodies" }
+                ]
+            };
+            
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() {
+                if (synth.speaking || synth.paused) {
+                    synth.cancel();
+                }
+            }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) {
+                        synth.resume();
+                        button.classList.add('playing');
+                    } else if (synth.speaking) {
+                        synth.pause();
+                        button.classList.remove('playing');
+                    }
+                    return; 
+                }
+
+                stopSpeech();
+                
+                if(activeTTSButton) {
+                    activeTTSButton.classList.remove('playing');
+                }
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                const cleanup = () => {
+                    if (button) button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+
+                currentUtterance.onend = cleanup;
+                currentUtterance.onerror = (event) => {
+                     if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('An error occurred with speech synthesis:', event.error);
+                    }
+                    cleanup();
+                };
+
+                activeTTSButton = button;
+                button.classList.add('playing');
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+
+            function initHowler() {
+                if (sound) { // Se già inizializzato, distruggilo prima di ricreare
+                    sound.unload();
+                }
+                const audioFile = 'audio_miastenia_gravis.mp3'; // NOME FILE AUDIO
+                sound = new Howl({
+                    src: [audioFile],
+                    html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onloaderror: (id, msg) => {
+                        console.error("Error loading audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "File audio non trovato." : "Audio file not found.";
+                    },
+                    onplayerror: (id, msg) => {
+                        console.error("Error playing audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "Impossibile riprodurre l'audio." : "Could not play audio.";
+                    }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+
+            playPauseBtn.addEventListener('click', () => {
+                if (!sound || sound.state() === 'unloaded') initHowler();
+                
+                if (sound.playing()) {
+                    sound.pause();
+                } else {
+                    sound.play();
+                }
+            });
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                            const subtitle = parentElement.nextElementSibling;
+                            if(subtitle && subtitle.dataset.langKey === 'pageSubtitle') {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    const contentClone = content.cloneNode(true);
+                                    // Rimuove tag non testuali
+                                    contentClone.querySelectorAll('div, img, figure').forEach(el => el.remove());
+                                    // Sostituisce h3 e h4 con punti per pause
+                                    contentClone.querySelectorAll('h3, h4').forEach(el => {
+                                        el.textContent = '. ' + el.textContent.trim() + '. ';
+                                    });
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        } 
+                        else if (parentElement.tagName === 'H3') {
+                            const questionTextNode = parentElement.querySelector('span:first-child');
+                            if (questionTextNode) textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
+                        }
+                        else if (parentElement.closest('label')) {
+                            const label = parentElement.closest('label');
+                            const answerTextNode = label.querySelector('span:first-child');
+                            if (answerTextNode) textToRead = answerTextNode.textContent.trim();
+                        }
+                        
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-purple-50">
+                            <label class="flex items-center justify-between w-full cursor-pointer">
+                                <span class="flex-grow pr-4"><input type="radio" name="q${index}" value="${o}" class="mr-3 text-purple-600 focus:ring-purple-500">${o}</span>
+                                <span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                            </label>
+                        </li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content') || key === 'bibliographyContent') {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            // Salva il bottone TTS se esiste
+                            const ttsButton = element.querySelector('.tts-button');
+                            element.textContent = translations[key][lang];
+                            // Riaiungi il bottone TTS
+                            if(ttsButton) element.appendChild(ttsButton);
+                        }
+                    }
+                });
+                
+                // Gestione sezione Audio
+                const navAudio = document.querySelector('a[data-lang-key="navAudio"]');
+                const sectionAudio = document.getElementById('audio');
+                if (lang === 'en') {
+                    if(navAudio) navAudio.style.display = 'none';
+                    if(sectionAudio) sectionAudio.style.display = 'none';
+                    if(sound && sound.playing()) sound.stop(); // Ferma l'audio se si cambia in EN
+                } else {
+                    if(navAudio) navAudio.style.display = 'block';
+                    if(sectionAudio) sectionAudio.style.display = 'block';
+                }
+
+                // Aggiorna testo bottone accessibilità
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                
+                loadQuiz(lang);
+                setupTTSListeners(); // Ricollega i listener dopo aver cambiato la lingua
+            }
+            
+            // --- EVENT LISTENERS ---
+
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            // Initial setup
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
