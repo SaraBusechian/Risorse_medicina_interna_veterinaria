@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica Iter Diagnostico Miastenia Gravis - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette VIOLA */
+        body { font-family: 'Inter', sans-serif; background-color: #faf5ff; /* purple-50 */ color: #5b21b6; /* purple-800 */ }
+        
+        /* Modalità DSA (Accessibilità) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important; /* slate-50 */
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b; /* slate-800 */
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .flow-box, .dsa-mode .flow-decision, .dsa-mode .flow-result { background-color: #ffffff; border: 1px solid #e2e8f0; color: #1e293b; }
+        .dsa-mode .flow-arrow { color: #64748b; } /* slate-500 */
+        .dsa-mode h1, .dsa-mode h2 { color: #1e293b; }
+        .dsa-mode .flow-result.positive { background-color: #dcfce7; border-color: #4ade80; color: #166534; }
+        .dsa-mode .flow-result.negative { background-color: #ffe4e6; border-color: #fb7185; color: #9f1239; }
+        .dsa-mode .flow-therapy { background-color: #ffffff; border: 1px solid #e2e8f0; color: #1e293b; }
+
+        /* Stili per la stampa */
+        @media print {
+            #main-header, #main-footer, #back-button, #accessibility-toggle, #lang-toggle { display: none; }
+            body { background-color: #ffffff; color: #000000; }
+            main { padding: 0 !important; margin-top: 2rem; }
+            .flow-box, .flow-decision, .flow-result { 
+                border-color: #000000; 
+                color: #000000; 
+                background-color: #ffffff; 
+                box-shadow: none;
+            }
+            .flow-arrow { color: #000000; }
+            h1, h2 { color: #000000; }
+        }
+
+        /* Stili Diagramma di Flusso */
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem; /* 24px */
+        }
+        .flow-box, .flow-decision, .flow-result {
+            width: 90%;
+            max-width: 600px; /* Larghezza aumentata */
+            padding: 1rem 1.5rem; /* 16px 24px */
+            border-radius: 0.5rem; /* 8px */
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            border: 1px solid #ede9fe; /* purple-100 */
+        }
+        .flow-box strong { color: #7e22ce; /* purple-700 */ }
+        .flow-box ul { list-style-type: disc; text-align: left; padding-left: 2rem; margin-top: 0.5rem; color: #475569; } /* slate-600 */
+        .dsa-mode .flow-box ul { color: #1e293b; }
+
+        .flow-decision {
+            background-color: #f3e8ff; /* purple-100 */
+            border-color: #c084fc; /* purple-400 */
+            font-weight: 600;
+        }
+        
+        .flow-result.positive {
+            background-color: #dcfce7; /* green-100 */
+            border-color: #4ade80; /* green-400 */
+            color: #166534; /* green-800 */
+            font-weight: 700;
+        }
+        .flow-result.negative {
+            background-color: #ffe4e6; /* rose-100 */
+            border-color: #fb7185; /* rose-400 */
+            color: #9f1239; /* rose-800 */
+            font-weight: 700;
+        }
+
+        .flow-arrow {
+            font-size: 2.25rem; /* 36px */
+            line-height: 1;
+            color: #a78bfa; /* purple-300 */
+            font-weight: bold;
+        }
+        .flow-split {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            gap: 1rem;
+        }
+        .flow-path {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            flex-basis: 50%;
+        }
+        .flow-path-label {
+            font-weight: 600;
+            color: #9333ea; /* purple-600 */
+            padding: 0.25rem 0.75rem;
+            background-color: #ffffff;
+            border-radius: 99px;
+            border: 1px solid #c084fc; /* purple-400 */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        /* Stile per Terapia Box */
+        .flow-therapy {
+            background-color: #dbeafe; /* blue-100 */
+            border-color: #93c5fd; /* blue-300 */
+            color: #1e40af; /* blue-800 */
+            font-weight: 600;
+            text-align: left;
+        }
+        .flow-therapy strong { color: #1d4ed8; } /* blue-700 */
+    </style>
+</head>
+<body class="bg-purple-50">
+
+    <header id="main-header" class="bg-purple-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Infografica: Diagnosi Miastenia Gravis</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8" id="back-button">
+            <!-- Link per tornare alla pagina di riassunto -->
+            <a href="miastenia-gravis.html" class="inline-flex items-center bg-white text-purple-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-purple-100 transition duration-300" data-lang-key="backToSummary">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+            </a>
+        </div>
+        
+        <h1 class="text-3xl md:text-4xl font-bold text-purple-800 text-center mb-4" data-lang-key="pageTitle">Iter Diagnostico Miastenia Gravis</h1>
+        <h2 class="text-xl text-purple-700 text-center mb-12" data-lang-key="pageSubtitle">Approccio alle forme Focali e Generalizzate</h2>
+
+        <!-- Contenitore Infografica Diagnosi -->
+        <div class="flow-container" role="figure" aria-label="Diagramma di flusso per la diagnosi di Miastenia Gravis">
+            
+            <div class="flow-decision" data-lang-key="decision1">
+                <strong>Sospetto Clinico:</strong> Come si presenta il paziente?
+            </div>
+
+            <!-- Biforcazione -->
+            <div class="flow-split">
+                <!-- Percorso A: FOCALE -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathFocal">FORMA FOCALE</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="signsFocal">
+                        <strong>Segni Clinici:</strong> Rigurgito (Megaesofago), Disfagia, Ptosi Palpebrale, Cambio Voce.
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="stepFocal1">
+                        <strong>Test Diagnostici:</strong> RX/TC Torace (per Megaesofago e Timoma).
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="stepFocal2">
+                        Procedere direttamente al <strong>Test Anticorpi anti-AChR</strong>.
+                    </div>
+                </div>
+
+                <!-- Percorso B: GENERALIZZATA -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathGeneral">FORMA GENERALIZZATA</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="signsGeneral">
+                        <strong>Segni Clinici:</strong> Debolezza da sforzo (appendicolare), collasso dopo esercizio, recupero con riposo.
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-decision" data-lang-key="decisionTensilon">
+                        <strong>Test al Cloruro di Edrofonio (Tensilon)?</strong>
+                    </div>
+                    
+                    <!-- Split Tensilon -->
+                    <div class="flow-split">
+                        <div class="flow-path">
+                            <div class="flow-path-label" data-lang-key="pathPositive">POSITIVO</div>
+                            <div class="flow-arrow">&darr;</div>
+                            <div class="flow-result positive" data-lang-key="resultTensilonPos">
+                                Miglioramento netto della forza. <br> <strong>Altamente suggestivo di MG.</strong>
+                            </div>
+                        </div>
+                        <div class="flow-path">
+                            <div class="flow-path-label" data-lang-key="pathNegative">NEGATIVO</div>
+                            <div class="flow-arrow">&darr;</div>
+                             <div class="flow-result negative" data-lang-key="resultTensilonNeg">
+                                Nessun miglioramento. <br> <strong>Non esclude MG!</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fine Split Tensilon -->
+                </div>
+            </div>
+            
+            <!-- Riunione Percorsi -->
+            <div class="flow-arrow">&darr;</div>
+            <div class="flow-box" data-lang-key="stepGold">
+                <strong>GOLD STANDARD (per entrambe le forme):</strong><br>
+                Test sierologico per <strong>Anticorpi anti-AChR</strong> (per forma Acquisita).
+            </div>
+            <div class="flow-arrow">&darr;</div>
+
+            <!-- Split Risultato AChR -->
+            <div class="flow-split">
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathPositive">POSITIVO</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-result positive" data-lang-key="resultAChRPos">
+                        <strong>DIAGNOSI: Miastenia Gravis Acquisita</strong>
+                    </div>
+                </div>
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathNegative">NEGATIVO</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-result negative" data-lang-key="resultAChRNeg">
+                        <strong>DIAGNOSI DIVERSA</strong> <br> (o rara MG Sieronegativa/Congenita)
+                    </div>
+                </div>
+            </div>
+            <!-- Fine Split Risultato AChR -->
+            
+            <div class="flow-arrow">&darr;</div>
+            
+            <div class="flow-box" data-lang-key="stepFinal">
+                <strong>SEMPRE:</strong> Eseguire RX/TC Torace per ricercare <strong>Timoma</strong> (causa paraneoplastica) e <strong>Polmonite ab ingestis</strong> (complicanza).
+            </div>
+
+        </div>
+        
+        <!-- NUOVA SEZIONE TERAPIA -->
+        <h2 class="text-3xl md:text-4xl font-bold text-purple-800 text-center mb-4 mt-16" data-lang-key="terapiaTitle">Approccio Terapeutico</h2>
+        <h3 class="text-xl text-purple-700 text-center mb-12" data-lang-key="terapiaSubtitle">Gestione della Miastenia Gravis Acquisita</h3>
+
+        <div class="flow-container" role="figure" aria-label="Diagramma di flusso dell'approccio terapeutico alla Miastenia Gravis">
+            
+            <div class="flow-result positive" data-lang-key="terStep1">
+                <strong>DIAGNOSI CONFERMATA:</strong> MG Acquisita
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-box flow-therapy" data-lang-key="terStep2">
+                <strong>1. Terapia Sintomatica (Cardine):</strong><br>
+                Piridostigmina Bromuro (Anticolinesterasico) per aumentare ACh nella giunzione.
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+            
+            <div class="flow-box flow-therapy" data-lang-key="terStep3">
+                <strong>2. Terapia di Supporto (Cruciale):</strong><br>
+                Gestione Megaesofago (es. Bailey Chair, pasti piccoli/frequenti), Terapia per Polmonite ab ingestis (Antibiotici).
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-box flow-therapy" data-lang-key="terStep4">
+                <strong>3. Terapia Immunosoppressiva:</strong><br>
+                Corticosteroidi (es. Prednisone). Iniziare a basse dosi e aumentare gradualmente per evitare crisi miastenica.
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-box flow-therapy" data-lang-key="terStep5">
+                <strong>Valutazione Timoma:</strong> Se presente (RX/TC), considerare Timectomia chirurgica per possibile remissione.
+            </div>
+
+        </div>
+        <!-- FINE NUOVA SEZIONE -->
+
+
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-purple-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TRADUZIONI ---
+            const translations = {
+                siteTitle: { it: "Infografica: Diagnosi Miastenia Gravis", en: "Infographic: Myasthenia Gravis Diagnosis" },
+                backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+                pageTitle: { it: "Iter Diagnostico Miastenia Gravis", en: "Myasthenia Gravis Diagnostic Workup" },
+                pageSubtitle: { it: "Approccio alle forme Focali e Generalizzate", en: "Approach to Focal and Generalized Forms" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" },
+                
+                // Labels diagramma Diagnosi
+                decision1: { it: "<strong>Sospetto Clinico:</strong> Come si presenta il paziente?", en: "<strong>Clinical Suspicion:</strong> How does the patient present?" },
+                pathFocal: { it: "FORMA FOCALE", en: "FOCAL FORM" },
+                signsFocal: { it: "<strong>Segni Clinici:</strong> Rigurgito (Megaesofago), Disfagia, Ptosi Palpebrale, Cambio Voce.", en: "<strong>Clinical Signs:</strong> Regurgitation (Megaesophagus), Dysphagia, Palpebral Ptosis, Voice Change." },
+                stepFocal1: { it: "<strong>Test Diagnostici:</strong> RX/TC Torace (per Megaesofago e Timoma).", en: "<strong>Diagnostic Tests:</strong> Thoracic Rads/CT (for Megaesophagus and Thymoma)." },
+                stepFocal2: { it: "Procedere direttamente al <strong>Test Anticorpi anti-AChR</strong>.", en: "Proceed directly to <strong>AChR Antibody Titer</strong>." },
+                pathGeneral: { it: "FORMA GENERALIZZATA", en: "GENERALIZED FORM" },
+                signsGeneral: { it: "<strong>Segni Clinici:</strong> Debolezza da sforzo (appendicolare), collasso dopo esercizio, recupero con riposo.", en: "<strong>Clinical Signs:</strong> Exercise-induced weakness (appendicular), collapse after exercise, recovery with rest." },
+                decisionTensilon: { it: "<strong>Test al Cloruro di Edrofonio (Tensilon)?</strong>", en: "<strong>Edrophonium Chloride (Tensilon) Test?</strong>" },
+                pathPositive: { it: "POSITIVO", en: "POSITIVE" },
+                pathNegative: { it: "NEGATIVO", en: "NEGATIVE" },
+                resultTensilonPos: { it: "Miglioramento netto della forza. <br> <strong>Altamente suggestivo di MG.</strong>", en: "Clear improvement in strength. <br> <strong>Highly suggestive of MG.</strong>" },
+                resultTensilonNeg: { it: "Nessun miglioramento. <br> <strong>Non esclude MG!</strong>", en: "No improvement. <br> <strong>Does not rule out MG!</strong>" },
+                stepGold: { it: "<strong>GOLD STANDARD (per entrambe le forme):</strong><br> Test sierologico per <strong>Anticorpi anti-AChR</strong> (per forma Acquisita).", en: "<strong>GOLD STANDARD (for both forms):</strong><br> Serum <strong>AChR Antibody Titer</strong> (for Acquired form)." },
+                resultAChRPos: { it: "<strong>DIAGNOSI: Miastenia Gravis Acquisita</strong>", en: "<strong>DIAGNOSIS: Acquired Myasthenia Gravis</strong>" },
+                resultAChRNeg: { it: "<strong>DIAGNOSI DIVERSA</strong> <br> (o rara MG Sieronegativa/Congenita)", en: "<strong>DIFFERENT DIAGNOSIS</strong> <br> (or rare Seronegative/Congenital MG)" },
+                stepFinal: { it: "<strong>SEMPRE:</strong> Eseguire RX/TC Torace per ricercare <strong>Timoma</strong> (causa paraneoplastica) e <strong>Polmonite ab ingestis</strong> (complicanza).", en: "<strong>ALWAYS:</strong> Perform Thoracic Rads/CT to screen for <strong>Thymoma</strong> (paraneoplastic cause) and <strong>Aspiration Pneumonia</strong> (complication)." },
+                
+                // Labels diagramma Terapia
+                terapiaTitle: { it: "Approccio Terapeutico", en: "Therapeutic Approach" },
+                terapiaSubtitle: { it: "Gestione della Miastenia Gravis Acquisita", en: "Management of Acquired Myasthenia Gravis" },
+                terStep1: { it: "<strong>DIAGNOSI CONFERMATA:</strong> MG Acquisita", en: "<strong>DIAGNOSIS CONFIRMED:</strong> Acquired MG" },
+                terStep2: { it: "<strong>1. Terapia Sintomatica (Cardine):</strong><br>Piridostigmina Bromuro (Anticolinesterasico) per aumentare ACh nella giunzione.", en: "<strong>1. Symptomatic Therapy (Core):</strong><br>Pyridostigmine Bromide (Anticholinesterase) to increase ACh at the junction." },
+                terStep3: { it: "<strong>2. Terapia di Supporto (Cruciale):</strong><br>Gestione Megaesofago (es. Bailey Chair, pasti piccoli/frequenti), Terapia per Polmonite ab ingestis (Antibiotici).", en: "<strong>2. Supportive Care (Crucial):</strong><br>Manage Megaesophagus (e.g., Bailey Chair, small/frequent meals), Therapy for Aspiration Pneumonia (Antibiotics)." },
+                terStep4: { it: "<strong>3. Terapia Immunosoppressiva:</strong><br>Corticosteroidi (es. Prednisone). Iniziare a basse dosi e aumentare gradualmente per evitare crisi miastenica.", en: "<strong>3. Immunosuppressive Therapy:</strong><br>Corticosteroids (e.g., Prednisone). Start low and taper up slowly to avoid myasthenic crisis." },
+                terStep5: { it: "<strong>Valutazione Timoma:</strong> Se presente (RX/TC), considerare Timectomia chirurgica per possibile remissione.", en: "<strong>Thymoma Evaluation:</strong> If present (Rads/CT), consider surgical Thymectomy for possible remission." }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+            
+            // Initial setup
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
