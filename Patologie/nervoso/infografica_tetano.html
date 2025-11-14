@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica Iter Diagnostico Tetano - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette VIOLA */
+        body { font-family: 'Inter', sans-serif; background-color: #faf5ff; /* purple-50 */ color: #5b21b6; /* purple-800 */ }
+        
+        /* Modalità DSA (Accessibilità) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important; /* slate-50 */
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b; /* slate-800 */
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .flow-box, .dsa-mode .flow-decision, .dsa-mode .flow-result { background-color: #ffffff; border: 1px solid #e2e8f0; color: #1e293b; }
+        .dsa-mode .flow-arrow { color: #64748b; } /* slate-500 */
+        .dsa-mode h1, .dsa-mode h2 { color: #1e293b; }
+        .dsa-mode .flow-result { background-color: #dcfce7; border-color: #4ade80; color: #166534; }
+        .dsa-mode .flow-box ul { color: #1e293b; }
+        .dsa-mode .therapy-card {
+            background-color: #ffffff;
+            border-color: #94a3b8;
+        }
+        .dsa-mode .therapy-card h4 {
+            color: #1e293b;
+        }
+        .dsa-mode .therapy-card ul {
+            color: #1e293b;
+        }
+
+
+        /* Stili per la stampa */
+        @media print {
+            #main-header, #main-footer, #back-button, #accessibility-toggle, #lang-toggle { display: none; }
+            body { background-color: #ffffff; color: #000000; }
+            main { padding: 0 !important; margin-top: 2rem; }
+            .flow-box, .flow-decision, .flow-result { 
+                border-color: #000000; 
+                color: #000000; 
+                background-color: #ffffff; 
+                box-shadow: none;
+            }
+            .flow-arrow { color: #000000; }
+            h1, h2 { color: #000000; }
+        }
+
+        /* Stili Diagramma di Flusso */
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem; /* 24px */
+        }
+        .flow-box, .flow-decision, .flow-result {
+            width: 90%;
+            max-width: 650px; /* Larghezza aumentata */
+            padding: 1rem 1.5rem; /* 16px 24px */
+            border-radius: 0.5rem; /* 8px */
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            text-align: center;
+            border: 1px solid #ede9fe; /* purple-100 */
+        }
+        .flow-box strong { color: #7e22ce; /* purple-700 */ }
+        /* CORREZIONE: Allineamento a sinistra per la lista */
+        .flow-box ul { list-style-type: disc; text-align: left; padding-left: 2rem; margin-top: 0.5rem; color: #475569; } /* slate-600 */
+
+        .flow-decision {
+            background-color: #f3e8ff; /* purple-100 */
+            border-color: #c084fc; /* purple-400 */
+            font-weight: 600;
+        }
+        
+        .flow-result {
+            background-color: #dcfce7; /* green-100 */
+            border-color: #4ade80; /* green-400 */
+            color: #166534; /* green-800 */
+            font-weight: 700;
+        }
+
+        .flow-arrow {
+            font-size: 2.25rem; /* 36px */
+            line-height: 1;
+            color: #a78bfa; /* purple-300 */
+            font-weight: bold;
+        }
+        /* Grid per la terapia */
+        .therapy-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            width: 100%;
+            max-width: 800px;
+        }
+        .therapy-card {
+            background-color: #ffffff;
+            border: 1px solid #c084fc; /* purple-400 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+            text-align: left;
+        }
+        .therapy-card h4 {
+            font-weight: 700;
+            color: #7e22ce; /* purple-700 */
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        .therapy-card ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            color: #475569; /* slate-600 */
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 640px) {
+            .therapy-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-purple-50">
+
+    <header id="main-header" class="bg-purple-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Infografica: Diagnosi Tetano</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8" id="back-button">
+            <!-- Link per tornare alla pagina di riassunto -->
+            <a href="tetano.html" class="inline-flex items-center bg-white text-purple-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-purple-100 transition duration-300" data-lang-key="backToSummary">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+            </a>
+        </div>
+        
+        <h1 class="text-3xl md:text-4xl font-bold text-purple-800 text-center mb-4" data-lang-key="pageTitle">Iter Diagnostico e Terapeutico del Tetano</h1>
+        <h2 class="text-xl text-purple-700 text-center mb-12" data-lang-key="pageSubtitle">Approccio alla Paralisi Spastica</h2>
+
+        <!-- Contenitore Infografica Diagnosi -->
+        <div class="flow-container" role="figure" aria-label="Diagramma di flusso per la diagnosi e terapia del Tetano">
+            
+            <div class="flow-box" data-lang-key="start">
+                <strong>SOSPETTO CLINICO</strong>
+                <ul class="list-disc">
+                    <li>Anamnesi di ferita (recente o passata), castrazione, parto.</li>
+                    <li>Stato vaccinale assente o sconosciuto.</li>
+                </ul>
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-decision" data-lang-key="decision1">
+                <strong>Esame Clinico:</strong> Ricerca segni di Paralisi Spastica
+                <!-- CORREZIONE: ul allineato a sinistra -->
+                <ul class="list-disc mt-2 text-purple-800 font-normal text-left">
+                    <li data-lang-key="s1"><strong>Prolasso terza palpebra</strong> (precoce nel cavallo)</li>
+                    <li data-lang-key="s2"><strong>Iperestesia</strong> (sensibilità a luce/rumore)</li>
+                    <li data-lang-key="s3"><strong>Rigidità muscolare</strong> (Andatura a "cavalletto", "Risus sardonicus", Trisma)</li>
+                </ul>
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-result positive" data-lang-key="resultPositive">
+                <strong>DIAGNOSI CLINICA: TETANO</strong><br>
+                (La diagnosi è quasi esclusivamente clinica. Gli esami di laboratorio non sono dirimenti)
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-box" data-lang-key="terapiaTitle">
+                <strong>APPROCCIO TERAPEUTICO MULTI-MODALE (EMERGENZA)</strong>
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <!-- Grid Terapeutica -->
+            <div class="therapy-grid">
+                <div class="therapy-card" data-lang-key="terapia1">
+                    <h4>1. Neutralizzare Tossina</h4>
+                    <ul>
+                        <!-- CORREZIONE: Tolto a capo -->
+                        <li>Somministrare <strong>Antitossina Tetanica (ATS)</strong> (neutralizza solo la tossina non ancora legata).</li>
+                    </ul>
+                </div>
+                <div class="therapy-card" data-lang-key="terapia2">
+                    <h4>2. Eliminare Infezione</h4>
+                    <ul>
+                        <li><strong>Sbrigliamento chirurgico</strong> della ferita.</li>
+                        <li><strong>Penicillina G</strong> ad alte dosi.</li>
+                    </ul>
+                </div>
+                <div class="therapy-card" data-lang-key="terapia3">
+                    <h4>3. Supporto e Controllo Spasmi</h4>
+                    <ul>
+                        <li><strong>Box buio e silenzioso</strong> (minimizzare stimoli).</li>
+                        <li>Sedativi / Miorilassanti (es. Diazepam).</li>
+                        <li>Fluidi e nutrizione enterale (se trisma).</li>
+                    </ul>
+                </div>
+                <div class="therapy-card" data-lang-key="terapia4">
+                    <h4>4. Immunità Futura</h4>
+                    <ul>
+                        <!-- CORREZIONE: Tolto a capo -->
+                        <li>Somministrare <strong>Tossoide Tetanico (Vaccino)</strong> (in un sito diverso dall'antitossina).</li>
+                    </ul>
+                </div>
+            </div>
+            
+        </div>
+
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-purple-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TRADUZIONI ---
+            const translations = {
+                siteTitle: { it: "Infografica: Diagnosi Tetano", en: "Infographic: Tetanus Diagnosis" },
+                backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+                pageTitle: { it: "Iter Diagnostico e Terapeutico del Tetano", en: "Tetanus Diagnostic and Therapeutic Workup" },
+                pageSubtitle: { it: "Approccio alla Paralisi Spastica", en: "Approach to Spastic Paralysis" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" },
+                
+                // Labels diagramma
+                start: { it: `<strong>SOSPETTO CLINICO</strong>
+                            <ul class="list-disc">
+                                <li>Anamnesi di ferita (recente o passata), castrazione, parto.</li>
+                                <li>Stato vaccinale assente o sconosciuto.</li>
+                            </ul>`, 
+                         en: `<strong>CLINICAL SUSPICION</strong>
+                            <ul class="list-disc">
+                                <li>History of wound (recent or past), castration, parturition.</li>
+                                <li>Vaccination status unknown or absent.</li>
+                            </ul>` },
+                decision1: { it: `<strong>Esame Clinico:</strong> Ricerca segni di Paralisi Spastica
+                                <ul class="list-disc mt-2 text-purple-800 font-normal text-left">
+                                    <li data-lang-key="s1"><strong>Prolasso terza palpebra</strong> (precoce nel cavallo)</li>
+                                    <li data-lang-key="s2"><strong>Iperestesia</strong> (sensibilità a luce/rumore)</li>
+                                    <li data-lang-key="s3"><strong>Rigidità muscolare</strong> (Andatura a "cavalletto", "Risus sardonicus", Trisma)</li>
+                                </ul>`, 
+                             en: `<strong>Clinical Exam:</strong> Look for signs of Spastic Paralysis
+                                <ul class="list-disc mt-2 text-purple-800 font-normal text-left">
+                                    <li data-lang-key="s1"><strong>Third eyelid prolapse</strong> (early in horse)</li>
+                                    <li data-lang-key="s2"><strong>Hyperesthesia</strong> (sensitivity to light/noise)</li>
+                                    <li data-lang-key="s3"><strong>Muscle rigidity</strong> ("Sawhorse stance", "Risus sardonicus", Lockjaw)</li>
+                                </ul>` },
+                resultPositive: { it: "<strong>DIAGNOSI CLINICA: TETANO</strong><br> (La diagnosi è quasi esclusivamente clinica. Gli esami di laboratorio non sono dirimenti)", en: "<strong>CLINICAL DIAGNOSIS: TETANUS</strong><br> (Diagnosis is almost exclusively clinical. Lab tests are not definitive)" },
+                terapiaTitle: { it: "<strong>APPROCCIO TERAPEUTICO MULTI-MODALE (EMERGENZA)</strong>", en: "<strong>MULTI-MODAL THERAPEUTIC APPROACH (EMERGENCY)</strong>" },
+                // CORREZIONE: Testo su una riga
+                terapia1: { it: `<h4>1. Neutralizzare Tossina</h4>
+                                <ul>
+                                    <li>Somministrare <strong>Antitossina Tetanica (ATS)</strong> (neutralizza solo la tossina non ancora legata).</li>
+                                </ul>`,
+                             en: `<h4>1. Neutralize Toxin</h4>
+                                <ul>
+                                    <li>Administer <strong>Tetanus Antitoxin (TAT)</strong> (only neutralizes unbound toxin).</li>
+                                </ul>`},
+                terapia2: { it: `<h4>2. Eliminare Infezione</h4>
+                                <ul>
+                                    <li><strong>Sbrigliamento chirurgico</strong> della ferita.</li>
+                                    <li><strong>Penicillina G</strong> ad alte dosi.</li>
+                                </ul>`,
+                             en: `<h4>2. Eliminate Infection</h4>
+                                <ul>
+                                    <li><strong>Surgical debridement</strong> of the wound.</li>
+                                    <li>High-dose <strong>Penicillin G</strong>.</li>
+                                </ul>`},
+                terapia3: { it: `<h4>3. Supporto e Controllo Spasmi</h4>
+                                <ul>
+                                    <li><strong>Box buio e silenzioso</strong> (minimizzare stimoli).</li>
+                                    <li>Sedativi / Miorilassanti (es. Diazepam).</li>
+                                    <li>Fluidi e nutrizione enterale (se trisma).</li>
+                                </ul>`,
+                             en: `<h4>3. Support & Spasm Control</h4>
+                                <ul>
+                                    <li><strong>Dark, quiet stall</strong> (minimize stimuli).</li>
+                                    <li>Sedatives / Muscle relaxants (e.g., Diazepam).</li>
+                                    <li>Fluids and enteral nutrition (if lockjaw).</li>
+                                </ul>`},
+                // CORREZIONE: Testo su una riga
+                terapia4: { it: `<h4>4. Immunità Futura</h4>
+                                <ul>
+                                    <li>Somministrare <strong>Tossoide Tetanico (Vaccino)</strong> (in un sito diverso dall'antitossina).</li>
+                                </ul>`,
+                             en: `<h4>4. Future Immunity</h4>
+                                <ul>
+                                    <li>Administer <strong>Tetanus Toxoid (Vaccine)</strong> (at a different site than antitoxin).</li>
+                                </ul>`}
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+            
+            // Initial setup
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
