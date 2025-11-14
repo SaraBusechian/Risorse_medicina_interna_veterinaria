@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sindrome di Wobbler (Cavallo) - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette VIOLA */
+        body { font-family: 'Inter', sans-serif; background-color: #faf5ff; /* purple-50 */ color: #5b21b6; /* purple-800 */ }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; color: #a855f7; /* purple-500 */ }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #9333ea; /* purple-600 */ color: #5b21b6; /* purple-800 */ }
+        
+        /* Modalità DSA (Accessibilità) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important; /* slate-50 */
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b; /* slate-800 */
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #ffffff; border: 1px solid #e2e8f0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #1e293b; }
+        .dsa-mode .prose strong { color: #000000; }
+        .dsa-mode .prose h3 { color: #1e293b; border-bottom-color: #94a3b8; }
+        .dsa-mode .prose h4 { color: #1e293b; }
+        .dsa-mode .nav-link { color: #334155; } /* slate-700 */
+        .dsa-mode .nav-link:hover, .dsa-mode .nav-link.active { border-bottom-color: #334155; color: #000000; }
+        .dsa-mode .quiz-question { border-color: #cbd5e1; }
+        .dsa-mode .quiz-option:hover { background-color: #f1f5f9; }
+
+        /* Bottoni TTS */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #a78bfa; /* purple-400 */ transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #7c3aed; /* purple-600 */ }
+        
+        /* Stili riassunto (prose) */
+        .prose h3 {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 600; /* font-semibold */
+            color: #7e22ce; /* purple-700 */
+            margin-top: 2rem; /* mt-8 */
+            margin-bottom: 1rem; /* mb-4 */
+            padding-bottom: 0.25rem; /* pb-1 */
+            border-bottom: 1px solid #ddd6fe; /* purple-200 */
+        }
+        .prose p, .prose ul {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: #374151; /* gray-700 */
+            margin-bottom: 1.25rem; /* mb-5 */
+        }
+        .prose strong {
+            color: #5b21b6; /* purple-800 */
+            font-weight: 600;
+        }
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.75rem; /* pl-7 */
+        }
+        .prose li {
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        /* Quiz */
+        .quiz-question { border: 1px solid #ddd6fe; /* purple-200 */ transition: all 0.3s; }
+        .quiz-option:hover { background-color: #faf5ff; /* purple-50 */ }
+        .quiz-question.correct { background-color: #dcfce7; border-color: #4ade80; } /* Verde per corretto */
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #f87171; } /* Rosso per errato */
+
+        /* Stili per h4 nel riassunto */
+        .prose h4 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            color: #7e22ce; /* purple-700 */
+            margin-top: 1.5rem; /* mt-6 */
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+        .dsa-mode .prose h4 {
+            color: #1e293b; /* slate-800 */
+        }
+
+        /* Stili per la stampa */
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, a[href*="infografica"], a[href*="index.info"] { display: none; }
+            body, .content-section { background-color: #ffffff !important; color: #000000 !important; }
+            .content-section { box-shadow: none; border: none; }
+            h1, h2, h3, h4, p, li, strong { color: #000000 !important; }
+            .prose h3 { border-color: #000000; }
+        }
+    </style>
+</head>
+<body class="bg-purple-50">
+
+    <header id="main-header" class="bg-purple-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Sistema Nervoso</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.info" class="inline-flex items-center bg-white text-purple-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-purple-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Neurologia</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-purple-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-purple-800" data-lang-key="pageTitle">Sindrome di Wobbler (Cavallo)<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-purple-700 mt-2" data-lang-key="pageSubtitle">Mielopatia Cervicale Stenotica (CSM) nel cavallo.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                        <a href="infografica_wobbler.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-purple-500">
+                            <div class="flex items-center space-x-6">
+                                <div class="flex-shrink-0 w-24 h-24 bg-purple-500 rounded-lg flex items-center justify-center">
+                                    <!-- Icona Emoji Cavallo + Vertigine -->
+                                    <span class="text-5xl" role="img" aria-label="Icona di un cavallo con le vertigini">🐴🌀</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-purple-800" data-lang-key="infographicLinkTitle">Visualizza l'Iter Diagnostico</h3>
+                                    <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca per una guida visuale alla diagnosi della Sindrome di Wobbler.</p>
+                                </div>
+                            </div>
+                        </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-purple-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-purple-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-purple-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-purple-500 text-white rounded-full hover:bg-purple-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                            </svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" />
+                            </svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-purple-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-purple-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_wobbler.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-purple-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-purple-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-purple-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TRADUZIONI ---
+            const translations = {
+                siteTitle: { it: "Patologie Sistema Nervoso", en: "Nervous System Diseases" },
+                backToIndexText: { it: "Indice Neurologia", en: "Neurology Index" },
+                pageTitle: { it: "Sindrome di Wobbler (Cavallo)", en: "Wobbler Syndrome (Horse)" },
+                pageSubtitle: { it: "Mielopatia Cervicale Stenotica (CSM) nel cavallo.", en: "Cervical Stenotic Myelopathy (CSM) in the horse." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: `<h3 class="text-2xl font-semibold mt-6 mb-3">Definizione ed Eziologia</h3>
+                        <p>La <strong>Sindrome di Wobbler</strong>, o <strong>Mielopatia Cervicale Stenotica (CSM)</strong>, è la causa più comune di atassia nel cavallo. È una patologia neurologica causata da una <strong>compressione del midollo spinale</strong> a livello delle vertebre cervicali.</p>
+                        <p>L'eziologia è multifattoriale, includendo una rapida crescita, una dieta ipercalorica e iperproteica in puledri giovani, e una predisposizione genetica (es. Purosangue, Quarter Horse, Warmblood).</p>
+                        <p>La compressione può avvenire in due forme principali:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Tipo 1 (Dinamica / Instabilità):</strong> Colpisce cavalli giovani (6 mesi - 2 anni). La compressione è <strong>dinamica</strong>, cioè avviene solo quando il collo è flesso, a causa di un'instabilità vertebrale (spesso C3-C4 o C4-C5).</li>
+                            <li><strong>Tipo 2 (Statica / Artrosica):</strong> Colpisce cavalli più anziani (spesso > 4-5 anni). La compressione è <strong>statica</strong> (presente anche a collo neutro) ed è causata da modificazioni artrosiche delle faccette articolari vertebrali (spesso C5-C6 o C6-C7).</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Segni Clinici</h3>
+                        <p>I segni clinici sono quelli di una <strong>mielopatia cervicale</strong> (lesione del motoneurone superiore per gli arti pelvici e toracici).</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Atassia Propriocettiva e Paresi:</strong> È il segno dominante. L'atassia (incoordinazione) è tipicamente <strong>peggiore sugli arti posteriori (pelvici)</strong> rispetto agli anteriori (toracici).</li>
+                            <li>Questo perché le vie propriocettive e motorie per gli arti pelvici sono più superficiali nel midollo cervicale e quindi più vulnerabili alla compressione.</li>
+                            <li>I segni includono: andatura "Wobbler" (barcollante), base d'appoggio allargata, inciampi frequenti, difficoltà a girare, ipermetria, usura anomala dei piedi.</li>
+                            <li>Nei casi gravi, il cavallo può cadere facilmente.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Diagnosi</h3>
+                        <p>La diagnosi si basa sul sospetto clinico (atassia peggiore ai posteriori) e confermata dalla diagnostica per immagini.</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Esame Neurologico:</strong> Evidenzia atassia e paresi, tipicamente 1-2 gradi peggiori sui pelvici rispetto ai toracici (es. Grado 3/5 sui pelvici, Grado 1/5 sui toracici).</li>
+                            <li><strong>Radiografie Cervicali (RX):</strong> Possono mostrare segni di malallineamento, artrosi, o un canale vertebrale stretto. Si usa il <strong>"rapporto sagittale"</strong> (diametro minimo del canale / larghezza del corpo vertebrale) per identificare i siti a rischio (un rapporto < 50-52% è suggestivo).</li>
+                            <li><strong>Mielografia (Gold Standard):</strong> È il test diagnostico definitivo in vita. Si inietta mezzo di contrasto nello spazio subaracnoideo. Le radiografie (in posizione neutra, flessa ed estesa) mostrano il sito esatto della compressione del midollo spinale (interruzione delle colonne di contrasto) e se questa è dinamica o statica.</li>
+                            <li><strong>Tomografia Computerizzata (Mielo-TC) / MRI:</strong> Forniscono dettagli anatomici superiori e stanno diventando più comuni dove disponibili.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Terapia e Prognosi</h3>
+                        <p>La prognosi per il ritorno all'attività atletica è da riservata a sfavorevole, ma alcuni cavalli possono migliorare e diventare compagni sicuri.</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Terapia Medica (Conservativa):</strong> Spesso usata per casi lievi o cavalli giovani in crescita. Include:
+                                <ul>
+                                    <li><strong>Riposo a box</strong> e esercizio controllato.</li>
+                                    <li><strong>Anti-infiammatori (FANS)</strong> o corticosteroidi per ridurre l'edema.</li>
+                                    <li><strong>Modifica della dieta</strong> nei puledri (restrizione calorica/proteica) per rallentare la crescita.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Terapia Chirurgica (Stabilizzazione Vertebrale):</strong> Riservata a casi selezionati, specialmente giovani con compressioni dinamiche. L'obiettivo è la fusione delle vertebre cervicali (es. "Basket surgery") per stabilizzare il sito e decomprimere il midollo.</li>
+                        </ul>`,
+                    en: `<h3 class="text-2xl font-semibold mt-6 mb-3">Definition and Etiology</h3>
+                        <p><strong>Wobbler Syndrome</strong>, or <strong>Cervical Stenotic Myelopathy (CSM)</strong>, is the most common cause of ataxia in the horse. It is a neurological disease caused by <strong>compression of the spinal cord</strong> within the cervical (neck) vertebrae.</p>
+                        <p>The etiology is multifactorial, including rapid growth, high-calorie/high-protein diets in young foals, and a genetic predisposition (e.g., Thoroughbreds, Quarter Horses, Warmbloods).</p>
+                        <p>The compression can occur in two main forms:</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Type 1 (Dynamic / Instability):</strong> Affects young horses (6 months - 2 years). The compression is <strong>dynamic</strong>, meaning it occurs only when the neck is flexed, due to vertebral instability (often C3-C4 or C4-C5).</li>
+                            <li><strong>Type 2 (Static / Arthritic):</strong> Affects older horses (often > 4-5 years). The compression is <strong>static</strong> (present even in a neutral position) and is caused by arthritic changes of the articular facets (often C5-C6 or C6-C7).</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Clinical Signs</h3>
+                        <p>The clinical signs are those of a <strong>cervical myelopathy</strong> (upper motor neuron lesion for pelvic and thoracic limbs).</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Proprioceptive Ataxia and Paresis:</strong> This is the dominant sign. The ataxia (incoordination) is typically <strong>worse in the hind limbs (pelvic)</strong> than the front limbs (thoracic).</li>
+                            <li>This is because the proprioceptive and motor pathways for the pelvic limbs are more superficial in the cervical cord and thus more vulnerable to compression.</li>
+                            <li>Signs include: "Wobbler" gait (staggering), wide-based stance, frequent stumbling, difficulty turning, hypermetria, abnormal hoof wear.</li>
+                            <li>In severe cases, the horse may fall easily.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Diagnosis</h3>
+                        <p>Diagnosis is based on clinical suspicion (ataxia worse behind) and confirmed by imaging.</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Neurological Exam:</strong> Reveals ataxia and paresis, typically 1-2 grades worse in the pelvic limbs than the thoracic limbs (e.g., Grade 3/5 pelvic, Grade 1/5 thoracic).</li>
+                            <li><strong>Cervical Radiographs (X-rays):</strong> May show signs of malalignment, arthritis, or a narrow vertebral canal. The <strong>"sagittal ratio"</strong> (minimum canal diameter / width of vertebral body) is used to identify sites at risk (a ratio < 50-52% is suggestive).</li>
+                            <li><strong>Myelography (Gold Standard):</strong> This is the definitive ante-mortem diagnostic test. Contrast medium is injected into the subarachnoid space. Radiographs (in neutral, flexed, and extended positions) show the exact site of spinal cord compression (interruption of contrast columns) and whether it is dynamic or static.</li>
+                            <li><strong>Computed Tomography (Myelo-CT) / MRI:</strong> Provide superior anatomical detail and are becoming more common where available.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3">Therapy and Prognosis</h3>
+                        <p>The prognosis for a return to athletic function is guarded to poor, but some horses may improve and become safe companions.</p>
+                        <ul class="list-disc pl-6">
+                            <li><strong>Medical (Conservative) Therapy:</strong> Often used for mild cases or young, growing horses. Includes:
+                                <ul>
+                                    <li><strong>Stall rest</strong> and controlled exercise.</li>
+                                    <li><strong>Anti-inflammatories (NSAIDs)</strong> or corticosteroids to reduce edema.</li>
+                                    <li><strong>Dietary modification</strong> in foals (caloric/protein restriction) to slow growth.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Surgical Therapy (Vertebral Stabilization):</strong> Reserved for selected cases, especially young horses with dynamic compression. The goal is fusion of the cervical vertebrae (e.g., "Basket surgery") to stabilize the site and decompress the cord.</li>
+                        </ul>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Iter Diagnostico", en: "View Diagnostic Workup" },
+                infographicLinkDesc: { it: "Clicca per una guida visuale alla diagnosi della Sindrome di Wobbler.", en: "Click for a visual guide to Wobbler Syndrome diagnosis." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Reed SM, Bayly WM, Sellon DC. Equine Internal Medicine. 4th ed. Elsevier, 2018.</li>
+                         <li>Reed SM, Furr M. Equine Neurology. 2nd ed. Wiley-Blackwell, 2016.</li>
+                         <li>Mayhew IG, MacKay RJ. Large Animal Neurology. 3rd ed. John Wiley & Sons, 2022.</li>`,
+                    en: `<li>Reed SM, Bayly WM, Sellon DC. Equine Internal Medicine. 4th ed. Elsevier, 2018.</li>
+                         <li>Reed SM, Furr M. Equine Neurology. 2nd ed. Wiley-Blackwell, 2016.</li>
+                         <li>Mayhew IG, MacKay RJ. Large Animal Neurology. 3rd ed. John Wiley & Sons, 2022.</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            // --- QUIZ DATA ---
+            const quizData = {
+                it: [
+                    { question: "La Sindrome di Wobbler è causata da:", options: ["Un'infezione virale", "Compressione del midollo spinale cervicale", "Carenza di Vitamina E", "Una malattia muscolare"], answer: "Compressione del midollo spinale cervicale" },
+                    { question: "Come sono tipicamente i segni neurologici nella CSM?", options: ["Peggiori sugli arti anteriori", "Peggiori sugli arti posteriori", "Simmetrici tra anteriori e posteriori", "Limitati ai nervi cranici"], answer: "Peggiori sugli arti posteriori" },
+                    { question: "La forma 'Dinamica' (Tipo 1) della CSM è più comune in:", options: ["Cavalli anziani (>15 anni)", "Cavalli giovani (6 mesi - 2 anni)", "Pony", "Asini"], answer: "Cavalli giovani (6 mesi - 2 anni)" },
+                    { question: "La forma 'Statica' (Tipo 2) è spesso causata da:", options: ["Instabilità vertebrale", "Frattura vertebrale", "Artrosi delle faccette articolari", "Un disco intervertebrale erniato"], answer: "Artrosi delle faccette articolari" },
+                    { question: "Quale esame è considerato il 'gold standard' per la diagnosi in vita?", options: ["Radiografie semplici", "Mielografia", "Analisi del LCR", "Livelli di Vitamina E"], answer: "Mielografia" },
+                    { question: "Cosa si intende per compressione 'dinamica'?", options: ["La compressione è visibile solo in flessione", "La compressione è visibile solo in estensione", "La compressione è sempre presente", "La compressione si sposta su vertebre diverse"], answer: "La compressione è visibile solo in flessione" },
+                    { question: "I cavalli con CSM mostrano principalmente:", options: ["Atassia cerebellare (ipermetria)", "Atassia propriocettiva e paresi", "Solo paresi (debolezza) senza atassia", "Crisi convulsive"], answer: "Atassia propriocettiva e paresi" },
+                    { question: "Il 'rapporto sagittale' (saggital ratio) si usa per:", options: ["Misurare il grado di atassia", "Valutare la stenosi del canale vertebrale sulle radiografie", "Dosare i FANS", "Decidere il sito chirurgico"], answer: "Valutare la stenosi del canale vertebrale sulle radiografie" },
+                    { question: "La terapia chirurgica ('Basket surgery') mira a:", options: ["Rimuovere l'artrosi", "Iniettare corticosteroidi", "Fondere e stabilizzare le vertebre", "Sostituire il midollo spinale"], answer: "Fondere e stabilizzare le vertebre" },
+                    { question: "La prognosi per il ritorno all'attività atletica in cavalli con CSM è:", options: ["Eccellente", "Buona", "Riservata/Sfavorevole", "Sempre fatale"], answer: "Riservata/Sfavorevole" }
+                ],
+                en: [
+                    { question: "Wobbler Syndrome is caused by:", options: ["A viral infection", "Compression of the cervical spinal cord", "Vitamin E deficiency", "A muscle disease"], answer: "Compression of the cervical spinal cord" },
+                    { question: "How are the neurological signs typically in CSM?", options: ["Worse in the front limbs", "Worse in the hind limbs", "Symmetrical between front and hind", "Limited to cranial nerves"], answer: "Worse in the hind limbs" },
+                    { question: "'Dynamic' (Type 1) CSM is most common in:", options: ["Old horses (>15 years)", "Young horses (6 months - 2 years)", "Ponies", "Donkeys"], answer: "Young horses (6 months - 2 years)" },
+                    { question: "'Static' (Type 2) CSM is often caused by:", options: ["Vertebral instability", "Vertebral fracture", "Arthritis of the articular facets", "A herniated intervertebral disc"], answer: "Arthritis of the articular facets" },
+                    { question: "Which test is considered the 'gold standard' for ante-mortem diagnosis?", options: ["Plain radiographs", "Myelography", "CSF analysis", "Vitamin E levels"], answer: "Myelography" },
+                    { question: "What is meant by 'dynamic' compression?", options: ["Compression is visible only on flexion", "Compression is visible only on extension", "Compression is always present", "Compression moves to different vertebrae"], answer: "Compression is visible only on flexion" },
+                    { question: "Horses with CSM primarily show:", options: ["Cerebellar ataxia (hypermetria)", "Proprioceptive ataxia and paresis", "Only paresis (weakness) without ataxia", "Seizures"], answer: "Proprioceptive ataxia and paresis" },
+                    { question: "The 'sagittal ratio' is used to:", options: ["Measure the grade of ataxia", "Evaluate vertebral canal stenosis on radiographs", "Dose NSAIDs", "Decide the surgical site"], answer: "Evaluate vertebral canal stenosis on radiographs" },
+                    { question: "Surgical therapy ('Basket surgery') aims to:", options: ["Remove arthritis", "Inject corticosteroids", "Fuse and stabilize the vertebrae", "Replace the spinal cord"], answer: "Fuse and stabilize the vertebrae" },
+                    { question: "The prognosis for return to athletic function in horses with CSM is:", options: ["Excellent", "Good", "Guarded/Poor", "Always fatal"], answer: "Guarded/Poor" }
+                ]
+            };
+            
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            // --- FUNZIONE TTS ROBUSTA ---
+            function stopSpeech() { if (synth.speaking || synth.paused) synth.cancel(); }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); } 
+                    else if (synth.speaking) { synth.pause(); }
+                    return;
+                }
+                
+                stopSpeech();
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                currentUtterance.onstart = () => {
+                    button.classList.add('playing');
+                    activeTTSButton = button;
+                };
+                currentUtterance.onpause = () => button.classList.remove('playing');
+                currentUtterance.onresume = () => button.classList.add('playing');
+
+                const cleanup = () => {
+                    button.classList.remove('playing');
+                    if (activeTTSButton === button) {
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
+                };
+                
+                currentUtterance.onend = cleanup;
+                currentUtterance.onerror = (event) => {
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('TTS Error:', event.error);
+                    }
+                    cleanup();
+                };
+                
+                synth.speak(currentUtterance);
+            }
+            // --- FINE FUNZIONE TTS ---
+
+            let sound = null;
+
+            function initHowler() {
+                if (sound) { sound.unload(); }
+                const audioFile = 'audio_wobbler.mp3'; // NOME FILE AUDIO
+                sound = new Howl({
+                    src: [audioFile],
+                    html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onloaderror: (id, msg) => {
+                        console.error("Error loading audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "File audio non trovato." : "Audio file not found.";
+                    },
+                    onplayerror: (id, msg) => {
+                        console.error("Error playing audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "Impossibile riprodurre l'audio." : "Could not play audio.";
+                    }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+
+            playPauseBtn.addEventListener('click', () => {
+                if (!sound || sound.state() === 'unloaded') initHowler();
+                if (sound.playing()) { sound.pause(); } else { sound.play(); }
+            });
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                        }
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    const contentClone = content.cloneNode(true);
+                                    contentClone.querySelectorAll('div, img, figure').forEach(el => el.remove());
+                                    contentClone.querySelectorAll('h3, h4').forEach(el => {
+                                        el.textContent = '. ' + el.textContent.trim() + '. ';
+                                    });
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        } 
+                        else if (parentElement.tagName === 'H3') {
+                            const questionTextNode = parentElement.querySelector('span:first-child');
+                            if (questionTextNode) textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
+                        }
+                        else if (parentElement.closest('label')) {
+                            const label = parentElement.closest('label');
+                            const answerTextNode = label.querySelector('span:first-child');
+                            if (answerTextNode) textToRead = answerTextNode.textContent.trim();
+                        }
+                        
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-purple-50">
+                            <label class="flex items-center justify-between w-full cursor-pointer">
+                                <span class="flex-grow pr-4"><input type="radio" name="q${index}" value="${o}" class="mr-3 text-purple-600 focus:ring-purple-500">${o}</span>
+                                <span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                            </label>
+                        </li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content') || key === 'bibliographyContent') {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            // Salva il bottone TTS se esiste
+                            const ttsButton = element.querySelector('.tts-button');
+                            element.textContent = translations[key][lang];
+                            // Riaiungi il bottone TTS
+                            if(ttsButton) element.appendChild(ttsButton);
+                        }
+                    }
+                });
+                
+                // Gestione sezione Audio
+                const navAudio = document.querySelector('a[data-lang-key="navAudio"]');
+                const sectionAudio = document.getElementById('audio');
+                if (lang === 'en') {
+                    if(navAudio) navAudio.style.display = 'none';
+                    if(sectionAudio) sectionAudio.style.display = 'none';
+                    if(sound && sound.playing()) sound.stop(); // Ferma l'audio se si cambia in EN
+                } else {
+                    if(navAudio) navAudio.style.display = 'block';
+                    if(sectionAudio) sectionAudio.style.display = 'block';
+                }
+
+                // Aggiorna testo bottone accessibilità
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                
+                loadQuiz(lang);
+                setupTTSListeners(); // Ricollega i listener dopo aver cambiato la lingua
+            }
+            
+            // --- EVENT LISTENERS ---
+
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            // Initial setup
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
