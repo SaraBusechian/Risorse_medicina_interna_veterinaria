@@ -3,42 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medicina Interna Veterinaria - Casi Clinici Interattivi</title>
+    <title>Casi Clinici Interattivi - Medicina Interna Veterinaria</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Stili Tailwind personalizzati o di fallback */
-        .card {
-            display: flex;
-            flex-direction: column;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f3ff; /* Sfondo Viola-50 */
+            color: #1e293b;
         }
-        .card > div:nth-child(2) {
-            margin-top: auto;
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column; /* Necessario per il layout full height */
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .tts-button { cursor: pointer; display: inline-flex; align-items: center; color: #a78bfa; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #7c3aed; }
+        
+        /* Modalità alta leggibilità */
+        body.dsa-mode {
+            font-family: Verdana, sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.05em;
+            line-height: 1.8;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        body.dsa-mode h1, body.dsa-mode h2, body.dsa-mode h3 {
+            letter-spacing: normal;
+            color: #4338ca;
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="text-slate-800 flex flex-col min-h-screen">
 
-    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
-        
-        <header class="mb-12 flex justify-between items-center border-b pb-4 border-violet-100">
-            <h1 class="text-3xl font-extrabold text-violet-900 flex items-center gap-2">
-                <span>🩺</span> <span data-lang-key="app-title">Vet Clinical Cases</span>
-            </h1>
-            <div class="flex items-center gap-4">
-                <select id="language-selector" class="border border-violet-300 rounded-lg p-2 text-violet-700 bg-white shadow-sm">
-                    <option value="it">🇮🇹 Italiano</option>
-                    <option value="en">🇬🇧 English</option>
-                </select>
-                <span class="text-sm text-gray-500 hidden sm:inline" data-lang-key="developed-by">Sviluppato da [Il tuo Nome o Istituzione]</span>
+    <div class="container mx-auto px-4 py-8 flex-grow">
+
+        <header class="text-center mb-12 relative">
+            <div class="absolute top-0 right-0 -mt-4 flex items-center gap-2">
+                <button id="lang-toggle" class="bg-white text-violet-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-violet-100 transition duration-300 text-sm">EN</button>
+                <button id="dsa-toggle" class="bg-violet-100 text-violet-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-violet-200 transition duration-300 text-sm" data-lang-key="accessibility-btn-text">
+                    Accessibilità
+                </button>
             </div>
+            <div class="text-left mb-8">
+                 <a href="../index.html" class="inline-flex items-center bg-white text-violet-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-violet-50 transition duration-300" data-lang-key="backToHome">
+                      <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                      <span data-lang-key="back-to-home-text">Torna alla Home</span>
+                 </a>
+             </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-violet-800 mb-4" data-lang-key="main-title">Archivio Casi Clinici Interattivi</h1>
+            <p class="text-lg text-slate-600 max-w-3xl mx-auto" data-lang-key="main-subtitle">Metti alla prova le tue capacità diagnostiche seguendo il percorso di un caso clinico, passo dopo passo.</p>
         </header>
 
-        <div class="max-w-4xl mx-auto">
-            
+        <main>
+
             <section class="mb-16">
-                <div class="bg-white rounded-2xl shadow-xl p-8 border border-violet-100">
+                <div class="bg-white rounded-2xl shadow-sm p-8 border border-violet-100">
                     <h2 class="text-3xl font-bold text-violet-800 mb-4 text-center flex items-center justify-center gap-2" data-lang-key="treasure-hunt-title">
                         <span>🕵️‍♀️</span> Cacce al Tesoro
                     </h2>
@@ -48,7 +75,7 @@
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         
-                        <div class="card bg-slate-50 rounded-xl border border-slate-200 shadow-md overflow-hidden flex flex-col h-full">
+                        <div class="card bg-slate-50 rounded-xl border border-slate-200 shadow-md overflow-hidden h-full">
                             <div class="p-6 flex-grow">
                                 <div class="flex items-center justify-between mb-4">
                                     <div class="flex items-center gap-3">
@@ -67,6 +94,7 @@
                                 <p class="text-slate-600 leading-relaxed flex justify-between items-start">
                                     <span data-lang-key="case-fulmine-desc">Cavallo: Disfunzione metabolica e perdita di peso cronica.</span>
                                     <button class="tts-button flex-shrink-0 ml-2"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></button>
+                                </p>
                             </div>
                             <div class="p-6 bg-white border-t border-slate-100 mt-auto">
                                 <div class="flex flex-col sm:flex-row gap-3">
@@ -86,7 +114,7 @@
                             </div>
                         </div>
                         
-                        <div class="card bg-slate-50 rounded-xl border border-slate-200 shadow-md overflow-hidden flex flex-col h-full">
+                        <div class="card bg-slate-50 rounded-xl border border-slate-200 shadow-md overflow-hidden h-full">
                             <div class="p-6 flex-grow">
                                 <div class="flex items-center justify-between mb-4">
                                     <div class="flex items-center gap-3">
@@ -112,7 +140,7 @@
                                     <a href="cavallotwine2.html" class="flex-1 bg-violet-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-violet-700 transition duration-300 text-center">
                                         Avvia (IT)
                                     </a>
-                                    <a href="diario_clinico_victory.docx" download="Diario_Clinico_Victory.docx" class="flex-1 bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-700 transition duration-300 text-center text-sm flex items-center justify-center gap-1">
+                                    <a href="diario_clinico_victory.docx" download="Diario_Clinico_victory.docx" class="flex-1 bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-700 transition duration-300 text-center text-sm flex items-center justify-center gap-1">
                                         <span class="text-lg">🇮🇹</span> Diario
                                     </a>
                                     <a href="cavallotwine2_en.html" class="flex-1 bg-violet-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-violet-700 transition duration-300 text-center">
@@ -134,127 +162,324 @@
                     <span class="text-3xl mr-2">🧩</span> Casi Clinici Rapidi
                 </h2>
                 
-                <div class="grid grid-cols-1 gap-3">
-                    <a href="cavallo1.html" class="block w-full py-3 px-5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all font-medium flex justify-between items-center group">
-                        <span data-lang-key="simple-case-1">Caso 1: Cavallo, apparato respiratorio</span>
-                        <span class="text-gray-400 group-hover:text-blue-500">→</span>
-                    </a>
-                    <a href="ruminanti1.html" class="block w-full py-3 px-5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all font-medium flex justify-between items-center group">
-                        <span data-lang-key="simple-case-2">Caso 2: Ovino, apparato tegumentario</span>
-                        <span class="text-gray-400 group-hover:text-blue-500">→</span>
-                    </a>
-                    <a href="cavallo2.html" class="block w-full py-3 px-5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all font-medium flex justify-between items-center group">
-                        <span data-lang-key="simple-case-3">Caso 3: Cavallo, apparato respiratorio</span>
-                        <span class="text-gray-400 group-hover:text-blue-500">→</span>
-                    </a>
-                    <a href="ruminanti2.html" class="block w-full py-3 px-5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all font-medium flex justify-between items-center group">
-                        <span data-lang-key="simple-case-4">Caso 4: Bovino, apparato respiratorio</span>
-                        <span class="text-gray-400 group-hover:text-blue-500">→</span>
-                    </a>
-                    <a href="cavallo3.html" class="block w-full py-3 px-5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all font-medium flex justify-between items-center group">
-                        <span data-lang-key="simple-case-5">Caso 5: Cavallo, apparato digerente</span>
-                        <span class="text-gray-400 group-hover:text-blue-500">→</span>
-                    </a>
-                    <a href="ruminanti3.html" class="block w-full py-3 px-5 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all font-medium flex justify-between items-center group">
-                        <span data-lang-key="simple-case-6">Caso 6: Bovino, apparato digerente</span>
-                        <span class="text-gray-400 group-hover:text-blue-500">→</span>
-                    </a>
-                </div>
-            </section>
-
-            <div class="mt-10 text-sm text-gray-400 text-center">
-                <p>Medicina Interna Veterinaria - Esercitazioni Pratiche</p>
-            </div>
-        </div>
-    </div>
-    
-    <script src="script.js"></script>
-
-    <script>
-        // La logica di base per il cambio lingua (se non è già in script.js)
-        const translations = {
-            'it': {
-                'app-title': 'Casi Clinici Veterinari',
-                'developed-by': 'Sviluppato da [Il tuo Nome o Istituzione]',
-                'treasure-hunt-title': 'Cacce al Tesoro',
-                'treasure-hunt-desc': 'Casi complessi con percorsi a bivi. Scaricate il "Diario Clinico" prima di iniziare per registrare le vostre scoperte.',
-                'case-fulmine-species': 'Cavallo',
-                'case-fulmine-system': 'Apparato Digerente',
-                'case-fulmine-desc': 'Cavallo: Disfunzione metabolica e perdita di peso cronica.',
-                'case-asma-species': 'Cavallo',
-                'case-asma-system': 'Apparato Respiratorio',
-                'case-asma-desc': 'Un cavallo atleta con ridotto rendimento (Victory). Scopri la causa nascosta della sua stanchezza.',
-                'case-level-treasure': 'Caccia al Tesoro',
-                'simple-cases-title': 'Casi Clinici Rapidi',
-                'simple-case-1': 'Caso 1: Cavallo, apparato respiratorio',
-                'simple-case-2': 'Caso 2: Ovino, apparato tegumentario',
-                'simple-case-3': 'Caso 3: Cavallo, apparato respiratorio',
-                'simple-case-4': 'Caso 4: Bovino, apparato respiratorio',
-                'simple-case-5': 'Caso 5: Cavallo, apparato digerente',
-                'simple-case-6': 'Caso 6: Bovino, apparato digerente',
-            },
-            'en': {
-                'app-title': 'Vet Clinical Cases',
-                'developed-by': 'Developed by [Your Name or Institution]',
-                'treasure-hunt-title': 'Treasure Hunts',
-                'treasure-hunt-desc': 'Complex cases with branching paths. Download the "Clinical Diary" before starting to record your findings.',
-                'case-fulmine-species': 'Horse',
-                'case-fulmine-system': 'Digestive System',
-                'case-fulmine-desc': 'Horse: Metabolic dysfunction and chronic weight loss.',
-                'case-asma-species': 'Horse',
-                'case-asma-system': 'Respiratory System',
-                'case-asma-desc': 'An athletic horse with reduced performance (Victory). Discover the hidden cause of its fatigue.',
-                'case-level-treasure': 'Treasure Hunt',
-                'simple-cases-title': 'Quick Clinical Cases',
-                'simple-case-1': 'Case 1: Horse, respiratory system',
-                'simple-case-2': 'Case 2: Sheep, integumentary system',
-                'simple-case-3': 'Case 3: Horse, respiratory system',
-                'simple-case-4': 'Case 4: Bovine, respiratory system',
-                'simple-case-5': 'Case 5: Horse, digestive system',
-                'simple-case-6': 'Case 6: Bovine, digestive system',
-            }
-        };
-
-        document.getElementById('language-selector').addEventListener('change', function() {
-            const newLang = this.value;
-            document.documentElement.lang = newLang; // Aggiorna l'attributo lang dell'html
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            // Applica le traduzioni a tutti gli elementi con data-lang-key
-            document.querySelectorAll('[data-lang-key]').forEach(element => {
-                const key = element.getAttribute('data-lang-key');
-                if (translations[newLang] && translations[newLang][key]) {
-                    element.textContent = translations[newLang][key];
-                }
-            });
-            
-            // Aggiorna i testi fissi dei casi rapidi
-            // Nota: I pulsanti delle Cacce al Tesoro NON sono influenzati grazie alla rimozione di data-lang-key
-            document.querySelector('[data-lang-key="simple-case-1"]').textContent = translations[newLang]['simple-case-1'];
-            document.querySelector('[data-lang-key="simple-case-2"]').textContent = translations[newLang]['simple-case-2'];
-            document.querySelector('[data-lang-key="simple-case-3"]').textContent = translations[newLang]['simple-case-3'];
-            document.querySelector('[data-lang-key="simple-case-4"]').textContent = translations[newLang]['simple-case-4'];
-            document.querySelector('[data-lang-key="simple-case-5"]').textContent = translations[newLang]['simple-case-5'];
-            document.querySelector('[data-lang-key="simple-case-6"]').textContent = translations[newLang]['simple-case-6'];
-        });
+                    <div class="card bg-white rounded-lg shadow-lg overflow-hidden h-full">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-4xl">🐴</span>
+                                    <div>
+                                        <h2 class="text-2xl font-bold text-violet-700" data-lang-key="case1-species">Cavallo</h2>
+                                        <p class="text-sm text-slate-500" data-lang-key="case1-system">Apparato Respiratorio</p>
+                                    </div>
+                                </div>
+                                <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full" data-lang-key="case-level-hard">Difficile</span>
+                            </div>
+                            <p class="text-slate-600 leading-relaxed flex justify-between items-start">
+                               <span data-lang-key="case1-desc">Un cavallo atleta presenta un calo di performance e un rumore respiratorio anomalo durante l'esercizio.</span>
+                               <button class="tts-button flex-shrink-0 ml-2"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></button>
+                            </p>
+                        </div>
+                        <div class="p-6 bg-slate-50 mt-auto">
+                           <a href="caso_cavallo_tasche_gutturali.html" class="inline-block bg-violet-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-violet-700 transition duration-300 w-full text-center" data-lang-key="case-start-btn">
+                                Inizia il Caso
+                           </a>
+                        </div>
+                    </div>
 
-        // TTS (Text-to-Speech)
-        document.querySelectorAll('.tts-button').forEach(button => {
-            button.addEventListener('click', function() {
-                const textElement = this.previousElementSibling; // L'elemento <span> con la descrizione
-                const text = textElement.textContent.trim();
-                const utterance = new SpeechSynthesisUtterance(text);
+                    <div class="card bg-white rounded-lg shadow-lg overflow-hidden h-full">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-4xl">🐄</span>
+                                    <div>
+                                        <h2 class="text-2xl font-bold text-violet-700" data-lang-key="case-brd-species">Bovino</h2>
+                                        <p class="text-sm text-slate-500" data-lang-key="case-brd-system">Apparato Respiratorio</p>
+                                    </div>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full" data-lang-key="case-level-easy">Facile</span>
+                            </div>
+                            <p class="text-slate-600 leading-relaxed flex justify-between items-start">
+                               <span data-lang-key="case-brd-desc">Un gruppo di vitelli da ristallo sviluppa tosse, scolo nasale e febbre dopo l'arrivo in allevamento.</span>
+                               <button class="tts-button flex-shrink-0 ml-2"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></button>
+                            </p>
+                        </div>
+                        <div class="p-6 bg-slate-50 mt-auto">
+                           <a href="caso_bovino_brd.html" class="inline-block bg-violet-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-violet-700 transition duration-300 w-full text-center" data-lang-key="case-start-btn">
+                                Inizia il Caso
+                           </a>
+                        </div>
+                    </div>
+                    
+                    <div class="card bg-white rounded-lg shadow-lg overflow-hidden h-full">
+                         <div class="p-6 flex-grow">
+                              <div class="flex items-center justify-between mb-4">
+                                   <div class="flex items-center gap-3">
+                                        <span class="text-4xl">🐮</span>
+                                        <div>
+                                             <h2 class="text-2xl font-bold text-violet-700" data-lang-key="case-diarrhea-species">Vitello</h2>
+                                             <p class="text-sm text-slate-500" data-lang-key="case-diarrhea-system">Apparato Digerente</p>
+                                        </div>
+                                   </div>
+                                    <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded-full" data-lang-key="case-level-medium">Medio</span>
+                              </div>
+                              <p class="text-slate-600 leading-relaxed flex justify-between items-start">
+                                 <span data-lang-key="case-diarrhea-desc">Un vitello di pochi giorni di vita presenta diarrea acquosa, disidratazione e depressione del sensorio.</span>
+                                   <button class="tts-button flex-shrink-0 ml-2"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></button>
+                              </p>
+                         </div>
+                         <div class="p-6 bg-slate-50 mt-auto">
+                              <a href="caso_vitello_diarrea.html" class="inline-block bg-violet-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-violet-700 transition duration-300 w-full text-center" data-lang-key="case-start-btn">
+                                  Inizia il Caso
+                              </a>
+                         </div>
+                    </div>
                 
-                // Imposta la lingua in base alla lingua corrente della pagina
-                const lang = document.documentElement.lang || 'it';
-                utterance.lang = lang === 'en' ? 'en-US' : 'it-IT';
-                
-                window.speechSynthesis.speak(utterance);
-            });
-        });
+                    <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
+                        <div class="p-6 flex-grow">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-4xl">🐴</span>
+                                    <div>
+                                        <h2 class="text-2xl font-bold text-violet-700" data-lang-key="case-wobbler-species">Cavallo</h2>
+                                        <p class="text-sm text-slate-500" data-lang-key="case-wobbler-system">Sistema Nervoso</p>
+                                    </div>
+                                </div>
+                                <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded-full" data-lang-key="case-level-hard">Difficile</span>
+                            </div>
+                            <p class="text-slate-600 leading-relaxed flex justify-between items-start">
+                               <span data-lang-key="case-wobbler-desc">Un Purosangue di 2 anni presenta atassia simmetrica, debolezza dei posteriori e inciampa frequentemente.</span>
+                               <button class="tts-button flex-shrink-0 ml-2"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></button>
+                            </p>
+                        </div>
+                        <div class="p-6 bg-slate-50 mt-auto">
+                           <a href="caso_cavallo_wobbler.html" class="inline-block bg-violet-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-violet-700 transition duration-300 w-full text-center" data-lang-key="case-start-btn">
+                                Inizia il Caso
+                           </a>
+                        </div>
+                    </div>
 
-        // Imposta la lingua iniziale al caricamento
-        document.getElementById('language-selector').dispatchEvent(new Event('change'));
+                    <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full">
+                         <div class="p-6 flex-grow">
+                              <div class="flex items-center justify-between mb-4">
+                                   <div class="flex items-center gap-3">
+                                        <span class="text-4xl">🐑</span>
+                                        <div>
+                                             <h2 class="text-2xl font-bold text-violet-700" data-lang-key="case-mastitis-species">Pecora</h2>
+                                             <p class="text-sm text-slate-500" data-lang-key="case-mastitis-system">Apparato Tegumentario</p>
+                                        </div>
+                                   </div>
+                                    <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded-full" data-lang-key="case-level-medium">Medio</span>
+                              </div>
+                              <p class="text-slate-600 leading-relaxed flex justify-between items-start">
+                                 <span data-lang-key="case-mastitis-desc">Una pecora in lattazione presenta una mammella calda, gonfia e dolente, con latte dall'aspetto anomalo.</span>
+                                   <button class="tts-button flex-shrink-0 ml-2"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></button>
+                              </p>
+                         </div>
+                         <div class="p-6 bg-slate-50 mt-auto">
+                              <a href="caso_pecora_mastite.html" class="inline-block bg-violet-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-violet-700 transition duration-300 w-full text-center" data-lang-key="case-start-btn">
+                                  Inizia il Caso
+                              </a>
+                         </div>
+                    </div>
+                    
+                    <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full opacity-60">
+                         <div class="p-6 flex-grow">
+                              <div class="flex items-center justify-between mb-4">
+                                   <div class="flex items-center gap-3">
+                                        <span class="text-4xl">🐄</span>
+                                        <div>
+                                             <h2 class="text-2xl font-bold text-slate-700" data-lang-key="case-abomasum-species">Bovino</h2>
+                                             <p class="text-sm text-slate-500" data-lang-key="case-abomasum-system">Apparato Digerente</p>
+                                        </div>
+                                   </div>
+                                    <span class="bg-slate-200 text-slate-600 text-xs font-semibold px-2.5 py-0.5 rounded-full" data-lang-key="coming-soon">Prossimamente</span>
+                              </div>
+                              <p class="text-slate-500 leading-relaxed" data-lang-key="case-abomasum-desc">Una vacca da latte in post-parto presenta anoressia, calo della produzione e un suono metallico alla percussione.</p>
+                         </div>
+                         <div class="p-6 bg-slate-50 mt-auto">
+                              <span class="inline-block bg-slate-300 text-slate-500 font-bold py-3 px-6 rounded-lg w-full text-center cursor-not-allowed" data-lang-key="not-available">Non Disponibile</span>
+                         </div>
+                    </div>
+                </div>
+            </section>
 
-    </script>
+        </main>
+        
+        <footer class="text-center mt-16 pt-8 border-t border-slate-200">
+            <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                // == Nuove traduzioni per le sezioni ==
+                "treasure-hunt-title": { it: "🕵️‍♀️ Cacce al Tesoro", en: "🕵️‍♀️ Treasure Hunts" },
+                "treasure-hunt-desc": { it: "Casi complessi con percorsi a bivi. Scaricate il 'Diario Clinico' prima di iniziare per registrare le vostre scoperte.", en: "Complex cases with branching paths. Download the 'Clinical Diary' before you start to record your findings." },
+                "simple-cases-title": { it: "🧩 Casi Clinici Semplici", en: "🧩 Simple Clinical Cases" },
+                "simple-cases-desc": { it: "Casi rapidi a risposta multipla per un ripasso veloce.", en: "Quick multiple-choice cases for a fast review." },
+
+                // == Nuove traduzioni per le card Caccia al Tesoro ==
+                "case-fulmine-species": { it: "Cavallo", en: "Horse" },
+                "case-fulmine-system": { it: "Apparato Digerente", en: "Digestive System" },
+                "case-fulmine-desc": { it: "Un cavallo con perdita di peso cronica (Fulmine). Segui l'iter diagnostico completo, dall'anamnesi alla biopsia.", en: "A horse with chronic weight loss (Fulmine). Follow the complete diagnostic process, from history to biopsy." },
+                "case-level-treasure": { it: "Caccia al Tesoro", en: "Treasure Hunt" },
+                "download-diary-btn": { it: "Scarica Diario", en: "Download Diary" },
+                
+                "case-asma-species": { it: "Cavallo", en: "Horse" },
+                "case-asma-system": { it: "Apparato Respiratorio", en: "Respiratory System" },
+                "case-asma-desc": { it: "Un cavallo atleta con ridotto rendimento (Victory). Scopri la causa nascosta della sua stanchezza.", en: "An athletic horse with poor performance (Victory). Discover the hidden cause of its fatigue." },
+
+                // == Traduzioni Esistenti ==
+                "main-title": { it: "Archivio Casi Clinici Interattivi", en: "Interactive Clinical Case Archive" },
+                "main-subtitle": { it: "Metti alla prova le tue capacità diagnostiche seguendo il percorso di un caso clinico, passo dopo passo.", en: "Test your diagnostic skills by following a clinical case step-by-step." },
+                "back-to-home-text": { it: "Torna alla Home", en: "Back to Home" },
+                "case1-species": { it: "Cavallo", en: "Horse" },
+                "case1-system": { it: "Apparato Respiratorio", en: "Respiratory System" },
+                "case1-desc": { it: "Un cavallo atleta presenta un calo di performance e un rumore respiratorio anomalo durante l'esercizio.", en: "An athletic horse presents with poor performance and an abnormal respiratory noise during exercise." },
+                "case-brd-species": { it: "Bovino", en: "Bovine" },
+                "case-brd-system": { it: "Apparato Respiratorio", en: "Respiratory System" },
+                "case-brd-desc": { it: "Un gruppo di vitelli da ristallo sviluppa tosse, scolo nasale e febbre dopo l'arrivo in allevamento.", en: "A group of feeder calves develops cough, nasal discharge, and fever after arrival at the farm." },
+                "case-diarrhea-species": { it: "Vitello", en: "Calf" },
+                "case-diarrhea-system": { it: "Apparato Digerente", en: "Digestive System" },
+                "case-diarrhea-desc": { it: "Un vitello di pochi giorni di vita presenta diarrea acquosa, disidratazione e depressione del sensorio.", en: "A few-day-old calf presents with watery diarrhea, dehydration, and depression." },
+                "case-wobbler-species": { it: "Cavallo", en: "Horse" },
+                "case-wobbler-system": { it: "Sistema Nervoso", en: "Nervous System" },
+                "case-wobbler-desc": { it: "Un Purosangue di 2 anni presenta atassia simmetrica, debolezza dei posteriori e inciampa frequentemente.", en: "A 2-year-old Thoroughbred presents with symmetric ataxia, hind limb weakness, and frequent stumbling." },
+                "case-egus-species": { it: "Cavallo", en: "Horse" },
+                "case-egus-system": { it: "Apparato Digerente", en: "Digestive System" },
+                "case-egus-desc": { it: "Un cavallo sportivo mostra scarso appetito, perdita di peso e lievi coliche ricorrenti.", en: "A sport horse shows poor appetite, weight loss, and mild recurrent colic." },
+                "case-mastitis-species": { it: "Pecora", en: "Ovine" },
+                "case-mastitis-system": { it: "Apparato Tegumentario", en: "Integumentary System" },
+                "case-mastitis-desc": { it: "Una pecora in lattazione presenta una mammella calda, gonfia e dolente, con latte dall'aspetto anomalo.", en: "A lactating ewe presents with a hot, swollen, and painful udder, with abnormal-looking milk." },
+                "case-abomasum-species": { it: "Bovino", en: "Bovine" },
+                "case-abomasum-system": { it: "Apparato Digerente", en: "Digestive System" },
+                "case-abomasum-desc": { it: "Una vacca da latte in post-parto presenta anoressia, calo della produzione e un suono metallico alla percussione.", en: "A post-parturient dairy cow presents with anorexia, decreased production, and a metallic ping on percussion." },
+                "case-colic-species": { it: "Cavallo", en: "Horse" },
+                "case-colic-system": { it: "Apparato Digerente", en: "Digestive System" },
+                "case-colic-desc": { it: "Un cavallo presenta irrequietezza, si guarda i fianchi e rifiuta il cibo. Approccio al cavallo con dolore addominale.", en: "A horse presents with restlessness, flank watching, and refuses to eat. Approach to the horse with abdominal pain." },
+                "case-level-hard": { it: "Difficile", en: "Hard" },
+                "case-level-medium": { it: "Medio", en: "Medium" },
+                "case-level-easy": { it: "Facile", en: "Easy" },
+                "case-start-btn": { it: "Inizia il Caso", en: "Start Case" },
+                "coming-soon": { it: "Prossimamente", en: "Coming Soon" },
+                "not-available": { it: "Non Disponibile", en: "Not Available" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" },
+                "accessibility-btn-text": { it: "Accessibilità", en: "Accessibility" }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { 
+                        synth.resume(); 
+                        button.classList.add('playing');
+                    } else if (synth.speaking) { 
+                        synth.pause(); 
+                        button.classList.remove('playing');
+                    }
+                    return;
+                }
+                
+                if (synth.speaking) { synth.cancel(); }
+                if (activeTTSButton) { activeTTSButton.classList.remove('playing'); }
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                currentUtterance.onend = () => {
+                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+                currentUtterance.onerror = () => {
+                     if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+
+                synth.speak(currentUtterance);
+                activeTTSButton = button;
+                button.classList.add('playing');
+            }
+            
+            function setupTTSListeners() {
+                 document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const cardBody = newButton.closest('.p-6');
+                        if (cardBody) {
+                            const titleEl = cardBody.querySelector('h2');
+                            const systemEl = cardBody.querySelector('[data-lang-key$="-system"]');
+                            const descEl = cardBody.querySelector('[data-lang-key$="-desc"]');
+                            
+                            const title = titleEl ? titleEl.textContent : '';
+                            const system = systemEl ? systemEl.textContent : '';
+                            const description = descEl ? descEl.textContent : '';
+
+                            const textToRead = `${title}, ${system}. ${description}`;
+                            speak(textToRead, newButton);
+                        }
+                    });
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                if (synth.speaking) { synth.cancel(); }
+
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        const ttsButton = element.querySelector('.tts-button');
+                        if (ttsButton) {
+                            const spanElement = element.querySelector('span');
+                            if(spanElement) spanElement.textContent = translations[key][lang];
+                        } else {
+                            element.textContent = translations[key][lang];
+                        }
+                    }
+                });
+                const dsaToggle = document.getElementById('dsa-toggle');
+                 if (document.body.classList.contains('dsa-mode')) {
+                      dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                 } else {
+                      dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                 }
+                setupTTSListeners();
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('dsa-toggle');
+            const body = document.body;
+
+            dsaToggle.addEventListener('click', () => {
+                body.classList.toggle('dsa-mode');
+                if (body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
 </body>
 </html>
