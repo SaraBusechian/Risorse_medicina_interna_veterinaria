@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caso Clinico: Il Suono Metallico</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f9ff; }
+        .step-card { display: none; }
+        .step-card.active { display: block; }
+        .option-button { transition: all 0.2s; }
+        .option-button:disabled:not(.correct) { opacity: 0.6; cursor: not-allowed; }
+        .option-button.correct { background-color: #10b981; color: white; border-color: #059669; }
+        .option-button.incorrect { background-color: #ef4444; color: white; border-color: #dc2626; }
+        .tts-button { cursor: pointer; display: inline-flex; align-items: center; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; padding: 4px; border-radius: 50%; }
+        .tts-button:hover { background-color: #e0f2fe; color: #0369a1; }
+        .tts-button.playing { color: #0369a1; animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .quiz-option.correct-answer { background-color: #d1fae5 !important; border-radius: 0.5rem; }
+        .quiz-option.incorrect-answer { background-color: #fee2e2 !important; border-radius: 0.5rem; }
+        
+        /* Modalità alta leggibilità (DSA) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            color: #1e293b !important;
+            letter-spacing: 0.05em;
+            line-height: 1.8;
+        }
+        
+        .dsa-mode #main-header { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, 
+        .dsa-mode #main-header a, 
+        .dsa-mode #main-header button { 
+            color: #ffffff !important; 
+        }
+        .dsa-mode #main-header button { border: 2px solid #ffffff; }
+
+        .dsa-mode .bg-white { 
+            background-color: #fffdfa !important; 
+            border: 2px solid #1e293b; 
+        }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { 
+            color: #1e293b !important; 
+        }
+
+        .dsa-mode .option-button {
+            color: #1e293b !important;
+            border: 2px solid #1e293b !important;
+            background-color: #ffffff;
+            font-weight: 600;
+        }
+        .dsa-mode .option-button:hover {
+            background-color: #e2e8f0 !important;
+        }
+        
+        .dsa-mode .option-button.correct { background-color: #10b981 !important; color: #ffffff !important; border-color: #059669 !important; }
+        .dsa-mode .option-button.incorrect { background-color: #ef4444 !important; color: #ffffff !important; border-color: #dc2626 !important; }
+    </style>
+</head>
+<body class="text-slate-800">
+    <header id="main-header" class="bg-sky-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Caso Clinico Interattivo</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-10">
+            
+            <div id="case-container">
+                <!-- Steps will be dynamically shown here -->
+            </div>
+
+            <div id="navigation-buttons" class="mt-8 flex justify-between">
+                <button id="prev-btn" class="bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-lg hover:bg-gray-400 transition" disabled>
+                    <span data-lang-key="prevBtn">Precedente</span>
+                </button>
+                <a id="back-to-index-btn" href="index.html" class="hidden bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition">
+                     <span data-lang-key="backToIndex">Torna all'Indice dei Casi</span>
+                </a>
+                <button id="next-btn" class="bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition">
+                    <span data-lang-key="nextBtn">Prosegui</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Reset speech synthesis on load
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+
+            const translations = {
+                siteTitle: { it: "Caso Clinico Interattivo", en: "Interactive Clinical Case" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                prevBtn: { it: "Precedente", en: "Previous" },
+                nextBtn: { it: "Prosegui", en: "Continue" },
+                submitBtn: { it: "Verifica Risposte", en: "Check Answers" },
+                resultsTitle: { it: "Quiz Finale - Rivediamo i Concetti Chiave", en: "Final Quiz - Let's Review the Key Concepts" },
+                backToIndex: { it: "Torna all'Indice dei Casi", en: "Back to Case Index" },
+
+                step1Title: { it: "Presentazione del Caso", en: "Case Presentation" },
+                step1Content: { 
+                    it: "<p>Sei chiamato a visitare 'Bella', una vacca Frisona pluripara ad alta produzione, che ha partorito da circa 10 giorni. L'allevatore riferisce che l'animale ha ridotto drasticamente l'assunzione di alimento (soprattutto concentrati) e la produzione di latte è calata del 40% negli ultimi 2 giorni.</p><p>All'osservazione, l'animale appare leggermente abbattuto e le feci sono scarse e pastose.</p>", 
+                    en: "<p>You are called to examine 'Bella', a high-producing multiparous Holstein cow, about 10 days post-partum. The farmer reports that the animal has drastically reduced feed intake (especially concentrates) and milk production has dropped by 40% in the last 2 days.</p><p>Upon observation, the animal appears slightly depressed and feces are scanty and pasty.</p>"
+                },
+                
+                step2Title: { it: "Domanda 1: Chetosi Primaria o Secondaria?", en: "Question 1: Primary or Secondary Ketosis?" },
+                step2Question: { it: "Esegui un test rapido delle urine che risulta positivo per i corpi chetonici (+++). Come interpreti questo dato in questo contesto?", en: "You perform a rapid urine test which is positive for ketone bodies (+++). How do you interpret this finding in this context?" },
+                step2Options: { it: ["È sicuramente una chetosi primaria da carenza energetica", "Potrebbe essere una chetosi secondaria a un'altra patologia sottostante", "Il test è un falso positivo dovuto al parto recente", "Indica un'insufficienza renale acuta"], en: ["It is definitely primary ketosis due to energy deficiency", "It could be secondary ketosis to another underlying condition", "The test is a false positive due to recent calving", "It indicates acute renal failure"] },
+                step2Answer: { it: "Potrebbe essere una chetosi secondaria a un'altra patologia sottostante", en: "It could be secondary ketosis to another underlying condition" },
+                step2Feedbacks: { 
+                    it: {
+                        "È sicuramente una chetosi primaria da carenza energetica": "Possibile, ma rischioso fermarsi qui. Molte patologie dislocative o infiammatorie causano anoressia e conseguente chetosi secondaria.",
+                        "Potrebbe essere una chetosi secondaria a un'altra patologia sottostante": "Esatto. Sebbene la chetosi sia presente, l'anoressia selettiva e il calo brusco suggeriscono di indagare cause concomitanti (es. dislocazioni, metriti).",
+                        "Il test è un falso positivo dovuto al parto recente": "Errato. La chetonuria è reale e indica un bilancio energetico negativo.",
+                        "Indica un'insufficienza renale acuta": "No, i corpi chetonici non sono marker di danno renale."
+                    },
+                    en: {
+                        "It is definitely primary ketosis due to energy deficiency": "Possible, but risky to stop here. Many displacement or inflammatory diseases cause anorexia and subsequent secondary ketosis.",
+                        "It could be secondary ketosis to another underlying condition": "Correct. Although ketosis is present, selective anorexia and the sudden drop suggest investigating concomitant causes (e.g., displacements, metritis).",
+                        "The test is a false positive due to recent calving": "Incorrect. Ketonuria is real and indicates a negative energy balance.",
+                        "It indicates acute renal failure": "No, ketone bodies are not markers of renal damage."
+                    }
+                },
+
+                step3Title: { it: "Esame Obiettivo Particolare", en: "Specific Physical Examination" },
+                step3Content: { 
+                    it: "<p>Procedi con l'auscultazione-percussione dell'addome. Sul fianco sinistro, lungo una linea immaginaria che va dalla tuberosità dell'anca al gomito (tra la 9ª e la 12ª costa), senti un suono chiaro, risonante, simile a un <strong>'Ping' metallico</strong>.</p>", 
+                    en: "<p>You proceed with auscultation-percussion of the abdomen. On the left flank, along an imaginary line from the tuber coxae to the elbow (between the 9th and 12th ribs), you hear a clear, resonant sound, similar to a <strong>metallic 'Ping'</strong>.</p>"
+                },
+
+                step4Title: { it: "Domanda 2: Diagnosi Differenziale", en: "Question 2: Differential Diagnosis" },
+                step4Question: { it: "Qual è la tua diagnosi più probabile basata sulla localizzazione del 'Ping' a sinistra?", en: "What is your most likely diagnosis based on the location of the 'Ping' on the left?" },
+                step4Options: { it: ["Dislocazione dell'Abomaso a Sinistra (LDA)", "Dislocazione dell'Abomaso a Destra (RDA)", "Dilatazione/Torsione del Cieco", "Rumine vuoto (Void Rumen)"], en: ["Left Displaced Abomasum (LDA)", "Right Displaced Abomasum (RDA)", "Cecal Dilation/Torsion", "Rumen Void"] },
+                step4Answer: { it: "Dislocazione dell'Abomaso a Sinistra (LDA)", en: "Left Displaced Abomasum (LDA)" },
+                step4Feedbacks: {
+                    it: {
+                        "Dislocazione dell'Abomaso a Sinistra (LDA)": "Corretto! Il ping a sinistra, centrato sulle ultime coste, è tipico della LDA.",
+                        "Dislocazione dell'Abomaso a Destra (RDA)": "Errato. La RDA produce un ping sul fianco destro.",
+                        "Dilatazione/Torsione del Cieco": "Errato. Il cieco si trova a destra, quindi il ping sarebbe nella fossa del fianco destro.",
+                        "Rumine vuoto (Void Rumen)": "Possibile diagnosi differenziale, ma il ping ruminale è solitamente meno risonante, più dorsale e diffuso. La LDA è la prima sospettata clinica."
+                    },
+                    en: {
+                        "Left Displaced Abomasum (LDA)": "Correct! The ping on the left, centered on the last ribs, is typical of LDA.",
+                        "Right Displaced Abomasum (RDA)": "Incorrect. RDA produces a ping on the right flank.",
+                        "Cecal Dilation/Torsion": "Incorrect. The cecum is on the right, so the ping would be in the right paralumbar fossa.",
+                        "Rumen Void": "Possible differential, but the rumen ping is usually less resonant, more dorsal and diffuse. LDA is the primary clinical suspect."
+                    }
+                },
+
+                step5Title: { it: "Domanda 3: Conferma Diagnostica", en: "Question 3: Diagnostic Confirmation" },
+                step5Question: { it: "Per differenziare un ping da LDA da un ping ruminale (meno comune ma possibile), quale manovra aggiuntiva puoi eseguire?", en: "To differentiate an LDA ping from a ruminal ping (less common but possible), what additional maneuver can you perform?" },
+                step5Options: { it: ["Ballottamento simultaneo all'auscultazione (succussione)", "Sondaggio naso-gastrico", "Esplorazione rettale", "Misurazione della temperatura"], en: ["Simultaneous ballotment and auscultation (succussion)", "Nasogastric intubation", "Rectal exploration", "Temperature measurement"] },
+                step5Answer: { it: "Ballottamento simultaneo all'auscultazione (succussione)", en: "Simultaneous ballotment and auscultation (succussion)" },
+                step5Feedbacks: {
+                    it: {
+                        "Ballottamento simultaneo all'auscultazione (succussione)": "Corretto. Se senti uno sciacquio fluido (splash) associato al ping, conferma la presenza di un viscere contenente gas e liquido (l'abomaso). Il rumine vuoto ha gas ma raramente produce uno splash fluido netto in quella posizione.",
+                        "Sondaggio naso-gastrico": "Poco utile per differenziare la posizione dell'abomaso.",
+                        "Esplorazione rettale": "L'abomaso dislocato a sinistra raramente è palpabile per via rettale.",
+                        "Misurazione della temperatura": "Non aiuta nella diagnosi topografica."
+                    },
+                    en: {
+                        "Simultaneous ballotment and auscultation (succussion)": "Correct. If you hear a fluid splash associated with the ping, it confirms the presence of a viscus containing gas and fluid (the abomasum). A void rumen has gas but rarely produces a distinct fluid splash in that location.",
+                        "Nasogastric intubation": "Not very useful for differentiating abomasal position.",
+                        "Rectal exploration": "The left displaced abomasum is rarely palpable rectally.",
+                        "Temperature measurement": "Does not help in topographic diagnosis."
+                    }
+                },
+
+                step6Title: { it: "Quadro Elettrolitico", en: "Electrolyte Profile" },
+                step6Content: { 
+                    it: "<p>Decidi di prelevare un campione di sangue per valutare lo stato metabolico prima dell'intervento. Nella dislocazione abomasale, il sequestro di acido cloridrico nell'abomaso porta a un quadro elettrolitico caratteristico.</p>", 
+                    en: "<p>You decide to take a blood sample to assess the metabolic status before surgery. In abomasal displacement, the sequestration of hydrochloric acid in the abomasum leads to a characteristic electrolyte profile.</p>"
+                },
+
+                step7Title: { it: "Domanda 4: Squilibrio Metabolico", en: "Question 4: Metabolic Imbalance" },
+                step7Question: { it: "Quale triade di alterazioni emato-chimiche ti aspetti classicamente in una vacca con LDA?", en: "Which triad of hemato-chemical alterations do you classically expect in a cow with LDA?" },
+                step7Options: { it: ["Acidosi metabolica, Iperkaliemia, Ipercloremia", "Alcalosi metabolica, Ipopotassiemia, Ipocloremia", "Acidosi respiratoria, Ipopotassiemia, Ipocalcemia", "Nessuna alterazione significativa"], en: ["Metabolic acidosis, Hyperkalemia, Hyperchloremia", "Metabolic alkalosis, Hypokalemia, Hypochloremia", "Respiratory acidosis, Hypokalemia, Hypocalcemia", "No significant alterations"] },
+                step7Answer: { it: "Alcalosi metabolica, Ipopotassiemia, Ipocloremia", en: "Metabolic alkalosis, Hypokalemia, Hypochloremia" },
+                step7Feedbacks: {
+                    it: {
+                        "Acidosi metabolica, Iperkaliemia, Ipercloremia": "Errato. Questo quadro è tipico della diarrea neonatale o dell'acidosi ruminale grave, non della LDA.",
+                        "Alcalosi metabolica, Ipopotassiemia, Ipocloremia": "Corretto. Il cloro viene sequestrato nell'abomaso (ipocloremia), il rene trattiene bicarbonato per compensare (alcalosi), e il potassio si sposta nelle cellule o viene perso (ipopotassiemia).",
+                        "Acidosi respiratoria, Ipopotassiemia, Ipocalcemia": "Errato. L'ipocalcemia può esserci, ma l'acidosi respiratoria riguarda problemi polmonari.",
+                        "Nessuna alterazione significativa": "Errato. Le alterazioni sono comuni, sebbene possano essere lievi nei casi recenti."
+                    },
+                    en: {
+                        "Metabolic acidosis, Hyperkalemia, Hyperchloremia": "Incorrect. This profile is typical of neonatal diarrhea or severe ruminal acidosis, not LDA.",
+                        "Metabolic alkalosis, Hypokalemia, Hypochloremia": "Correct. Chloride is sequestered in the abomasum (hypochloremia), the kidney retains bicarbonate to compensate (alkalosis), and potassium shifts into cells or is lost (hypokalemia).",
+                        "Respiratory acidosis, Hypokalemia, Hypocalcemia": "Incorrect. Hypocalcemia might be present, but respiratory acidosis relates to lung issues.",
+                        "No significant alterations": "Incorrect. Alterations are common, although they may be mild in recent cases."
+                    }
+                },
+
+                step8Title: { it: "Domanda 5: Terapia", en: "Question 5: Therapy" },
+                step8Question: { it: "Quale approccio terapeutico offre le migliori garanzie di non recidiva?", en: "Which therapeutic approach offers the best guarantees against recurrence?" },
+                step8Options: { it: ["Terapia medica con calcio e procinetici", "Rolling (rotolamento della vacca)", "Correzione chirurgica (es. Omentopessi o Abomasopessi)", "Digiuno prolungato"], en: ["Medical therapy with calcium and prokinetics", "Rolling (rolling the cow)", "Surgical correction (e.g., Omentopexy or Abomasopexy)", "Prolonged fasting"] },
+                step8Answer: { it: "Correzione chirurgica (es. Omentopessi o Abomasopessi)", en: "Surgical correction (e.g., Omentopexy or Abomasopexy)" },
+                step8Feedbacks: {
+                    it: {
+                        "Terapia medica con calcio e procinetici": "Generalmente inefficace per risolvere una dislocazione meccanica già avvenuta.",
+                        "Rolling (rotolamento della vacca)": "Può riposizionare l'abomaso temporaneamente, ma il tasso di recidiva è molto alto senza fissazione.",
+                        "Correzione chirurgica (es. Omentopessi o Abomasopessi)": "Corretto. L'intervento chirurgico permette di riposizionare l'organo, svuotarlo dal gas e fissarlo nella posizione corretta, prevenendo recidive.",
+                        "Digiuno prolungato": "Controproducente, peggiora la chetosi e la motilità gastrointestinale."
+                    },
+                    en: {
+                        "Medical therapy with calcium and prokinetics": "Generally ineffective for resolving a mechanical displacement that has already occurred.",
+                        "Rolling (rolling the cow)": "May temporarily reposition the abomasum, but the recurrence rate is very high without fixation.",
+                        "Surgical correction (e.g., Omentopexy or Abomasopexy)": "Correct. Surgery allows distinct repositioning of the organ, gas decompression, and fixation in the correct position, preventing recurrence.",
+                        "Prolonged fasting": "Counterproductive, worsens ketosis and gastrointestinal motility."
+                    }
+                },
+
+                step9Title: { it: "Esito e Indagine di Mandria", en: "Outcome and Herd Investigation" },
+                step9Content: { 
+                    it: "<p>Hai eseguito l'intervento chirurgico con successo. Bella ha ripreso a mangiare. Tuttavia, l'allevatore segnala che altre 3 vacche fresche hanno ridotto l'ingestione nell'ultima settimana. Decidi di indagare a livello di mandria.</p>", 
+                    en: "<p>You successfully performed the surgery. Bella started eating again. However, the farmer reports that 3 other fresh cows have reduced intake in the last week. You decide to investigate at the herd level.</p>"
+                },
+
+                step10Title: { it: "Domanda 6: Analisi della Razione", en: "Question 6: Ration Analysis" },
+                step10Question: { it: "Analizzando il carro miscelatore (TMR) delle vacche in transizione, noti che la fibra è stata trinciata molto finemente (effetto 'poltiglia'). Qual è il rischio principale di questa pratica?", en: "Analyzing the TMR of transition cows, you notice the fiber is chopped very finely ('mush' effect). What is the main risk of this practice?" },
+                step10Options: { it: ["Aumenta eccessivamente la ruminazione", "Riduce la motilità abomasale e favorisce l'accumulo di gas", "Migliora la digeribilità senza effetti collaterali", "Previene la dislocazione dell'abomaso"], en: ["Excessively increases rumination", "Reduces abomasal motility and favors gas accumulation", "Improves digestibility without side effects", "Prevents abomasal displacement"] },
+                step10Answer: { it: "Riduce la motilità abomasale e favorisce l'accumulo di gas", en: "Reduces abomasal motility and favors gas accumulation" },
+                step10Feedbacks: {
+                    it: {
+                        "Aumenta eccessivamente la ruminazione": "Al contrario, la fibra corta riduce la ruminazione e la produzione di saliva.",
+                        "Riduce la motilità abomasale e favorisce l'accumulo di gas": "Corretto. La mancanza di fibra effettiva (peNDF) riduce il 'tappeto' ruminale e permette un rapido passaggio di carboidrati fermentescibili, aumentando la produzione di Acidi Grassi Volatili (AGV) che causano atonia abomasale.",
+                        "Migliora la digeribilità senza effetti collaterali": "Falso, predispone all'acidosi subacuta.",
+                        "Previene la dislocazione dell'abomaso": "Assolutamente no, è un fattore di rischio maggiore."
+                    },
+                    en: {
+                        "Excessively increases rumination": "On the contrary, short fiber reduces rumination and saliva production.",
+                        "Reduces abomasal motility and favors gas accumulation": "Correct. Lack of physically effective fiber (peNDF) reduces the rumen mat and allows rapid passage of fermentable carbs, increasing Volatile Fatty Acids (VFA) which cause abomasal atony.",
+                        "Improves digestibility without side effects": "False, it predisposes to subacute acidosis.",
+                        "Prevents abomasal displacement": "Absolutely not, it is a major risk factor."
+                    }
+                },
+
+                step11Title: { it: "Domanda 7: Body Condition Score (BCS)", en: "Question 7: Body Condition Score (BCS)" },
+                step11Question: { it: "Noti che molte vacche in asciutta sono eccessivamente grasse (BCS > 4.0). Come influisce questo sul rischio di LDA?", en: "You notice many dry cows are excessively fat (BCS > 4.0). How does this affect LDA risk?" },
+                step11Options: { it: ["Riduce il rischio perché hanno più riserve energetiche", "Aumenta il rischio di lipomobilizzazione massiva e anoressia post-parto", "Non ha alcun effetto sulla dislocazione", "Protegge il fegato dalla steatosi"], en: ["Reduces risk because they have more energy reserves", "Increases risk of massive lipomobilization and post-partum anorexia", "Has no effect on displacement", "Protects the liver from steatosis"] },
+                step11Answer: { it: "Aumenta il rischio di lipomobilizzazione massiva e anoressia post-parto", en: "Increases risk of massive lipomobilization and post-partum anorexia" },
+                step11Feedbacks: {
+                    it: {
+                        "Riduce il rischio perché hanno più riserve energetiche": "Falso. Le vacche grasse hanno un appetito depresso dopo il parto (Dry Matter Intake ridotta).",
+                        "Aumenta il rischio di lipomobilizzazione massiva e anoressia post-parto": "Corretto. L'eccessivo dimagrimento porta a chetosi e steatosi epatica, che riducono ulteriormente l'appetito e la motilità gastrointestinale, predisponendo alla LDA.",
+                        "Non ha alcun effetto sulla dislocazione": "È uno dei fattori di rischio individuali più importanti.",
+                        "Protegge il fegato dalla steatosi": "Al contrario, predispone gravemente alla 'Fatty Liver Syndrome'."
+                    },
+                    en: {
+                        "Reduces risk because they have more energy reserves": "False. Fat cows have depressed appetite post-partum (reduced Dry Matter Intake).",
+                        "Increases risk of massive lipomobilization and post-partum anorexia": "Correct. Excessive weight loss leads to ketosis and fatty liver, further reducing appetite and GI motility, predisposing to LDA.",
+                        "Has no effect on displacement": "It is one of the most important individual risk factors.",
+                        "Protects the liver from steatosis": "On the contrary, it severely predisposes to 'Fatty Liver Syndrome'."
+                    }
+                },
+
+                step12Title: { it: "Domanda 8: Gestione Ambientale", en: "Question 8: Environmental Management" },
+                step12Question: { it: "Nel box delle vacche fresche, noti che ci sono 12 vacche ma solo 8 posti in cattura (mangiatoia). Quale conseguenza ti aspetti?", en: "In the fresh cow pen, you notice there are 12 cows but only 8 headlocks (bunk space). What consequence do you expect?" },
+                step12Options: { it: ["Aumento della competizione e riduzione dell'ingestione nelle vacche più deboli", "Le vacche mangeranno a turni senza problemi", "Migliore efficienza alimentare", "Maggiore socializzazione"], en: ["Increased competition and reduced intake in weaker cows", "Cows will eat in shifts without problems", "Better feed efficiency", "Greater socialization"] },
+                step12Answer: { it: "Aumento della competizione e riduzione dell'ingestione nelle vacche più deboli", en: "Increased competition and reduced intake in weaker cows" },
+                step12Feedbacks: {
+                    it: {
+                        "Aumento della competizione e riduzione dell'ingestione nelle vacche più deboli": "Corretto. Il sovraffollamento in mangiatoia stressa gli animali, riduce il tempo di alimentazione e predispone le primipare o le vacche deboli a chetosi e LDA.",
+                        "Le vacche mangeranno a turni senza problemi": "Le vacche sono animali gregari e tendono a voler mangiare tutte insieme, specialmente dopo la distribuzione del cibo fresco.",
+                        "Migliore efficienza alimentare": "Falso, lo stress peggiora le performance.",
+                        "Maggiore socializzazione": "Irrilevante e non positivo in questo contesto di stress."
+                    },
+                    en: {
+                        "Increased competition and reduced intake in weaker cows": "Correct. Overcrowding at the bunk stresses animals, reduces feeding time, and predisposes heifers or weak cows to ketosis and LDA.",
+                        "Cows will eat in shifts without problems": "Cows are herd animals and tend to want to eat all together, especially after fresh feed delivery.",
+                        "Better feed efficiency": "False, stress worsens performance.",
+                        "Greater socialization": "Irrelevant and not positive in this stress context."
+                    }
+                },
+
+                step13Title: { it: "Domanda 9: Gestione Alimentare", en: "Question 9: Feeding Management" },
+                step13Question: { it: "Per massimizzare l'ingestione di sostanza secca (DMI) e ridurre il rischio di LDA nelle vacche fresche, quale pratica di gestione della mangiatoia è raccomandata?", en: "To maximize dry matter intake (DMI) and reduce LDA risk in fresh cows, which bunk management practice is recommended?" },
+                step13Options: { it: ["Lasciare la mangiatoia vuota per 4-6 ore al giorno ('Bunk Call' aggressivo)", "Distribuire il cibo una sola volta al giorno senza riavvicinarlo", "Garantire disponibilità di cibo 24h su 24 e riavvicinare la razione frequentemente", "Somministrare solo concentrati al mattino e fieno alla sera"], en: ["Leave the bunk empty for 4-6 hours a day (aggressive 'Bunk Call')", "Feed only once a day without pushing up", "Ensure 24/7 feed availability and push up ration frequently", "Feed only concentrates in the morning and hay in the evening"] },
+                step13Answer: { it: "Garantire disponibilità di cibo 24h su 24 e riavvicinare la razione frequentemente", en: "Ensure 24/7 feed availability and push up ration frequently" },
+                step13Feedbacks: {
+                    it: {
+                        "Lasciare la mangiatoia vuota per 4-6 ore al giorno ('Bunk Call' aggressivo)": "Rischioso. Favorisce l'abbuffata (slug feeding) quando arriva il cibo nuovo, causando fluttuazioni del pH ruminale.",
+                        "Distribuire il cibo una sola volta al giorno senza riavvicinarlo": "Il cibo si allontana e le vacche non riescono a mangiarlo, riducendo l'ingestione totale.",
+                        "Garantire disponibilità di cibo 24h su 24 e riavvicinare la razione frequentemente": "Corretto. Avvicinare il cibo ('push-up') stimola le vacche ad andare in mangiatoia, garantisce piccoli pasti frequenti e stabilizza il pH ruminale, riducendo il rischio di atonia.",
+                        "Somministrare solo concentrati al mattino e fieno alla sera": "Causa grave acidosi ruminale (slug feeding di concentrati). Il TMR (Unifeed) deve essere omogeneo."
+                    },
+                    en: {
+                        "Leave the bunk empty for 4-6 hours a day (aggressive 'Bunk Call')": "Risky. Promotes slug feeding when fresh feed arrives, causing rumen pH fluctuations.",
+                        "Feed only once a day without pushing up": "Feed gets pushed away and cows can't reach it, reducing total intake.",
+                        "Ensure 24/7 feed availability and push up ration frequently": "Correct. Pushing up feed stimulates cows to visit the bunk, ensures frequent small meals, and stabilizes rumen pH, reducing atony risk.",
+                        "Feed only concentrates in the morning and hay in the evening": "Causes severe ruminal acidosis (slug feeding of concentrates). TMR must be homogeneous."
+                    }
+                },
+
+                step14Title: { it: "Domanda 10: Comorbilità", en: "Question 10: Comorbidities" },
+                step14Question: { it: "Durante la visita di altre vacche fresche, noti scolo uterino purulento e fetido in due animali. Qual è il legame tra questa condizione (metrite) e la LDA?", en: "While examining other fresh cows, you notice fetid purulent uterine discharge in two animals. What is the link between this condition (metritis) and LDA?" },
+                step14Options: { it: ["Nessun legame diretto", "La metrite causa dolore addominale che spinge l'abomaso", "Le endotossine e la febbre riducono la motilità gastrointestinale (stasi)", "La metrite aumenta l'appetito prevenendo la LDA"], en: ["No direct link", "Metritis causes abdominal pain that pushes the abomasum", "Endotoxins and fever reduce gastrointestinal motility (stasis)", "Metritis increases appetite preventing LDA"] },
+                step14Answer: { it: "Le endotossine e la febbre riducono la motilità gastrointestinale (stasi)", en: "Endotoxins and fever reduce gastrointestinal motility (stasis)" },
+                step14Feedbacks: {
+                    it: {
+                        "Nessun legame diretto": "Errato. Sono strettamente correlate.",
+                        "La metrite causa dolore addominale che spinge l'abomaso": "Non è un meccanismo meccanico diretto di spinta.",
+                        "Le endotossine e la febbre riducono la motilità gastrointestinale (stasi)": "Corretto. L'infiammazione sistemica rilascia mediatori che bloccano la motilità dell'abomaso e ne riducono il riempimento, favorendo la dislocazione.",
+                        "La metrite aumenta l'appetito prevenendo la LDA": "Falso, causa grave anoressia."
+                    },
+                    en: {
+                        "No direct link": "Incorrect. They are closely correlated.",
+                        "Metritis causes abdominal pain that pushes the abomasum": "It is not a direct mechanical pushing mechanism.",
+                        "Endotoxins and fever reduce gastrointestinal motility (stasis)": "Correct. Systemic inflammation releases mediators that block abomasal motility and reduce filling, favoring displacement.",
+                        "Metritis increases appetite preventing LDA": "False, it causes severe anorexia."
+                    }
+                },
+
+                step15Title: { it: "Conclusione del Caso", en: "Case Conclusion" },
+                step15Content: { 
+                    it: "<p>Hai corretto chirurgicamente Bella e hai fornito all'allevatore un piano d'azione: aumentare la fibra lunga nella razione pre-parto, monitorare il BCS alla messa in asciutta e aumentare lo spazio in mangiatoia per il gruppo fresco. L'approccio integrato tra chirurgia e gestione è la chiave del successo.</p>", 
+                    en: "<p>You surgically corrected Bella and provided the farmer with an action plan: increase long fiber in the pre-partum ration, monitor dry-off BCS, and increase bunk space for the fresh group. The integrated approach of surgery and management is the key to success.</p>"
+                },
+
+                finalQuizTitle: {it: "Quiz Finale - Fisiopatologia e Teoria", en: "Final Quiz - Pathophysiology and Theory"}
+            };
+
+            const finalQuizData = {
+                it: [
+                    { question: "Qual è la posizione anatomica fisiologica dell'abomaso?", options: ["A destra, sul pavimento dell'addome", "A sinistra, sospeso dorsalmente", "Nel canale pelvico", "Davanti al reticolo"], answer: "A destra, sul pavimento dell'addome" },
+                    { question: "Perché l'ipocalcemia subclinica è un fattore predisponente per la LDA?", options: ["Causa spasmi muscolari", "Riduce il tono della muscolatura liscia abomasale (atonia)", "Aumenta la produzione di gas", "Modifica il pH del sangue"], answer: "Riduce il tono della muscolatura liscia abomasale (atonia)" },
+                    { question: "Qual è il meccanismo dell'aciduria paradossa nella LDA?", options: ["Il rene è danneggiato", "In alcalosi e ipovolemia, il rene riassorbe Sodio scambiandolo con Ioni H+ (acidi) invece che con Potassio (carente)", "Eccesso di proteine nella dieta", "Infezione batterica della vescica"], answer: "In alcalosi e ipovolemia, il rene riassorbe Sodio scambiandolo con Ioni H+ (acidi) invece che con Potassio (carente)" },
+                    { question: "Quale tipo di Acidi Grassi Volatili (AGV) inibisce maggiormente la motilità abomasale se in eccesso?", options: ["Acetato", "Butirrato", "Propionato", "Lattato"], answer: "Butirrato" },
+                    { question: "Qual è il pH tipico del liquido abomasale prelevato per centesi (Lipptak test)?", options: ["pH > 7.0 (alcalino)", "pH 5.5 - 6.5", "pH < 4.0 (acido)", "pH neutro"], answer: "pH < 4.0 (acido)" },
+                    { question: "Epidemiologicamente, quando si verifica la maggior parte delle LDA?", options: ["Durante l'asciutta", "Nel primo mese post-parto", "A metà lattazione", "Nelle manze prima del parto"], answer: "Nel primo mese post-parto" },
+                    { question: "Qual è la differenza prognostica tra LDA e RDA con Volvolo?", options: ["Nessuna differenza", "La LDA è più grave", "Il Volvolo (RDA) è un'emergenza con prognosi peggiore", "La RDA guarisce da sola"], answer: "Il Volvolo (RDA) è un'emergenza con prognosi peggiore" },
+                    { question: "Come influisce la gestazione gemellare sul rischio di LDA?", options: ["Lo riduce", "Lo aumenta notevolmente a causa del maggior spazio liberato in addome dopo il parto", "È indifferente", "Aumenta l'appetito"], answer: "Lo aumenta notevolmente a causa del maggior spazio liberato in addome dopo il parto" },
+                    { question: "Qual è l'obiettivo del DCAD (Differenza Cationi-Anioni) negativo nella dieta pre-parto?", options: ["Prevenire l'ipocalcemia e quindi l'atonia abomasale", "Aumentare il grasso del latte", "Ridurre il costo della razione", "Acidificare il rumine"], answer: "Prevenire l'ipocalcemia e quindi l'atonia abomasale" },
+                    { question: "Perché l'omento viene usato per la fissazione chirurgica (omentopessi)?", options: ["Perché è molto elastico", "Perché è l'organo più pesante", "Perché aderisce rapidamente alla parete addominale creando un ancoraggio solido", "Perché non sanguina mai"], answer: "Perché aderisce rapidamente alla parete addominale creando un ancoraggio solido" }
+                ],
+                en: [
+                    { question: "What is the physiological anatomical position of the abomasum?", options: ["On the right, on the abdominal floor", "On the left, suspended dorsally", "In the pelvic canal", "In front of the reticulum"], answer: "On the right, on the abdominal floor" },
+                    { question: "Why is subclinical hypocalcemia a predisposing factor for LDA?", options: ["Causes muscle spasms", "Reduces abomasal smooth muscle tone (atony)", "Increases gas production", "Alters blood pH"], answer: "Reduces abomasal smooth muscle tone (atony)" },
+                    { question: "What is the mechanism of paradoxical aciduria in LDA?", options: ["Kidney is damaged", "In alkalosis and hypovolemia, the kidney reabsorbs Sodium in exchange for H+ ions (acid) instead of Potassium (depleted)", "Excess protein in diet", "Bacterial bladder infection"], answer: "In alkalosis and hypovolemia, the kidney reabsorbs Sodium in exchange for H+ ions (acid) instead of Potassium (depleted)" },
+                    { question: "Which type of Volatile Fatty Acids (VFA) most inhibits abomasal motility if in excess?", options: ["Acetate", "Butyrate", "Propionate", "Lactate"], answer: "Butyrate" },
+                    { question: "What is the typical pH of abomasal fluid sampled by centesis (Lipptak test)?", options: ["pH > 7.0 (alkaline)", "pH 5.5 - 6.5", "pH < 4.0 (acidic)", "pH neutral"], answer: "pH < 4.0 (acidic)" },
+                    { question: "Epidemiologically, when do most LDAs occur?", options: ["During the dry period", "In the first month post-partum", "Mid-lactation", "In heifers before calving"], answer: "In the first month post-partum" },
+                    { question: "What is the prognostic difference between LDA and RDA with Volvulus?", options: ["No difference", "LDA is more severe", "Volvulus (RDA) is an emergency with worse prognosis", "RDA heals on its own"], answer: "Volvulus (RDA) is an emergency with worse prognosis" },
+                    { question: "How does twin pregnancy affect LDA risk?", options: ["Reduces it", "Significantly increases it due to more space freed in the abdomen after calving", "It makes no difference", "Increases appetite"], answer: "Significantly increases it due to more space freed in the abdomen after calving" },
+                    { question: "What is the goal of negative DCAD (Dietary Cation-Anion Difference) in pre-partum diet?", options: ["Prevent hypocalcemia and thus abomasal atony", "Increase milk fat", "Reduce ration cost", "Acidify the rumen"], answer: "Prevent hypocalcemia and thus abomasal atony" },
+                    { question: "Why is the omentum used for surgical fixation (omentopexy)?", options: ["Because it is very elastic", "Because it is the heaviest organ", "Because it adheres rapidly to the abdominal wall creating a solid anchor", "Because it never bleeds"], answer: "Because it adheres rapidly to the abdominal wall creating a solid anchor" }
+                ]
+            };
+            
+            const caseStructure = [
+                { type: 'info', titleKey: 'step1Title', contentKey: 'step1Content' },
+                { type: 'question', titleKey: 'step2Title', questionKey: 'step2Question', optionsKey: 'step2Options', answerKey: 'step2Answer', feedbacksKey: 'step2Feedbacks' },
+                { type: 'info', titleKey: 'step3Title', contentKey: 'step3Content' },
+                { type: 'question', titleKey: 'step4Title', questionKey: 'step4Question', optionsKey: 'step4Options', answerKey: 'step4Answer', feedbacksKey: 'step4Feedbacks' },
+                { type: 'question', titleKey: 'step5Title', questionKey: 'step5Question', optionsKey: 'step5Options', answerKey: 'step5Answer', feedbacksKey: 'step5Feedbacks' },
+                { type: 'info', titleKey: 'step6Title', contentKey: 'step6Content' },
+                { type: 'question', titleKey: 'step7Title', questionKey: 'step7Question', optionsKey: 'step7Options', answerKey: 'step7Answer', feedbacksKey: 'step7Feedbacks' },
+                { type: 'question', titleKey: 'step8Title', questionKey: 'step8Question', optionsKey: 'step8Options', answerKey: 'step8Answer', feedbacksKey: 'step8Feedbacks' },
+                { type: 'info', titleKey: 'step9Title', contentKey: 'step9Content' },
+                { type: 'question', titleKey: 'step10Title', questionKey: 'step10Question', optionsKey: 'step10Options', answerKey: 'step10Answer', feedbacksKey: 'step10Feedbacks' },
+                { type: 'question', titleKey: 'step11Title', questionKey: 'step11Question', optionsKey: 'step11Options', answerKey: 'step11Answer', feedbacksKey: 'step11Feedbacks' },
+                { type: 'question', titleKey: 'step12Title', questionKey: 'step12Question', optionsKey: 'step12Options', answerKey: 'step12Answer', feedbacksKey: 'step12Feedbacks' },
+                { type: 'question', titleKey: 'step13Title', questionKey: 'step13Question', optionsKey: 'step13Options', answerKey: 'step13Answer', feedbacksKey: 'step13Feedbacks' },
+                { type: 'question', titleKey: 'step14Title', questionKey: 'step14Question', optionsKey: 'step14Options', answerKey: 'step14Answer', feedbacksKey: 'step14Feedbacks' },
+                { type: 'info', titleKey: 'step15Title', contentKey: 'step15Content' },
+                { type: 'final_quiz', titleKey: 'finalQuizTitle' }
+            ];
+
+            let currentStep = 0;
+            const caseContainer = document.getElementById('case-container');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const backToIndexBtn = document.getElementById('back-to-index-btn');
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            
+            function renderStep(stepIndex) {
+                const stepData = caseStructure[stepIndex];
+                const lang = currentLanguage;
+                const title = translations[stepData.titleKey]?.[lang] || `Step ${stepIndex + 1}`;
+
+                let contentHtml = `<div class="step-card active p-4" id="step-${stepIndex}"><h2 class="text-3xl font-bold text-sky-700 mb-6 flex items-center">${title} <span class="tts-button"><svg class="w-7 h-7 pointer-events-none" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>`;
+
+                if (stepData.type === 'info') {
+                    contentHtml += `<div class="prose max-w-none">${translations[stepData.contentKey][lang]}</div>`;
+                } else if (stepData.type === 'question') {
+                    const question = translations[stepData.questionKey][lang];
+                    const options = translations[stepData.optionsKey][lang];
+                    
+                    let optionsHtml = '';
+                    options.forEach(opt => {
+                        optionsHtml += `<button class="option-button w-full text-left p-4 border rounded-lg hover:bg-sky-100 flex justify-between items-center" data-answer="${opt}"><span>${opt}</span><span class="tts-button flex-shrink-0"><svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></button>`;
+                    });
+
+                    contentHtml += `<h3 class="text-xl font-semibold mb-4 flex justify-between items-center"><span>${question}</span><span class="tts-button"><svg class="w-6 h-6 pointer-events-none" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><div class="space-y-3">${optionsHtml}</div><p id="feedback-${stepIndex}" class="mt-4 text-sm font-semibold"></p>`;
+                } else if (stepData.type === 'final_quiz') {
+                    contentHtml += `<div id="final-quiz-container" class="space-y-6"></div><div class="mt-6 text-center"><button id="submit-final-quiz" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-700 transition">${translations['submitBtn'][lang]}</button></div><div id="final-quiz-results" class="mt-6 text-center text-xl font-bold"></div>`;
+                }
+
+                contentHtml += `</div>`;
+                caseContainer.innerHTML = contentHtml;
+                if (stepData.type === 'final_quiz') {
+                    loadFinalQuiz(lang);
+                    document.getElementById('submit-final-quiz').addEventListener('click', checkFinalQuiz);
+                }
+                updateNavButtons();
+                addOptionListeners();
+                setupTTSListeners();
+            }
+            
+            function loadFinalQuiz(lang) {
+                const quizContainer = document.getElementById('final-quiz-container');
+                quizContainer.innerHTML = '';
+                finalQuizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `<li class="quiz-option p-2 rounded hover:bg-sky-50"><label class="flex items-center cursor-pointer"><input type="radio" name="final_q${index}" value="${o}" class="mr-3">${o}</label></li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function checkFinalQuiz() {
+                let score = 0;
+                const lang = currentLanguage;
+                const questions = document.querySelectorAll('#final-quiz-container .quiz-question');
+                finalQuizData[lang].forEach((q, index) => {
+                    const selectedInput = document.querySelector(`input[name="final_q${index}"]:checked`);
+                    const options = questions[index].querySelectorAll('.quiz-option');
+                    
+                    options.forEach(optLabel => {
+                        const optInput = optLabel.querySelector('input');
+                        optLabel.classList.remove('incorrect-answer', 'correct-answer');
+                        if (optInput.value === q.answer) {
+                            optLabel.classList.add('correct-answer');
+                        }
+                    });
+
+                    if (selectedInput) {
+                        if (selectedInput.value === q.answer) {
+                            score++;
+                        } else {
+                            selectedInput.closest('.quiz-option').classList.add('incorrect-answer');
+                        }
+                    }
+                });
+                const resultText = lang === 'it' ? `Punteggio finale: ${score} / ${finalQuizData.it.length}` : `Final Score: ${score} / ${finalQuizData.en.length}`;
+                document.getElementById('final-quiz-results').textContent = resultText;
+                
+                prevBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+                backToIndexBtn.classList.remove('hidden');
+            }
+
+            function addOptionListeners() {
+                document.querySelectorAll('.option-button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const stepData = caseStructure[currentStep];
+                        const lang = currentLanguage;
+                        const selectedAnswer = btn.dataset.answer;
+                        const correctAnswer = translations[stepData.answerKey][lang];
+                        const feedbackEl = document.getElementById(`feedback-${currentStep}`);
+                        const feedbackText = translations[stepData.feedbacksKey][lang][selectedAnswer];
+                        
+                        feedbackEl.textContent = feedbackText;
+
+                        if (selectedAnswer === correctAnswer) {
+                            btn.classList.add('correct');
+                            feedbackEl.className = 'mt-4 text-sm font-semibold text-green-600';
+                            document.querySelectorAll('.option-button').forEach(b => b.disabled = true);
+                            nextBtn.disabled = false;
+                        } else {
+                            btn.disabled = true;
+                            btn.classList.add('incorrect');
+                            feedbackEl.className = 'mt-4 text-sm font-semibold text-red-600';
+                        }
+                    });
+                });
+            }
+
+            function updateNavButtons() {
+                prevBtn.disabled = currentStep === 0;
+                const stepData = caseStructure[currentStep];
+                if (stepData.type === 'question') {
+                    const answeredCorrectly = document.querySelector('.option-button.correct');
+                    nextBtn.disabled = !answeredCorrectly;
+                } else {
+                    nextBtn.disabled = currentStep === caseStructure.length - 1;
+                }
+
+                if (stepData.type === 'final_quiz') {
+                    prevBtn.classList.remove('hidden');
+                    nextBtn.classList.add('hidden');
+                    backToIndexBtn.classList.add('hidden');
+                } else {
+                    prevBtn.classList.remove('hidden');
+                    nextBtn.classList.remove('hidden');
+                    backToIndexBtn.classList.add('hidden');
+                }
+            }
+            
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function speak(text, button) {
+                if (activeTTSButton === button) {
+                    if (synth.paused) { 
+                        synth.resume(); 
+                        button.classList.add('playing'); 
+                    } else if (synth.speaking) { 
+                        synth.pause(); 
+                        button.classList.remove('playing'); 
+                    }
+                    return;
+                }
+
+                if (synth.speaking) { 
+                    synth.cancel(); 
+                }
+                
+                if (activeTTSButton) { 
+                    activeTTSButton.classList.remove('playing'); 
+                }
+                
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                currentUtterance.onend = () => { 
+                    if (activeTTSButton) activeTTSButton.classList.remove('playing'); 
+                    activeTTSButton = null; 
+                    currentUtterance = null; 
+                };
+                
+                currentUtterance.onerror = () => { 
+                    if (activeTTSButton) activeTTSButton.classList.remove('playing'); 
+                    activeTTSButton = null; 
+                    currentUtterance = null; 
+                };
+                
+                synth.speak(currentUtterance);
+                activeTTSButton = button;
+                button.classList.add('playing');
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const parent = button.parentElement;
+                        let textToRead = '';
+
+                        if (parent.tagName === 'H2') {
+                            const stepCard = parent.closest('.step-card');
+                            
+                            const titleClone = parent.cloneNode(true);
+                            const ttsBtn = titleClone.querySelector('.tts-button');
+                            if (ttsBtn) ttsBtn.remove();
+                            
+                            const titleText = titleClone.textContent.trim();
+                            
+                            const prose = stepCard.querySelector('.prose');
+                            const proseText = prose ? prose.textContent.trim() : '';
+                            
+                            textToRead = titleText + ". " + proseText;
+                            
+                        } else {
+                            const clone = parent.cloneNode(true);
+                            const ttsBtn = clone.querySelector('.tts-button');
+                            if (ttsBtn) ttsBtn.remove();
+                            
+                            textToRead = clone.textContent.trim();
+                        }
+                        
+                        if (textToRead) speak(textToRead, button);
+                    });
+                });
+            }
+
+             const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.textContent = translations[key][lang];
+                    }
+                });
+                
+                renderStep(currentStep);
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            };
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    currentStep--;
+                    renderStep(currentStep);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < caseStructure.length - 1) {
+                    currentStep++;
+                    renderStep(currentStep);
+                }
+            });
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+            
+            if (localStorage.getItem('dsa-mode') === 'enabled') {
+                body.classList.add('dsa-mode');
+            }
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
