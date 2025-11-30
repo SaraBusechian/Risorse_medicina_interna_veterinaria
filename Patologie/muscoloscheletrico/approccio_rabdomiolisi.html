@@ -107,8 +107,8 @@
                                 <span class="text-5xl" role="img" aria-label="Icona di un rene">🩺</span>
                             </div>
                             <div>
-                                <h3 class="text-xl font-bold text-cyan-800" data-lang-key="infographicLinkTitle">Diagnosi Differenziale Pigmenturie</h3>
-                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Come distinguere tra ematuria, emoglobinuria e mioglobinuria.</p>
+                                <h3 class="text-xl font-bold text-cyan-800" data-lang-key="infographicLinkTitle">Approccio Clinico alla Rabdomiolisi</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Algoritmo completo: diagnosi, cause e terapia.</p>
                             </div>
                         </div>
                     </a>
@@ -270,8 +270,8 @@
                         '<li><strong>Electrolyte Monitoring:</strong> Watch for <strong>hyperkalemia</strong> (released from destroyed muscles) which can cause cardiac arrest.</li></ul>' 
                 },
                 infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
-                infographicLinkTitle: { it: "Diagnosi Differenziale Pigmenturie", en: "Pigmenturia Differential Diagnosis" },
-                infographicLinkDesc: { it: "Come distinguere tra ematuria, emoglobinuria e mioglobinuria.", en: "How to distinguish between hematuria, hemoglobinuria, and myoglobinuria." },
+                infographicLinkTitle: { it: "Approccio Clinico alla Rabdomiolisi", en: "Clinical Approach to Rhabdomyolysis" },
+                infographicLinkDesc: { it: "Algoritmo completo: diagnosi, cause e terapia.", en: "Complete algorithm: diagnosis, causes, and therapy." },
                 quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
                 quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
                 audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
@@ -343,8 +343,11 @@
                 
                 const cleanup = () => {
                     if (button) button.classList.remove('playing');
-                    activeTTSButton = null;
-                    currentUtterance = null;
+                    // Fix: only clear global state if we are cleaning up the *current* utterance
+                    if (activeTTSButton === button) {
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
                 };
 
                 currentUtterance.onend = cleanup;
