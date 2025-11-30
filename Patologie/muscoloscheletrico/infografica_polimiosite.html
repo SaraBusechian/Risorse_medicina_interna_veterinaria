@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica Miopatie Infiammatorie - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette CIANO */
+        body { font-family: 'Inter', sans-serif; background-color: #ecfeff; /* cyan-50 */ color: #155e75; /* cyan-800 */ }
+        
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #f8fafc !important; letter-spacing: 0.05em; line-height: 1.75; color: #1e293b; }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .flow-box, .dsa-mode .flow-decision, .dsa-mode .flow-result { background-color: #ffffff; border: 1px solid #e2e8f0; color: #1e293b; }
+        .dsa-mode .flow-arrow { color: #64748b; }
+        .dsa-mode h1, .dsa-mode h2 { color: #1e293b; }
+        .dsa-mode .flow-result.mmm { background-color: #dbeafe; border-color: #60a5fa; color: #1e40af; }
+        .dsa-mode .flow-result.dm { background-color: #fae8ff; border-color: #e879f9; color: #86198f; }
+        .dsa-mode .flow-result.pm { background-color: #fee2e2; border-color: #f87171; color: #b91c1c; }
+        .dsa-mode .flow-box.therapy { background-color: #f0fdf4; border-color: #4ade80; color: #166534; }
+
+        @media print {
+            #main-header, #main-footer, #back-button, #accessibility-toggle, #lang-toggle { display: none; }
+            body { background-color: #ffffff; color: #000000; }
+            main { padding: 0 !important; margin-top: 2rem; }
+            .flow-box, .flow-decision, .flow-result { border-color: #000000; color: #000000; background-color: #ffffff; box-shadow: none; }
+            .flow-arrow { color: #000000; }
+            h1, h2 { color: #000000; }
+        }
+
+        .flow-container { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+        .flow-box, .flow-decision, .flow-result {
+            width: 90%; max-width: 600px; padding: 1rem 1.5rem;
+            border-radius: 0.5rem; background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center; border: 1px solid #cffafe;
+        }
+        .flow-box strong { color: #0e7490; }
+        .flow-decision { background-color: #cffafe; border-color: #67e8f9; font-weight: 600; }
+        
+        /* Result Boxes Colors */
+        .flow-result.mmm { background-color: #dbeafe; border-color: #60a5fa; color: #1e40af; font-weight: 700; } /* Blue */
+        .flow-result.dm { background-color: #fae8ff; border-color: #e879f9; color: #86198f; font-weight: 700; } /* Purple */
+        .flow-result.pm { background-color: #fee2e2; border-color: #f87171; color: #b91c1c; font-weight: 700; } /* Red */
+        
+        /* Therapy Box */
+        .flow-box.therapy {
+            border-left: 5px solid #22c55e; /* green-500 */
+            background-color: #f0fdf4; /* green-50 */
+        }
+        .flow-box.therapy strong { color: #15803d; /* green-700 */ }
+
+        .flow-arrow { font-size: 2.25rem; line-height: 1; color: #a5f3fc; font-weight: bold; }
+        .flow-split { display: flex; justify-content: space-around; width: 100%; gap: 1rem; }
+        .flow-path { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; flex-basis: 33%; }
+        .flow-path-label { font-weight: 600; color: #0891b2; padding: 0.25rem 0.75rem; background-color: #ffffff; border-radius: 99px; border: 1px solid #67e8f9; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+    </style>
+</head>
+<body class="bg-cyan-50">
+
+    <header id="main-header" class="bg-cyan-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Infografica: Miopatie</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8" id="back-button">
+            <a href="polimiosite_cane.html" class="inline-flex items-center bg-white text-cyan-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-cyan-100 transition duration-300" data-lang-key="backToSummary">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+            </a>
+        </div>
+        
+        <h1 class="text-3xl md:text-4xl font-bold text-cyan-800 text-center mb-4" data-lang-key="pageTitle">Diagnosi Differenziale Miopatie</h1>
+        <h2 class="text-xl text-cyan-700 text-center mb-12" data-lang-key="pageSubtitle">MMM vs Polimiosite vs Dermatomiosite</h2>
+
+        <div class="flow-container" role="figure" aria-label="Diagramma di flusso per la diagnosi differenziale delle miopatie">
+            
+            <div class="flow-box" data-lang-key="start">
+                <strong>INIZIO:</strong> Cane con Debolezza / Dolore Muscolare
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-decision" data-lang-key="decision1">
+                Localizzazione dei Segni?
+            </div>
+
+            <div class="flow-split">
+                
+                <!-- Ramo Focale -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathFocal">Solo Muscoli Masticatori</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="testMMM">
+                        <strong>Test:</strong> Anticorpi anti-fibre 2M
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-result mmm" data-lang-key="resultMMM">
+                        MIOSITE MUSCOLI MASTICATORI (MMM)
+                    </div>
+                </div>
+
+                <!-- Ramo Generalizzato -->
+                <div class="flow-path" style="flex-grow: 2;">
+                    <div class="flow-path-label" data-lang-key="pathGen">Generalizzati (Arti, Esofago...)</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-decision" data-lang-key="decisionSkin">
+                        Ci sono lesioni cutanee?
+                    </div>
+                    
+                    <div class="flow-split">
+                        <!-- Dermatomiosite -->
+                        <div class="flow-path">
+                            <div class="flow-path-label" data-lang-key="pathYes">SÌ</div>
+                            <div class="flow-arrow">&darr;</div>
+                            <div class="flow-box" data-lang-key="detailsDM">
+                                <strong>Razze:</strong> Collie, Sheltie<br>
+                                <strong>Lesioni:</strong> Croste su coda, orecchie, volto
+                            </div>
+                            <div class="flow-arrow">&darr;</div>
+                            <div class="flow-result dm" data-lang-key="resultDM">
+                                DERMATOMIOSITE
+                            </div>
+                        </div>
+
+                        <!-- Polimiosite -->
+                        <div class="flow-path">
+                            <div class="flow-path-label" data-lang-key="pathNo">NO</div>
+                            <div class="flow-arrow">&darr;</div>
+                            <div class="flow-box" data-lang-key="detailsPM">
+                                <strong>Razze:</strong> Grandi (Boxer, Newfie), Spaniel<br>
+                                <strong>Segni:</strong> Febbre, mialgia, megaesofago
+                            </div>
+                            <div class="flow-arrow">&darr;</div>
+                            <div class="flow-result pm" data-lang-key="resultPM">
+                                POLIMIOSITE
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+            <div class="flow-box" data-lang-key="biopsy">
+                <strong>Conferma Diagnostica:</strong> Biopsia Muscolare (e Cutanea per DM)
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+            
+            <!-- TERAPIA -->
+            <div class="flow-box therapy" data-lang-key="therapy">
+                <strong>Terapia e Gestione:</strong>
+                <ul class="list-disc text-left pl-4 mt-2">
+                    <li><strong>MMM e Polimiosite:</strong> Immunosoppressione aggressiva (Prednisone +/- Azatioprina/Ciclosporina).</li>
+                    <li><strong>Dermatomiosite:</strong> Pentossifillina (microcircolo), Vitamina E, evitare raggi UV. Steroidi solo se grave.</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-cyan-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Infografica: Miopatie", en: "Infographic: Myopathies" },
+                backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+                pageTitle: { it: "Diagnosi Differenziale Miopatie", en: "Differential Diagnosis of Myopathies" },
+                pageSubtitle: { it: "MMM vs Polimiosite vs Dermatomiosite", en: "MMM vs Polymyositis vs Dermatomyositis" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" },
+                
+                start: { it: "<strong>INIZIO:</strong> Cane con Debolezza / Dolore Muscolare", en: "<strong>START:</strong> Dog with Muscle Weakness / Pain" },
+                decision1: { it: "Localizzazione dei Segni?", en: "Localization of Signs?" },
+                pathFocal: { it: "Solo Muscoli Masticatori", en: "Masticatory Muscles Only" },
+                testMMM: { it: "<strong>Test:</strong> Anticorpi anti-fibre 2M", en: "<strong>Test:</strong> Anti-2M fiber antibodies" },
+                resultMMM: { it: "MIOSITE MUSCOLI MASTICATORI (MMM)", en: "MASTICATORY MUSCLE MYOSITIS (MMM)" },
+                
+                pathGen: { it: "Generalizzati (Arti, Esofago...)", en: "Generalized (Limbs, Esophagus...)" },
+                decisionSkin: { it: "Ci sono lesioni cutanee?", en: "Are there skin lesions?" },
+                pathYes: { it: "SÌ", en: "YES" },
+                pathNo: { it: "NO", en: "NO" },
+                
+                detailsDM: { it: "<strong>Razze:</strong> Collie, Sheltie<br><strong>Lesioni:</strong> Croste su coda, orecchie, volto", en: "<strong>Breeds:</strong> Collie, Sheltie<br><strong>Lesions:</strong> Crusts on tail, ears, face" },
+                resultDM: { it: "DERMATOMIOSITE", en: "DERMATOMYOSITIS" },
+                
+                detailsPM: { it: "<strong>Razze:</strong> Grandi (Boxer, Newfie), Spaniel<br><strong>Segni:</strong> Febbre, mialgia, megaesofago", en: "<strong>Breeds:</strong> Large (Boxer, Newfie), Spaniels<br><strong>Signs:</strong> Fever, myalgia, megaesophagus" },
+                resultPM: { it: "POLIMIOSITE", en: "POLYMYOSITIS" },
+                
+                biopsy: { it: "<strong>Conferma Diagnostica:</strong> Biopsia Muscolare (e Cutanea per DM)", en: "<strong>Diagnostic Confirmation:</strong> Muscle Biopsy (and Skin for DM)" },
+                
+                therapy: { 
+                    it: "<strong>Terapia e Gestione:</strong><ul class='list-disc text-left pl-4 mt-2'><li><strong>MMM e Polimiosite:</strong> Immunosoppressione aggressiva (Prednisone +/- Azatioprina/Ciclosporina).</li><li><strong>Dermatomiosite:</strong> Pentossifillina (microcircolo), Vitamina E, evitare raggi UV. Steroidi solo se grave.</li></ul>", 
+                    en: "<strong>Therapy & Management:</strong><ul class='list-disc text-left pl-4 mt-2'><li><strong>MMM & Polymyositis:</strong> Aggressive immunosuppression (Prednisone +/- Azathioprine/Cyclosporine).</li><li><strong>Dermatomyositis:</strong> Pentoxifylline (microcirculation), Vitamin E, avoid UV. Steroids only if severe.</li></ul>" 
+                }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+            
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
