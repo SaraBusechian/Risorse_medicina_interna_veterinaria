@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="titleTag">Rabdomiolisi da Sforzo (Tying-Up) - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette CIANO */
+        body { font-family: 'Inter', sans-serif; background-color: #ecfeff; /* cyan-50 */ color: #1e293b; /* slate-800 */ }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; color: #0891b2; /* cyan-600 */ }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #0e7490; /* cyan-700 */ color: #155e75; /* cyan-800 */ }
+        
+        /* Modalità DSA */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #f8fafc !important; letter-spacing: 0.05em; line-height: 1.75; color: #1e293b; }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #ffffff; border: 1px solid #e2e8f0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #1e293b; }
+        .dsa-mode .prose strong { color: #000000; }
+        .dsa-mode .prose h3 { color: #1e293b; border-bottom-color: #94a3b8; }
+        .dsa-mode .prose h4 { color: #1e293b; }
+        .dsa-mode .nav-link { color: #334155; }
+        .dsa-mode .nav-link:hover, .dsa-mode .nav-link.active { border-bottom-color: #334155; color: #000000; }
+        .dsa-mode .quiz-question { border-color: #cbd5e1; }
+        .dsa-mode .quiz-option:hover { background-color: #f1f5f9; }
+
+        /* Bottoni TTS */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #0891b2; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #06b6d4; }
+        
+        /* Stili riassunto */
+        .prose h3 { font-size: 1.5rem; font-weight: 600; color: #0e7490; margin-top: 2rem; margin-bottom: 1rem; padding-bottom: 0.25rem; border-bottom: 1px solid #bae6fd; }
+        .prose p, .prose ul { font-size: 1rem; line-height: 1.75; color: #374151; margin-bottom: 1.25rem; }
+        .prose strong { color: #155e75; font-weight: 600; }
+        .prose ul { list-style-type: disc; padding-left: 1.75rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose h4 { font-size: 1.25rem; font-weight: 600; color: #0e7490; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .dsa-mode .prose h4 { color: #1e293b; }
+        .quiz-question { border: 1px solid #bae6fd; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #ecfeff; }
+        .quiz-question.correct { background-color: #dcfce7; border-color: #4ade80; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #f87171; }
+
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, a[href*="infografica"], a[href*="index.html"] { display: none; }
+            body, .content-section { background-color: #ffffff !important; color: #000000 !important; }
+            .content-section { box-shadow: none; border: none; }
+            h1, h2, h3, h4, p, li, strong { color: #000000 !important; }
+            .prose h3 { border-color: #000000; }
+        }
+    </style>
+</head>
+<body class="bg-cyan-50">
+
+    <header id="main-header" class="bg-cyan-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Muscoloscheletriche</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-cyan-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-cyan-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Muscoloscheletrico</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-cyan-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-cyan-800" data-lang-key="pageTitle">Rabdomiolisi da Sforzo (Tying-Up)<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-cyan-700 mt-2" data-lang-key="pageSubtitle">Approccio al cavallo con miopatia acuta: forme sporadiche e ricorrenti.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_rabdomiolisi_cavallo.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-cyan-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-cyan-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona di un cavallo">🐎</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-cyan-800" data-lang-key="infographicLinkTitle">Sporadica vs Ricorrente (RER/PSSM)</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Algoritmo per la classificazione e diagnosi differenziale.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-cyan-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-cyan-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-cyan-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-cyan-500 text-white rounded-full hover:bg-cyan-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-cyan-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-cyan-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_rabdomiolisi_cavallo.mp3" download class="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-cyan-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-cyan-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                titleTag: { it: "Rabdomiolisi da Sforzo (Tying-Up) - MedVet", en: "Exertional Rhabdomyolysis (Tying-Up) - MedVet" },
+                siteTitle: { it: "Patologie Muscoloscheletriche", en: "Musculoskeletal Diseases" },
+                backToIndexText: { it: "Indice Muscoloscheletrico", en: "Musculoskeletal Index" },
+                pageTitle: { it: "Rabdomiolisi da Sforzo (Tying-Up)", en: "Exertional Rhabdomyolysis (Tying-Up)" },
+                pageSubtitle: { it: "Approccio al cavallo con miopatia acuta: forme sporadiche e ricorrenti.", en: "Approach to the horse with acute myopathy: sporadic and recurrent forms." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: `<h3>Definizione e Segni Clinici</h3>
+                        <p>La <strong>Rabdomiolisi da Sforzo</strong> (spesso chiamata "Tying-Up" o "Malattia del Lunedì Mattina") è una sindrome caratterizzata dalla necrosi acuta e massiva delle fibre muscolari scheletriche (rabdomiolisi) che si verifica durante o subito dopo l'esercizio fisico.</p>
+                        <p>I segni clinici variano da lievi a severi e includono:</p>
+                        <ul>
+                            <li><strong>Rigidità dell'andatura</strong> ("camminare sulle uova"), riluttanza o rifiuto a muoversi.</li>
+                            <li><strong>Muscoli duri, caldi e dolenti</strong> alla palpazione, specialmente i glutei e i muscoli lombari.</li>
+                            <li>Tachicardia, tachipnea, sudorazione profusa (segni di dolore e stress).</li>
+                            <li><strong>Mioglobinuria:</strong> Urine di colore scuro (caffè o coca-cola) dovute alla presenza di mioglobina rilasciata dal muscolo danneggiato (segno di gravità).</li>
+                        </ul>
+
+                        <h3>Classificazione: Sporadica vs Ricorrente</h3>
+                        <p>È fondamentale distinguere se l'episodio è un evento isolato o se il cavallo soffre di una forma cronica.</p>
+                        
+                        <h4>1. Rabdomiolisi da Sforzo Sporadica</h4>
+                        <p>Si verifica in cavalli che non hanno una predisposizione genetica sottostante. Le cause sono spesso legate a errori di gestione ("Management Errors"):</p>
+                        <ul>
+                            <li>Esercizio eccessivo in un cavallo non allenato ("Weekend warrior").</li>
+                            <li>Sforzo fisico in condizioni di alte temperature (Heat exhaustion).</li>
+                            <li>Squilibri elettrolitici o carenza di Vitamina E / Selenio.</li>
+                            <li>Infezioni respiratorie virali recenti (es. EHV-1, Influenza).</li>
+                        </ul>
+
+                        <h4>2. Rabdomiolisi da Sforzo Ricorrente (Forme Croniche)</h4>
+                        <p>Se un cavallo ha episodi ripetuti nonostante una gestione corretta, si sospetta una base genetica. Le cause sono molteplici e alcune ancora in fase di studio:</p>
+                        <ul>
+                            <li><strong>Recurrent Exertional Rhabdomyolysis (RER):</strong> Tipica di Purosangue Inglesi (TB), Standardbred e Arabi. È un difetto nella regolazione del calcio intracellulare. Spesso scatenata da <strong>stress, eccitazione</strong> o diete ricche di amido in soggetti nervosi.</li>
+                            <li><strong>Polysaccharide Storage Myopathy (PSSM):</strong> Tipica di Quarter Horse (QH), Paint, Appaloosa e razze da tiro. È un disordine del metabolismo del glicogeno.
+                                <ul>
+                                    <li><strong>PSSM Tipo 1:</strong> Mutazione genetica nota (GYS1) che causa accumulo di glicogeno anomalo.</li>
+                                    <li><strong>PSSM Tipo 2:</strong> Accumulo di glicogeno senza la mutazione GYS1 (diagnosi solo con biopsia).</li>
+                                </ul>
+                            </li>
+                            <li><strong>Altre Miopatie (es. Miopatia Miofibrillare - MFM):</strong> Forme emergenti che coinvolgono alterazioni delle proteine strutturali del muscolo (desmina), spesso diagnosticate in Arabi e Warmblood che risultano negativi per PSSM1 e 2.</li>
+                        </ul>
+
+                        <h3>Diagnosi</h3>
+                        <ul>
+                            <li><strong>Enzimi Muscolari:</strong>
+                                <ul>
+                                    <li><strong>CK (Creatinchinasi):</strong> Picco a 4-6 ore dopo l'insulto. È il marker più sensibile e specifico per il danno acuto. Valori >10.000 U/L indicano danno grave.</li>
+                                    <li><strong>AST (Aspartato Aminotransferasi):</strong> Picco a 12-24 ore. Ha un'emivita più lunga (giorni/settimane), quindi rimane alta più a lungo del CK.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Test Genetici:</strong> Fondamentali per PSSM1 (su sangue o crine).</li>
+                            <li><strong>Biopsia Muscolare:</strong> Necessaria per diagnosticare PSSM2 e confermare alterazioni istologiche (es. nuclei centralizzati in RER).</li>
+                        </ul>
+
+                        <h3>Terapia e Gestione</h3>
+                        <h4>Fase Acuta (Emergenza)</h4>
+                        <ul>
+                            <li><strong>Riposo immediato:</strong> NON forzare il cavallo a muoversi. Lasciarlo dove si trova se sicuro o trasportarlo con trailer.</li>
+                            <li><strong>Fluidoterapia:</strong> Cruciale per correggere la disidratazione e proteggere i reni dai danni della mioglobina (insufficienza renale acuta).</li>
+                            <li><strong>Analgesici e Antinfiammatori:</strong> FANS (es. Flunixin meglumine o Fenilbutazone) per il dolore. <strong>Nota Fondamentale:</strong> è essenziale valutare lo stato di idratazione prima di somministrare FANS per evitare di sovraccaricare i reni e peggiorare il danno nefrotossico da mioglobina. L'<strong>Acepromazina</strong> (in piccole dosi) può essere usata per la vasodilatazione (soprattutto in RER), ma con estrema cautela se il cavallo è ipoteso.</li>
+                        </ul>
+                        
+                        <h4>Gestione a Lungo Termine (Prevenzione)</h4>
+                        <p>La gestione dietetica e l'esercizio sono la chiave per prevenire le recidive.</p>
+                        <ul>
+                            <li><strong>Dieta:</strong> Ridurre drasticamente carboidrati non strutturali (amido e zuccheri). Aumentare l'energia tramite <strong>grassi (oli vegetali)</strong> e fibre fermentescibili.</li>
+                            <li><strong>Esercizio:</strong> Deve essere quotidiano e costante. Il riposo assoluto ("box rest") è controproducente, specialmente per i cavalli PSSM. L'uscita al paddock giornaliera è raccomandata.</li>
+                        </ul>`, 
+                    en: `<h3>Definition and Clinical Signs</h3>
+                        <p><strong>Exertional Rhabdomyolysis</strong> (commonly called "Tying-Up" or "Monday Morning Disease") is a syndrome characterized by acute and massive necrosis of skeletal muscle fibers (rhabdomyolysis) occurring during or shortly after exercise.</p>
+                        <p>Clinical signs range from mild to severe and include:</p>
+                        <ul>
+                            <li><strong>Stiff gait</strong> ("walking on eggshells"), reluctance or refusal to move.</li>
+                            <li><strong>Hard, warm, and painful muscles</strong> on palpation, especially gluteals and lumbar muscles.</li>
+                            <li>Tachycardia, tachypnea, profuse sweating (signs of pain and stress).</li>
+                            <li><strong>Myoglobinuria:</strong> Dark urine (coffee or cola-colored) due to myoglobin released from damaged muscle (a sign of severity).</li>
+                        </ul>
+
+                        <h3>Classification: Sporadic vs. Recurrent</h3>
+                        <p>It is crucial to distinguish whether the episode is an isolated event or if the horse suffers from a chronic form.</p>
+                        
+                        <h4>1. Sporadic Exertional Rhabdomyolysis</h4>
+                        <p>Occurs in horses without an underlying genetic predisposition. Causes are often linked to "Management Errors":</p>
+                        <ul>
+                            <li>Excessive exercise in an unfit horse ("Weekend warrior").</li>
+                            <li>Exercise in hot conditions (Heat exhaustion).</li>
+                            <li>Electrolyte imbalances or Vitamin E / Selenium deficiency.</li>
+                            <li>Recent viral respiratory infections (e.g., EHV-1, Influenza).</li>
+                        </ul>
+
+                        <h4>2. Recurrent Exertional Rhabdomyolysis (Chronic Forms)</h4>
+                        <p>If a horse has repeated episodes despite correct management, a genetic basis is suspected. The two main forms are:</p>
+                        <ul>
+                            <li><strong>Recurrent Exertional Rhabdomyolysis (RER):</strong> Typical of Thoroughbreds (TB), Standardbreds, and Arabians. It is a defect in intracellular calcium regulation. Often triggered by <strong>stress, excitement</strong>, or high-starch diets in nervous horses.</li>
+                            <li><strong>Polysaccharide Storage Myopathy (PSSM):</strong> Typical of Quarter Horses (QH), Paints, Appaloosas, and Draft breeds. It is a disorder of glycogen metabolism.
+                                <ul>
+                                    <li><strong>PSSM Type 1:</strong> Known genetic mutation (GYS1) causing abnormal glycogen accumulation.</li>
+                                    <li><strong>PSSM Type 2:</strong> Glycogen accumulation without the GYS1 mutation (diagnosis only via biopsy).</li>
+                                </ul>
+                            </li>
+                            <li><strong>Other Myopathies (e.g., Myofibrillar Myopathy - MFM):</strong> Emerging forms involving alterations in muscle structural proteins (desmin), often diagnosed in Arabians and Warmbloods negative for PSSM1 and 2.</li>
+                        </ul>
+
+                        <h3>Diagnosis</h3>
+                        <ul>
+                            <li><strong>Muscle Enzymes:</strong>
+                                <ul>
+                                    <li><strong>CK (Creatine Kinase):</strong> Peaks 4-6 hours after insult. It is the most sensitive and specific marker for acute damage. Values >10,000 U/L indicate severe damage.</li>
+                                    <li><strong>AST (Aspartate Aminotransferase):</strong> Peaks at 12-24 hours. Has a longer half-life (days/weeks), so stays elevated longer than CK.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Genetic Tests:</strong> Fundamental for PSSM1 (blood or hair root).</li>
+                            <li><strong>Muscle Biopsy:</strong> Necessary to diagnose PSSM2 and confirm histological changes (e.g., centralized nuclei in RER).</li>
+                        </ul>
+
+                        <h3>Therapy and Management</h3>
+                        <h4>Acute Phase (Emergency)</h4>
+                        <ul>
+                            <li><strong>Immediate Rest:</strong> DO NOT force the horse to move. Leave it where it is if safe or transport via trailer.</li>
+                            <li><strong>Fluid Therapy:</strong> Crucial to correct dehydration and protect kidneys from myoglobin damage (acute renal failure).</li>
+                            <li><strong>Analgesics and Anti-inflammatories:</strong> NSAIDs (e.g., Flunixin meglumine or Phenylbutazone) for pain. <strong>Crucial Note:</strong> it is fundamental to evaluate hydration status before administering NSAIDs to avoid overloading the kidneys and worsening myoglobin-induced damage. <strong>Acepromazine</strong> (low dose) can be used for vasodilation (especially in RER), but with extreme caution if the horse is hypotensive.</li>
+                        </ul>
+                        
+                        <h4>Long-Term Management (Prevention)</h4>
+                        <p>Dietary and exercise management are key to preventing recurrence.</p>
+                        <ul>
+                            <li><strong>Diet:</strong> Drastically reduce non-structural carbohydrates (starch and sugars). Increase energy via <strong>fats (vegetable oils)</strong> and fermentable fibers.</li>
+                            <li><strong>Exercise:</strong> Must be daily and consistent. Absolute rest ("box rest") is counterproductive, especially for PSSM horses. Daily paddock turnout is recommended.</li>
+                        </ul>` 
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Sporadica vs Ricorrente", en: "Sporadic vs. Recurrent" },
+                infographicLinkDesc: { it: "Algoritmo per la classificazione e diagnosi differenziale.", en: "Algorithm for classification and differential diagnosis." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>REED-BAYLY-SELLON - Equine Internal Medicine 4th ed., 1600 pp., Elsevier, 2018.</li>
+                         <li>VALBERG SJ, MCKENZIE EC (Eds). Equine Myopathies. Veterinary Clinics of North America: Equine Practice. April 2025; 41(1): 1-226.</li>
+                         <li>Valberg SJ. Musculoskeletal system. In: Reed SM, Bayly WM, Sellon DC, eds. Equine Internal Medicine. 4th ed. St. Louis, MO: Elsevier; 2018:383-479.</li>`, 
+                    en: `<li>REED-BAYLY-SELLON - Equine Internal Medicine 4th ed., 1600 pp., Elsevier, 2018.</li>
+                         <li>VALBERG SJ, MCKENZIE EC (Eds). Equine Myopathies. Veterinary Clinics of North America: Equine Practice. April 2025; 41(1): 1-226.</li>
+                         <li>Valberg SJ. Musculoskeletal system. In: Reed SM, Bayly WM, Sellon DC, eds. Equine Internal Medicine. 4th ed. St. Louis, MO: Elsevier; 2018:383-479.</li>` 
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Qual è il segno clinico più tipico della rabdomiolisi da sforzo (tying-up)?", options: ["Atassia e incoordinazione", "Muscoli glutei duri, caldi e dolenti", "Zoppia su un solo arto", "Gonfiore delle articolazioni"], answer: "Muscoli glutei duri, caldi e dolenti" },
+                    { question: "La mioglobinuria (urine scure) è causata dal rilascio di mioglobina da parte di quale tessuto?", options: ["Fegato danneggiato", "Globuli rossi rotti (emolisi)", "Muscolo scheletrico danneggiato", "Rene infiammato"], answer: "Muscolo scheletrico danneggiato" },
+                    { question: "La RER (Recurrent Exertional Rhabdomyolysis) è più comune in quali razze?", options: ["Quarter Horse e razze da tiro", "Purosangue Inglesi (TB) e Standardbred", "Pony Shetland", "Asini"], answer: "Purosangue Inglesi (TB) e Standardbred" },
+                    { question: "Quale mutazione genetica è responsabile della PSSM di Tipo 1?", options: ["RYR1", "GYS1", "SCN4A", "HYPP"], answer: "GYS1" },
+                    { question: "Qual è l'enzima muscolare più sensibile che aumenta rapidamente (4-6h) dopo l'insulto?", options: ["AST", "GGT", "CK (Creatinchinasi)", "ALP"], answer: "CK (Creatinchinasi)" },
+                    { question: "Nella gestione acuta di un cavallo in tying-up, cosa NON si deve fare?", options: ["Somministrare fluidi", "Dare analgesici (FANS)", "Forzare il cavallo a camminare per 'sciogliere' i muscoli", "Tenere il cavallo a riposo"], answer: "Forzare il cavallo a camminare per 'sciogliere' i muscoli" },
+                    { question: "Quale farmaco, a basse dosi, è utile in fase acuta per il suo effetto vasodilatatore e calmante (soprattutto in RER)?", options: ["Adrenalina", "Acepromazina", "Antibiotico", "Cortisone"], answer: "Acepromazina" },
+                    { question: "Per prevenire recidive di PSSM e RER, la dieta deve essere:", options: ["Alta in amido (cereali) e bassa in grassi", "Bassa in amido (zuccheri) e alta in grassi/fibre", "Solo fieno di erba medica", "Digiuno prolungato"], answer: "Bassa in amido (zuccheri) e alta in grassi/fibre" },
+                    { question: "La diagnosi definitiva di PSSM Tipo 2 richiede:", options: ["Solo esame del sangue (CK)", "Test genetico sul crine", "Biopsia muscolare", "Esame delle urine"], answer: "Biopsia muscolare" },
+                    { question: "Lo stress e l'eccitazione sono fattori scatenanti comuni per quale forma?", options: ["Rabdomiolisi Sporadica", "PSSM", "RER", "Miopatia Atipica"], answer: "RER" }
+                ],
+                en: [
+                    { question: "What is the most typical clinical sign of exertional rhabdomyolysis (tying-up)?", options: ["Ataxia and incoordination", "Hard, warm, and painful gluteal muscles", "Lameness in a single limb", "Joint swelling"], answer: "Hard, warm, and painful gluteal muscles" },
+                    { question: "Myoglobinuria (dark urine) is caused by the release of myoglobin from which tissue?", options: ["Damaged liver", "Ruptured red blood cells (hemolysis)", "Damaged skeletal muscle", "Inflamed kidney"], answer: "Damaged skeletal muscle" },
+                    { question: "RER (Recurrent Exertional Rhabdomyolysis) is most common in which breeds?", options: ["Quarter Horses and Draft breeds", "Thoroughbreds (TB) and Standardbreds", "Shetland Ponies", "Donkeys"], answer: "Thoroughbreds (TB) and Standardbreds" },
+                    { question: "Which genetic mutation is responsible for PSSM Type 1?", options: ["RYR1", "GYS1", "SCN4A", "HYPP"], answer: "GYS1" },
+                    { question: "Which is the most sensitive muscle enzyme that rises rapidly (4-6h) after insult?", options: ["AST", "GGT", "CK (Creatine Kinase)", "ALP"], answer: "CK (Creatine Kinase)" },
+                    { question: "In the acute management of a tying-up horse, what should you NOT do?", options: ["Administer fluids", "Give analgesics (NSAIDs)", "Force the horse to walk to 'loosen' the muscles", "Keep the horse at rest"], answer: "Force the horse to walk to 'loosen' the muscles" },
+                    { question: "Which drug, at low doses, is useful in the acute phase for its vasodilatory and calming effect (especially in RER)?", options: ["Adrenaline", "Acepromazine", "Antibiotic", "Cortisone"], answer: "Acepromazine" },
+                    { question: "To prevent recurrence of PSSM and RER, the diet must be:", options: ["High in starch (grains) and low in fat", "Low in starch (sugars) and high in fat/fibers", "Alfalfa hay only", "Prolonged fasting"], answer: "Low in starch (sugars) and high in fat/fibers" },
+                    { question: "Definitive diagnosis of PSSM Type 2 requires:", options: ["Blood test only (CK)", "Genetic test on hair", "Muscle biopsy", "Urine analysis"], answer: "Muscle biopsy" },
+                    { question: "Stress and excitement are common triggers for which form?", options: ["Sporadic Rhabdomyolysis", "PSSM", "RER", "Atypical Myopathy"], answer: "RER" }
+                ]
+            };
+            
+            const audioFile = 'audio_rabdomiolisi_cavallo.mp3'; 
+            
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() {
+                if (synth.speaking || synth.paused) synth.cancel();
+            }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                    return; 
+                }
+                stopSpeech();
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                const cleanup = () => {
+                    if (button) button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+
+                currentUtterance.onend = cleanup;
+                currentUtterance.onerror = (event) => {
+                     if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('An error occurred with speech synthesis:', event.error);
+                     }
+                    cleanup();
+                };
+                
+                activeTTSButton = button;
+                button.classList.add('playing');
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+
+            function initHowler() {
+                if (sound) sound.unload();
+                
+                const playIcon = document.getElementById('play-icon');
+                const pauseIcon = document.getElementById('pause-icon');
+
+                sound = new Howl({
+                    src: [audioFile],
+                    html5: true, 
+                    onplay: () => { 
+                        if (playIcon) playIcon.classList.add('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.remove('hidden'); 
+                    },
+                    onpause: () => { 
+                        if (playIcon) playIcon.classList.remove('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.add('hidden'); 
+                    },
+                    onend: () => { 
+                        if (playIcon) playIcon.classList.remove('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.add('hidden'); 
+                    },
+                    onloaderror: (id, msg) => {
+                        console.error("Error loading audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "File audio non trovato." : "Audio file not found.";
+                    },
+                    onplayerror: (id, msg) => {
+                        console.error("Error playing audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "Impossibile riprodurre l'audio." : "Could not play audio.";
+                    }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            if (playPauseBtn) {
+                playPauseBtn.addEventListener('click', () => {
+                    if (!sound || sound.state() === 'unloaded') {
+                        initHowler(); 
+                    }
+                    
+                    if (sound) {
+                        if (sound.playing()) {
+                            sound.pause();
+                        } else {
+                            sound.play(); 
+                        }
+                    }
+                });
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                            const subtitle = parentElement.nextElementSibling;
+                            if(subtitle && subtitle.dataset.langKey === 'pageSubtitle') {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    const contentClone = content.cloneNode(true);
+                                    contentClone.querySelectorAll('h3, h4').forEach(el => {
+                                        el.textContent = '. ' + el.textContent.trim() + '. ';
+                                    });
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        } 
+                        else if (parentElement.tagName === 'H3') {
+                            const questionTextNode = parentElement.querySelector('span:first-child');
+                            if (questionTextNode) textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
+                        }
+                        else if (parentElement.closest('label')) {
+                            const label = parentElement.closest('label');
+                            const answerTextNode = label.querySelector('span:first-child');
+                            if (answerTextNode) textToRead = answerTextNode.textContent.trim();
+                        }
+                        
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-cyan-50">
+                            <label class="flex items-center justify-between w-full cursor-pointer">
+                                <span class="flex-grow pr-4"><input type="radio" name="q${index}" value="${o}" class="mr-3 text-cyan-600 focus:ring-cyan-500">${o}</span>
+                                <span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                            </label>
+                        </li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content') || key === 'bibliographyContent') {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            const ttsButton = element.querySelector('.tts-button');
+                            element.textContent = translations[key][lang];
+                            if(ttsButton) element.appendChild(ttsButton);
+                        }
+                    }
+                });
+                
+                const navAudio = document.querySelector('a[data-lang-key="navAudio"]');
+                const sectionAudio = document.getElementById('audio');
+                if (lang === 'en') {
+                    if(navAudio) navAudio.style.display = 'none';
+                    if(sectionAudio) sectionAudio.style.display = 'none';
+                    if(sound && sound.playing()) sound.stop(); 
+                } else {
+                    if(navAudio) navAudio.style.display = 'block';
+                    if(sectionAudio) sectionAudio.style.display = 'block';
+                }
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                
+                loadQuiz(lang);
+                setupTTSListeners(); 
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
