@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approccio alla Debolezza Muscolare - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette CIANO */
+        body { font-family: 'Inter', sans-serif; background-color: #ecfeff; /* cyan-50 */ color: #1e293b; /* slate-800 */ }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; color: #0891b2; /* cyan-600 */ }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #0e7490; /* cyan-700 */ color: #155e75; /* cyan-800 */ }
+        
+        /* Modalità DSA (Accessibilità) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important; /* slate-50 */
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b; /* slate-800 */
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #ffffff; border: 1px solid #e2e8f0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #1e293b; }
+        .dsa-mode .prose strong { color: #000000; }
+        .dsa-mode .prose h3 { color: #1e293b; border-bottom-color: #94a3b8; }
+        .dsa-mode .prose h4 { color: #1e293b; }
+        .dsa-mode .nav-link { color: #334155; } /* slate-700 */
+        .dsa-mode .nav-link:hover, .dsa-mode .nav-link.active { border-bottom-color: #334155; color: #000000; }
+        .dsa-mode .quiz-question { border-color: #cbd5e1; }
+        .dsa-mode .quiz-option:hover { background-color: #f1f5f9; }
+
+        /* Bottoni TTS (Ciano) */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #0891b2; /* cyan-600 */ transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #06b6d4; /* cyan-500 */ }
+        
+        /* Stili riassunto (prose) (Ciano) */
+        .prose h3 {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 600; /* font-semibold */
+            color: #0e7490; /* cyan-700 */
+            margin-top: 2rem; /* mt-8 */
+            margin-bottom: 1rem; /* mb-4 */
+            padding-bottom: 0.25rem; /* pb-1 */
+            border-bottom: 1px solid #bae6fd; /* sky-200 */
+        }
+        .prose p, .prose ul {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: #374151; /* gray-700 */
+            margin-bottom: 1.25rem; /* mb-5 */
+        }
+        .prose strong {
+            color: #155e75; /* cyan-800 */
+            font-weight: 600;
+        }
+        .prose ul {
+            list-style-type: disc;
+            padding-left: 1.75rem; /* pl-7 */
+        }
+        .prose li {
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        /* Quiz (Ciano) */
+        .quiz-question { border: 1px solid #bae6fd; /* sky-200 */ transition: all 0.3s; }
+        .quiz-option:hover { background-color: #ecfeff; /* cyan-50 */ }
+        .quiz-question.correct { background-color: #dcfce7; border-color: #4ade80; } /* Verde per corretto */
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #f87171; } /* Rosso per errato */
+
+        /* Stili per h4 nel riassunto (Ciano) */
+        .prose h4 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            color: #0e7490; /* cyan-700 */
+            margin-top: 1.5rem; /* mt-6 */
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+        .dsa-mode .prose h4 {
+            color: #1e293b; /* slate-800 */
+        }
+
+        /* Stili per la stampa */
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, a[href*="infografica"], a[href*="index.html"] { display: none; }
+            body, .content-section { background-color: #ffffff !important; color: #000000 !important; }
+            .content-section { box-shadow: none; border: none; }
+            h1, h2, h3, h4, p, li, strong { color: #000000 !important; }
+            .prose h3 { border-color: #000000; }
+        }
+    </style>
+</head>
+<body class="bg-cyan-50">
+
+    <header id="main-header" class="bg-cyan-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Muscoloscheletriche</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-cyan-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-cyan-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Muscoloscheletrico</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-cyan-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-cyan-800" data-lang-key="pageTitle">Approccio alla Debolezza Muscolare<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-cyan-700 mt-2" data-lang-key="pageSubtitle">Diagnosi differenziale tra patologie muscolari, giunzionali e nervose.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none" data-lang-key="summaryContent">
+                        
+                        <h3>Introduzione e Definizioni</h3>
+                        <p>La <strong>debolezza muscolare</strong> generalizzata è un segno clinico comune che può derivare da qualsiasi patologia che colpisce l'<strong>Unità Motoria</strong>. È fondamentale distinguere la vera debolezza (incapacità di generare forza) da:</p>
+                        <ul>
+                            <li><strong>Intolleranza all'esercizio:</strong> l'animale parte normale ma si stanca rapidamente (spesso associata a giunzionopatie come la Miastenia Gravis).</li>
+                            <li><strong>Atassia:</strong> incoordinazione del movimento senza perdita di forza (spesso neurologica centrale).</li>
+                            <li><strong>Dolore ortopedico:</strong> riluttanza al movimento per dolore, non per debolezza.</li>
+                        </ul>
+
+                        <h3>L'Unità Motoria: Localizzazione Anatomica</h3>
+                        <p>Il sistema neuromuscolare periferico, o "Lower Motor Neuron" (LMN), è composto da quattro componenti. Un problema in una qualsiasi di queste parti porta a debolezza:</p>
+                        <ul>
+                            <li><strong>Corpo cellulare del motoneurone:</strong> Situato nel corno ventrale del midollo spinale.</li>
+                            <li><strong>Nervo periferico (Assone):</strong> Trasporta il segnale (es. polineuropatie).</li>
+                            <li><strong>Giunzione Neuromuscolare (Placca motrice):</strong> Dove il nervo comunica col muscolo (es. Miastenia Gravis, Botulismo).</li>
+                            <li><strong>Muscolo scheletrico:</strong> L'organo effettore (es. Miopatie infiammatorie, distrofie).</li>
+                        </ul>
+
+                        <h3>Segni Clinici del LMN</h3>
+                        <p>Indipendentemente dalla componente colpita, le patologie dell'unità motoria condividono segni clinici comuni, definiti <strong>segni da motoneurone inferiore (LMN)</strong>:</p>
+                        <ul>
+                            <li><strong>Paresi o Paralisi Flaccida:</strong> Riduzione del tono muscolare e della forza.</li>
+                            <li><strong>Iporeflessia o Aflessia:</strong> I riflessi spinali (es. patellare, flessore) sono ridotti o assenti. *Eccezione cruciale: nelle miopatie pure, i riflessi possono essere conservati finché la massa muscolare non è gravemente compromessa.*</li>
+                            <li><strong>Atrofia muscolare rapida (Neurogena):</strong> Perdita di massa muscolare evidente entro 1-2 settimane dall'insulto nervoso (più rapida dell'atrofia da disuso).</li>
+                            <li><strong>Ipotonia:</strong> Ridotta resistenza alla manipolazione passiva degli arti.</li>
+                        </ul>
+
+                        <h3>Iter Diagnostico</h3>
+                        <h4>1. Segnalamento e Anamnesi</h4>
+                        <p>L'età (giovani vs anziani), la razza (predisposizioni genetiche) e l'insorgenza (acuta vs cronica, episodica vs persistente) sono indizi vitali. Ad esempio, una debolezza episodica che peggiora con l'esercizio suggerisce fortemente una miastenia gravis.</p>
+
+                        <h4>2. Esame Neurologico</h4>
+                        <p>È essenziale per confermare la localizzazione LMN. Testare i riflessi spinali e le reazioni posturali. Un animale con deficit propriocettivi marcati ma forza normale ha probabilmente un problema centrale o sensoriale, non neuromuscolare.</p>
+
+                        <h4>3. Test di Laboratorio di Base (MDB)</h4>
+                        <ul>
+                            <li><strong>Enzimi Muscolari (CK e AST):</strong> Un aumento marcato di CK (Creatinchinasi) è specifico per danno muscolare (miopatia necrotizzante, distrofia). *Nota: valori normali di CK non escludono una miopatia (es. miopatia end-stage o non infiammatoria).*</li>
+                            <li><strong>Elettroliti:</strong> L'ipokaliemia (potassio basso) grave può causare debolezza muscolare severa (es. gatti con insufficienza renale cronica). Anche l'ipercalcemia o l'ipocalcemia possono influenzare l'eccitabilità neuromuscolare.</li>
+                            <li><strong>Glucosio:</strong> Per escludere neuropatie diabetiche o ipoglicemia (es. insulinoma).</li>
+                        </ul>
+
+                        <h4>4. Test Specifici Avanzati</h4>
+                        <ul>
+                            <li><strong>Titoli Anticorpali:</strong> Test per Miastenia Gravis (anticorpi anti-recettore acetilcolina) o Miosite dei Masticatori (anticorpi anti-fibre 2M).</li>
+                            <li><strong>Elettrodiagnostica (EMG e VdC):</strong> L'elettromiografia e la velocità di conduzione nervosa aiutano a distinguere tra patologie del nervo (neuropatie) e del muscolo (miopatie).</li>
+                            <li><strong>Biopsia (Muscolare e di Nervo):</strong> Spesso il "gold standard" per la diagnosi definitiva di miopatie infiammatorie, ereditarie o neuropatie degenerative.</li>
+                        </ul>
+                        
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_debolezza.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-cyan-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-cyan-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona di un muscolo">💪</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-cyan-800" data-lang-key="infographicLinkTitle">Algoritmo Diagnostico</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Un percorso passo-passo per localizzare l'origine della debolezza.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-cyan-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-cyan-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-cyan-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-cyan-500 text-white rounded-full hover:bg-cyan-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                            </svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" />
+                            </svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-cyan-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-cyan-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_debolezza_muscolare.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-cyan-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-cyan-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- TRADUZIONI ---
+            const translations = {
+                siteTitle: { it: "Patologie Muscoloscheletriche", en: "Musculoskeletal Diseases" },
+                backToIndexText: { it: "Indice Muscoloscheletrico", en: "Musculoskeletal Index" },
+                pageTitle: { it: "Approccio alla Debolezza Muscolare", en: "Approach to Muscle Weakness" },
+                pageSubtitle: { it: "Diagnosi differenziale tra patologie muscolari, giunzionali e nervose.", en: "Differential diagnosis between muscle, junctional, and nerve disorders." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: `<h3>Introduzione e Definizioni</h3>
+                        <p>La <strong>debolezza muscolare</strong> generalizzata è un segno clinico comune che può derivare da qualsiasi patologia che colpisce l'<strong>Unità Motoria</strong>. È fondamentale distinguere la vera debolezza (incapacità di generare forza) da:</p>
+                        <ul>
+                            <li><strong>Intolleranza all'esercizio:</strong> l'animale parte normale ma si stanca rapidamente (spesso associata a giunzionopatie come la Miastenia Gravis).</li>
+                            <li><strong>Atassia:</strong> incoordinazione del movimento senza perdita di forza (spesso neurologica centrale).</li>
+                            <li><strong>Dolore ortopedico:</strong> riluttanza al movimento per dolore, non per debolezza (es. laminite nel cavallo).</li>
+                        </ul>
+
+                        <h3>L'Unità Motoria: Localizzazione Anatomica</h3>
+                        <p>Il sistema neuromuscolare periferico, o "Lower Motor Neuron" (LMN), è composto da quattro componenti. Un problema in una qualsiasi di queste parti porta a debolezza:</p>
+                        <ul>
+                            <li><strong>Corpo cellulare del motoneurone:</strong> Situato nel corno ventrale del midollo spinale.</li>
+                            <li><strong>Nervo periferico (Assone):</strong> Trasporta il segnale (es. polineuropatie).</li>
+                            <li><strong>Giunzione Neuromuscolare (Placca motrice):</strong> Dove il nervo comunica col muscolo (es. Miastenia Gravis, Botulismo).</li>
+                            <li><strong>Muscolo scheletrico:</strong> L'organo effettore (es. Miopatie infiammatorie, distrofie, PSSM nel cavallo).</li>
+                        </ul>
+
+                        <h3>Segni Clinici del LMN</h3>
+                        <p>Indipendentemente dalla componente colpita, le patologie dell'unità motoria condividono segni clinici comuni, definiti <strong>segni da motoneurone inferiore (LMN)</strong>:</p>
+                        <ul>
+                            <li><strong>Paresi o Paralisi Flaccida:</strong> Riduzione del tono muscolare e della forza. Nel cavallo, questo può manifestarsi come difficoltà a mantenere la stazione, tremori muscolari o decubito prolungato.</li>
+                            <li><strong>Iporeflessia o Aflessia:</strong> I riflessi spinali (es. patellare, flessore) sono ridotti o assenti. *Eccezione cruciale: nelle miopatie pure, i riflessi possono essere conservati finché la massa muscolare non è gravemente compromessa.*</li>
+                            <li><strong>Atrofia muscolare rapida (Neurogena):</strong> Perdita di massa muscolare evidente entro 1-2 settimane dall'insulto nervoso (più rapida dell'atrofia da disuso). Nel cavallo è spesso evidente sui glutei e sulla linea dorsale.</li>
+                            <li><strong>Fascicolazioni muscolari:</strong> Tremori fini sottocutanei, osservati frequentemente nel cavallo (es. EMND, HYPP) e talvolta nel cane.</li>
+                            <li><strong>Ipotonia:</strong> Ridotta resistenza alla manipolazione passiva degli arti.</li>
+                        </ul>
+
+                        <h3>Iter Diagnostico</h3>
+                        <h4>1. Segnalamento e Anamnesi</h4>
+                        <p>L'età (giovani vs anziani), la razza (predisposizioni genetiche) e l'insorgenza (acuta vs cronica, episodica vs persistente) sono indizi vitali. Ad esempio, una debolezza episodica che peggiora con l'esercizio suggerisce fortemente una miastenia gravis nei piccoli animali. Nel cavallo, la razza è determinante: Quarter Horse (sospetto HYPP), razze da tiro o Quarter Horse (sospetto PSSM).</p>
+
+                        <h4>2. Esame Neurologico</h4>
+                        <p>È essenziale per confermare la localizzazione LMN. Testare i riflessi spinali e le reazioni posturali. Un animale con deficit propriocettivi marcati ma forza normale ha probabilmente un problema centrale o sensoriale, non neuromuscolare. Nel cavallo, la valutazione della debolezza può includere la facilità con cui si riesce a "tirare" la coda lateralmente.</p>
+
+                        <h4>3. Test di Laboratorio di Base</h4>
+                        <ul>
+                            <li><strong>Enzimi Muscolari (CK e AST):</strong> Un aumento marcato di CK (Creatinchinasi) è specifico per danno muscolare (miopatia necrotizzante, distrofia, rabdomiolisi da sforzo nel cavallo). *Nota: valori normali di CK non escludono una miopatia.* Nel cavallo, l'AST è un indicatore cruciale poiché ha un'emivita più lunga della CK, utile per valutare il decorso del danno muscolare.</li>
+                            <li><strong>Elettroliti:</strong> L'ipokaliemia (potassio basso) grave può causare debolezza muscolare severa (es. gatti con insufficienza renale cronica). Nel cavallo, l'iperkaliemia (potassio alto) è patognomonica per gli attacchi di HYPP (Paralisi Periodica Iperkaliemica).</li>
+                            <li><strong>Glucosio:</strong> Per escludere neuropatie diabetiche o ipoglicemia (es. insulinoma).</li>
+                        </ul>
+
+                        <h4>4. Test Specifici Avanzati</h4>
+                        <ul>
+                            <li><strong>Titoli Anticorpali:</strong> Test per Miastenia Gravis (anticorpi anti-recettore acetilcolina) o Miosite dei Masticatori (anticorpi anti-fibre 2M).</li>
+                            <li><strong>Elettrodiagnostica (EMG e VdC):</strong> L'elettromiografia e la velocità di conduzione nervosa aiutano a distinguere tra patologie del nervo (neuropatie) e del muscolo (miopatie).</li>
+                            <li><strong>Biopsia (Muscolare e di Nervo):</strong> Spesso il "gold standard" per la diagnosi definitiva di miopatie infiammatorie o ereditarie. Nel cavallo, la biopsia dei muscoli semimembranoso o semitendinoso è comune per la diagnosi di PSSM.</li>
+                            <li><strong>Test Genetici (Cavallo):</strong> Fondamentali per diagnosticare miopatie ereditarie come PSSM1, HYPP, e GBED senza necessità di biopsia invasiva.</li>
+                            <li><strong>Dosaggio Vitamina E / Selenio:</strong> Importante nel cavallo e negli animali da reddito per escludere miopatie nutrizionali (es. Malattia del Muscolo Bianco, EMND).</li>
+                        </ul>`, 
+                    en: `<h3>Introduction and Definitions</h3>
+                        <p>Generalized <strong>muscle weakness</strong> is a common clinical sign that can result from any pathology affecting the <strong>Motor Unit</strong>. It is essential to distinguish true weakness (inability to generate force) from:</p>
+                        <ul>
+                            <li><strong>Exercise Intolerance:</strong> The animal starts normal but tires quickly (often associated with junctionopathies like Myasthenia Gravis).</li>
+                            <li><strong>Ataxia:</strong> Movement incoordination without loss of strength (often central neurological).</li>
+                            <li><strong>Orthopedic Pain:</strong> Reluctance to move due to pain, not weakness (e.g., laminitis in horses).</li>
+                        </ul>
+
+                        <h3>The Motor Unit: Anatomical Localization</h3>
+                        <p>The peripheral neuromuscular system, or "Lower Motor Neuron" (LMN), is composed of four components. A problem in any of these parts leads to weakness:</p>
+                        <ul>
+                            <li><strong>Motor Neuron Cell Body:</strong> Located in the ventral horn of the spinal cord.</li>
+                            <li><strong>Peripheral Nerve (Axon):</strong> Transports the signal (e.g., polyneuropathies).</li>
+                            <li><strong>Neuromuscular Junction (Motor Endplate):</strong> Where the nerve communicates with the muscle (e.g., Myasthenia Gravis, Botulism).</li>
+                            <li><strong>Skeletal Muscle:</strong> The effector organ (e.g., Inflammatory myopathies, dystrophies, PSSM in horses).</li>
+                        </ul>
+
+                        <h3>Clinical Signs of LMN Disease</h3>
+                        <p>Regardless of the affected component, motor unit pathologies share common clinical signs, defined as <strong>Lower Motor Neuron (LMN) signs</strong>:</p>
+                        <ul>
+                            <li><strong>Flaccid Paresis or Paralysis:</strong> Reduction in muscle tone and strength. In horses, this may manifest as difficulty standing, muscle tremors, or prolonged recumbency.</li>
+                            <li><strong>Hyporeflexia or Areflexia:</strong> Spinal reflexes (e.g., patellar, withdrawal) are reduced or absent. *Crucial exception: in pure myopathies, reflexes may be preserved until muscle mass is severely compromised.*</li>
+                            <li><strong>Rapid Muscle Atrophy (Neurogenic):</strong> Evident loss of muscle mass within 1-2 weeks of nerve insult (faster than disuse atrophy). In horses, often evident on the gluteals and topline.</li>
+                            <li><strong>Muscle Fasciculations:</strong> Fine subcutaneous tremors, frequently observed in horses (e.g., EMND, HYPP) and sometimes in dogs.</li>
+                            <li><strong>Hypotonia:</strong> Reduced resistance to passive limb manipulation.</li>
+                        </ul>
+
+                        <h3>Diagnostic Approach</h3>
+                        <h4>1. Signalment and History</h4>
+                        <p>Age (young vs. old), breed (genetic predispositions), and onset (acute vs. chronic, episodic vs. persistent) are vital clues. For example, episodic weakness that worsens with exercise strongly suggests myasthenia gravis in small animals. In horses, breed is a key factor: Quarter Horse (suspect HYPP), Draft breeds or Quarter Horse (suspect PSSM).</p>
+
+                        <h4>2. Neurological Exam</h4>
+                        <p>Essential to confirm LMN localization. Test spinal reflexes and postural reactions. An animal with marked proprioceptive deficits but normal strength likely has a central or sensory problem, not neuromuscular. In horses, weakness assessment may include the ease with which the tail can be pulled laterally.</p>
+
+                        <h4>3. Baseline Lab Tests</h4>
+                        <ul>
+                            <li><strong>Muscle Enzymes (CK and AST):</strong> A marked increase in CK (Creatine Kinase) is specific for muscle damage (necrotizing myopathy, dystrophy, exertional rhabdomyolysis in horses). *Note: normal CK values do not rule out myopathy.* In horses, AST is a crucial indicator as it has a longer half-life than CK, useful for assessing the time course of muscle damage.</li>
+                            <li><strong>Electrolytes:</strong> Severe hypokalemia (low potassium) can cause severe muscle weakness (e.g., cats with chronic kidney disease). In horses, hyperkalemia (high potassium) is pathognomonic for HYPP (Hyperkalemic Periodic Paralysis) attacks.</li>
+                            <li><strong>Glucose:</strong> To rule out diabetic neuropathies or hypoglycemia (e.g., insulinoma).</li>
+                        </ul>
+
+                        <h4>4. Advanced Specific Tests</h4>
+                        <ul>
+                            <li><strong>Antibody Titers:</strong> Test for Myasthenia Gravis (anti-acetylcholine receptor antibodies) or Masticatory Myositis (anti-2M fiber antibodies).</li>
+                            <li><strong>Electrodiagnostics (EMG and NCV):</strong> Electromyography and nerve conduction velocity help distinguish between nerve pathologies (neuropathies) and muscle pathologies (myopathies).</li>
+                            <li><strong>Biopsy (Muscle and Nerve):</strong> Often the "gold standard" for the definitive diagnosis of inflammatory or hereditary myopathies. In horses, biopsy of the semimembranosus or semitendinosus muscles is common for PSSM diagnosis.</li>
+                            <li><strong>Genetic Tests (Horse):</strong> Fundamental for diagnosing hereditary myopathies like PSSM1, HYPP, and GBED without the need for invasive biopsy.</li>
+                            <li><strong>Vitamin E / Selenium Levels:</strong> Important in horses and farm animals to rule out nutritional myopathies (e.g., White Muscle Disease, EMND).</li>
+                        </ul>` 
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Algoritmo Diagnostico", en: "Diagnostic Algorithm" },
+                infographicLinkDesc: { it: "Un percorso passo-passo per localizzare l'origine della debolezza.", en: "A step-by-step path to localize the origin of weakness." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>COTÉ-ETTINGER-FELDMAN- Ettinger's Textbook of Veterinary Internal Medicine 9° ed., 2448 pagg., 1200 ill., Elsevier, febbraio 2024.</li>
+                         <li>REED-BAYLY-SELLON - Equine Internal Medicine 4th ed., 1600 pp., Elsevier, 2018.</li>`, 
+                    en: `<li>COTÉ-ETTINGER-FELDMAN- Ettinger's Textbook of Veterinary Internal Medicine 9th ed., 2448 pp., 1200 ill., Elsevier, February 2024.</li>
+                         <li>REED-BAYLY-SELLON - Equine Internal Medicine 4th ed., 1600 pp., Elsevier, 2018.</li>` 
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            // --- QUIZ DATA (10 DOMANDE) ---
+            const quizData = {
+                it: [
+                    { question: "Quale dei seguenti NON è un componente dell'unità motoria?", options: ["Nervo periferico", "Cervelletto", "Giunzione neuromuscolare", "Muscolo scheletrico"], answer: "Cervelletto" },
+                    { question: "La debolezza da patologia del Motoneurone Inferiore (LMN) è tipicamente caratterizzata da:", options: ["Iperreflessia", "Tono muscolare aumentato (spasticità)", "Iporeflessia o areflessia", "Assenza di atrofia"], answer: "Iporeflessia o areflessia" },
+                    { question: "Un aumento marcato della Creatinchinasi (CK) sierica suggerisce primariamente:", options: ["Neuropatia", "Miopatia necrotizzante", "Giunzionopatia", "Mielopatia"], answer: "Miopatia necrotizzante" },
+                    { question: "L'atrofia muscolare neurogena (da denervazione) si sviluppa tipicamente in quanto tempo?", options: ["1-2 giorni", "1-2 settimane", "3-4 mesi", "Anni"], answer: "1-2 settimane" },
+                    { question: "Quale squilibrio elettrolitico è una causa comune di debolezza muscolare severa nel gatto?", options: ["Ipernatriemia", "Ipokaliemia (Basso Potassio)", "Ipercloremia", "Iperfosfatemia"], answer: "Ipokaliemia (Basso Potassio)" },
+                    { question: "L'intolleranza all'esercizio che migliora col riposo è un segno classico di:", options: ["Miopatia infiammatoria", "Polineuropatia", "Miastenia Gravis (Giunzionopatia)", "Discopatia"], answer: "Miastenia Gravis (Giunzionopatia)" },
+                    { question: "Quale test è considerato il 'gold standard' per diagnosticare molte miopatie specifiche?", options: ["Risonanza Magnetica", "Biopsia muscolare", "Esame delle urine", "Radiografia"], answer: "Biopsia muscolare" },
+                    { question: "Se i riflessi spinali sono normali in un animale debole, la localizzazione più probabile è:", options: ["Nervo periferico", "Muscolo (Miopatia) o Giunzione", "Midollo spinale lombare", "Midollo spinale cervicale"], answer: "Muscolo (Miopatia) o Giunzione" },
+                    { question: "L'elettromiografia (EMG) serve principalmente a valutare l'integrità elettrica di:", options: ["Cervello", "Midollo spinale", "Muscoli e nervi periferici", "Ossa"], answer: "Muscoli e nervi periferici" },
+                    { question: "In un paziente con atassia propriocettiva pura (senza debolezza), il problema è probabilmente:", options: ["Nell'unità motoria", "Nel sistema sensoriale/centrale", "Nella giunzione neuromuscolare", "Nel muscolo"], answer: "Nel sistema sensoriale/centrale" }
+                ],
+                en: [
+                    { question: "Which of the following is NOT a component of the motor unit?", options: ["Peripheral nerve", "Cerebellum", "Neuromuscular junction", "Skeletal muscle"], answer: "Cerebellum" },
+                    { question: "Weakness from Lower Motor Neuron (LMN) disease is typically characterized by:", options: ["Hyperreflexia", "Increased muscle tone (spasticity)", "Hyporeflexia or areflexia", "Absence of atrophy"], answer: "Hyporeflexia or areflexia" },
+                    { question: "A marked increase in serum Creatine Kinase (CK) primarily suggests:", options: ["Neuropathy", "Necrotizing Myopathy", "Junctionopathy", "Myelopathy"], answer: "Necrotizing Myopathy" },
+                    { question: "Neurogenic muscle atrophy (from denervation) typically develops within:", options: ["1-2 days", "1-2 weeks", "3-4 months", "Years"], answer: "1-2 weeks" },
+                    { question: "Which electrolyte imbalance is a common cause of severe muscle weakness in cats?", options: ["Hypernatremia", "Hypokalemia (Low Potassium)", "Hyperchloremia", "Hyperphosphatemia"], answer: "Hypokalemia (Low Potassium)" },
+                    { question: "Exercise intolerance that improves with rest is a classic sign of:", options: ["Inflammatory myopathy", "Polyneuropathy", "Myasthenia Gravis (Junctionopathy)", "Disc disease"], answer: "Myasthenia Gravis (Junctionopathy)" },
+                    { question: "Which test is considered the 'gold standard' for diagnosing many specific myopathies?", options: ["MRI", "Muscle biopsy", "Urinalysis", "Radiography"], answer: "Muscle biopsy" },
+                    { question: "If spinal reflexes are normal in a weak animal, the most likely localization is:", options: ["Peripheral nerve", "Muscle (Myopathy) or Junction", "Lumbar spinal cord", "Cervical spinal cord"], answer: "Muscle (Myopathy) or Junction" },
+                    { question: "Electromyography (EMG) is primarily used to evaluate the electrical integrity of:", options: ["Brain", "Spinal cord", "Muscles and peripheral nerves", "Bones"], answer: "Muscles and peripheral nerves" },
+                    { question: "In a patient with pure proprioceptive ataxia (without weakness), the problem is likely:", options: ["In the motor unit", "In the sensory/central system", "In the neuromuscular junction", "In the muscle"], answer: "In the sensory/central system" }
+                ]
+            };
+            
+            const audioFile = 'audio_debolezza_muscolare.mp3'; 
+            
+            // --- LOGICA GENERALE (non modificare sotto questo punto) ---
+            
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() {
+                if (synth.speaking || synth.paused) synth.cancel();
+            }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                    return; 
+                }
+                stopSpeech();
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                const cleanup = () => {
+                    if (button) button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+
+                currentUtterance.onend = cleanup;
+                currentUtterance.onerror = (event) => {
+                     if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('An error occurred with speech synthesis:', event.error);
+                     }
+                    cleanup();
+                };
+                
+                activeTTSButton = button;
+                button.classList.add('playing');
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+
+            function initHowler() {
+                if (sound) sound.unload();
+                
+                const playIcon = document.getElementById('play-icon');
+                const pauseIcon = document.getElementById('pause-icon');
+
+                sound = new Howl({
+                    src: [audioFile],
+                    html5: true, 
+                    onplay: () => { 
+                        if (playIcon) playIcon.classList.add('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.remove('hidden'); 
+                    },
+                    onpause: () => { 
+                        if (playIcon) playIcon.classList.remove('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.add('hidden'); 
+                    },
+                    onend: () => { 
+                        if (playIcon) playIcon.classList.remove('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.add('hidden'); 
+                    },
+                    onloaderror: (id, msg) => {
+                        console.error("Error loading audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "File audio non trovato." : "Audio file not found.";
+                    },
+                    onplayerror: (id, msg) => {
+                        console.error("Error playing audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "Impossibile riprodurre l'audio." : "Could not play audio.";
+                    }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            if (playPauseBtn) {
+                playPauseBtn.addEventListener('click', () => {
+                    if (!sound || sound.state() === 'unloaded') {
+                        initHowler(); 
+                    }
+                    
+                    if (sound) {
+                        if (sound.playing()) {
+                            sound.pause();
+                        } else {
+                            sound.play(); 
+                        }
+                    }
+                });
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                            const subtitle = parentElement.nextElementSibling;
+                            if(subtitle && subtitle.dataset.langKey === 'pageSubtitle') {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    const contentClone = content.cloneNode(true);
+                                    contentClone.querySelectorAll('h3, h4').forEach(el => {
+                                        el.textContent = '. ' + el.textContent.trim() + '. ';
+                                    });
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        } 
+                        else if (parentElement.tagName === 'H3') {
+                            const questionTextNode = parentElement.querySelector('span:first-child');
+                            if (questionTextNode) textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
+                        }
+                        else if (parentElement.closest('label')) {
+                            const label = parentElement.closest('label');
+                            const answerTextNode = label.querySelector('span:first-child');
+                            if (answerTextNode) textToRead = answerTextNode.textContent.trim();
+                        }
+                        
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-cyan-50">
+                            <label class="flex items-center justify-between w-full cursor-pointer">
+                                <span class="flex-grow pr-4"><input type="radio" name="q${index}" value="${o}" class="mr-3 text-cyan-600 focus:ring-cyan-500">${o}</span>
+                                <span class="tts-button flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                            </label>
+                        </li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 flex items-center justify-between"><span>${index + 1}. ${q.question}</span><span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content') || key === 'bibliographyContent') {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            const ttsButton = element.querySelector('.tts-button');
+                            element.textContent = translations[key][lang];
+                            if(ttsButton) element.appendChild(ttsButton);
+                        }
+                    }
+                });
+                
+                const navAudio = document.querySelector('a[data-lang-key="navAudio"]');
+                const sectionAudio = document.getElementById('audio');
+                if (lang === 'en') {
+                    if(navAudio) navAudio.style.display = 'none';
+                    if(sectionAudio) sectionAudio.style.display = 'none';
+                    if(sound && sound.playing()) sound.stop(); 
+                } else {
+                    // Mostra audio se italiano
+                    if(navAudio) navAudio.style.display = 'block';
+                    if(sectionAudio) sectionAudio.style.display = 'block';
+                }
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                
+                loadQuiz(lang);
+                setupTTSListeners(); 
+            }
+            
+            // --- EVENT LISTENERS ---
+
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            // Initial setup
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
