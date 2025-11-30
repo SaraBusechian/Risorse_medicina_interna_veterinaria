@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica Rabdomiolisi Equina - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette CIANO */
+        body { font-family: 'Inter', sans-serif; background-color: #ecfeff; /* cyan-50 */ color: #155e75; /* cyan-800 */ }
+        
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .flow-box, .dsa-mode .flow-decision, .dsa-mode .flow-result { background-color: #ffffff; border: 1px solid #e2e8f0; color: #1e293b; }
+        .dsa-mode .flow-arrow { color: #64748b; }
+        .dsa-mode h1, .dsa-mode h2 { color: #1e293b; }
+        .dsa-mode .flow-result.sporadic { background-color: #fef9c3; border-color: #eab308; color: #854d0e; }
+        .dsa-mode .flow-result.chronic { background-color: #fee2e2; border-color: #f87171; color: #b91c1c; }
+        .dsa-mode .flow-box.acute-rx { background-color: #fef2f2; border-color: #f87171; }
+        .dsa-mode .flow-box.chronic-rx { background-color: #f0fdf4; border-color: #4ade80; }
+
+        @media print {
+            #main-header, #main-footer, #back-button, #accessibility-toggle, #lang-toggle { display: none; }
+            body { background-color: #ffffff; color: #000000; }
+            main { padding: 0 !important; margin-top: 2rem; }
+            .flow-box, .flow-decision, .flow-result { border-color: #000000; color: #000000; background-color: #ffffff; box-shadow: none; }
+            .flow-arrow { color: #000000; }
+            h1, h2 { color: #000000; }
+        }
+
+        .flow-container { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+        .flow-box, .flow-decision, .flow-result {
+            width: 90%; max-width: 600px; padding: 1rem 1.5rem;
+            border-radius: 0.5rem; background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center; border: 1px solid #cffafe;
+        }
+        .flow-box strong { color: #0e7490; }
+        
+        /* Terapia Acuta Box */
+        .flow-box.acute-rx {
+            border-left: 5px solid #ef4444; /* red-500 */
+            background-color: #fff1f2; /* rose-50 */
+        }
+        .flow-box.acute-rx strong { color: #991b1b; /* red-800 */ }
+
+        /* Gestione Cronica Box */
+        .flow-box.chronic-rx {
+            border-left: 5px solid #22c55e; /* green-500 */
+            background-color: #f0fdf4; /* green-50 */
+        }
+        .flow-box.chronic-rx strong { color: #166534; /* green-800 */ }
+
+        .flow-decision { background-color: #cffafe; border-color: #67e8f9; font-weight: 600; }
+        
+        .flow-result.sporadic { background-color: #fef9c3; border-color: #eab308; color: #854d0e; font-weight: 700; }
+        .flow-result.chronic { background-color: #fee2e2; border-color: #f87171; color: #b91c1c; font-weight: 700; }
+
+        .flow-arrow { font-size: 2.25rem; line-height: 1; color: #a5f3fc; font-weight: bold; }
+        .flow-split { display: flex; justify-content: space-around; width: 100%; gap: 1rem; }
+        .flow-path { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; flex-basis: 50%; }
+        .flow-path-label { font-weight: 600; color: #0891b2; padding: 0.25rem 0.75rem; background-color: #ffffff; border-radius: 99px; border: 1px solid #67e8f9; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+    </style>
+</head>
+<body class="bg-cyan-50">
+
+    <header id="main-header" class="bg-cyan-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Infografica: Rabdomiolisi Equina</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8" id="back-button">
+            <a href="rabdomiolisi_cavallo.html" class="inline-flex items-center bg-white text-cyan-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-cyan-100 transition duration-300" data-lang-key="backToSummary">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+            </a>
+        </div>
+        
+        <h1 class="text-3xl md:text-4xl font-bold text-cyan-800 text-center mb-4" data-lang-key="pageTitle">Classificazione e Gestione Rabdomiolisi</h1>
+        <h2 class="text-xl text-cyan-700 text-center mb-12" data-lang-key="pageSubtitle">Dalla diagnosi alla prevenzione</h2>
+
+        <div class="flow-container" role="figure" aria-label="Diagramma di flusso per la rabdomiolisi equina">
+            
+            <div class="flow-box" data-lang-key="start">
+                <strong>INIZIO:</strong> Cavallo con rigidità, muscoli duri e urine scure post-sforzo
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-decision" data-lang-key="decision1">
+                È un episodio isolato o ricorrente?
+            </div>
+
+            <div class="flow-split">
+                <!-- RAMO SPORADICA -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathSporadic">Isolato / Causa evidente</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-result sporadic" data-lang-key="resultSporadic">
+                        FORMA SPORADICA
+                    </div>
+                     <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="detailsSporadic">
+                        <strong>Cause Comuni:</strong>
+                        <ul class="list-disc text-left pl-4 mt-2">
+                            <li>Esercizio in soggetto non allenato</li>
+                            <li>Sfinimento da calore</li>
+                            <li>Squilibri elettrolitici</li>
+                            <li>Post-infezione virale</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- RAMO RICORRENTE -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathRecurrent">Episodi ripetuti</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-result chronic" data-lang-key="resultRecurrent">
+                        FORMA RICORRENTE (Genetica)
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="detailsRecurrent">
+                        <strong>Differenziazione:</strong>
+                        <ul class="list-disc text-left pl-4 mt-2">
+                            <li><strong>RER:</strong> TB/Standardbred, nervosi, femmine. Scatenato da stress.</li>
+                            <li><strong>PSSM:</strong> QH/Tiro, calmi. Scatenato da riposo e dieta ricca di amido.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <!-- TERAPIA ACUTA -->
+            <div class="flow-box acute-rx" data-lang-key="acuteTherapy">
+                <strong>TERAPIA ACUTA (Emergenza):</strong>
+                <ul class="list-disc text-left pl-4 mt-2">
+                    <li><strong>RIPOSO ASSOLUTO:</strong> Non muovere il cavallo!</li>
+                    <li><strong>Fluidoterapia:</strong> Protezione renale dai pigmenti.</li>
+                    <li><strong>Analgesia:</strong> FANS (solo se idratato!), Acepromazina (vasodilatatore, attenzione ipotensione).</li>
+                </ul>
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <!-- GESTIONE CRONICA -->
+            <div class="flow-box chronic-rx" data-lang-key="chronicManagement">
+                <strong>GESTIONE CRONICA (Prevenzione Recidive):</strong>
+                <ul class="list-disc text-left pl-4 mt-2">
+                    <li><strong>Dieta:</strong> Basso Amido/Zuccheri, Alti Grassi (Oli) e Fibre.</li>
+                    <li><strong>Esercizio:</strong> Quotidiano e costante (NO box rest).</li>
+                    <li><strong>Ambiente:</strong> Minimizzare stress (per RER).</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-cyan-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Infografica: Rabdomiolisi Equina", en: "Infographic: Equine Rhabdomyolysis" },
+                backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+                pageTitle: { it: "Classificazione e Gestione Rabdomiolisi", en: "Rhabdomyolysis Classification & Management" },
+                pageSubtitle: { it: "Dalla diagnosi alla prevenzione", en: "From diagnosis to prevention" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" },
+                
+                start: { it: "<strong>INIZIO:</strong> Cavallo con rigidità, muscoli duri e urine scure post-sforzo", en: "<strong>START:</strong> Horse with stiffness, hard muscles, and dark urine after exercise" },
+                decision1: { it: "È un episodio isolato o ricorrente?", en: "Is it an isolated or recurrent episode?" },
+                pathSporadic: { it: "Isolato / Causa evidente", en: "Isolated / Evident cause" },
+                resultSporadic: { it: "FORMA SPORADICA", en: "SPORADIC FORM" },
+                detailsSporadic: { it: `<strong>Cause Comuni:</strong><ul class="list-disc text-left pl-4 mt-2"><li>Esercizio in soggetto non allenato</li><li>Sfinimento da calore</li><li>Squilibri elettrolitici</li><li>Post-infezione virale</li></ul>`, en: `<strong>Common Causes:</strong><ul class="list-disc text-left pl-4 mt-2"><li>Exercise in unfit horse</li><li>Heat exhaustion</li><li>Electrolyte imbalance</li><li>Post-viral infection</li></ul>` },
+                pathRecurrent: { it: "Episodi ripetuti", en: "Repeated episodes" },
+                resultRecurrent: { it: "FORMA RICORRENTE (Genetica)", en: "RECURRENT FORM (Genetic)" },
+                detailsRecurrent: { it: `<strong>Differenziazione:</strong><ul class="list-disc text-left pl-4 mt-2"><li><strong>RER:</strong> TB/Standardbred, nervosi, femmine. Scatenato da stress.</li><li><strong>PSSM:</strong> QH/Tiro, calmi. Scatenato da riposo e dieta ricca di amido.</li></ul>`, en: `<strong>Differentiation:</strong><ul class="list-disc text-left pl-4 mt-2"><li><strong>RER:</strong> TB/Standardbred, nervous, females. Stress-induced.</li><li><strong>PSSM:</strong> QH/Draft, calm. Rest/starch diet induced.</li></ul>` },
+                
+                // Nuove traduzioni
+                acuteTherapy: {
+                    it: `<strong>TERAPIA ACUTA (Emergenza):</strong>
+                         <ul class="list-disc text-left pl-4 mt-2">
+                             <li><strong>RIPOSO ASSOLUTO:</strong> Non muovere il cavallo!</li>
+                             <li><strong>Fluidoterapia:</strong> Protezione renale dai pigmenti.</li>
+                             <li><strong>Analgesia:</strong> FANS (solo se idratato!), Acepromazina (vasodilatatore, attenzione ipotensione).</li>
+                         </ul>`,
+                    en: `<strong>ACUTE THERAPY (Emergency):</strong>
+                         <ul class="list-disc text-left pl-4 mt-2">
+                             <li><strong>ABSOLUTE REST:</strong> Do not move the horse!</li>
+                             <li><strong>Fluid Therapy:</strong> Renal protection from pigments.</li>
+                             <li><strong>Analgesia:</strong> NSAIDs (only if hydrated!), Acepromazine (vasodilator, watch for hypotension).</li>
+                         </ul>`
+                },
+                chronicManagement: {
+                    it: `<strong>GESTIONE CRONICA (Prevenzione Recidive):</strong>
+                         <ul class="list-disc text-left pl-4 mt-2">
+                             <li><strong>Dieta:</strong> Basso Amido/Zuccheri, Alti Grassi (Oli) e Fibre.</li>
+                             <li><strong>Esercizio:</strong> Quotidiano e costante (NO box rest).</li>
+                             <li><strong>Ambiente:</strong> Minimizzare stress (per RER).</li>
+                         </ul>`,
+                    en: `<strong>CHRONIC MANAGEMENT (Prevention):</strong>
+                         <ul class="list-disc text-left pl-4 mt-2">
+                             <li><strong>Diet:</strong> Low Starch/Sugar, High Fat (Oils) and Fiber.</li>
+                             <li><strong>Exercise:</strong> Daily and consistent (NO box rest).</li>
+                             <li><strong>Environment:</strong> Minimize stress (for RER).</li>
+                         </ul>`
+                }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+            
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
