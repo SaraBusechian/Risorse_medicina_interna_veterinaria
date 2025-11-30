@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica Rabdomiolisi - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette CIANO */
+        body { font-family: 'Inter', sans-serif; background-color: #ecfeff; /* cyan-50 */ color: #155e75; /* cyan-800 */ }
+        
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #f8fafc !important; letter-spacing: 0.05em; line-height: 1.75; color: #1e293b; }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .flow-box, .dsa-mode .flow-decision, .dsa-mode .flow-result { background-color: #ffffff; border: 1px solid #e2e8f0; color: #1e293b; }
+        .dsa-mode .flow-arrow { color: #64748b; }
+        .dsa-mode h1, .dsa-mode h2 { color: #1e293b; }
+        
+        /* Box specifici per categorie */
+        .flow-box.traumatic { border-left: 5px solid #ef4444; background-color: #fef2f2; } /* Red - Trauma */
+        .flow-box.exertional { border-left: 5px solid #eab308; background-color: #fefce8; } /* Yellow - Sforzo */
+        .flow-box.toxic { border-left: 5px solid #a855f7; background-color: #faf5ff; } /* Purple - Tossico */
+        .flow-box.infectious { border-left: 5px solid #22c55e; background-color: #f0fdf4; } /* Green - Infettivo */
+
+        @media print {
+            #main-header, #main-footer, #back-button, #accessibility-toggle, #lang-toggle { display: none; }
+            body { background-color: #ffffff; color: #000000; }
+            main { padding: 0 !important; margin-top: 2rem; }
+            .flow-box, .flow-decision, .flow-result { border-color: #000000; color: #000000; background-color: #ffffff; box-shadow: none; }
+            .flow-arrow { color: #000000; }
+            h1, h2 { color: #000000; }
+        }
+
+        .flow-container { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+        .flow-box, .flow-decision, .flow-result {
+            width: 90%; max-width: 700px; padding: 1rem 1.5rem;
+            border-radius: 0.5rem; background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center; border: 1px solid #cffafe;
+        }
+        .flow-box strong { color: #0e7490; }
+        .flow-decision { background-color: #cffafe; border-color: #67e8f9; font-weight: 600; }
+        
+        .flow-arrow { font-size: 2.25rem; line-height: 1; color: #a5f3fc; font-weight: bold; }
+        
+        /* Grid per le eziologie */
+        .etiology-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            width: 100%;
+            max-width: 800px;
+        }
+        @media (min-width: 768px) {
+            .etiology-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body class="bg-cyan-50">
+
+    <header id="main-header" class="bg-cyan-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Infografica: Rabdomiolisi</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8" id="back-button">
+            <a href="approccio_rabdomiolisi.html" class="inline-flex items-center bg-white text-cyan-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-cyan-100 transition duration-300" data-lang-key="backToSummary">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+            </a>
+        </div>
+        
+        <h1 class="text-3xl md:text-4xl font-bold text-cyan-800 text-center mb-4" data-lang-key="pageTitle">Approccio Clinico alla Rabdomiolisi</h1>
+        <h2 class="text-xl text-cyan-700 text-center mb-12" data-lang-key="pageSubtitle">Dalla presentazione clinica alla terapia</h2>
+
+        <div class="flow-container" role="figure" aria-label="Diagramma di flusso per l'approccio alla rabdomiolisi">
+            
+            <!-- STEP 1: Sospetto -->
+            <div class="flow-box" data-lang-key="step1">
+                <strong>1. SOSPETTO CLINICO:</strong><br>
+                Dolore muscolare, rigidità, debolezza, urine scure ("Coca-Cola")
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+
+            <!-- STEP 2: Conferma -->
+            <div class="flow-decision" data-lang-key="step2">
+                2. CONFERMA DIAGNOSTICA
+            </div>
+            <div class="flow-box" data-lang-key="step2Detail">
+                <ul class="list-disc text-left pl-4">
+                    <li><strong>CK & AST:</strong> Aumentati (CK = Danno Acuto, AST = Danno persistente/lento)</li>
+                    <li><strong>Urine:</strong> Mioglobinuria (Surnatante Scuro + <strong>Plasma CHIARO</strong>)</li>
+                    <li><strong>Elettroliti:</strong> Rischio Iperkaliemia</li>
+                </ul>
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <!-- STEP 3: Eziologia -->
+            <div class="flow-decision" data-lang-key="step3">
+                3. CLASSIFICAZIONE EZIOLOGICA (La Causa)
+            </div>
+
+            <div class="etiology-grid">
+                <!-- Traumatica -->
+                <div class="flow-box traumatic" data-lang-key="cause1">
+                    <strong>TRAUMATICA / ISCHEMICA</strong><br>
+                    <ul class="list-disc text-left pl-4 text-sm mt-2">
+                        <li>Trauma diretto (HBC)</li>
+                        <li>Schiacciamento</li>
+                        <li>Anestesia prolungata (Cavallo)</li>
+                        <li>Tromboembolismo (Gatto)</li>
+                    </ul>
+                </div>
+                <!-- Sforzo -->
+                <div class="flow-box exertional" data-lang-key="cause2">
+                    <strong>DA SFORZO (EXERTIONAL)</strong><br>
+                    <ul class="list-disc text-left pl-4 text-sm mt-2">
+                        <li>Esercizio intenso (non allenati)</li>
+                        <li>Ipertermia / Colpo di calore</li>
+                        <li>Predisposizione genetica (PSSM, RER, EIC)</li>
+                    </ul>
+                </div>
+                <!-- Tossica/Nutrizionale -->
+                <div class="flow-box toxic" data-lang-key="cause3">
+                    <strong>TOSSICA / NUTRIZIONALE</strong><br>
+                    <ul class="list-disc text-left pl-4 text-sm mt-2">
+                        <li>Farmaci / Veleni (Ionofori, Serpenti)</li>
+                        <li>Carenza Vitamina E / Selenio</li>
+                        <li>Ipertermia Maligna</li>
+                    </ul>
+                </div>
+                <!-- Infettiva -->
+                <div class="flow-box infectious" data-lang-key="cause4">
+                    <strong>INFETTIVA / INFIAMMATORIA</strong><br>
+                    <ul class="list-disc text-left pl-4 text-sm mt-2">
+                        <li>Clostridi (Gangrena)</li>
+                        <li>Protozoi (Neospora, Hepatozoon)</li>
+                        <li>Immunomediata (Polimiosite, MMM)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+
+            <!-- STEP 4: Terapia -->
+            <div class="flow-box" style="border-left: 5px solid #0891b2; background-color: #ecfeff;" data-lang-key="step4">
+                <strong>4. TERAPIA D'URGENZA (Priorità Rene)</strong><br>
+                <ul class="list-disc text-left pl-4 mt-2">
+                    <li><strong>Fluidoterapia Aggressiva:</strong> Per diuresi e "lavaggio" mioglobina.</li>
+                    <li><strong>Analgesia:</strong> Oppioidi o FANS (Solo se idratato!).</li>
+                    <li><strong>Correzione Causa:</strong> Riposo, Antidoti, Antibiotici, ecc.</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-cyan-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Infografica: Rabdomiolisi", en: "Infographic: Rhabdomyolysis" },
+                backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+                pageTitle: { it: "Approccio Clinico alla Rabdomiolisi", en: "Clinical Approach to Rhabdomyolysis" },
+                pageSubtitle: { it: "Dalla presentazione clinica alla terapia", en: "From clinical presentation to therapy" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" },
+                
+                step1: { it: "<strong>1. SOSPETTO CLINICO:</strong><br>Dolore muscolare, rigidità, debolezza, urine scure ('Coca-Cola')", en: "<strong>1. CLINICAL SUSPICION:</strong><br>Muscle pain, stiffness, weakness, dark urine ('Coca-Cola')" },
+                
+                step2: { it: "2. CONFERMA DIAGNOSTICA", en: "2. DIAGNOSTIC CONFIRMATION" },
+                step2Detail: { 
+                    it: "<ul class='list-disc text-left pl-4'><li><strong>CK & AST:</strong> Aumentati (CK = Danno Acuto, AST = Danno persistente/lento)</li><li><strong>Urine:</strong> Mioglobinuria (Surnatante Scuro + <strong>Plasma CHIARO</strong>)</li><li><strong>Elettroliti:</strong> Rischio Iperkaliemia</li></ul>", 
+                    en: "<ul class='list-disc text-left pl-4'><li><strong>CK & AST:</strong> Elevated (CK = Acute, AST = Persistent/Slow)</li><li><strong>Urine:</strong> Myoglobinuria (Dark Supernatant + <strong>CLEAR Plasma</strong>)</li><li><strong>Electrolytes:</strong> Risk of Hyperkalemia</li></ul>" 
+                },
+
+                step3: { it: "3. CLASSIFICAZIONE EZIOLOGICA (La Causa)", en: "3. ETIOLOGICAL CLASSIFICATION (The Cause)" },
+                
+                cause1: {
+                    it: "<strong>TRAUMATICA / ISCHEMICA</strong><br><ul class='list-disc text-left pl-4 text-sm mt-2'><li>Trauma diretto (HBC)</li><li>Schiacciamento</li><li>Anestesia prolungata (Cavallo)</li><li>Tromboembolismo (Gatto)</li></ul>",
+                    en: "<strong>TRAUMATIC / ISCHEMIC</strong><br><ul class='list-disc text-left pl-4 text-sm mt-2'><li>Direct Trauma (HBC)</li><li>Crush injury</li><li>Prolonged anesthesia (Horse)</li><li>Thromboembolism (Cat)</li></ul>"
+                },
+                cause2: {
+                    it: "<strong>DA SFORZO (EXERTIONAL)</strong><br><ul class='list-disc text-left pl-4 text-sm mt-2'><li>Esercizio intenso (non allenati)</li><li>Ipertermia / Colpo di calore</li><li>Predisposizione genetica (PSSM, RER, EIC)</li></ul>",
+                    en: "<strong>EXERTIONAL</strong><br><ul class='list-disc text-left pl-4 text-sm mt-2'><li>Intense exercise (unfit)</li><li>Hyperthermia / Heat stroke</li><li>Genetic predisposition (PSSM, RER, EIC)</li></ul>"
+                },
+                cause3: {
+                    it: "<strong>TOSSICA / NUTRIZIONALE</strong><br><ul class='list-disc text-left pl-4 text-sm mt-2'><li>Farmaci / Veleni (Ionofori, Serpenti)</li><li>Carenza Vitamina E / Selenio</li><li>Ipertermia Maligna</li></ul>",
+                    en: "<strong>TOXIC / NUTRITIONAL</strong><br><ul class='list-disc text-left pl-4 text-sm mt-2'><li>Drugs / Toxins (Ionophores, Snakes)</li><li>Vit E / Selenium Deficiency</li><li>Malignant Hyperthermia</li></ul>"
+                },
+                cause4: {
+                    it: "<strong>INFETTIVA / INFIAMMATORIA</strong><br><ul class='list-disc text-left pl-4 text-sm mt-2'><li>Clostridi (Gangrena)</li><li>Protozoi (Neospora, Hepatozoon)</li><li>Immunomediata (Polimiosite, MMM)</li></ul>",
+                    en: "<strong>INFECTIOUS / INFLAMMATORY</strong><br><ul class='list-disc text-left pl-4 text-sm mt-2'><li>Clostridia (Gangrene)</li><li>Protozoa (Neospora, Hepatozoon)</li><li>Immune-mediated (Polymyositis, MMM)</li></ul>"
+                },
+
+                step4: { 
+                    it: "<strong>4. TERAPIA D'URGENZA (Priorità Rene)</strong><br><ul class='list-disc text-left pl-4 mt-2'><li><strong>Fluidoterapia Aggressiva:</strong> Per diuresi e 'lavaggio' mioglobina.</li><li><strong>Analgesia:</strong> Oppioidi o FANS (Solo se idratato!).</li><li><strong>Correzione Causa:</strong> Riposo, Antidoti, Antibiotici, ecc.</li></ul>", 
+                    en: "<strong>4. EMERGENCY THERAPY (Kidney Priority)</strong><br><ul class='list-disc text-left pl-4 mt-2'><li><strong>Aggressive Fluid Therapy:</strong> For diuresis and myoglobin 'washout'.</li><li><strong>Analgesia:</strong> Opioids or NSAIDs (Only if hydrated!).</li><li><strong>Correct Cause:</strong> Rest, Antidotes, Antibiotics, etc.</li></ul>" 
+                }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+            
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
