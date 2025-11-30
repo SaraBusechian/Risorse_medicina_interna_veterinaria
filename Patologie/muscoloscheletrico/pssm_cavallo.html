@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="titleTag">Miopatia da Accumulo di Polisaccaridi (PSSM) - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette CIANO */
+        body { font-family: 'Inter', sans-serif; background-color: #ecfeff; /* cyan-50 */ color: #1e293b; /* slate-800 */ }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; color: #0891b2; /* cyan-600 */ }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #0e7490; /* cyan-700 */ color: #155e75; /* cyan-800 */ }
+        
+        /* Modalità DSA */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #f8fafc !important; letter-spacing: 0.05em; line-height: 1.75; color: #1e293b; }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #ffffff; border: 1px solid #e2e8f0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #1e293b; }
+        .dsa-mode .prose strong { color: #000000; }
+        .dsa-mode .prose h3 { color: #1e293b; border-bottom-color: #94a3b8; }
+        .dsa-mode .prose h4 { color: #1e293b; }
+        .dsa-mode .nav-link { color: #334155; }
+        .dsa-mode .nav-link:hover, .dsa-mode .nav-link.active { border-bottom-color: #334155; color: #000000; }
+        .dsa-mode .quiz-question { border-color: #cbd5e1; }
+        .dsa-mode .quiz-option:hover { background-color: #f1f5f9; }
+
+        /* Bottoni TTS */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #0891b2; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #06b6d4; }
+        
+        /* Stili riassunto */
+        .prose h3 { font-size: 1.5rem; font-weight: 600; color: #0e7490; margin-top: 2rem; margin-bottom: 1rem; padding-bottom: 0.25rem; border-bottom: 1px solid #bae6fd; }
+        .prose p, .prose ul { font-size: 1rem; line-height: 1.75; color: #374151; margin-bottom: 1.25rem; }
+        .prose strong { color: #155e75; font-weight: 600; }
+        .prose ul { list-style-type: disc; padding-left: 1.75rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose h4 { font-size: 1.25rem; font-weight: 600; color: #0e7490; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .dsa-mode .prose h4 { color: #1e293b; }
+        .quiz-question { border: 1px solid #bae6fd; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #ecfeff; }
+        .quiz-question.correct { background-color: #dcfce7; border-color: #4ade80; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #f87171; }
+
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, a[href*="infografica"], a[href*="index.html"] { display: none; }
+            body, .content-section { background-color: #ffffff !important; color: #000000 !important; }
+            .content-section { box-shadow: none; border: none; }
+            h1, h2, h3, h4, p, li, strong { color: #000000 !important; }
+            .prose h3 { border-color: #000000; }
+        }
+    </style>
+</head>
+<body class="bg-cyan-50">
+
+    <header id="main-header" class="bg-cyan-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Muscoloscheletriche</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-cyan-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-cyan-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Muscoloscheletrico</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-cyan-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-cyan-800" data-lang-key="pageTitle">Miopatia da Accumulo di Polisaccaridi (PSSM)<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-cyan-700 mt-2" data-lang-key="pageSubtitle">Patologia genetica del metabolismo del glicogeno nel cavallo.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_pssm.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-cyan-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-cyan-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona DNA">🧬</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-cyan-800" data-lang-key="infographicLinkTitle">PSSM1 vs PSSM2</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Guida visuale per la distinzione e gestione dei due tipi.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-cyan-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-cyan-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-cyan-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-cyan-500 text-white rounded-full hover:bg-cyan-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-cyan-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-cyan-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_pssm_cavallo.mp3" download class="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-cyan-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-cyan-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                titleTag: { it: "PSSM Cavallo - MedVet", en: "Equine PSSM - MedVet" },
+                siteTitle: { it: "Patologie Muscoloscheletriche", en: "Musculoskeletal Diseases" },
+                backToIndexText: { it: "Indice Muscoloscheletrico", en: "Musculoskeletal Index" },
+                pageTitle: { it: "Miopatia da Accumulo di Polisaccaridi (PSSM)", en: "Polysaccharide Storage Myopathy (PSSM)" },
+                pageSubtitle: { it: "Patologia genetica del metabolismo del glicogeno nel cavallo.", en: "Genetic disorder of glycogen metabolism in horses." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: '<h3>Definizione e Patogenesi</h3>' +
+                        '<p>La <strong>PSSM (Polysaccharide Storage Myopathy)</strong> è una miopatia da accumulo caratterizzata da un\'anomala sintesi e immagazzinamento di glicogeno nel muscolo scheletrico. Il glicogeno accumulato (polisaccaride) è spesso resistente alla digestione con amilasi.</p>' +
+                        '<p>Esistono due tipi principali:</p>' +
+                        '<ul><li><strong>PSSM Tipo 1:</strong> Causata da una mutazione puntiforme "Gain of Function" nel gene della Glicogeno Sintasi 1 (<strong>GYS1</strong>). Questa mutazione rende l\'enzima iperattivo, portando a un eccessivo accumulo di glicogeno anche a riposo. È prevalente nei Quarter Horse, Paint, Appaloosa e razze da tiro (Belgi, Percheron).</li>' +
+                        '<li><strong>PSSM Tipo 2:</strong> Include cavalli con segni clinici e istopatologici di accumulo di glicogeno anomalo, ma <strong>negativi per la mutazione GYS1</strong>. L\'eziologia esatta è ancora sconosciuta e probabilmente multifattoriale. Colpisce spesso Quarter Horse da performance, Warmblood e Arabi.</li></ul>' +
+                        '<h3>Segni Clinici</h3>' +
+                        '<p>I segni clinici sono tipici di una rabdomiolisi da sforzo ricorrente, ma possono variare in gravità.</p>' +
+                        '<ul><li><strong>Intolleranza all\'esercizio e Calo delle Performance:</strong> Spesso il primo segno. Il cavallo appare "pigro", riluttante al lavoro o a mantenere l\'andatura.</li>' +
+                        '<li><strong>Rigidità e Dolore Muscolare:</strong> Andatura rigida, fascicolazioni muscolari, muscoli duri alla palpazione (glutei, semimembranoso).</li>' +
+                        '<li><strong>Difficoltà nei Movimenti Specifici:</strong> Riluttanza a indietreggiare, difficoltà nel raccogliere il posteriore, cambio di galoppo difficoltoso.</li>' +
+                        '<li><strong>Atrofia Muscolare:</strong> Nei casi cronici (soprattutto PSSM2), si può osservare atrofia dei muscoli della linea dorsale e della groppa, nonostante l\'allenamento.</li>' +
+                        '<li><strong>Episodi Acuti di Tying-Up:</strong> Sudorazione, mioglobinuria e decubito possono verificarsi dopo esercizio, specialmente dopo un periodo di riposo.</li></ul>' +
+                        '<h3>Diagnosi</h3>' +
+                        '<p>L\'approccio diagnostico dipende dalla razza e dalla disponibilità di test.</p>' +
+                        '<ul><li><strong>Test Genetico (GYS1):</strong> È il "gold standard" per la <strong>PSSM Tipo 1</strong>. Si effettua su sangue o bulbo pilifero. È il primo step per Quarter Horse e razze da tiro.</li>' +
+                        '<li><strong>Biopsia Muscolare:</strong> Necessaria per diagnosticare la <strong>PSSM Tipo 2</strong> (o se il test genetico è negativo ma i sintomi persistono). Si preleva tipicamente dal muscolo semimembranoso o semitendinoso.<ul><li>Istopatologia: Presenza di vacuoli subsarcolemmali e aggregati di glicogeno PAS-positivi, alcuni dei quali resistenti all\'amilasi.</li></ul></li>' +
+                        '<li><strong>Enzimi Muscolari (CK e AST):</strong> Spesso elevati durante/dopo l\'esercizio. Nella PSSM1, il CK può essere elevato anche a riposo (subclinico). Nella PSSM2, il CK a riposo è spesso normale.</li></ul>' +
+                        '<h3>Terapia e Gestione</h3>' +
+                        '<p>La PSSM non si cura, ma si <strong>gestisce</strong> efficacemente con dieta ed esercizio. L\'obiettivo è ridurre la sintesi di glicogeno e favorire l\'uso dei grassi come fonte energetica.</p>' +
+                        '<h4>1. Dieta (Low Starch - High Fat)</h4>' +
+                        '<ul><li><strong>Ridurre Amido e Zuccheri:</strong> Eliminare cereali (avena, mais, orzo) e melassa. Il contenuto di carboidrati non strutturali (NSC) della razione totale deve essere <strong>inferiore al 10-12%</strong>.</li>' +
+                        '<li><strong>Aumentare i Grassi:</strong> Integrare con oli vegetali (es. olio di soia, riso) o mangimi specifici ricchi di grassi come fonte di energia alternativa ("calm energy").</li>' +
+                        '<li><strong>Vitamina E:</strong> Supplementare (es. 1000-2000 UI/die) come antiossidante, specialmente se si somministrano oli.</li></ul>' +
+                        '<h4>2. Esercizio Fisico</h4>' +
+                        '<ul><li><strong>Costanza è Cruciale:</strong> L\'esercizio deve essere quotidiano. Anche solo 10 minuti di movimento sono meglio del riposo assoluto.</li>' +
+                        '<li><strong>No Box Rest:</strong> Il confinamento in box aumenta drammaticamente il rischio di episodi acuti. Il pascolo o paddock quotidiano è essenziale.</li>' +
+                        '<li><strong>Riscaldamento Prolungato:</strong> Consentire un riscaldamento lungo e graduale prima del lavoro intenso.</li></ul>', 
+                    en: '<h3>Definition and Pathogenesis</h3>' +
+                        '<p><strong>PSSM (Polysaccharide Storage Myopathy)</strong> is a storage myopathy characterized by abnormal synthesis and storage of glycogen in skeletal muscle. The accumulated glycogen (polysaccharide) is often resistant to amylase digestion.</p>' +
+                        '<p>There are two main types:</p>' +
+                        '<ul><li><strong>PSSM Type 1:</strong> Caused by a "Gain of Function" point mutation in the Glycogen Synthase 1 gene (<strong>GYS1</strong>). This mutation makes the enzyme hyperactive, leading to excessive glycogen accumulation even at rest. It is prevalent in Quarter Horses, Paints, Appaloosas, and Draft breeds (Belgians, Percherons).</li>' +
+                        '<li><strong>PSSM Type 2:</strong> Includes horses with clinical and histopathological signs of abnormal glycogen accumulation but <strong>negative for the GYS1 mutation</strong>. The exact etiology is unknown and likely multifactorial. It often affects performance Quarter Horses, Warmbloods, and Arabians.</li></ul>' +
+                        '<h3>Clinical Signs</h3>' +
+                        '<p>Clinical signs are typical of recurrent exertional rhabdomyolysis but can vary in severity.</p>' +
+                        '<ul><li><strong>Exercise Intolerance and Poor Performance:</strong> Often the first sign. The horse appears "lazy", reluctant to work or maintain gait.</li>' +
+                        '<li><strong>Stiffness and Muscle Pain:</strong> Stiff gait, muscle fasciculations, hard muscles on palpation (gluteals, semimembranosus).</li>' +
+                        '<li><strong>Difficulty in Specific Movements:</strong> Reluctance to back up, difficulty collecting the hindquarters, trouble changing leads.</li>' +
+                        '<li><strong>Muscle Atrophy:</strong> In chronic cases (especially PSSM2), atrophy of the topline and croup muscles may be observed despite training.</li>' +
+                        '<li><strong>Acute Tying-Up Episodes:</strong> Sweating, myoglobinuria, and recumbency can occur after exercise, especially after a period of rest.</li></ul>' +
+                        '<h3>Diagnosis</h3>' +
+                        '<p>The diagnostic approach depends on the breed and test availability.</p>' +
+                        '<ul><li><strong>Genetic Test (GYS1):</strong> It is the "gold standard" for <strong>PSSM Type 1</strong>. Performed on blood or hair root. It is the first step for Quarter Horses and Draft breeds.</li>' +
+                        '<li><strong>Muscle Biopsy:</strong> Necessary to diagnose <strong>PSSM Type 2</strong> (or if the genetic test is negative but symptoms persist). Typically taken from the semimembranosus or semitendinosus muscle.<ul><li>Histopathology: Presence of subsarcolemmal vacuoles and PAS-positive glycogen aggregates, some of which are amylase-resistant.</li></ul></li>' +
+                        '<li><strong>Muscle Enzymes (CK and AST):</strong> Often elevated during/after exercise. In PSSM1, CK can be elevated even at rest (subclinical). In PSSM2, resting CK is often normal.</li></ul>' +
+                        '<h3>Therapy and Management</h3>' +
+                        '<p>PSSM cannot be cured, but it can be effectively <strong>managed</strong> with diet and exercise. The goal is to reduce glycogen synthesis and promote fat use as an energy source.</p>' +
+                        '<h4>1. Diet (Low Starch - High Fat)</h4>' +
+                        '<ul><li><strong>Reduce Starch and Sugars:</strong> Eliminate grains (oats, corn, barley) and molasses. The Non-Structural Carbohydrate (NSC) content of the total ration must be <strong>less than 10-12%</strong>.</li>' +
+                        '<li><strong>Increase Fats:</strong> Supplement with vegetable oils (e.g., soy, rice oil) or specific high-fat feeds as an alternative energy source ("calm energy").</li>' +
+                        '<li><strong>Vitamin E:</strong> Supplement (e.g., 1000-2000 IU/day) as an antioxidant, especially if feeding oils.</li></ul>' +
+                        '<h4>2. Physical Exercise</h4>' +
+                        '<ul><li><strong>Consistency is Crucial:</strong> Exercise must be daily. Even 10 minutes of movement is better than absolute rest.</li>' +
+                        '<li><strong>No Box Rest:</strong> Box confinement dramatically increases the risk of acute episodes. Daily pasture or paddock turnout is essential.</li>' +
+                        '<li><strong>Extended Warm-up:</strong> Allow for a long, gradual warm-up before intense work.</li></ul>' 
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "PSSM1 vs PSSM2", en: "PSSM1 vs PSSM2" },
+                infographicLinkDesc: { it: "Guida visuale per la distinzione e gestione dei due tipi.", en: "Visual guide for distinguishing and managing the two types." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: '<li>REED-BAYLY-SELLON - Equine Internal Medicine 4th ed., 1600 pp., Elsevier, 2018.</li>' +
+                        '<li>VALBERG SJ, MCKENZIE EC (Eds). Equine Myopathies. Veterinary Clinics of North America: Equine Practice. April 2025; 41(1): 1-226.</li>' +
+                        '<li>Valberg SJ. Musculoskeletal system. In: Reed SM, Bayly WM, Sellon DC, eds. Equine Internal Medicine. 4th ed. St. Louis, MO: Elsevier; 2018:383-479.</li>', 
+                    en: '<li>REED-BAYLY-SELLON - Equine Internal Medicine 4th ed., 1600 pp., Elsevier, 2018.</li>' +
+                        '<li>VALBERG SJ, MCKENZIE EC (Eds). Equine Myopathies. Veterinary Clinics of North America: Equine Practice. April 2025; 41(1): 1-226.</li>' +
+                        '<li>Valberg SJ. Musculoskeletal system. In: Reed SM, Bayly WM, Sellon DC, eds. Equine Internal Medicine. 4th ed. St. Louis, MO: Elsevier; 2018:383-479.</li>' 
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Quale gene è mutato nella PSSM di Tipo 1?", options: ["RYR1", "GYS1", "SCN4A", "ATP2A1"], answer: "GYS1" },
+                    { question: "Qual è il principale obiettivo dietetico per un cavallo PSSM?", options: ["Aumentare proteine e amido", "Ridurre amido/zuccheri (<10%) e aumentare grassi", "Dieta esclusiva a fieno di erba medica", "Digiuno intermittente"], answer: "Ridurre amido/zuccheri (<10%) e aumentare grassi" },
+                    { question: "Quali razze sono maggiormente predisposte alla PSSM Tipo 1?", options: ["Purosangue Inglese (TB) e Standardbred", "Arabo e Morgan", "Quarter Horse e razze da tiro", "Pony Shetland e Falabella"], answer: "Quarter Horse e razze da tiro" },
+                    { question: "Come si diagnostica definitivamente la PSSM Tipo 2?", options: ["Test genetico GYS1", "Biopsia muscolare", "Esame delle urine", "Ecografia muscolare"], answer: "Biopsia muscolare" },
+                    { question: "Perché è importante l'esercizio costante nella gestione della PSSM?", options: ["Per aumentare la massa muscolare", "Per bruciare il glicogeno accumulato e migliorare il metabolismo", "Per stancare il cavallo", "Non è importante, meglio il riposo"], answer: "Per bruciare il glicogeno accumulato e migliorare il metabolismo" },
+                    { question: "Quali segni clinici sono comuni sia alla PSSM che ad altre miopatie da sforzo?", options: ["Diarrea e dimagrimento", "Tosse e scolo nasale", "Rigidità e riluttanza al movimento", "Cecità e sordità"], answer: "Rigidità e riluttanza al movimento" },
+                    { question: "Nella PSSM1, l'enzima Glicogeno Sintasi è:", options: ["Assente", "Iperattivo (Gain of Function)", "Inattivo", "Normale"], answer: "Iperattivo (Gain of Function)" },
+                    { question: "Il test genetico per PSSM1 si può effettuare su:", options: ["Solo biopsia muscolare", "Sangue intero o bulbo pilifero", "Urine", "Saliva"], answer: "Sangue intero o bulbo pilifero" },
+                    { question: "Quale vitamina è importante supplementare se si somministrano oli nella dieta?", options: ["Vitamina A", "Vitamina B12", "Vitamina E", "Vitamina C"], answer: "Vitamina E" },
+                    { question: "Il confinamento in box per un cavallo PSSM:", options: ["È raccomandato per il recupero", "Non ha effetti significativi", "Aumenta il rischio di episodi acuti", "Serve a calmare il cavallo"], answer: "Aumenta il rischio di episodi acuti" }
+                ],
+                en: [
+                    { question: "Which gene is mutated in PSSM Type 1?", options: ["RYR1", "GYS1", "SCN4A", "ATP2A1"], answer: "GYS1" },
+                    { question: "What is the main dietary goal for a PSSM horse?", options: ["Increase protein and starch", "Reduce starch/sugar (<10%) and increase fat", "Alfalfa hay only diet", "Intermittent fasting"], answer: "Reduce starch/sugar (<10%) and increase fat" },
+                    { question: "Which breeds are most predisposed to PSSM Type 1?", options: ["Thoroughbred (TB) and Standardbred", "Arabian and Morgan", "Quarter Horse and Draft breeds", "Shetland Pony and Falabella"], answer: "Quarter Horse and Draft breeds" },
+                    { question: "How is PSSM Type 2 definitively diagnosed?", options: ["GYS1 genetic test", "Muscle biopsy", "Urine analysis", "Muscle ultrasound"], answer: "Muscle biopsy" },
+                    { question: "Why is consistent exercise important in PSSM management?", options: ["To increase muscle mass", "To burn accumulated glycogen and improve metabolism", "To tire the horse out", "It is not important, rest is better"], answer: "To burn accumulated glycogen and improve metabolism" },
+                    { question: "Which clinical signs are common to both PSSM and other exertional myopathies?", options: ["Weight loss and diarrhea", "Cough and nasal discharge", "Stiffness and reluctance to move", "Blindness and deafness"], answer: "Stiffness and reluctance to move" },
+                    { question: "In PSSM1, the Glycogen Synthase enzyme is:", options: ["Absent", "Hyperactive (Gain of Function)", "Inactive", "Normal"], answer: "Hyperactive (Gain of Function)" },
+                    { question: "The genetic test for PSSM1 can be performed on:", options: ["Muscle biopsy only", "Whole blood or hair root", "Urine", "Saliva"], answer: "Whole blood or hair root" },
+                    { question: "Which vitamin is important to supplement if feeding oils?", options: ["Vitamin A", "Vitamin B12", "Vitamin E", "Vitamin C"], answer: "Vitamin E" },
+                    { question: "Box confinement for a PSSM horse:", options: ["Is recommended for recovery", "Has no significant effects", "Increases the risk of acute episodes", "Helps calm the horse"], answer: "Increases the risk of acute episodes" }
+                ]
+            };
+            
+            const audioFile = 'audio_pssm_cavallo.mp3'; 
+            
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() {
+                if (synth.speaking || synth.paused) synth.cancel();
+            }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                    return; 
+                }
+                stopSpeech();
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                const cleanup = () => {
+                    if (button) button.classList.remove('playing');
+                    // Fix: only clear global state if we are cleaning up the *current* utterance
+                    if (activeTTSButton === button) {
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
+                };
+
+                currentUtterance.onend = cleanup;
+                currentUtterance.onerror = (event) => {
+                     if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('An error occurred with speech synthesis:', event.error);
+                     }
+                    cleanup();
+                };
+                
+                activeTTSButton = button;
+                button.classList.add('playing');
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+
+            function initHowler() {
+                if (sound) sound.unload();
+                
+                const playIcon = document.getElementById('play-icon');
+                const pauseIcon = document.getElementById('pause-icon');
+
+                sound = new Howl({
+                    src: [audioFile],
+                    html5: true, 
+                    onplay: () => { 
+                        if (playIcon) playIcon.classList.add('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.remove('hidden'); 
+                    },
+                    onpause: () => { 
+                        if (playIcon) playIcon.classList.remove('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.add('hidden'); 
+                    },
+                    onend: () => { 
+                        if (playIcon) playIcon.classList.remove('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.add('hidden'); 
+                    },
+                    onloaderror: (id, msg) => {
+                        console.error("Error loading audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "File audio non trovato." : "Audio file not found.";
+                    },
+                    onplayerror: (id, msg) => {
+                        console.error("Error playing audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "Impossibile riprodurre l'audio." : "Could not play audio.";
+                    }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            if (playPauseBtn) {
+                playPauseBtn.addEventListener('click', () => {
+                    if (!sound || sound.state() === 'unloaded') {
+                        initHowler(); 
+                    }
+                    
+                    if (sound) {
+                        if (sound.playing()) {
+                            sound.pause();
+                        } else {
+                            sound.play(); 
+                        }
+                    }
+                });
+            }
+
+            function setupTTSListeners() {
+                // Clear existing listeners by replacing nodes
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        // Case 1: H1 (Page Title)
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            const titleClone = parentElement.cloneNode(true);
+                            const btnInClone = titleClone.querySelector('.tts-button');
+                            if(btnInClone) btnInClone.remove();
+                            textToRead = titleClone.textContent.trim();
+                            const subtitle = document.querySelector('[data-lang-key="pageSubtitle"]');
+                            if(subtitle) {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        // Case 2: H2 (Summary Title) - read full content
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            const btnInClone = titleClone.querySelector('.tts-button');
+                            if(btnInClone) btnInClone.remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    // Extract text content and insert pauses after headings
+                                    const contentClone = content.cloneNode(true);
+                                    contentClone.querySelectorAll('h3, h4').forEach(el => {
+                                        el.textContent = '. ' + el.textContent.trim() + '. ';
+                                    });
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        } 
+                        // Case 3: H3 (Quiz Question)
+                        else if (parentElement.tagName === 'H3' && parentElement.closest('#quiz-container')) {
+                            const questionTextNode = parentElement.querySelector('span:first-child');
+                            if (questionTextNode) textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
+                        }
+                        // Case 4: Quiz Option (inside label span)
+                        else if (parentElement.closest('label')) {
+                            const label = parentElement.closest('label');
+                            const answerTextNode = label.querySelector('span:first-child');
+                            if (answerTextNode) textToRead = answerTextNode.textContent.trim();
+                        }
+                        
+                        // Stop Howler audio if running
+                        if (sound && sound.playing()) sound.stop();
+                        
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    
+                    const optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-cyan-50">
+                            <label class="flex items-start justify-between w-full cursor-pointer">
+                                <span class="flex-grow pr-4">
+                                    <input type="radio" name="q${index}" value="${o}" class="mr-3 mt-1 text-cyan-600 focus:ring-cyan-500">
+                                    ${o}
+                                </span>
+                                <span class="tts-button flex-shrink-0 ml-2">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                                </span>
+                            </label>
+                        </li>
+                    `).join('');
+
+                    // Add the question and the TTS button next to the question text
+                    questionDiv.innerHTML = `
+                        <h3 class="flex items-center text-lg font-semibold mb-3 border-none">
+                            <span class="flex-grow pr-4">${index + 1}. ${q.question}</span>
+                            <span class="tts-button flex-shrink-0">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                            </span>
+                        </h3>
+                        <ul class="space-y-1">${optionsHtml}</ul>
+                    `;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                // Stop any speaking/audio before switching language
+                stopSpeech();
+                if (sound && sound.playing()) sound.stop();
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content') || key === 'bibliographyContent') {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            // Text update for standard elements, handle the potential TTS button existence
+                            const ttsButton = element.querySelector('.tts-button');
+                            element.textContent = translations[key][lang];
+                            if(ttsButton) element.appendChild(ttsButton); // Re-add button if present (using same node reference)
+                        }
+                    }
+                });
+                
+                // Show/Hide Audio section based on language
+                const navAudio = document.querySelector('a[data-lang-key="navAudio"]');
+                const sectionAudio = document.getElementById('audio');
+                if (lang === 'en') {
+                    if(navAudio) navAudio.style.display = 'none';
+                    if(sectionAudio) sectionAudio.style.display = 'none';
+                } else {
+                    if(navAudio) navAudio.style.display = 'block';
+                    if(sectionAudio) sectionAudio.style.display = 'block';
+                }
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                
+                loadQuiz(lang);
+                setupTTSListeners(); 
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            // Initialization
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
