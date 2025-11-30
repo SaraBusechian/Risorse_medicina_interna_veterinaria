@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica Debolezza Muscolare - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette CIANO */
+        body { font-family: 'Inter', sans-serif; background-color: #ecfeff; /* cyan-50 */ color: #155e75; /* cyan-800 */ }
+        
+        /* Modalità DSA */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .flow-box, .dsa-mode .flow-decision, .dsa-mode .flow-result { background-color: #ffffff; border: 1px solid #e2e8f0; color: #1e293b; }
+        .dsa-mode .flow-arrow { color: #64748b; }
+        .dsa-mode h1, .dsa-mode h2 { color: #1e293b; }
+        .dsa-mode .flow-result.myopathy { background-color: #fee2e2; border-color: #f87171; color: #b91c1c; }
+        .dsa-mode .flow-result.neuropathy { background-color: #e0e7ff; border-color: #818cf8; color: #3730a3; }
+
+        @media print {
+            #main-header, #main-footer, #back-button, #accessibility-toggle, #lang-toggle { display: none; }
+            body { background-color: #ffffff; color: #000000; }
+            main { padding: 0 !important; margin-top: 2rem; }
+            .flow-box, .flow-decision, .flow-result { border-color: #000000; color: #000000; background-color: #ffffff; box-shadow: none; }
+            .flow-arrow { color: #000000; }
+            h1, h2 { color: #000000; }
+        }
+
+        /* Diagramma */
+        .flow-container { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+        .flow-box, .flow-decision, .flow-result {
+            width: 90%; max-width: 600px; padding: 1rem 1.5rem;
+            border-radius: 0.5rem; background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center; border: 1px solid #cffafe;
+        }
+        .flow-box strong { color: #0e7490; }
+        .flow-decision { background-color: #cffafe; border-color: #67e8f9; font-weight: 600; }
+        
+        .flow-result.myopathy { background-color: #fee2e2; border-color: #f87171; color: #b91c1c; font-weight: 700; }
+        .flow-result.neuropathy { background-color: #e0e7ff; border-color: #818cf8; color: #3730a3; font-weight: 700; }
+
+        .flow-arrow { font-size: 2.25rem; line-height: 1; color: #a5f3fc; font-weight: bold; }
+        .flow-split { display: flex; justify-content: space-around; width: 100%; gap: 1rem; }
+        .flow-path { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; flex-basis: 50%; }
+        .flow-path-label { font-weight: 600; color: #0891b2; padding: 0.25rem 0.75rem; background-color: #ffffff; border-radius: 99px; border: 1px solid #67e8f9; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+    </style>
+</head>
+<body class="bg-cyan-50">
+
+    <header id="main-header" class="bg-cyan-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Infografica: Debolezza Muscolare</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8" id="back-button">
+            <a href="debolezza_muscolare.html" class="inline-flex items-center bg-white text-cyan-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-cyan-100 transition duration-300" data-lang-key="backToSummary">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+            </a>
+        </div>
+        
+        <h1 class="text-3xl md:text-4xl font-bold text-cyan-800 text-center mb-4" data-lang-key="pageTitle">Algoritmo Diagnostico della Debolezza</h1>
+        <h2 class="text-xl text-cyan-700 text-center mb-12" data-lang-key="pageSubtitle">Differenziazione tra Neuropatia e Miopatia</h2>
+
+        <div class="flow-container" role="figure" aria-label="Algoritmo per la diagnosi della debolezza muscolare">
+            
+            <div class="flow-box" data-lang-key="start">
+                <strong>INIZIO:</strong> Paziente con Debolezza Generalizzata (Paresi LMN)
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-decision" data-lang-key="decision1">
+                Valuta Riflessi Spinali e CK Sierica
+            </div>
+
+            <div class="flow-split">
+                <!-- RAMO MIOPATIA -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathMyopathy">Riflessi Normali + CK Alta</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-result myopathy" data-lang-key="resultMyopathy">
+                        MIOPATIA PRIMARIA
+                    </div>
+                     <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="detailsMyopathy">
+                        <strong>Caratteristiche:</strong>
+                        <ul class="list-disc text-left pl-4 mt-2">
+                            <li>CK molto elevata (x10-x50)</li>
+                            <li>Riflessi preservati (finché c'è muscolo)</li>
+                            <li>Nessun deficit sensoriale</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- RAMO NEUROPATIA -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathNeuropathy">Riflessi Ridotti + CK Normale</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-result neuropathy" data-lang-key="resultNeuropathy">
+                        NEUROPATIA / GIUNZIONOPATIA
+                    </div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box" data-lang-key="detailsNeuropathy">
+                        <strong>Caratteristiche:</strong>
+                        <ul class="list-disc text-left pl-4 mt-2">
+                            <li>CK normale o lieve aumento</li>
+                            <li>Iporeflessia / Areflessia marcata</li>
+                            <li>Possibili deficit propriocettivi</li>
+                            <li>Se intolleranza esercizio: sospetta Miastenia</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-cyan-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Infografica: Debolezza Muscolare", en: "Infographic: Muscle Weakness" },
+                backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+                pageTitle: { it: "Algoritmo Diagnostico della Debolezza", en: "Diagnostic Algorithm for Weakness" },
+                pageSubtitle: { it: "Differenziazione tra Neuropatia e Miopatia", en: "Differentiating Neuropathy vs. Myopathy" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" },
+                
+                start: { it: "<strong>INIZIO:</strong> Paziente con Debolezza Generalizzata (Paresi LMN)", en: "<strong>START:</strong> Patient with Generalized Weakness (LMN Paresis)" },
+                decision1: { it: "Valuta Riflessi Spinali e CK Sierica", en: "Assess Spinal Reflexes and Serum CK" },
+                pathMyopathy: { it: "Riflessi Normali + CK Alta", en: "Normal Reflexes + High CK" },
+                resultMyopathy: { it: "MIOPATIA PRIMARIA", en: "PRIMARY MYOPATHY" },
+                detailsMyopathy: { it: `<strong>Caratteristiche:</strong><ul class="list-disc text-left pl-4 mt-2"><li>CK molto elevata (x10-x50)</li><li>Riflessi preservati (finché c'è muscolo)</li><li>Nessun deficit sensoriale</li></ul>`, en: `<strong>Features:</strong><ul class="list-disc text-left pl-4 mt-2"><li>Very high CK (x10-x50)</li><li>Reflexes preserved (as long as muscle exists)</li><li>No sensory deficits</li></ul>` },
+                pathNeuropathy: { it: "Riflessi Ridotti + CK Normale", en: "Reduced Reflexes + Normal CK" },
+                resultNeuropathy: { it: "NEUROPATIA / GIUNZIONOPATIA", en: "NEUROPATHY / JUNCTIONOPATHY" },
+                detailsNeuropathy: { it: `<strong>Caratteristiche:</strong><ul class="list-disc text-left pl-4 mt-2"><li>CK normale o lieve aumento</li><li>Iporeflessia / Areflessia marcata</li><li>Possibili deficit propriocettivi</li><li>Se intolleranza esercizio: sospetta Miastenia</li></ul>`, en: `<strong>Features:</strong><ul class="list-disc text-left pl-4 mt-2"><li>Normal or mildly increased CK</li><li>Marked Hyporeflexia / Areflexia</li><li>Possible proprioceptive deficits</li><li>If exercise intolerance: suspect Myasthenia</li></ul>` }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+            
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
