@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="titleTag">Paralisi Periodica Iperkaliemica (HYPP) - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette CIANO */
+        body { font-family: 'Inter', sans-serif; background-color: #ecfeff; /* cyan-50 */ color: #1e293b; /* slate-800 */ }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; color: #0891b2; /* cyan-600 */ }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #0e7490; /* cyan-700 */ color: #155e75; /* cyan-800 */ }
+        
+        /* Modalità DSA */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #f8fafc !important; letter-spacing: 0.05em; line-height: 1.75; color: #1e293b; }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #ffffff; border: 1px solid #e2e8f0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #1e293b; }
+        .dsa-mode .prose strong { color: #000000; }
+        .dsa-mode .prose h3 { color: #1e293b; border-bottom-color: #94a3b8; }
+        .dsa-mode .prose h4 { color: #1e293b; }
+        .dsa-mode .nav-link { color: #334155; }
+        .dsa-mode .nav-link:hover, .dsa-mode .nav-link.active { border-bottom-color: #334155; color: #000000; }
+        .dsa-mode .quiz-question { border-color: #cbd5e1; }
+        .dsa-mode .quiz-option:hover { background-color: #f1f5f9; }
+
+        /* Bottoni TTS */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #0891b2; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #06b6d4; }
+        
+        /* Stili riassunto */
+        .prose h3 { font-size: 1.5rem; font-weight: 600; color: #0e7490; margin-top: 2rem; margin-bottom: 1rem; padding-bottom: 0.25rem; border-bottom: 1px solid #bae6fd; }
+        .prose p, .prose ul { font-size: 1rem; line-height: 1.75; color: #374151; margin-bottom: 1.25rem; }
+        .prose strong { color: #155e75; font-weight: 600; }
+        .prose ul { list-style-type: disc; padding-left: 1.75rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose h4 { font-size: 1.25rem; font-weight: 600; color: #0e7490; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .dsa-mode .prose h4 { color: #1e293b; }
+        .quiz-question { border: 1px solid #bae6fd; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #ecfeff; }
+        .quiz-question.correct { background-color: #dcfce7; border-color: #4ade80; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #f87171; }
+
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, a[href*="infografica"], a[href*="index.html"] { display: none; }
+            body, .content-section { background-color: #ffffff !important; color: #000000 !important; }
+            .content-section { box-shadow: none; border: none; }
+            h1, h2, h3, h4, p, li, strong { color: #000000 !important; }
+            .prose h3 { border-color: #000000; }
+        }
+    </style>
+</head>
+<body class="bg-cyan-50">
+
+    <header id="main-header" class="bg-cyan-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Muscoloscheletriche</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-cyan-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-cyan-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Muscoloscheletrico</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-cyan-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-cyan-800" data-lang-key="pageTitle">Paralisi Periodica Iperkaliemica (HYPP)<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-cyan-700 mt-2" data-lang-key="pageSubtitle">Miopatia genetica dei canali del sodio (Quarter Horse).</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_hypp.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-cyan-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-cyan-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona Potassio">🍌</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-cyan-800" data-lang-key="infographicLinkTitle">Gestione Crisi e Dieta</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Protocollo d'urgenza e alimentazione low-potassium.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-cyan-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-cyan-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-cyan-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-cyan-500 text-white rounded-full hover:bg-cyan-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-cyan-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-cyan-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_hypp_cavallo.mp3" download class="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-cyan-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-cyan-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                titleTag: { it: "HYPP Cavallo - MedVet", en: "Equine HYPP - MedVet" },
+                siteTitle: { it: "Patologie Muscoloscheletriche", en: "Musculoskeletal Diseases" },
+                backToIndexText: { it: "Indice Muscoloscheletrico", en: "Musculoskeletal Index" },
+                pageTitle: { it: "Paralisi Periodica Iperkaliemica (HYPP)", en: "Hyperkalemic Periodic Paralysis (HYPP)" },
+                pageSubtitle: { it: "Miopatia genetica dei canali del sodio (Quarter Horse).", en: "Genetic sodium channel myopathy (Quarter Horse)." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: '<h3>Definizione e Eziologia</h3>' +
+                        '<p>La <strong>Paralisi Periodica Iperkaliemica (HYPP)</strong> è una patologia muscolare ereditaria autosomica dominante. Colpisce cavalli <strong>Quarter Horse</strong>, Paint e Appaloosa che discendono dal famoso stallone <em>"Impressive"</em>.</p>' +
+                        '<p>È causata da una mutazione puntiforme nel gene <strong>SCN4A</strong>, che codifica per la subunità alfa dei canali del sodio voltaggio-dipendenti nel muscolo scheletrico.</p>' +
+                        '<h3>Patogenesi</h3>' +
+                        '<p>La mutazione altera la funzione dei canali del sodio, che non riescono a chiudersi (inattivarsi) correttamente dopo un potenziale d\'azione, specialmente in presenza di alti livelli di Potassio (K+).</p>' +
+                        '<ul><li><strong>Influsso eccessivo di Sodio (Na+)</strong> all\'interno della cellula.</li>' +
+                        '<li><strong>Efflusso compensatorio di Potassio (K+)</strong> all\'esterno, causando iperkaliemia sistemica.</li>' +
+                        '<li>La membrana muscolare diventa ipereccitabile (fascicolazioni) e successivamente non più eccitabile (paralisi flaccida) a causa della depolarizzazione persistente.</li></ul>' +
+                        '<h3>Segni Clinici</h3>' +
+                        '<p>I segni sono episodici e possono variare da lievi a gravi. Tra gli attacchi, il cavallo è clinicamente normale.</p>' +
+                        '<ul><li><strong>Fascicolazioni muscolari:</strong> Tremori diffusi (spalle, fianchi, collo).</li>' +
+                        '<li><strong>Procidenza della terza palpebra:</strong> Segno molto caratteristico durante l\'attacco.</li>' +
+                        '<li><strong>Debolezza e Collasso:</strong> Il cavallo può sedersi ("dog-sitting") o cadere in decubito laterale.</li>' +
+                        '<li><strong>Assenza di dolore:</strong> A differenza del tying-up, il cavallo non è dolente e rimane vigile/cosciente.</li>' +
+                        '<li><strong>Respirazione rumorosa (Stridore):</strong> Possibile paralisi laringea/faringea (rischio soffocamento).</li></ul>' +
+                        '<h3>Diagnosi</h3>' +
+                        '<ul><li><strong>Test Genetico (Gold Standard):</strong> Su crine o sangue. Determina lo stato: N/N (Negativo), N/H (Eterozigote, affetto), H/H (Omozigote, gravemente affetto).</li>' +
+                        '<li><strong>Esami Ematici durante la crisi:</strong> Iperkaliemia (K+ > 5-6 mEq/L) e emoconcentrazione. CK e AST sono solitamente <strong>normali</strong> o solo lievemente aumentati (niente rabdomiolisi massiva).</li></ul>' +
+                        '<h3>Terapia della Crisi Acuta</h3>' +
+                        '<h4>Attacco Lieve (Cavallo in piedi)</h4>' +
+                        '<ul><li><strong>Esercizio leggero:</strong> Camminare o trottare alla corda stimola il rientro del K+ nelle cellule (adrenalina).</li>' +
+                        '<li><strong>Zuccheri Orali:</strong> Somministrare sciroppo di mais o cereali (avena) per stimolare l\'insulina, che spinge il K+ nelle cellule.</li></ul>' +
+                        '<h4>Attacco Grave (Cavallo in decubito) - Emergenza Veterinaria</h4>' +
+                        '<ul><li><strong>Calcio Gluconato (IV lento):</strong> Protegge il cuore dagli effetti tossici dell\'iperkaliemia (stabilizza la membrana). Non abbassa il K+, ma salva la vita.</li>' +
+                        '<li><strong>Destrosio 5% o Bicarbonato (IV):</strong> Stimolano l\'insulina o l\'alcalosi per spostare il K+ intracellulare.</li>' +
+                        '<li><strong>Acetazolamide:</strong> Diuretico utile in alcuni casi per aumentare l\'escrezione renale di K+.</li></ul>' +
+                        '<h3>Gestione e Prevenzione</h3>' +
+                        '<p>La gestione dietetica è fondamentale per prevenire gli attacchi.</p>' +
+                        '<ul><li><strong>Dieta a Basso Potassio (< 1.1%):</strong> Evitare assolutamente <strong>fieno di erba medica (Alfalfa)</strong>, melassa e sostituti del latte. Preferire fieno di graminacee (Timothy, Bermuda) o avena/mais (cereali).</li>' +
+                        '<li><strong>Pasti frequenti:</strong> Evitare picchi di potassio post-prandiali.</li>' +
+                        '<li><strong>Esercizio regolare:</strong> Pascolo e movimento quotidiano.</li></ul>', 
+                    en: '<h3>Definition and Etiology</h3>' +
+                        '<p><strong>Hyperkalemic Periodic Paralysis (HYPP)</strong> is an autosomal dominant hereditary muscle disease. It affects <strong>Quarter Horses</strong>, Paints, and Appaloosas descending from the famous stallion <em>"Impressive"</em>.</p>' +
+                        '<p>It is caused by a point mutation in the <strong>SCN4A</strong> gene, which codes for the alpha subunit of voltage-gated sodium channels in skeletal muscle.</p>' +
+                        '<h3>Pathogenesis</h3>' +
+                        '<p>The mutation alters sodium channel function, preventing proper closing (inactivation) after an action potential, especially in the presence of high Potassium (K+).</p>' +
+                        '<ul><li><strong>Excessive Sodium (Na+) influx</strong> into the cell.</li>' +
+                        '<li><strong>Compensatory Potassium (K+) efflux</strong> out of the cell, causing systemic hyperkalemia.</li>' +
+                        '<li>The muscle membrane becomes hyperexcitable (fasciculations) and subsequently unexcitable (flaccid paralysis) due to persistent depolarization.</li></ul>' +
+                        '<h3>Clinical Signs</h3>' +
+                        '<p>Signs are episodic and range from mild to severe. Between attacks, the horse is clinically normal.</p>' +
+                        '<ul><li><strong>Muscle Fasciculations:</strong> Diffuse tremors (shoulders, flanks, neck).</li>' +
+                        '<li><strong>Prolapse of the Third Eyelid:</strong> Very characteristic sign during an attack.</li>' +
+                        '<li><strong>Weakness and Collapse:</strong> The horse may sit ("dog-sitting") or fall into lateral recumbency.</li>' +
+                        '<li><strong>Absence of Pain:</strong> Unlike tying-up, the horse is not painful and remains alert/conscious.</li>' +
+                        '<li><strong>Noisy Breathing (Stridor):</strong> Possible laryngeal/pharyngeal paralysis (risk of asphyxiation).</li></ul>' +
+                        '<h3>Diagnosis</h3>' +
+                        '<ul><li><strong>Genetic Test (Gold Standard):</strong> On hair or blood. Determines status: N/N (Negative), N/H (Heterozygous, affected), H/H (Homozygous, severely affected).</li>' +
+                        '<li><strong>Blood Tests during crisis:</strong> Hyperkalemia (K+ > 5-6 mEq/L) and hemoconcentration. CK and AST are usually <strong>normal</strong> or only mildly elevated (no massive rhabdomyolysis).</li></ul>' +
+                        '<h3>Acute Crisis Therapy</h3>' +
+                        '<h4>Mild Attack (Standing horse)</h4>' +
+                        '<ul><li><strong>Light Exercise:</strong> Walking or lunging stimulates K+ reentry into cells (adrenaline).</li>' +
+                        '<li><strong>Oral Sugars:</strong> Administer corn syrup or grain (oats) to stimulate insulin, which drives K+ into cells.</li></ul>' +
+                        '<h4>Severe Attack (Recumbent horse) - Veterinary Emergency</h4>' +
+                        '<ul><li><strong>Calcium Gluconate (Slow IV):</strong> Protects the heart from toxic effects of hyperkalemia (membrane stabilization). Does not lower K+, but saves life.</li>' +
+                        '<li><strong>Dextrose 5% or Bicarbonate (IV):</strong> Stimulate insulin or alkalosis to shift K+ intracellularly.</li>' +
+                        '<li><strong>Acetazolamide:</strong> Diuretic useful in some cases to increase renal K+ excretion.</li></ul>' +
+                        '<h3>Management and Prevention</h3>' +
+                        '<p>Dietary management is crucial to prevent attacks.</p>' +
+                        '<ul><li><strong>Low Potassium Diet (< 1.1%):</strong> Absolutely avoid <strong>Alfalfa hay</strong>, molasses, and milk replacers. Prefer grass hay (Timothy, Bermuda) or oats/corn (grains).</li>' +
+                        '<li><strong>Frequent Meals:</strong> Avoid post-prandial potassium spikes.</li>' +
+                        '<li><strong>Regular Exercise:</strong> Pasture and daily movement.</li></ul>' 
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Gestione Crisi e Dieta", en: "Crisis Management & Diet" },
+                infographicLinkDesc: { it: "Protocollo d'urgenza e alimentazione low-potassium.", en: "Emergency protocol and low-potassium feeding." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: '<li>REED-BAYLY-SELLON - Equine Internal Medicine 4th ed., Elsevier, 2018.</li>' +
+                        '<li>VALBERG SJ, MCKENZIE EC (Eds). Equine Myopathies. Veterinary Clinics of North America: Equine Practice. April 2025; 41(1): 1-226.</li>', 
+                    en: '<li>REED-BAYLY-SELLON - Equine Internal Medicine 4th ed., Elsevier, 2018.</li>' +
+                        '<li>VALBERG SJ, MCKENZIE EC (Eds). Equine Myopathies. Veterinary Clinics of North America: Equine Practice. April 2025; 41(1): 1-226.</li>' 
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Quale stallone è il capostipite della mutazione HYPP?", options: ["Secretariat", "Impressive", "Northern Dancer", "Doc Bar"], answer: "Impressive" },
+                    { question: "Qual è l'elettrolita che causa i sintomi clinici nell'HYPP?", options: ["Sodio basso", "Calcio alto", "Potassio alto", "Magnesio basso"], answer: "Potassio alto" },
+                    { question: "Quale segno oculare è caratteristico durante un attacco?", options: ["Cecità", "Procidenza terza palpebra", "Miosi", "Uveite"], answer: "Procidenza terza palpebra" },
+                    { question: "A differenza del tying-up, durante un attacco HYPP il cavallo è:", options: ["Molto dolorante", "Non dolorante e vigile", "In coma", "Febbrile"], answer: "Non dolorante e vigile" },
+                    { question: "Quale alimento deve essere ASSOLUTAMENTE evitato in cavalli HYPP?", options: ["Avena", "Mais", "Fieno di Erba Medica (Alfalfa)", "Fieno di Graminacee"], answer: "Fieno di Erba Medica (Alfalfa)" },
+                    { question: "Cosa somministrare per bocca in un attacco lieve?", options: ["Acqua e sale", "Sciroppo di mais o zucchero", "Olio vegetale", "Bicarbonato"], answer: "Sciroppo di mais o zucchero" },
+                    { question: "Qual è la funzione del Calcio Gluconato IV in un attacco grave?", options: ["Abbassa il potassio", "Protegge il cuore (stabilizza la membrana)", "Cura la mutazione", "Seda il cavallo"], answer: "Protegge il cuore (stabilizza la membrana)" },
+                    { question: "Il gene mutato SCN4A codifica per quale canale ionico?", options: ["Canale del Calcio", "Canale del Sodio", "Canale del Potassio", "Canale del Cloro"], answer: "Canale del Sodio" },
+                    { question: "Un cavallo omozigote H/H ha sintomi solitamente:", options: ["Assenti", "Più gravi e frequenti", "Uguali agli N/H", "Solo respiratori"], answer: "Più gravi e frequenti" },
+                    { question: "Perché l'esercizio leggero aiuta durante un attacco lieve?", options: ["Aumenta la temperatura", "L'adrenalina stimola il rientro del Potassio nelle cellule", "Distrae il cavallo", "Riduce il dolore"], answer: "L'adrenalina stimola il rientro del Potassio nelle cellule" }
+                ],
+                en: [
+                    { question: "Which stallion is the ancestor of the HYPP mutation?", options: ["Secretariat", "Impressive", "Northern Dancer", "Doc Bar"], answer: "Impressive" },
+                    { question: "Which electrolyte causes clinical signs in HYPP?", options: ["Low Sodium", "High Calcium", "High Potassium", "Low Magnesium"], answer: "High Potassium" },
+                    { question: "Which ocular sign is characteristic during an attack?", options: ["Blindness", "Third eyelid prolapse", "Miosis", "Uveitis"], answer: "Third eyelid prolapse" },
+                    { question: "Unlike tying-up, during an HYPP attack the horse is:", options: ["Very painful", "Not painful and alert", "Comatose", "Febrile"], answer: "Not painful and alert" },
+                    { question: "Which feed must be ABSOLUTELY avoided in HYPP horses?", options: ["Oats", "Corn", "Alfalfa Hay", "Grass Hay"], answer: "Alfalfa Hay" },
+                    { question: "What should be given orally in a mild attack?", options: ["Salt water", "Corn syrup or sugar", "Vegetable oil", "Bicarbonate"], answer: "Corn syrup or sugar" },
+                    { question: "What is the function of IV Calcium Gluconate in a severe attack?", options: ["Lowers potassium", "Protects the heart (membrane stabilization)", "Cures the mutation", "Sedates the horse"], answer: "Protects the heart (membrane stabilization)" },
+                    { question: "The mutated SCN4A gene codes for which ion channel?", options: ["Calcium channel", "Sodium channel", "Potassium channel", "Chloride channel"], answer: "Sodium channel" },
+                    { question: "A homozygous H/H horse usually has symptoms that are:", options: ["Absent", "More severe and frequent", "Same as N/H", "Respiratory only"], answer: "More severe and frequent" },
+                    { question: "Why does light exercise help during a mild attack?", options: ["Increases temperature", "Adrenaline stimulates Potassium reentry into cells", "Distracts the horse", "Reduces pain"], answer: "Adrenaline stimulates Potassium reentry into cells" }
+                ]
+            };
+            
+            const audioFile = 'audio_hypp_cavallo.mp3'; 
+            
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() {
+                if (synth.speaking || synth.paused) synth.cancel();
+            }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                    return; 
+                }
+                stopSpeech();
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                const cleanup = () => {
+                    if (button) button.classList.remove('playing');
+                    if (activeTTSButton === button) {
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
+                };
+
+                currentUtterance.onend = cleanup;
+                currentUtterance.onerror = (event) => {
+                     if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('An error occurred with speech synthesis:', event.error);
+                     }
+                    cleanup();
+                };
+                
+                activeTTSButton = button;
+                button.classList.add('playing');
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+
+            function initHowler() {
+                if (sound) sound.unload();
+                
+                const playIcon = document.getElementById('play-icon');
+                const pauseIcon = document.getElementById('pause-icon');
+
+                sound = new Howl({
+                    src: [audioFile],
+                    html5: true, 
+                    onplay: () => { 
+                        if (playIcon) playIcon.classList.add('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.remove('hidden'); 
+                    },
+                    onpause: () => { 
+                        if (playIcon) playIcon.classList.remove('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.add('hidden'); 
+                    },
+                    onend: () => { 
+                        if (playIcon) playIcon.classList.remove('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.add('hidden'); 
+                    },
+                    onloaderror: (id, msg) => {
+                        console.error("Error loading audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "File audio non trovato." : "Audio file not found.";
+                    },
+                    onplayerror: (id, msg) => {
+                        console.error("Error playing audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "Impossibile riprodurre l'audio." : "Could not play audio.";
+                    }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            if (playPauseBtn) {
+                playPauseBtn.addEventListener('click', () => {
+                    if (!sound || sound.state() === 'unloaded') {
+                        initHowler(); 
+                    }
+                    
+                    if (sound) {
+                        if (sound.playing()) {
+                            sound.pause();
+                        } else {
+                            sound.play(); 
+                        }
+                    }
+                });
+            }
+
+            function setupTTSListeners() {
+                // Clear existing listeners by replacing nodes
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        // Case 1: H1 (Page Title)
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            const titleClone = parentElement.cloneNode(true);
+                            const btnInClone = titleClone.querySelector('.tts-button');
+                            if(btnInClone) btnInClone.remove();
+                            textToRead = titleClone.textContent.trim();
+                            const subtitle = document.querySelector('[data-lang-key="pageSubtitle"]');
+                            if(subtitle) {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        // Case 2: H2 (Summary Title) - read full content
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            const btnInClone = titleClone.querySelector('.tts-button');
+                            if(btnInClone) btnInClone.remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    // Extract text content and insert pauses after headings
+                                    const contentClone = content.cloneNode(true);
+                                    contentClone.querySelectorAll('h3, h4').forEach(el => {
+                                        el.textContent = '. ' + el.textContent.trim() + '. ';
+                                    });
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        } 
+                        // Case 3: H3 (Quiz Question)
+                        else if (parentElement.tagName === 'H3' && parentElement.closest('#quiz-container')) {
+                            const questionTextNode = parentElement.querySelector('span:first-child');
+                            if (questionTextNode) textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
+                        }
+                        // Case 4: Quiz Option (inside label span)
+                        else if (parentElement.closest('label')) {
+                            const label = parentElement.closest('label');
+                            const answerTextNode = label.querySelector('span:first-child');
+                            if (answerTextNode) textToRead = answerTextNode.textContent.trim();
+                        }
+                        
+                        // Stop Howler audio if running
+                        if (sound && sound.playing()) sound.stop();
+                        
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    
+                    const optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-cyan-50">
+                            <label class="flex items-start justify-between w-full cursor-pointer">
+                                <span class="flex-grow pr-4">
+                                    <input type="radio" name="q${index}" value="${o}" class="mr-3 mt-1 text-cyan-600 focus:ring-cyan-500">
+                                    ${o}
+                                </span>
+                                <span class="tts-button flex-shrink-0 ml-2">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                                </span>
+                            </label>
+                        </li>
+                    `).join('');
+
+                    // Add the question and the TTS button next to the question text
+                    questionDiv.innerHTML = `
+                        <h3 class="flex items-center text-lg font-semibold mb-3 border-none">
+                            <span class="flex-grow pr-4">${index + 1}. ${q.question}</span>
+                            <span class="tts-button flex-shrink-0">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                            </span>
+                        </h3>
+                        <ul class="space-y-1">${optionsHtml}</ul>
+                    `;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                // Stop any speaking/audio before switching language
+                stopSpeech();
+                if (sound && sound.playing()) sound.stop();
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content') || key === 'bibliographyContent') {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            // Text update for standard elements, handle the potential TTS button existence
+                            const ttsButton = element.querySelector('.tts-button');
+                            element.textContent = translations[key][lang];
+                            if(ttsButton) element.appendChild(ttsButton); // Re-add button if present (using same node reference)
+                        }
+                    }
+                });
+                
+                // Show/Hide Audio section based on language
+                const navAudio = document.querySelector('a[data-lang-key="navAudio"]');
+                const sectionAudio = document.getElementById('audio');
+                if (lang === 'en') {
+                    if(navAudio) navAudio.style.display = 'none';
+                    if(sectionAudio) sectionAudio.style.display = 'none';
+                } else {
+                    if(navAudio) navAudio.style.display = 'block';
+                    if(sectionAudio) sectionAudio.style.display = 'block';
+                }
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                
+                loadQuiz(lang);
+                setupTTSListeners(); 
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            // Initialization
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
