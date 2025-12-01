@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="titleTag">Miopatia da Carenza Vit. E/Selenio - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette CIANO */
+        body { font-family: 'Inter', sans-serif; background-color: #ecfeff; /* cyan-50 */ color: #1e293b; /* slate-800 */ }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; color: #0891b2; /* cyan-600 */ }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #0e7490; /* cyan-700 */ color: #155e75; /* cyan-800 */ }
+        
+        /* Modalità DSA */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #f8fafc !important; letter-spacing: 0.05em; line-height: 1.75; color: #1e293b; }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #ffffff; border: 1px solid #e2e8f0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #1e293b; }
+        .dsa-mode .prose strong { color: #000000; }
+        .dsa-mode .prose h3 { color: #1e293b; border-bottom-color: #94a3b8; }
+        .dsa-mode .prose h4 { color: #1e293b; }
+        .dsa-mode .nav-link { color: #334155; }
+        .dsa-mode .nav-link:hover, .dsa-mode .nav-link.active { border-bottom-color: #334155; color: #000000; }
+        .dsa-mode .quiz-question { border-color: #cbd5e1; }
+        .dsa-mode .quiz-option:hover { background-color: #f1f5f9; }
+
+        /* Bottoni TTS */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #0891b2; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #06b6d4; }
+        
+        /* Stili riassunto */
+        .prose h3 { font-size: 1.5rem; font-weight: 600; color: #0e7490; margin-top: 2rem; margin-bottom: 1rem; padding-bottom: 0.25rem; border-bottom: 1px solid #bae6fd; }
+        .prose p, .prose ul { font-size: 1rem; line-height: 1.75; color: #374151; margin-bottom: 1.25rem; }
+        .prose strong { color: #155e75; font-weight: 600; }
+        .prose ul { list-style-type: disc; padding-left: 1.75rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose h4 { font-size: 1.25rem; font-weight: 600; color: #0e7490; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .dsa-mode .prose h4 { color: #1e293b; }
+        .quiz-question { border: 1px solid #bae6fd; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #ecfeff; }
+        .quiz-question.correct { background-color: #dcfce7; border-color: #4ade80; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #f87171; }
+
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, a[href*="infografica"], a[href*="index.html"] { display: none; }
+            body, .content-section { background-color: #ffffff !important; color: #000000 !important; }
+            .content-section { box-shadow: none; border: none; }
+            h1, h2, h3, h4, p, li, strong { color: #000000 !important; }
+            .prose h3 { border-color: #000000; }
+        }
+    </style>
+</head>
+<body class="bg-cyan-50">
+
+    <header id="main-header" class="bg-cyan-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Muscoloscheletriche</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-cyan-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-cyan-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Muscoloscheletrico</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-cyan-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-cyan-800" data-lang-key="pageTitle">Miopatia da Carenza di Vit. E/Selenio<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-cyan-700 mt-2" data-lang-key="pageSubtitle">Malattia del Muscolo Bianco (NMD) in puledri, vitelli e agnelli.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_vite_selenio.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-cyan-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-cyan-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona Scudo">🛡️</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-cyan-800" data-lang-key="infographicLinkTitle">Meccanismo del Danno Ossidativo</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Il ruolo degli antiossidanti nella protezione della membrana muscolare.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-cyan-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-cyan-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-cyan-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-cyan-500 text-white rounded-full hover:bg-cyan-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-cyan-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-cyan-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_miopatia_vite_selenio.mp3" download class="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-cyan-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-cyan-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-cyan-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                titleTag: { it: "Miopatia Vit. E/Selenio - MedVet", en: "Vit E/Selenium Myopathy - MedVet" },
+                siteTitle: { it: "Patologie Muscoloscheletriche", en: "Musculoskeletal Diseases" },
+                backToIndexText: { it: "Indice Muscoloscheletrico", en: "Musculoskeletal Index" },
+                pageTitle: { it: "Miopatia da Carenza di Vit. E/Selenio", en: "Vitamin E and Selenium Deficiency Myopathy" },
+                pageSubtitle: { it: "Malattia del Muscolo Bianco (NMD) in puledri, vitelli e agnelli.", en: "Nutritional Myodegeneration (NMD / White Muscle Disease) in foals, calves, and lambs." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: '<h3>Eziologia e Patogenesi</h3>' +
+                        '<p>La <strong>Miopatia Nutrizionale Degenerativa (NMD)</strong>, comunemente nota come <strong>Malattia del Muscolo Bianco</strong>, è causata da una carenza alimentare di <strong>Selenio</strong> e/o <strong>Vitamina E</strong>.</p>' +
+                        '<p>Il Selenio (componente dell\'enzima <em>Glutatione Perossidasi</em>) e la Vitamina E sono i principali antiossidanti che proteggono le membrane cellulari dai danni dei radicali liberi (ROS) prodotti durante il metabolismo muscolare. Una loro carenza porta a:</p>' +
+                        '<ul><li>Accumulo di perossidi e radicali liberi.</li>' +
+                        '<li>Perossidazione dei lipidi di membrana e distruzione cellulare.</li>' +
+                        '<li>Influsso massiccio di Calcio intracellulare (calcificazione distrofica) e necrosi del miocita.</li></ul>' +
+                        '<p>Colpisce prevalentemente animali giovani in rapido accrescimento (puledri, vitelli, agnelli), spesso nati da madri carenti o allevati in aree con suolo povero di Selenio.</p>' +
+                        '<h3>Segni Clinici</h3>' +
+                        '<h4>Forma Scheletrica (Subacuta/Cronica)</h4>' +
+                        '<ul><li><strong>Debolezza e Rigidità:</strong> Andatura rigida, tremori, difficoltà ad alzarsi.</li>' +
+                        '<li><strong>Muscoli Duri e Dolenti:</strong> Alla palpazione (glutei, spalla, collo).</li>' +
+                        '<li><strong>Disfagia:</strong> Se colpiti i muscoli della deglutizione/lingua (rischio polmonite <em>ab ingestis</em>), il latte può uscire dalle narici.</li>' +
+                        '<li><strong>Mioglobinuria:</strong> Urine scure nei casi gravi.</li></ul>' +
+                        '<h4>Forma Cardiaca (Acuta/Iperacuta)</h4>' +
+                        '<ul><li>Colpisce soprattutto agnelli ("Mulberry Heart Disease" nei suini) e vitelli.</li>' +
+                        '<li><strong>Morte improvvisa:</strong> Spesso dopo uno sforzo fisico, per insufficienza cardiaca acuta.</li>' +
+                        '<li>Dispnea grave, schiuma alle narici (edema polmonare), tachicardia/aritmie.</li></ul>' +
+                        '<h3>Diagnosi</h3>' +
+                        '<ul><li><strong>Enzimi Muscolari:</strong> CK e AST marcatamente elevati (spesso > 100 volte il normale).</li>' +
+                        '<li><strong>Dosaggio Selenio:</strong> Su sangue intero (misura livelli a lungo termine) o siero.</li>' +
+                        '<li><strong>Attività Glutatione Perossidasi (GSH-Px):</strong> Correla bene con i livelli di Selenio nel sangue.</li>' +
+                        '<li><strong>Dosaggio Vitamina E:</strong> Su siero/plasma.</li>' +
+                        '<li><strong>Necroscopia:</strong> Striature pallide/biancastre nei muscoli scheletrici o nel miocardio ("Muscolo Bianco").</li></ul>' +
+                        '<h3>Terapia e Prevenzione</h3>' +
+                        '<h4>Terapia</h4>' +
+                        '<ul><li><strong>Iniezione Parenterale di Se/Vit E:</strong> Terapia d\'urgenza. <strong>Attenzione:</strong> Il Selenio è tossico in sovradosaggio e le iniezioni possono causare shock anafilattico (soprattutto nel cavallo/vitello, usare con cautela).</li>' +
+                        '<li><strong>Riposo Assoluto:</strong> Fondamentale per limitare il danno muscolare.</li>' +
+                        '<li><strong>Supporto:</strong> Sondino naso-gastrico se disfagici, antibiotici se sospetta polmonite <em>ab ingestis</em>.</li></ul>' +
+                        '<h4>Prevenzione</h4>' +
+                        '<ul><li>Supplementazione della dieta delle <strong>madri</strong> nell\'ultimo terzo di gravidanza (il Se passa la placenta, la Vit E va nel colostro).</li>' +
+                        '<li>Analisi del foraggio e del suolo per valutare il contenuto di Selenio.</li></ul>', 
+                    en: '<h3>Etiology and Pathogenesis</h3>' +
+                        '<p><strong>Nutritional Myodegeneration (NMD)</strong>, commonly known as <strong>White Muscle Disease</strong>, is caused by a dietary deficiency of <strong>Selenium</strong> and/or <strong>Vitamin E</strong>.</p>' +
+                        '<p>Selenium (a component of the enzyme <em>Glutathione Peroxidase</em>) and Vitamin E are the main antioxidants protecting cell membranes from damage by free radicals (ROS) produced during muscle metabolism. Their deficiency leads to:</p>' +
+                        '<ul><li>Accumulation of peroxides and free radicals.</li>' +
+                        '<li>Lipid peroxidation of membranes and cell destruction.</li>' +
+                        '<li>Massive influx of intracellular Calcium (dystrophic calcification) and myocyte necrosis.</li></ul>' +
+                        '<p>It predominantly affects young, rapidly growing animals (foals, calves, lambs), often born to deficient dams or raised in Selenium-poor soil areas.</p>' +
+                        '<h3>Clinical Signs</h3>' +
+                        '<h4>Skeletal Form (Subacute/Chronic)</h4>' +
+                        '<ul><li><strong>Weakness and Stiffness:</strong> Stiff gait, tremors, difficulty rising.</li>' +
+                        '<li><strong>Hard and Painful Muscles:</strong> On palpation (gluteals, shoulder, neck).</li>' +
+                        '<li><strong>Dysphagia:</strong> If swallowing/tongue muscles are affected (risk of aspiration pneumonia), milk may come out of the nostrils.</li>' +
+                        '<li><strong>Myoglobinuria:</strong> Dark urine in severe cases.</li></ul>' +
+                        '<h4>Cardiac Form (Acute/Peracute)</h4>' +
+                        '<ul><li>Affects especially lambs ("Mulberry Heart Disease" in pigs) and calves.</li>' +
+                        '<li><strong>Sudden Death:</strong> Often after physical exertion, due to acute heart failure.</li>' +
+                        '<li>Severe dyspnea, froth at nostrils (pulmonary edema), tachycardia/arrhythmias.</li></ul>' +
+                        '<h3>Diagnosis</h3>' +
+                        '<ul><li><strong>Muscle Enzymes:</strong> CK and AST markedly elevated (often > 100x normal).</li>' +
+                        '<li><strong>Selenium Assay:</strong> On whole blood (long-term status) or serum.</li>' +
+                        '<li><strong>Glutathione Peroxidase (GSH-Px) Activity:</strong> Correlates well with blood Selenium levels.</li>' +
+                        '<li><strong>Vitamin E Assay:</strong> On serum/plasma.</li>' +
+                        '<li><strong>Necropsy:</strong> Pale/whitish streaks in skeletal muscles or myocardium ("White Muscle").</li></ul>' +
+                        '<h3>Therapy and Prevention</h3>' +
+                        '<h4>Therapy</h4>' +
+                        '<ul><li><strong>Parenteral Se/Vit E Injection:</strong> Emergency therapy. <strong>Caution:</strong> Selenium is toxic in overdose and injections can cause anaphylactic shock (especially in horses/calves, use with care).</li>' +
+                        '<li><strong>Strict Rest:</strong> Crucial to limit muscle damage.</li>' +
+                        '<li><strong>Support:</strong> Nasogastric tube if dysphagic, antibiotics if aspiration pneumonia is suspected.</li></ul>' +
+                        '<h4>Prevention</h4>' +
+                        '<ul><li>Supplementation of <strong>dams\'</strong> diet in the last trimester of pregnancy (Se crosses placenta, Vit E goes into colostrum).</li>' +
+                        '<li>Analysis of forage and soil to assess Selenium content.</li></ul>' 
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Meccanismo del Danno Ossidativo", en: "Oxidative Damage Mechanism" },
+                infographicLinkDesc: { it: "Il ruolo degli antiossidanti nella protezione della membrana muscolare.", en: "The role of antioxidants in protecting the muscle membrane." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: '<li>REED-BAYLY-SELLON - Equine Internal Medicine 4th ed., Elsevier, 2018.</li>' +
+                        '<li>SMITH BP. Large Animal Internal Medicine. 6th ed. Elsevier, 2020.</li>', 
+                    en: '<li>REED-BAYLY-SELLON - Equine Internal Medicine 4th ed., Elsevier, 2018.</li>' +
+                        '<li>SMITH BP. Large Animal Internal Medicine. 6th ed. Elsevier, 2020.</li>' 
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Quali sono i due nutrienti la cui carenza causa la Malattia del Muscolo Bianco?", options: ["Calcio e Fosforo", "Magnesio e Potassio", "Vitamina E e Selenio", "Vitamina A e Zinco"], answer: "Vitamina E e Selenio" },
+                    { question: "Qual è la funzione principale di Selenio e Vitamina E nel muscolo?", options: ["Produzione di energia (ATP)", "Sintesi proteica", "Attività antiossidante (protezione dai radicali liberi)", "Contrazione muscolare diretta"], answer: "Attività antiossidante (protezione dai radicali liberi)" },
+                    { question: "In quale categoria di animali è più frequente la NMD?", options: ["Animali anziani e sedentari", "Giovani animali in rapido accrescimento (puledri, vitelli)", "Femmine in lattazione", "Maschi adulti da riproduzione"], answer: "Giovani animali in rapido accrescimento (puledri, vitelli)" },
+                    { question: "La forma cardiaca della malattia causa tipicamente:", options: ["Zoppia cronica", "Morte improvvisa o dispnea grave", "Cecità", "Diarrea"], answer: "Morte improvvisa o dispnea grave" },
+                    { question: "Quale enzima contiene Selenio ed è usato per valutare lo stato del Selenio nel sangue?", options: ["Creatinchinasi (CK)", "Glutatione Perossidasi (GSH-Px)", "Lattato Deidrogenasi (LDH)", "Fosfatasi Alcalina"], answer: "Glutatione Perossidasi (GSH-Px)" },
+                    { question: "Un segno clinico della forma scheletrica che indica coinvolgimento dei muscoli faringei è:", options: ["Tosse secca", "Disfagia e latte dal naso", "Starnuti frequenti", "Cecità notturna"], answer: "Disfagia e latte dal naso" },
+                    { question: "Quale alterazione macroscopica si osserva all'esame post-mortem nei muscoli colpiti?", options: ["Striature pallide o biancastre", "Emorragie estese", "Colore rosso scuro intenso", "Ascessi"], answer: "Striature pallide o biancastre" },
+                    { question: "Perché bisogna fare attenzione con le iniezioni parenterali di Selenio?", options: ["Sono dolorose", "Possono causare reazioni anafilattiche o tossicità", "Non sono efficaci", "Causano ipotermia"], answer: "Possono causare reazioni anafilattiche o tossicità" },
+                    { question: "Qual è il momento migliore per supplementare le madri per prevenire la malattia nei neonati?", options: ["Al momento del parto", "Durante il primo mese di lattazione", "Nell'ultimo terzo di gravidanza", "Al momento del concepimento"], answer: "Nell'ultimo terzo di gravidanza" },
+                    { question: "Quale ione si accumula nelle cellule muscolari danneggiate causando calcificazione?", options: ["Sodio", "Potassio", "Calcio", "Cloro"], answer: "Calcio" }
+                ],
+                en: [
+                    { question: "Deficiency of which two nutrients causes White Muscle Disease?", options: ["Calcium and Phosphorus", "Magnesium and Potassium", "Vitamin E and Selenium", "Vitamin A and Zinc"], answer: "Vitamin E and Selenium" },
+                    { question: "What is the main function of Selenium and Vitamin E in muscle?", options: ["Energy production (ATP)", "Protein synthesis", "Antioxidant activity (protection from free radicals)", "Direct muscle contraction"], answer: "Antioxidant activity (protection from free radicals)" },
+                    { question: "In which group of animals is NMD most common?", options: ["Old sedentary animals", "Young rapidly growing animals (foals, calves)", "Lactating females", "Adult breeding males"], answer: "Young rapidly growing animals (foals, calves)" },
+                    { question: "The cardiac form of the disease typically causes:", options: ["Chronic lameness", "Sudden death or severe dyspnea", "Blindness", "Diarrhea"], answer: "Sudden death or severe dyspnea" },
+                    { question: "Which selenium-containing enzyme is used to assess blood Selenium status?", options: ["Creatine Kinase (CK)", "Glutathione Peroxidase (GSH-Px)", "Lactate Dehydrogenase (LDH)", "Alkaline Phosphatase"], answer: "Glutathione Peroxidase (GSH-Px)" },
+                    { question: "A clinical sign of the skeletal form indicating pharyngeal muscle involvement is:", options: ["Dry cough", "Dysphagia and milk from nose", "Frequent sneezing", "Night blindness"], answer: "Dysphagia and milk from nose" },
+                    { question: "What macroscopic alteration is seen post-mortem in affected muscles?", options: ["Pale or whitish streaks", "Extensive hemorrhages", "Deep dark red color", "Abscesses"], answer: "Pale or whitish streaks" },
+                    { question: "Why must care be taken with parenteral Selenium injections?", options: ["They are painful", "Can cause anaphylactic reactions or toxicity", "They are ineffective", "Cause hypothermia"], answer: "Can cause anaphylactic reactions or toxicity" },
+                    { question: "When is the best time to supplement dams to prevent disease in neonates?", options: ["At birth", "During the first month of lactation", "In the last third of pregnancy", "At conception"], answer: "In the last third of pregnancy" },
+                    { question: "Which ion accumulates in damaged muscle cells causing calcification?", options: ["Sodium", "Potassium", "Calcium", "Chloride"], answer: "Calcium" }
+                ]
+            };
+            
+            const audioFile = 'audio_miopatia_vite_selenio.mp3'; 
+            
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() {
+                if (synth.speaking || synth.paused) synth.cancel();
+            }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                    return; 
+                }
+                stopSpeech();
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                const cleanup = () => {
+                    if (button) button.classList.remove('playing');
+                    if (activeTTSButton === button) {
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
+                };
+
+                currentUtterance.onend = cleanup;
+                currentUtterance.onerror = (event) => {
+                     if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('An error occurred with speech synthesis:', event.error);
+                     }
+                    cleanup();
+                };
+                
+                activeTTSButton = button;
+                button.classList.add('playing');
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+
+            function initHowler() {
+                if (sound) sound.unload();
+                
+                const playIcon = document.getElementById('play-icon');
+                const pauseIcon = document.getElementById('pause-icon');
+
+                sound = new Howl({
+                    src: [audioFile],
+                    html5: true, 
+                    onplay: () => { 
+                        if (playIcon) playIcon.classList.add('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.remove('hidden'); 
+                    },
+                    onpause: () => { 
+                        if (playIcon) playIcon.classList.remove('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.add('hidden'); 
+                    },
+                    onend: () => { 
+                        if (playIcon) playIcon.classList.remove('hidden'); 
+                        if (pauseIcon) pauseIcon.classList.add('hidden'); 
+                    },
+                    onloaderror: (id, msg) => {
+                        console.error("Error loading audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "File audio non trovato." : "Audio file not found.";
+                    },
+                    onplayerror: (id, msg) => {
+                        console.error("Error playing audio:", msg);
+                        const audioDesc = document.querySelector('[data-lang-key="audioDesc"]');
+                        if (audioDesc) audioDesc.textContent = currentLanguage === 'it' ? "Impossibile riprodurre l'audio." : "Could not play audio.";
+                    }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            if (playPauseBtn) {
+                playPauseBtn.addEventListener('click', () => {
+                    if (!sound || sound.state() === 'unloaded') {
+                        initHowler(); 
+                    }
+                    
+                    if (sound) {
+                        if (sound.playing()) {
+                            sound.pause();
+                        } else {
+                            sound.play(); 
+                        }
+                    }
+                });
+            }
+
+            function setupTTSListeners() {
+                // Clear existing listeners by replacing nodes
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+
+                        // Case 1: H1 (Page Title)
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            const titleClone = parentElement.cloneNode(true);
+                            const btnInClone = titleClone.querySelector('.tts-button');
+                            if(btnInClone) btnInClone.remove();
+                            textToRead = titleClone.textContent.trim();
+                            const subtitle = document.querySelector('[data-lang-key="pageSubtitle"]');
+                            if(subtitle) {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        // Case 2: H2 (Summary Title) - read full content
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            const btnInClone = titleClone.querySelector('.tts-button');
+                            if(btnInClone) btnInClone.remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    // Extract text content and insert pauses after headings
+                                    const contentClone = content.cloneNode(true);
+                                    contentClone.querySelectorAll('h3, h4').forEach(el => {
+                                        el.textContent = '. ' + el.textContent.trim() + '. ';
+                                    });
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        } 
+                        // Case 3: H3 (Quiz Question)
+                        else if (parentElement.tagName === 'H3' && parentElement.closest('#quiz-container')) {
+                            const questionTextNode = parentElement.querySelector('span:first-child');
+                            if (questionTextNode) textToRead = questionTextNode.textContent.trim().replace(/^\d+\.\s*/, '');
+                        }
+                        // Case 4: Quiz Option (inside label span)
+                        else if (parentElement.closest('label')) {
+                            const label = parentElement.closest('label');
+                            const answerTextNode = label.querySelector('span:first-child');
+                            if (answerTextNode) textToRead = answerTextNode.textContent.trim();
+                        }
+                        
+                        // Stop Howler audio if running
+                        if (sound && sound.playing()) sound.stop();
+                        
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    
+                    const optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-cyan-50">
+                            <label class="flex items-start justify-between w-full cursor-pointer">
+                                <span class="flex-grow pr-4">
+                                    <input type="radio" name="q${index}" value="${o}" class="mr-3 mt-1 text-cyan-600 focus:ring-cyan-500">
+                                    ${o}
+                                </span>
+                                <span class="tts-button flex-shrink-0 ml-2">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                                </span>
+                            </label>
+                        </li>
+                    `).join('');
+
+                    // Add the question and the TTS button next to the question text
+                    questionDiv.innerHTML = `
+                        <h3 class="flex items-center text-lg font-semibold mb-3 border-none">
+                            <span class="flex-grow pr-4">${index + 1}. ${q.question}</span>
+                            <span class="tts-button flex-shrink-0">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                            </span>
+                        </h3>
+                        <ul class="space-y-1">${optionsHtml}</ul>
+                    `;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                // Stop any speaking/audio before switching language
+                stopSpeech();
+                if (sound && sound.playing()) sound.stop();
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content') || key === 'bibliographyContent') {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            // Text update for standard elements, handle the potential TTS button existence
+                            const ttsButton = element.querySelector('.tts-button');
+                            element.textContent = translations[key][lang];
+                            if(ttsButton) element.appendChild(ttsButton); // Re-add button if present (using same node reference)
+                        }
+                    }
+                });
+                
+                // Show/Hide Audio section based on language
+                const navAudio = document.querySelector('a[data-lang-key="navAudio"]');
+                const sectionAudio = document.getElementById('audio');
+                if (lang === 'en') {
+                    if(navAudio) navAudio.style.display = 'none';
+                    if(sectionAudio) sectionAudio.style.display = 'none';
+                } else {
+                    if(navAudio) navAudio.style.display = 'block';
+                    if(sectionAudio) sectionAudio.style.display = 'block';
+                }
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                
+                loadQuiz(lang);
+                setupTTSListeners(); 
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`,
+                    en: `You answered ${score} out of ${quizData.en.length} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            // Initialization
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
