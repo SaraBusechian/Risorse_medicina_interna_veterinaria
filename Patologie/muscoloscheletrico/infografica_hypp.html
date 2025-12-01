@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica HYPP Cavallo - MedVet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stile base con palette CIANO */
+        body { font-family: 'Inter', sans-serif; background-color: #ecfeff; /* cyan-50 */ color: #155e75; /* cyan-800 */ }
+        
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #f8fafc !important; letter-spacing: 0.05em; line-height: 1.75; color: #1e293b; }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .flow-box, .dsa-mode .flow-decision, .dsa-mode .flow-result { background-color: #ffffff; border: 1px solid #e2e8f0; color: #1e293b; }
+        .dsa-mode .flow-arrow { color: #64748b; }
+        .dsa-mode h1, .dsa-mode h2 { color: #1e293b; }
+        
+        /* Box specifici */
+        .flow-box.acute { border-left: 5px solid #ef4444; background-color: #fef2f2; } /* Red */
+        .flow-box.maintenance { border-left: 5px solid #22c55e; background-color: #f0fdf4; } /* Green */
+
+        @media print {
+            #main-header, #main-footer, #back-button, #accessibility-toggle, #lang-toggle { display: none; }
+            body { background-color: #ffffff; color: #000000; }
+            main { padding: 0 !important; margin-top: 2rem; }
+            .flow-box, .flow-decision, .flow-result { border-color: #000000; color: #000000; background-color: #ffffff; box-shadow: none; }
+            .flow-arrow { color: #000000; }
+            h1, h2 { color: #000000; }
+        }
+
+        .flow-container { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+        .flow-box, .flow-decision, .flow-result {
+            width: 90%; max-width: 700px; padding: 1rem 1.5rem;
+            border-radius: 0.5rem; background-color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center; border: 1px solid #cffafe;
+        }
+        .flow-box strong { color: #0e7490; }
+        .flow-decision { background-color: #cffafe; border-color: #67e8f9; font-weight: 600; }
+        
+        .flow-arrow { font-size: 2.25rem; line-height: 1; color: #a5f3fc; font-weight: bold; }
+        .flow-split { display: flex; justify-content: space-around; width: 100%; gap: 1rem; }
+        .flow-path { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; flex-basis: 50%; }
+        .flow-path-label { font-weight: 600; color: #0891b2; padding: 0.25rem 0.75rem; background-color: #ffffff; border-radius: 99px; border: 1px solid #67e8f9; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+
+    </style>
+</head>
+<body class="bg-cyan-50">
+
+    <header id="main-header" class="bg-cyan-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Infografica: HYPP Cavallo</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8" id="back-button">
+            <a href="hypp_cavallo.html" class="inline-flex items-center bg-white text-cyan-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-cyan-100 transition duration-300" data-lang-key="backToSummary">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+            </a>
+        </div>
+        
+        <h1 class="text-3xl md:text-4xl font-bold text-cyan-800 text-center mb-4" data-lang-key="pageTitle">Gestione HYPP: Crisi e Dieta</h1>
+        <h2 class="text-xl text-cyan-700 text-center mb-12" data-lang-key="pageSubtitle">Algoritmo decisionale e prevenzione</h2>
+
+        <div class="flow-container" role="figure" aria-label="Algoritmo per la gestione dell'HYPP">
+            
+            <div class="flow-box" data-lang-key="start">
+                <strong>SOSPETTO CRISI:</strong> Tremori, procidenza 3ª palpebra, debolezza
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-decision" data-lang-key="decision1">
+                Gravità dei Sintomi?
+            </div>
+
+            <div class="flow-split">
+                <!-- RAMO LIEVE -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathMild">LIEVE (Cavallo in piedi)</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box acute" data-lang-key="rxMild">
+                        <strong>Azione Immediata:</strong>
+                        <ul class="list-disc text-left pl-4 mt-2">
+                            <li>Esercizio leggero (passo/corda)</li>
+                            <li>Zucchero orale (sciroppo mais/avena)</li>
+                            <li><em>Obiettivo: Stimolare Insulina</em></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- RAMO GRAVE -->
+                <div class="flow-path">
+                    <div class="flow-path-label" data-lang-key="pathSevere">GRAVE (Decubito/Stridore)</div>
+                    <div class="flow-arrow">&darr;</div>
+                    <div class="flow-box acute" data-lang-key="rxSevere">
+                        <strong>EMERGENZA VETERINARIA:</strong>
+                        <ul class="list-disc text-left pl-4 mt-2">
+                            <li>Calcio Gluconato IV (lento)</li>
+                            <li>Destrosio 5% / Bicarbonato IV</li>
+                            <li>Acetazolamide (opzionale)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flow-arrow">&darr;</div>
+
+            <!-- PREVENZIONE -->
+            <div class="flow-box maintenance" data-lang-key="prevention">
+                <strong>PREVENZIONE A LUNGO TERMINE (Fondamentale):</strong><br>
+                <ul class="list-disc text-left pl-4 mt-2">
+                    <li><strong>DIETA LOW K+ (&lt;1.1%):</strong> NO Erba Medica, Melassa, Soia. SÌ Avena, Mais, Fieno Graminacee.</li>
+                    <li><strong>GESTIONE:</strong> Pasti piccoli e frequenti, esercizio regolare, paddock.</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-cyan-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Infografica: HYPP Cavallo", en: "Infographic: Equine HYPP" },
+                backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+                pageTitle: { it: "Gestione HYPP: Crisi e Dieta", en: "HYPP Management: Crisis & Diet" },
+                pageSubtitle: { it: "Algoritmo decisionale e prevenzione", en: "Decision algorithm and prevention" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" },
+                
+                start: { it: "<strong>SOSPETTO CRISI:</strong> Tremori, procidenza 3ª palpebra, debolezza", en: "<strong>SUSPECTED CRISIS:</strong> Tremors, 3rd eyelid prolapse, weakness" },
+                decision1: { it: "Gravità dei Sintomi?", en: "Severity of Symptoms?" },
+                
+                pathMild: { it: "LIEVE (Cavallo in piedi)", en: "MILD (Horse standing)" },
+                rxMild: { 
+                    it: "<strong>Azione Immediata:</strong><ul class='list-disc text-left pl-4 mt-2'><li>Esercizio leggero (passo/corda)</li><li>Zucchero orale (sciroppo mais/avena)</li><li><em>Obiettivo: Stimolare Insulina</em></li></ul>", 
+                    en: "<strong>Immediate Action:</strong><ul class='list-disc text-left pl-4 mt-2'><li>Light exercise (walking/lunging)</li><li>Oral sugar (corn syrup/oats)</li><li><em>Goal: Stimulate Insulin</em></li></ul>" 
+                },
+                
+                pathSevere: { it: "GRAVE (Decubito/Stridore)", en: "SEVERE (Recumbent/Stridor)" },
+                rxSevere: { 
+                    it: "<strong>EMERGENZA VETERINARIA:</strong><ul class='list-disc text-left pl-4 mt-2'><li>Calcio Gluconato IV (lento)</li><li>Destrosio 5% / Bicarbonato IV</li><li>Acetazolamide (opzionale)</li></ul>", 
+                    en: "<strong>VETERINARY EMERGENCY:</strong><ul class='list-disc text-left pl-4 mt-2'><li>Calcium Gluconate IV (slow)</li><li>Dextrose 5% / Bicarbonate IV</li><li>Acetazolamide (optional)</li></ul>" 
+                },
+
+                prevention: { 
+                    it: "<strong>PREVENZIONE A LUNGO TERMINE (Fondamentale):</strong><br><ul class='list-disc text-left pl-4 mt-2'><li><strong>DIETA LOW K+ (&lt;1.1%):</strong> NO Erba Medica, Melassa, Soia. SÌ Avena, Mais, Fieno Graminacee.</li><li><strong>GESTIONE:</strong> Pasti piccoli e frequenti, esercizio regolare, paddock.</li></ul>", 
+                    en: "<strong>LONG-TERM PREVENTION (Crucial):</strong><br><ul class='list-disc text-left pl-4 mt-2'><li><strong>LOW K+ DIET (&lt;1.1%):</strong> NO Alfalfa, Molasses, Soy. YES Oats, Corn, Grass Hay.</li><li><strong>MANAGEMENT:</strong> Small frequent meals, regular exercise, turnout.</li></ul>" 
+                }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+            
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
