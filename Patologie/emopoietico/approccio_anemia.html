@@ -444,6 +444,19 @@
                                 }
                             }
                         }
+                        else if (parentElement.tagName === 'H3' && parentElement.closest('.quiz-question')) {
+                            // TTS Logic for Quiz Questions
+                            const questionClone = parentElement.cloneNode(true);
+                            questionClone.querySelector('.tts-button').remove();
+                            textToRead = questionClone.textContent.trim();
+                        }
+                        else if (parentElement.classList.contains('quiz-option')) {
+                            // TTS Logic for Quiz Answers
+                            const label = parentElement.querySelector('label');
+                            const textSpan = label.querySelector('span');
+                            textToRead = textSpan ? textSpan.textContent.trim() : label.textContent.trim();
+                        }
+
                         if (textToRead) speak(textToRead, newButton);
                     });
                 });
@@ -458,14 +471,17 @@
                     const questionDiv = document.createElement('div');
                     questionDiv.className = 'quiz-question p-4 rounded-lg';
                     let optionsHtml = q.options.map(o => `
-                        <li class="quiz-option p-2 rounded hover:bg-red-50">
-                            <label class="flex items-center w-full cursor-pointer">
-                                <input type="radio" name="q${index}" value="${o}" class="mr-3">${o}
+                        <li class="quiz-option p-2 rounded hover:bg-red-50 flex items-center justify-between">
+                            <label class="flex items-center w-full cursor-pointer flex-grow">
+                                <input type="radio" name="q${index}" value="${o}" class="mr-3">
+                                <span>${o}</span>
                             </label>
+                            <span class="tts-button flex-shrink-0 ml-2 text-gray-400 hover:text-red-600" title="Ascolta risposta"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
                         </li>`).join('');
-                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2">${index + 1}. ${q.question}</h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 inline-flex items-center text-lg">${index + 1}. ${q.question}<span class="tts-button ml-2"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h3><ul class="space-y-1">${optionsHtml}</ul>`;
                     quizContainer.appendChild(questionDiv);
                 });
+                setupTTSListeners();
             }
 
             function updateLanguage(lang) {
