@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linfoma Equino - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stili Base e Tonalità (Rosso) */
+        body { font-family: 'Inter', sans-serif; background-color: #fef2f2; color: #7f1d1d; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; padding-bottom: 4px; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #ef4444; color: #b91c1c; }
+        
+        /* Modalità Accessibilità (DSA Mode) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #334155;
+            font-size: 1.15rem;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #1e293b !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #ffffff; border: 1px solid #cbd5e1; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #0f172a; }
+        .dsa-mode .prose ul, .dsa-mode .prose ol { list-style-type: disc; }
+
+        /* Pulsante TTS (Text-to-Speech) */
+        .tts-button { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin-left: 10px; vertical-align: middle; color: #dc2626; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #b91c1c; }
+        
+        /* Stili Quiz */
+        .quiz-question { border: 1px solid #fecaca; transition: all 0.3s; }
+        .quiz-option { cursor: pointer; }
+        .quiz-option:hover { background-color: #fef2f2; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        
+        /* Stili Stampa */
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"] { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-red-50">
+
+    <header id="main-header" class="bg-red-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Sistema Emopoietico</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-red-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-red-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Patologie</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-red-200 pb-6 mb-8">
+                <h1 class="text-3xl md:text-5xl font-bold text-red-800" data-lang-key="pageTitle">Linfoma Equino<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-red-700 mt-2" data-lang-key="pageSubtitle">La neoplasia ematopoietica più frequente nel cavallo.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none text-red-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                     <a href="infografica_linfo_equino.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-red-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-red-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona cavallo">🐴</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-red-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica Dettagliata</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Schema visivo: Forme anatomiche, Diagnosi e Prognosi.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-red-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-red-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-red-600" data-lang-key="audioDesc">Audio lezione sintetica.</p>
+                        </div>
+                        <a href="audio_linfo_equino.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-red-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-red-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        // Variabili di stato globali dello script (necessarie per le funzioni TTS)
+        let currentLanguage = localStorage.getItem('language') || 'it';
+        let ttsSynth = window.speechSynthesis;
+        let ttsCurrentUtterance = null;
+        let ttsActiveButton = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Testi riassunto in variabili separate (HTML per la visualizzazione)
+            const summaryHTML_IT = `
+                <p>Il <strong>linfoma</strong> (o linfosarcoma) è la neoplasia ematopoietica più comune nel cavallo, colpendo soggetti di ogni età, ma con maggiore frequenza tra i 4 e i 10 anni. A differenza del bovino, nel cavallo <strong>non è associato a eziologia virale</strong> (è una neoplasia spontanea).</p>
+                
+                <h3 class="text-2xl font-semibold mt-6 mb-3">1. Forme Anatomiche e Sintomi</h3>
+                <p>La presentazione clinica varia enormemente in base alla localizzazione:</p>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Multicentrica (Generalizzata):</strong> Linfoadenomegalia diffusa (sottomandibolare, prescapolare, ecc.), perdita di peso cronica, <strong>edema ventrale</strong> (o degli arti) e febbre ricorrente.</li>
+                    <li><strong>Alimentare (Intestinale):</strong> Malassorbimento cronico. Sintomi principali: dimagrimento grave nonostante l'appetito conservato, proteine totali basse (enteropatia proteino-disperdente), talvolta diarrea.</li>
+                    <li><strong>Mediastinica (Toracica):</strong> Versamento pleurico neoplastico, dispnea, tosse, edema (da compressione vascolare).</li>
+                    <li><strong>Cutanea:</strong> Noduli sottocutanei multipli, non dolenti. Spesso risponde temporaneamente ai corticosteroidi, ma può evolvere in forma sistemica.</li>
+                </ul>
+
+                <h3 class="text-2xl font-semibold mt-6 mb-3">2. Diagnosi</h3>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Esplorazione Rettale:</strong> Fondamentale nella forma addominale/alimentare per palpare linfonodi mesenterici ingrossati o splenomegalia.</li>
+                    <li><strong>Esami del Sangue:</strong> Spesso aspecifici. Anemia da malattia cronica, iperfibrinogenemia.
+                        <ul class="list-disc pl-6 mt-1 text-sm text-red-800">
+                            <li><strong>Ipercalcemia paraneoplastica:</strong> Presente in alcuni casi, causa poliuria/polidipsia (PU/PD).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Ecografia:</strong> Per identificare masse addominali o toraciche e guidare la biopsia.</li>
+                    <li><strong>Conferma:</strong> Richiede sempre <strong>biopsia o citologia</strong> (es. agoaspirato linfonodale o analisi del liquido pleurico/addominale).</li>
+                </ul>
+
+                <h3 class="text-2xl font-semibold mt-6 mb-3">3. Terapia e Prognosi</h3>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Terapia:</strong> Le opzioni sono limitate rispetto ai piccoli animali a causa dei costi e della logistica.
+                        <ul class="list-disc pl-6 mt-1 text-sm text-red-800">
+                            <li><em>Corticosteroidi:</em> Palliativi, migliorano temporaneamente i sintomi.</li>
+                            <li><em>Chemioterapia:</em> Possibile (protocolli con Vincristina/Ciclofosfamide), ma costosa e con rischi di sicurezza per il personale e l'ambiente.</li>
+                            <li><em>Asportazione chirurgica:</em> Solo per noduli cutanei isolati.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Prognosi:</strong> Generalmente <strong>infausta</strong> a lungo termine (mesi), eccetto per la forma cutanea che può avere un decorso più lento o regredire spontaneamente (raro).</li>
+                </ul>
+            `;
+
+            const summaryHTML_EN = `
+                <p><strong>Equine Lymphoma</strong> (or lymphosarcoma) is the most common hematopoietic neoplasm in horses, affecting animals of all ages, typically 4-10 years old. Unlike in cattle, it has <strong>no viral etiology</strong> (it is a spontaneous neoplasm).</p>
+                
+                <h3 class="text-2xl font-semibold mt-6 mb-3">1. Anatomical Forms and Symptoms</h3>
+                <p>Clinical presentation varies greatly depending on location:</p>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Multicentric (Generalized):</strong> Diffuse lymphadenopathy, chronic weight loss, <strong>ventral edema</strong> (or limb edema), and recurrent fever.</li>
+                    <li><strong>Alimentary (Intestinal):</strong> Chronic malabsorption. Main signs: severe weight loss despite good appetite, low total proteins (protein-losing enteropathy), sometimes diarrhea.</li>
+                    <li><strong>Mediastinal (Thoracic):</strong> Neoplastic pleural effusion, dyspnea, coughing, edema (vascular compression).</li>
+                    <li><strong>Cutaneous:</strong> Multiple subcutaneous nodules, non-painful. Often responds temporarily to corticosteroids but may progress systemically.</li>
+                </ul>
+
+                <h3 class="text-2xl font-semibold mt-6 mb-3">2. Diagnosis</h3>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Rectal Palpation:</strong> Crucial in alimentary forms to palpate enlarged mesenteric lymph nodes or splenomegaly.</li>
+                    <li><strong>Blood Work:</strong> Often nonspecific. Anemia of chronic disease, hyperfibrinogenemia.
+                        <ul class="list-disc pl-6 mt-1 text-sm text-red-800">
+                            <li><strong>Paraneoplastic Hypercalcemia:</strong> Present in some cases, causing polyuria/polydipsia (PU/PD).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Ultrasound:</strong> To identify abdominal/thoracic masses and guide biopsy.</li>
+                    <li><strong>Confirmation:</strong> Always requires <strong>biopsy or cytology</strong> (e.g., lymph node FNA or fluid analysis).</li>
+                </ul>
+
+                <h3 class="text-2xl font-semibold mt-6 mb-3">3. Therapy and Prognosis</h3>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Therapy:</strong> Options are limited compared to small animals due to cost and logistics.
+                        <ul class="list-disc pl-6 mt-1 text-sm text-red-800">
+                            <li><em>Corticosteroids:</em> Palliative, temporarily improve symptoms.</li>
+                            <li><em>Chemotherapy:</em> Possible (protocolli con Vincristina/Ciclofosfamide), ma costosa e con rischi di sicurezza per il personale e l'ambiente.</li>
+                            <li><em>Surgical excision:</em> Only for isolated cutaneous nodules.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Prognosis:</strong> Generally <strong>grave</strong> long-term (months), except for the cutaneous form which may have a slower course.</li>
+                </ul>
+            `;
+            
+            // Testi riassunto puliti (per TTS)
+            const summaryTTS_IT = `
+                Il linfoma, o linfosarcoma, è la neoplasia ematopoietica più comune nel cavallo, colpendo soggetti tra i 4 e i 10 anni. A differenza del bovino, nel cavallo non è associato a eziologia virale, ma è una neoplasia spontanea.
+
+                Sezione 1. Forme Anatomiche e Sintomi: La presentazione clinica varia enormemente in base alla localizzazione. La forma multicentrica o generalizzata presenta linfoadenomegalia diffusa, perdita di peso cronica, edema ventrale o degli arti e febbre ricorrente. La forma alimentare o intestinale provoca malassorbimento cronico, dimagrimento grave nonostante l'appetito e proteine totali basse. La forma mediastinica o toracica può causare versamento pleurico, dispnea, tosse ed edema da compressione vascolare. La forma cutanea si presenta con noduli sottocutanei multipli e non dolenti, e può evolvere in forma sistemica.
+
+                Sezione 2. Diagnosi: L'esplorazione rettale è fondamentale nella forma addominale per palpare i linfonodi mesenterici ingrossati. Gli esami del sangue sono spesso aspecifici, mostrando anemia o iperfibrinogenemia. L'ipercalcemia paraneoplastica è presente in alcuni casi e causa poliuria e polidipsia. L'ecografia è utile per identificare masse e guidare la biopsia. La conferma richiede sempre biopsia o citologia, come l'agoaspirato linfonodale.
+
+                Sezione 3. Terapia e Prognosi: Le opzioni terapeutiche sono limitate. Si usano corticosteroidi come palliativi per migliorare temporaneamente i sintomi. La chemioterapia è possibile ma costosa e presenta rischi di sicurezza. L'asportazione chirurgica è riservata ai noduli cutanei isolati. La prognosi è generalmente infausta a lungo termine (pochi mesi), ad eccezione della forma cutanea che ha un decorso più lento.
+            `;
+            
+            const translations = {
+                siteTitle: { it: "Patologie Sistema Emopoietico", en: "Hematopoietic System Diseases" },
+                backToIndexText: { it: "Indice Patologie", en: "Pathology Index" },
+                pageTitle: { it: "Linfoma Equino", en: "Equine Lymphoma" },
+                pageSubtitle: { it: "La neoplasia ematopoietica più frequente nel cavallo.", en: "The most common hematopoietic neoplasm in horses." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { it: summaryHTML_IT, en: summaryHTML_EN },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Infografica Dettagliata", en: "View the Detailed Infographic" },
+                infographicLinkDesc: { it: "Schema visivo: Forme anatomiche, Diagnosi e Prognosi.", en: "Visual guide: Anatomical Forms, Diagnosis and Prognosis." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Audio lezione sintetica.", en: "Short audio lesson." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Reed SM, Bayly WM, Sellon DC. Equine Internal Medicine. 4th ed. Elsevier, 2018.</li><li>Smith BP. Large Animal Internal Medicine. 6th ed. Mosby, 2019.</li>`,
+                    en: `<li>Reed SM, Bayly WM, Sellon DC. Equine Internal Medicine. 4th ed. Elsevier, 2018.</li><li>Smith BP. Large Animal Internal Medicine. 6th ed. Mosby, 2019.</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    // Modificata risposta 1
+                    { question: "Il linfoma nel cavallo ha eziologia virale?", options: ["Solo nel cavallo sopra i 20 anni", "No, è spontaneo", "Solo nei puledri", "Sì, causato da Herpesvirus"], answer: "No, è spontaneo" },
+                    { question: "Qual è la neoplasia ematopoietica più comune nel cavallo?", options: ["Leucemia mieloide", "Linfoma", "Mieloma multiplo", "Mastocitoma"], answer: "Linfoma" },
+                    { question: "Quale segno clinico è tipico del linfoma multicentrico equino?", options: ["Zoppia", "Edema ventrale e perdita di peso", "Alopecia", "Emoglobinuria"], answer: "Edema ventrale e perdita di peso" },
+                    { question: "Quale alterazione laboratoristica suggerisce una forma alimentare/intestinale?", options: ["Iperglicemia", "Ipoproteinemia (albumina bassa)", "Azotemia alta", "Enzimi epatici alti"], answer: "Ipoproteinemia (albumina bassa)" },
+                    { question: "La sindrome paraneoplastica più comune nel linfoma equino è:", options: ["Ipoglicemia", "Ipercalcemia", "Iperkaliemia", "Iponatriemia"], answer: "Ipercalcemia" },
+                    { question: "Quale esame è utile per diagnosticare il linfoma addominale?", options: ["Radiografia del piede", "Esplorazione rettale", "Elettrocardiogramma", "Endoscopia vie aeree"], answer: "Esplorazione rettale" },
+                    { question: "Qual è la forma di linfoma che spesso risponde ai corticosteroidi (almeno inizialmente)?", options: ["Alimentare", "Cutanea", "Renale", "Ossea"], answer: "Cutanea" },
+                    { question: "Come si conferma definitivamente la diagnosi?", options: ["Solo visita clinica", "Solo esame del sangue", "Biopsia o citologia", "Risposta alla terapia"], answer: "Biopsia o citologia" },
+                    { question: "La chemioterapia nel cavallo:", options: ["È routinaria ed economica", "Non si fa mai", "È possibile ma costosa e complessa", "Cura il 100% dei casi"], answer: "È possibile ma costosa e complessa" },
+                    { question: "Qual è la prognosi generale per il linfoma viscerale equino?", options: ["Eccellente", "Buona", "Infausta", "Dipende dal colore del mantello"], answer: "Infausta" }
+                ],
+                en: [
+                    { question: "Is equine lymphoma caused by a virus?", options: ["Only in horses over 20 years old", "No, it is spontaneous", "Only in foals", "Yes, by Herpesvirus"], answer: "No, it is spontaneous" },
+                    { question: "What is the most common hematopoietic neoplasm in horses?", options: ["Myeloid leukemia", "Lymphoma", "Multiple myeloma", "Mast cell tumor"], answer: "Lymphoma" },
+                    { question: "Which clinical sign is typical of equine multicentric lymphoma?", options: ["Lameness", "Ventral edema and weight loss", "Alopecia", "Hemoglobinuria"], answer: "Ventral edema and weight loss" },
+                    { question: "Which lab finding suggests an alimentary/intestinal form?", options: ["Hyperglycemia", "Hypoproteinemia (low albumin)", "High azotemia", "High liver enzymes"], answer: "Hypoproteinemia (low albumin)" },
+                    { question: "The most common paraneoplastic syndrome in equine lymphoma is:", options: ["Hypoglycemia", "Hypercalcemia", "Hyperkalemia", "Hyponatremia"], answer: "Hypercalcemia" },
+                    { question: "Which exam is useful for diagnosing abdominal lymphoma?", options: ["Foot X-ray", "Rectal palpation", "Electrocardiogram", "Airway endoscopy"], answer: "Rectal palpation" },
+                    { question: "Which form of lymphoma often responds to corticosteroids (at least initially)?", options: ["Alimentary", "Cutaneous", "Renal", "Bone"], answer: "Cutaneous" },
+                    { question: "How is the diagnosis definitively confirmed?", options: ["Clinical exam only", "Blood test only", "Biopsy or cytology", "Response to therapy"], answer: "Biopsy or cytology" },
+                    { question: "Chemotherapy in horses:", options: ["Is routine and cheap", "Is never done", "Is possible but expensive and complex", "Cures 100% of cases"], answer: "Is possible but expensive and complex" },
+                    { question: "What is the general prognosis for equine visceral lymphoma?", options: ["Excellent", "Good", "Grave", "Depends on coat color"], answer: "Grave" }
+                ]
+            };
+            
+            // --- FUNZIONI TTS (Spostate fuori dal listener DOMContentLoaded) ---
+
+            function stopSpeech() {
+                if (ttsSynth.speaking || ttsSynth.paused) {
+                    ttsSynth.cancel();
+                }
+                if (ttsActiveButton) {
+                    ttsActiveButton.classList.remove('playing');
+                    ttsActiveButton = null;
+                }
+                ttsCurrentUtterance = null;
+            }
+
+            function speak(text, button) {
+                // Assicurati che l'audio di Howler sia fermo prima di usare il TTS di sistema
+                if (sound && sound.playing()) sound.stop(); 
+                
+                if (ttsActiveButton === button) {
+                    if (ttsSynth.paused) {
+                        ttsSynth.resume();
+                        button.classList.add('playing');
+                    } else if (ttsSynth.speaking) {
+                        ttsSynth.pause();
+                        button.classList.remove('playing');
+                    }
+                    return;
+                }
+
+                stopSpeech();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                utterance.onstart = () => {
+                    ttsActiveButton = button;
+                    button.classList.add('playing');
+                };
+                
+                utterance.onend = () => {
+                    if (ttsActiveButton === button) {
+                        button.classList.remove('playing');
+                        ttsActiveButton = null;
+                        ttsCurrentUtterance = null;
+                    }
+                };
+
+                utterance.onerror = (e) => {
+                    if (e.error !== 'interrupted' && e.error !== 'canceled') {
+                        console.error('TTS Error:', e);
+                    }
+                    if (ttsActiveButton === button) {
+                        button.classList.remove('playing');
+                        ttsActiveButton = null;
+                        ttsCurrentUtterance = null;
+                    }
+                };
+
+                ttsCurrentUtterance = utterance;
+                ttsSynth.speak(utterance);
+            }
+
+            window.addEventListener('beforeunload', stopSpeech);
+
+            // --- Script Howler (Audio Player per il riassunto completo) ---
+            let sound = null;
+            function initHowler() {
+                const audioFile = document.querySelector('#audio a[download]').href;
+                if (!audioFile) return;
+                
+                // Ferma il TTS di sistema prima di inizializzare l'audio Howler
+                stopSpeech(); 
+
+                // Howler non viene usato per l'audio generato dall'API, ma se l'URL fosse valido:
+                sound = new Howl({
+                    src: [audioFile], html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onloaderror: (id, msg) => { console.error("Error loading audio:", msg); },
+                    onplayerror: (id, msg) => { console.error("Error playing audio:", msg); }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            
+            // Associa l'evento di riproduzione Howler (o simulata)
+            if(playPauseBtn) playPauseBtn.addEventListener('click', () => {
+                if (!sound) initHowler();
+                if(sound) { if (sound.playing()) sound.pause(); else sound.play(); }
+            });
+            // --- Fine Howler/Audio Player ---
+
+
+            // --- Logica Globale dell'App ---
+            
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        const grandParentElement = parentElement.parentElement;
+
+                        // Seleziona il testo del riassunto corretto in base alla lingua
+                        const getSummaryText = () => {
+                            // Estrae il testo pulito per il TTS dall'HTML del riassunto
+                            const rawHtml = currentLanguage === 'it' ? summaryHTML_IT : summaryHTML_EN;
+                            const tempDiv = document.createElement("div");
+                            tempDiv.innerHTML = rawHtml;
+                            return (tempDiv.textContent || tempDiv.innerText || "").replace(/\s\s+/g, ' ');
+                        };
+
+
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                            const subtitle = parentElement.nextElementSibling;
+                            if(subtitle && subtitle.dataset.langKey === 'pageSubtitle') {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                textToRead = getSummaryText();
+                            }
+                        }
+                        else if (parentElement.tagName === 'H3' && parentElement.closest('.quiz-question')) {
+                            const questionClone = parentElement.cloneNode(true);
+                            questionClone.querySelector('.tts-button').remove();
+                            textToRead = questionClone.textContent.trim();
+                        }
+                        else if (grandParentElement && grandParentElement.classList.contains('quiz-option')) {
+                            const label = grandParentElement.querySelector('label');
+                            const textSpan = label.querySelector('span');
+                            textToRead = textSpan ? textSpan.textContent.trim() : label.textContent.trim();
+                        }
+
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            // CORREZIONE DEL BUG: Markup HTML sistemato nella funzione di caricamento quiz
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                if(!quizContainer) return;
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-red-50 flex items-center justify-between">
+                            <label class="flex items-center w-full cursor-pointer flex-grow">
+                                <input type="radio" name="q${index}" value="${o}" class="mr-3">
+                                <span>${o}</span>
+                            </label>
+                            <span class="tts-button flex-shrink-0 ml-2 text-gray-400 hover:text-red-600" title="Ascolta risposta">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                            </span>
+                        </li>`).join('');
+                        
+                    questionDiv.innerHTML = `
+                        <h3 class="text-xl font-semibold mb-4 flex items-center justify-between">
+                            ${index + 1}. ${q.question}
+                            <span class="tts-button flex-shrink-0 ml-2 text-gray-400 hover:text-red-600" title="Ascolta domanda">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                            </span>
+                        </h3>
+                        <ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+                setupTTSListeners();
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                stopSpeech(); 
+                
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                            // Gestione separata per il contenuto del riassunto
+                            if (key === 'summaryContent') {
+                                element.innerHTML = lang === 'it' ? summaryHTML_IT : summaryHTML_EN;
+                                return;
+                            }
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            const ttsButton = element.querySelector('.tts-button');
+                            const textNodes = [...element.childNodes].filter(node => node.nodeType === Node.TEXT_NODE);
+                            if (textNodes.length > 0) {
+                                textNodes[0].textContent = translations[key][lang];
+                            } else {
+                                element.textContent = translations[key][lang];
+                            }
+                            if(ttsButton) element.appendChild(ttsButton);
+                        }
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                loadQuiz(lang);
+                setupTTSListeners();
+            }
+            
+            // --- Gestione Eventi ---
+
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            const submitQuizBtn = document.getElementById('submit-quiz');
+            if (submitQuizBtn) submitQuizBtn.addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const total = quizData[currentLanguage].length;
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${total} domande.`,
+                    en: `You answered ${score} out of ${total} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            // Inizializzazione
+            updateLanguage(currentLanguage);
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('article section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" }); 
+            sections.forEach(sec => observer.observe(sec));
+        });
+    </script>
+</body>
+</html>
