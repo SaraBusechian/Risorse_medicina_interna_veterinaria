@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leucosi Bovina Enzootica - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Howler per l'audio player, caricato in precedenza -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stili Base e Tonalità (Rosso) */
+        body { font-family: 'Inter', sans-serif; background-color: #fef2f2; color: #7f1d1d; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; padding-bottom: 4px; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #ef4444; color: #b91c1c; }
+        
+        /* Modalità Accessibilità (DSA Mode) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #334155;
+            font-size: 1.15rem; /* Aumento della dimensione del testo */
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #1e293b !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #ffffff; border: 1px solid #cbd5e1; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #0f172a; }
+        .dsa-mode .prose ul, .dsa-mode .prose ol { list-style-type: disc; } /* Assicura pallini visibili */
+
+        /* Pulsante TTS (Text-to-Speech) */
+        .tts-button { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin-left: 10px; vertical-align: middle; color: #dc2626; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #b91c1c; }
+        
+        /* Stili Quiz */
+        .quiz-question { border: 1px solid #fecaca; transition: all 0.3s; }
+        .quiz-option { cursor: pointer; }
+        .quiz-option:hover { background-color: #fef2f2; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        
+        /* Stili Stampa */
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"] { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-red-50">
+
+    <header id="main-header" class="bg-red-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Sistema Emopoietico</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-red-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-red-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Patologie</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-red-200 pb-6 mb-8">
+                <h1 class="text-3xl md:text-5xl font-bold text-red-800" data-lang-key="pageTitle">Leucosi Bovina Enzootica (EBL)<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-red-700 mt-2" data-lang-key="pageSubtitle">Patologia retrovirale linfoproliferativa del bovino.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none text-red-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                     <a href="infografica_leucosi_bovina.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-red-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-red-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona mucca">🐄</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-red-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica Dettagliata</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Schema visivo: Iceberg della malattia e sedi tumorali (HAULS).</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-red-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-red-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-red-600" data-lang-key="audioDesc">Audio lezione sintetica.</p>
+                        </div>
+                        <!-- Il link è a scopo dimostrativo. L'audio player usa Howler per riprodurre (se l'audio fosse disponibile) -->
+                        <a href="audio_leucosi_bovina.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-red-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-red-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Definisco i testi lunghi come costanti per evitare errori di sintassi
+            const summaryIT = `
+                <p>La <strong>Leucosi Bovina Enzootica (EBL)</strong> è una malattia linfoproliferativa contagiosa del bovino adulto causata dal Bovine Leukemia Virus (BLV). Sebbene l'infezione sia comune, lo sviluppo di tumori è raro.</p>
+                
+                <h3 class="text-2xl font-semibold mt-6 mb-3">1. Eziologia e Trasmissione</h3>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Agente:</strong> BLV (Oncovirus, famiglia Retroviridae). Infetta i linfociti B. L'infezione è permanente (provirus si integra nel DNA).</li>
+                    <li><strong>Trasmissione:</strong> Principalmente tramite sangue infetto (linfociti).
+                        <ul class="list-disc pl-6 mt-1 text-sm text-red-800">
+                            <li><em>Iatrogena (Orizzontale):</em> Aghi riutilizzati, guanti da esplorazione rettale non cambiati, decornazione.</li>
+                            <li><em>Verticale:</em> Transplacentare (rara, &lt;10%) o tramite colostro/latte.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 class="text-2xl font-semibold mt-6 mb-3">2. Forme Cliniche: L'Iceberg</h3>
+                <p>L'infezione da BLV si manifesta secondo un modello a "iceberg":</p>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Infezione Asintomatica (A-leucemica):</strong> Circa il <strong>65-70%</strong> dei bovini infetti. Nessun sintomo, emocromo normale, ma portatori sani e fonte di infezione.</li>
+                    <li><strong>Linfocitosi Persistente (PL):</strong> Circa il <strong>30%</strong> degli infetti. Aumento benigno e stabile dei linfociti B. Non è un tumore, ma un fattore di rischio.</li>
+                    <li><strong>Linfosarcoma (Tumore):</strong> Solo l'<strong>1-5%</strong> sviluppa la forma tumorale maligna. Tipico di bovini adulti (>3-5 anni).</li>
+                </ul>
+
+                <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 my-4">
+                    <h4 class="font-bold text-red-800">Sedi del Tumore (Acronimo HAULS)</h4>
+                    <p>Il linfosarcoma bovino ha sedi di predilezione specifiche, memorizzabili con l'acronimo <strong>HAULS</strong>:</p>
+                    <ul class="list-disc pl-6 mt-1 text-red-900">
+                        <li><strong>H</strong>eart (Cuore): Insufficienza cardiaca destra.</li>
+                        <li><strong>A</strong>bomasum (Abomaso): Ulcere, melena, inappetenza.</li>
+                        <li><strong>U</strong>terus (Utero): Masse palpabili, infertilità.</li>
+                        <li><strong>L</strong>ymph nodes (Linfonodi): Linfoadenomegalia generalizzata asimmetrica.</li>
+                        <li><strong>S</strong>pinal cord (Midollo Spinale): Atassia posteriore, paresi, paralisi (compressione epidurale).</li>
+                        <li><em>Retrobulbare:</em> Esoftalmo (sporgenza occhio).</li>
+                    </ul>
+                </div>
+
+                <h3 class="text-2xl font-semibold mt-6 mb-3">3. Diagnosi e Controllo</h3>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Sierologia (AGID/ELISA):</strong> Rileva anticorpi (gp51). Usata per screening di mandria e piani di eradicazione.</li>
+                    <li><strong>PCR:</strong> Conferma diretta del provirus.</li>
+                    <li><strong>Istopatologia:</strong> Necessaria per confermare il linfosarcoma (biopsia o necroscopia).</li>
+                </ul>
+                
+                <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 my-4">
+                    <h4 class="font-bold text-blue-800">Situazione in Italia e Eradicazione</h4>
+                    <p>L'Italia ha acquisito lo status di paese <strong>Ufficialmente Indenne</strong> da Leucosi Bovina Enzootica. Tuttavia, è attivo un <strong>Piano Nazionale di Sorveglianza</strong> per mantenere questo status. Il controllo si basa su:</p>
+                    <ul class="list-disc pl-6 mt-1 text-sm text-blue-900">
+                        <li>Test sierologici (ELISA) periodici su <strong>latte di massa</strong> (o sangue in allevamenti da carne).</li>
+                        <li>In caso di positività: blocco dell'allevamento, indagine epidemiologica e <strong>abbattimento</strong> (stamping out) dei capi positivi per estinguere il focolaio.</li>
+                    </ul>
+                </div>
+            `;
+
+            const summaryEN = `
+                <p><strong>Enzootic Bovine Leukosis (EBL)</strong> is a contagious lymphoproliferative disease of adult cattle caused by Bovine Leukemia Virus (BLV). Although infection is common, tumor development is rare.</p>
+                
+                <h3 class="text-2xl font-semibold mt-6 mb-3">1. Etiology and Transmission</h3>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Agent:</strong> BLV (Oncovirus, Retroviridae family). Infects B-lymphocytes. Infection is lifelong (provirus integrates into DNA).</li>
+                    <li><strong>Transmission:</strong> Primarily via infected blood (lymphocytes).
+                        <ul class="list-disc pl-6 mt-1 text-sm text-red-800">
+                            <li><em>Iatrogenic (Horizontal):</em> Reused needles, unchanged rectal sleeves, dehorning.</li>
+                            <li><em>Vertical:</em> Transplacental (rare, &lt;10%) or via colostrum/milk.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 class="text-2xl font-semibold mt-6 mb-3">2. Clinical Forms: The Iceberg</h3>
+                <p>BLV infection manifests according to an "iceberg" model:</p>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Asymptomatic Infection (Aleukemic):</strong> About <strong>65-70%</strong> of infected cattle. No symptoms, normal CBC, but healthy carriers and source of infection.</li>
+                    <li><strong>Persistent Lymphocytosis (PL):</strong> About <strong>30%</strong> of infected. Benign, stable increase in B lymphocytes. Not a tumor, but a risk factor.</li>
+                    <li><strong>Lymphosarcoma (Tumor):</strong> Only <strong>1-5%</strong> develop the malignant tumor form. Typical of adult cattle (>3-5 years).</li>
+                </ul>
+
+                <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 my-4">
+                    <h4 class="font-bold text-red-800">Tumor Sites (HAULS Acronym)</h4>
+                    <p>Bovine lymphosarcoma has specific predilection sites, memorable with the acronym <strong>HAULS</strong>:</p>
+                    <ul class="list-disc pl-6 mt-1 text-red-900">
+                        <li><strong>H</strong>eart: Right heart failure.</li>
+                        <li><strong>A</strong>bomasum: Ulcers, melena, inappetence.</li>
+                        <li><strong>U</strong>terus: Palpable masses, infertility.</li>
+                        <li><strong>L</strong>ymph nodes: Generalized asymmetric lymphadenomegaly.</li>
+                        <li><strong>S</strong>pinal cord: Posterior ataxia, paresis, paralysis (epidural compression).</li>
+                        <li><em>Retrobulbar:</em> Exophthalmos.</li>
+                    </ul>
+                </div>
+
+                <h3 class="text-2xl font-semibold mt-6 mb-3">3. Diagnosis and Control</h3>
+                <ul class="list-disc pl-6 space-y-2 mt-2">
+                    <li><strong>Serology (AGID/ELISA):</strong> Detects antibodies (gp51). Used for herd screening and eradication plans.</li>
+                    <li><strong>PCR:</strong> Direct confirmation of provirus.</li>
+                    <li><strong>Histopathology:</strong> Necessary to confirm lymphosarcoma (biopsy or necropsy).</li>
+                </ul>
+                <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 my-4">
+                    <h4 class="font-bold text-blue-800">National Control Plans</h4>
+                    <p>Italy is officially EBL-free. Surveillance is maintained via periodic ELISA testing on bulk milk or blood. Positive cases trigger herd lockdown and slaughter of infected animals.</p>
+                </div>
+            `;
+
+            const translations = {
+                siteTitle: { it: "Patologie Sistema Emopoietico", en: "Hematopoietic System Diseases" },
+                backToIndexText: { it: "Indice Patologie", en: "Pathology Index" },
+                pageTitle: { it: "Leucosi Bovina Enzootica (EBL)", en: "Enzootic Bovine Leukosis (EBL)" },
+                pageSubtitle: { it: "Patologia retrovirale linfoproliferativa del bovino.", en: "Retroviral lymphoproliferative disease of cattle." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { it: summaryIT, en: summaryEN },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Infografica Dettagliata", en: "View the Detailed Infographic" },
+                infographicLinkDesc: { it: "Schema visivo: Iceberg della malattia e sedi tumorali (HAULS).", en: "Visual guide: Disease Iceberg and Tumor Sites (HAULS)." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Audio lezione sintetica.", en: "Short audio lesson." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Smith BP. Large Animal Internal Medicine. 6th ed. Mosby, 2019.</li><li><a href="https://www.woah.org/en/disease/enzootic-bovine-leukosis/" target="_blank" class="text-blue-600 hover:underline">Organizzazione Mondiale per la Sanità Animale (WOAH) - Leucosi Bovina Enzootica</a></li>`,
+                    en: `<li>Smith BP. Large Animal Internal Medicine. 6th ed. Mosby, 2019.</li><li><a href="https://www.woah.org/en/disease/enzootic-bovine-leukosis/" target="_blank" class="text-blue-600 hover:underline">World Organisation for Animal Health (WOAH) - Enzootic Bovine Leukosis</a></li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            // Dati del quiz
+            const quizData = {
+                it: [
+                    { question: "Qual è l'agente eziologico della Leucosi Bovina Enzootica?", options: ["Herpesvirus", "Retrovirus (BLV)", "Pestivirus", "Anaplasma marginale"], answer: "Retrovirus (BLV)" },
+                    { question: "Qual è la percentuale approssimativa di animali infetti che sviluppa il tumore (Linfosarcoma)?", options: ["100%", "50%", "30%", "1-5%"], answer: "1-5%" },
+                    { question: "Cosa indica l'acronimo HAULS?", options: ["Sintomi respiratori", "Sedi predilette del linfosarcoma", "Nomi dei farmaci", "Razze a rischio"], answer: "Sedi predilette del linfosarcoma" },
+                    { question: "Quale cellula viene infettata dal BLV?", options: ["Linfocita T", "Linfocita B", "Neutrofilo", "Eritrocita"], answer: "Linfocita B" },
+                    { question: "Qual è la via di trasmissione orizzontale più comune?", options: ["Aerosol", "Iatrogena (sangue su aghi/guanti)", "Acqua contaminata", "Morso di cane"], answer: "Iatrogena (sangue su aghi/guanti)" },
+                    { question: "Cosa si intende per Linfocitosi Persistente (PL)?", options: ["Una forma maligna di leucemia", "Un aumento benigno e stabile dei linfociti B", "Una diminuzione dei linfociti", "Un'infezione acuta"], answer: "Un aumento benigno e stabile dei linfociti B" },
+                    { question: "Un bovino con linfosarcoma spinale tipicamente presenta:", options: ["Cecità", "Zoppia anteriore", "Atassia/Paresi posteriore", "Diarrea"], answer: "Atassia/Paresi posteriore" },
+                    { question: "Qual è il test di screening più usato per i piani nazionali?", options: ["Biopsia", "Sierologia (ELISA/AGID) su latte o siero", "TC", "Risonanza"], answer: "Sierologia (ELISA/AGID) su latte o siero" },
+                    { question: "La Leucosi Bovina Sporadica (es. timica, giovanile):", options: ["È causata dal BLV", "NON è associata al BLV", "Colpisce solo adulti", "È sempre contagiosa"], answer: "NON è associata al BLV" },
+                    { question: "In Italia, cosa succede se un bovino risulta positivo all'EBL?", options: ["Viene trattato con antibiotici", "Viene vaccinato", "Abbattimento del capo (ed eventualmente della mandria)", "Nulla, è una malattia endemica"], answer: "Abbattimento del capo (ed eventualmente della mandria)" }
+                ],
+                en: [
+                    { question: "What is the etiological agent of Enzootic Bovine Leukosis?", options: ["Herpesvirus", "Retrovirus (BLV)", "Pestivirus", "Anaplasma marginale"], answer: "Retrovirus (BLV)" },
+                    { question: "What is the approximate percentage of infected animals that develop tumor (Lymphosarcoma)?", options: ["100%", "50%", "30%", "1-5%"], answer: "1-5%" },
+                    { question: "What does the acronym HAULS indicate?", options: ["Respiratory symptoms", "Predilection sites for lymphosarcoma", "Drug names", "At-risk breeds"], answer: "Predilection sites for lymphosarcoma" },
+                    { question: "Which cell is infected by BLV?", options: ["T-lymphocyte", "B-lymphocyte", "Neutrophil", "Erythrocyte"], answer: "B-lymphocyte" },
+                    { question: "What is the most common horizontal transmission route?", options: ["Aerosol", "Iatrogenic (blood on needles/sleeves)", "Contaminated water", "Dog bite"], answer: "Iatrogenic (blood on needles/sleeves)" },
+                    { question: "What is meant by Persistent Lymphocytosis (PL)?", options: ["A malignant form of leukemia", "A benign and stable increase in B lymphocytes", "A decrease in lymphocytes", "An acute infection"], answer: "A benign and stable increase in B lymphocytes" },
+                    { question: "A cow with spinal lymphosarcoma typically presents:", options: ["Blindness", "Forelimb lameness", "Posterior ataxia/paresis", "Diarrhea"], answer: "Posterior ataxia/paresis" },
+                    { question: "What is the most used screening test for national plans?", options: ["Biopsy", "Serology (ELISA/AGID) on milk or serum", "CT", "MRI"], answer: "Serology (ELISA/AGID) on milk or serum" },
+                    { question: "Sporadic Bovine Leukosis (e.g., thymic, juvenile):", options: ["Is caused by BLV", "Is NOT associated with BLV", "Affects only adults", "Is always contagious"], answer: "Is NOT associated with BLV" },
+                    { question: "In Italy, what happens if a bovine tests positive for EBL?", options: ["Treated with antibiotics", "Vaccinated", "Slaughter of the animal (and potentially herd)", "Nothing, it's endemic"], answer: "Slaughter of the animal (and potentially herd)" }
+                ]
+            };
+            
+            // --- ROBUST TTS SCRIPT ---
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            // Ferma la sintesi vocale e resetta lo stato del pulsante attivo
+            function stopSpeech() {
+                if (synth.speaking || synth.paused) {
+                    synth.cancel();
+                }
+                if (activeTTSButton) {
+                    activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                }
+                currentUtterance = null;
+            }
+
+            // Avvia/Riprende/Mette in pausa la sintesi vocale
+            function speak(text, button) {
+                if (activeTTSButton === button) {
+                    if (synth.paused) {
+                        synth.resume();
+                        button.classList.add('playing');
+                    } else if (synth.speaking) {
+                        synth.pause();
+                        button.classList.remove('playing');
+                    }
+                    return;
+                }
+
+                stopSpeech(); // Ferma la riproduzione precedente
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                utterance.onstart = () => {
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                };
+                
+                utterance.onend = () => {
+                    if (activeTTSButton === button) {
+                        button.classList.remove('playing');
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
+                };
+
+                utterance.onerror = (e) => {
+                    // Ignora gli errori di interruzione
+                    if (e.error !== 'interrupted' && e.error !== 'canceled') {
+                        console.error('TTS Error:', e);
+                    }
+                    if (activeTTSButton === button) {
+                        button.classList.remove('playing');
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
+                };
+
+                currentUtterance = utterance;
+                synth.speak(utterance);
+            }
+
+            window.addEventListener('beforeunload', stopSpeech);
+
+            // --- Script Howler (Audio Player) ---
+            let sound = null;
+            function initHowler() {
+                const audioFile = document.querySelector('#audio a[download]').href;
+                if (!audioFile) return;
+                sound = new Howl({
+                    src: [audioFile], html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onloaderror: (id, msg) => { console.error("Error loading audio:", msg); },
+                    onplayerror: (id, msg) => { console.error("Error playing audio:", msg); }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            if(playPauseBtn) playPauseBtn.addEventListener('click', () => {
+                // Non usare il TTS di sistema se c'è l'audio Howler attivo
+                stopSpeech(); 
+                if (!sound) initHowler();
+                if(sound) { if (sound.playing()) sound.pause(); else sound.play(); }
+            });
+
+            // Collega i listener TTS a tutti i pulsanti .tts-button
+            function setupTTSListeners() {
+                // Rimuove i listener e ricrea i pulsanti per i contenuti dinamici (quiz) e statici
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    // Clona il pulsante per eliminare i vecchi listener
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        const grandParentElement = parentElement.parentElement;
+
+                        // Caso 1: Titolo principale (H1) + Sottotitolo (P)
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                            const subtitle = parentElement.nextElementSibling;
+                            if(subtitle && subtitle.dataset.langKey === 'pageSubtitle') {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        // Caso 2: Titolo di sezione (H2) + Contenuto riassunto
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                // Legge il titolo e poi tutto il contenuto del riassunto
+                                // Usa una divisione temporanea per estrarre il testo pulito dall'HTML
+                                const rawHtml = currentLanguage === 'it' ? summaryIT : summaryEN;
+                                const tempDiv = document.createElement("div");
+                                tempDiv.innerHTML = rawHtml;
+                                textToRead += '. ' + (tempDiv.textContent || tempDiv.innerText || "");
+                            }
+                        }
+                        // Caso 3: Domanda del quiz (H3)
+                        else if (parentElement.tagName === 'H3' && parentElement.closest('.quiz-question')) {
+                            const questionClone = parentElement.cloneNode(true);
+                            questionClone.querySelector('.tts-button').remove();
+                            textToRead = questionClone.textContent.trim();
+                        }
+                        // Caso 4: Opzione di risposta del quiz (span.tts-button all'interno di li.quiz-option)
+                        else if (grandParentElement && grandParentElement.classList.contains('quiz-option')) {
+                            const label = grandParentElement.querySelector('label');
+                            const textSpan = label.querySelector('span');
+                            textToRead = textSpan ? textSpan.textContent.trim() : label.textContent.trim();
+                        }
+
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            // Carica le domande del quiz (CORREZIONE DEL MARKUP QUI)
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                if(!quizContainer) return;
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    
+                    // CORREZIONE: optionsHtml deve contenere SOLO il markup delle LI
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-red-50 flex items-center justify-between">
+                            <label class="flex items-center w-full cursor-pointer flex-grow">
+                                <input type="radio" name="q${index}" value="${o}" class="mr-3">
+                                <span>${o}</span>
+                            </label>
+                            <span class="tts-button flex-shrink-0 ml-2 text-gray-400 hover:text-red-600" title="Ascolta risposta">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                            </span>
+                        </li>`).join('');
+                        
+                    // Markup della domanda e uso della lista di opzioni
+                    questionDiv.innerHTML = `
+                        <h3 class="text-xl font-semibold mb-4 flex items-center justify-between">
+                            ${index + 1}. ${q.question}
+                            <span class="tts-button flex-shrink-0 ml-2 text-gray-400 hover:text-red-600" title="Ascolta domanda">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                            </span>
+                        </h3>
+                        <ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+                setupTTSListeners();
+            }
+
+            // Aggiorna l'interfaccia con la lingua selezionata
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                stopSpeech(); // Ferma la riproduzione in corso prima di cambiare lingua
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                            // Non toccare il summaryContent qui, lo gestiamo dopo
+                            if (key === 'summaryContent') return;
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            // Gestisce i nodi di testo per preservare il pulsante TTS
+                            const ttsButton = element.querySelector('.tts-button');
+                            const textNodes = [...element.childNodes].filter(node => node.nodeType === Node.TEXT_NODE);
+                            // Sostituisce il primo nodo di testo (il testo effettivo)
+                            if (textNodes.length > 0) {
+                                textNodes[0].textContent = translations[key][lang];
+                            } else {
+                                // Se non ci sono nodi di testo, sostituisce l'intero contenuto
+                                element.textContent = translations[key][lang];
+                            }
+                            if(ttsButton) element.appendChild(ttsButton);
+                        }
+                    }
+                });
+                
+                // Carica il contenuto del riassunto
+                const summaryContainer = document.querySelector('[data-lang-key="summaryContent"]');
+                if(summaryContainer) {
+                    summaryContainer.innerHTML = lang === 'it' ? summaryIT : summaryEN;
+                }
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                loadQuiz(lang);
+                setupTTSListeners();
+            }
+            
+            // --- Gestione Eventi ---
+
+            // Toggle Lingua
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            // Toggle Accessibilità/DSA Mode
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            // Sottomissione Quiz
+            const submitQuizBtn = document.getElementById('submit-quiz');
+            if (submitQuizBtn) submitQuizBtn.addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const total = quizData[currentLanguage].length;
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${total} domande.`,
+                    en: `You answered ${score} out of ${total} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            // Inizializzazione: Carica lingua, quiz e nav observer
+            updateLanguage(currentLanguage);
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('article section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    // Controlla se la sezione è in vista (punto centrale, 50% dal top/bottom)
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" }); // Aggiorna il link attivo quando la sezione è al centro
+            sections.forEach(sec => observer.observe(sec));
+        });
+    </script>
+</body>
+</html>
