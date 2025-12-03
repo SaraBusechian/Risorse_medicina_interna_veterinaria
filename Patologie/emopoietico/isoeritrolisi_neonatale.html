@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isoeritrolisi Neonatale - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Howler per l'audio player, caricato in precedenza -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Stili Base e Tonalità (Rosso) */
+        body { font-family: 'Inter', sans-serif; background-color: #fef2f2; color: #7f1d1d; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; padding-bottom: 4px; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #ef4444; color: #b91c1c; }
+        
+        /* Modalità Accessibilità (DSA Mode) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #334155;
+            font-size: 1.15rem; /* Aumento della dimensione del testo */
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #1e293b !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #ffffff; border: 1px solid #cbd5e1; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #0f172a; }
+        .dsa-mode .prose ul, .dsa-mode .prose ol { list-style-type: disc; } /* Assicura pallini visibili */
+
+        /* Pulsante TTS (Text-to-Speech) */
+        .tts-button { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin-left: 10px; vertical-align: middle; color: #dc2626; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #b91c1c; }
+        
+        /* Stili Quiz */
+        .quiz-question { border: 1px solid #fecaca; transition: all 0.3s; }
+        .quiz-option { cursor: pointer; }
+        .quiz-option:hover { background-color: #fef2f2; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        
+        /* Stili Stampa */
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"] { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-red-50">
+
+    <header id="main-header" class="bg-red-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Sistema Emopoietico</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-red-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-red-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Patologie</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-red-200 pb-6 mb-8">
+                <h1 class="text-3xl md:text-5xl font-bold text-red-800" data-lang-key="pageTitle">Isoeritrolisi Neonatale (NI)<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-red-700 mt-2" data-lang-key="pageSubtitle">Anemia emolitica alloimmune del puledro.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none text-red-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                     <a href="infografica_isoeritrolisi_neonatale.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-red-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-red-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona puledro">🍼</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-red-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica Dettagliata</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Schema visivo: Patogenesi (Aa/Qa), Sintomi e Terapia.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-red-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-red-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-red-600" data-lang-key="audioDesc">Audio lezione sintetica.</p>
+                        </div>
+                        <!-- Il link è a scopo dimostrativo. L'audio player usa Howler per riprodurre (se l'audio fosse disponibile) -->
+                        <a href="audio_isoeritrolisi_neonatale.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-red-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-red-900" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-red-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Contenuti in italiano (IT)
+            const summaryIT = `<p>L'<strong>Isoeritrolisi Neonatale (NI)</strong> è un'anemia emolitica <strong>alloimmune</strong> del puledro neonato. Si verifica quando il puledro eredita dal padre un gruppo sanguigno incompatibile con la madre, e la madre ha sviluppato anticorpi contro quel gruppo sanguigno (per gravidanze precedenti o trasfusioni).</p>
+                            
+                            <h3 class="text-2xl font-semibold mt-6 mb-3">1. Eziopatogenesi: Il Colostro</h3>
+                            <ul class="list-disc pl-6 space-y-2 mt-2">
+                                <li><strong>Gruppi Sanguigni:</strong> I responsabili sono principalmente gli antigeni <strong>Aa</strong> e <strong>Qa</strong>. Le cavalle Aa-negative o Qa-negative sono a rischio se accoppiate con stalloni positivi.</li>
+                                <li><strong>Sensibilizzazione:</strong> La cavalla sviluppa anticorpi anti-RBC fetali durante gravidanze precedenti (dove c'è stato contatto sangue-sangue, es. parto) o trasfusioni.</li>
+                                <li><strong>Attacco:</strong> Alla nascita il puledro è sano. Assume il colostro ricco di anticorpi materni, che vengono assorbiti dall'intestino, entrano in circolo e distruggono i suoi globuli rossi.</li>
+                            </ul>
+
+                            <h3 class="text-2xl font-semibold mt-6 mb-3">2. Quadro Clinico</h3>
+                            <p>I sintomi compaiono tipicamente <strong>12-48 ore dopo la nascita</strong> (dopo l'assunzione del colostro):</p>
+                            <ul class="list-disc pl-6 space-y-2 mt-2">
+                                <li>Il puledro nasce sano e forte.</li>
+                                <li>Improvvisa debolezza, letargia, smette di poppare.</li>
+                                <li>Mucose pallide e poi intensamente <strong>itteriche</strong>.</li>
+                                <li>Tachicardia e tachipnea.</li>
+                                <li><strong>Emoglobinuria</strong> (urine scure) nei casi gravi (emolisi intravascolare).</li>
+                                <li>Morte se non trattata rapidamente (kernittero, ipossia).</li>
+                            </ul>
+
+                            <h3 class="text-2xl font-semibold mt-6 mb-3">3. Diagnosi</h3>
+                            <ul class="list-disc pl-6 space-y-2 mt-2">
+                                <li><strong>JFAT (Jaundice Foal Agglutination Test):</strong> Test da campo. Si mescola una goccia di sangue del puledro con siero/colostro della madre (diluito). Se c'è agglutinazione, è positivo.</li>
+                                <li><strong>Test di Coombs Diretto:</strong> Sul sangue del puledro (rileva anticorpi adesi ai RBC).</li>
+                                <li><strong>Emocromo:</strong> Anemia grave, iperbilirubinemia.</li>
+                            </ul>
+
+                            <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 my-4">
+                                <h4 class="font-bold text-red-800">Azione Immediata!</h4>
+                                <p>Se si sospetta NI, la prima cosa da fare è <strong>METTERE LA MUSERUOLA AL PULEDRO</strong> per impedire l'assunzione di altro colostro.</p>
+                            </div>
+
+                            <h3 class="text-2xl font-semibold mt-6 mb-3">4. Terapia</h3>
+                            <ol class="list-decimal pl-6 space-y-2 mt-2">
+                                <li><strong>Stop Colostro Materno:</strong> Separare madre e puledro o usare museruola per 24 ore (finché l'intestino non assorbe più anticorpi). Mungere la madre per eliminare il colostro.</li>
+                                <li><strong>Garantire l'Immunità Passiva:</strong> Poiché il puledro non può assumere il colostro materno, è <strong>fondamentale</strong> somministrare colostro di una donatrice sana (compatibile) o <strong>plasma iperimmune</strong> per via endovenosa, al fine di fornire anticorpi protettivi e prevenire la sepsi.</li>
+                                <li><strong>Trasfusione:</strong> Necessaria se PCV &lt; 12-15%.
+                                    <ul class="list-disc pl-6 mt-1 text-sm text-red-800">
+                                        <li>Il donatore ideale è la <strong>MADRE</strong> (ha anticorpi, ma i suoi RBC sono compatibili perché negativi all'antigene). I suoi globuli rossi devono essere però "lavati" (centrifugati) per rimuovere il plasma contenente gli anticorpi.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Supporto:</strong> Fluidi, ossigeno, riposo assoluto.</li>
+                            </ol>`;
+
+            // Contenuti in inglese (EN)
+            const summaryEN = `<p><strong>Neonatal Isoerythrolysis (NI)</strong> is an <strong>alloimmune</strong> hemolytic anemia of the newborn foal. It occurs when the foal inherits an incompatible blood group from the sire, and the mare has developed antibodies against that blood group (from previous pregnancies or transfusions).</p>
+                            
+                            <h3 class="text-2xl font-semibold mt-6 mb-3">1. Pathogenesis: "Colostrum"</h3>
+                            <ul class="list-disc pl-6 space-y-2 mt-2">
+                                <li><strong>Blood Groups:</strong> The main culprits are antigens <strong>Aa</strong> and <strong>Qa</strong>. Aa-negative or Qa-negative mares are at risk if bred to positive stallions.</li>
+                                <li><strong>Sensitization:</strong> The mare develops anti-fetal RBC antibodies during previous pregnancies (where blood-blood contact occurred, e.g., parturition) or transfusions.</li>
+                                <li><strong>Attack:</strong> The foal is born healthy. It ingests colostrum rich in maternal antibodies, which are absorbed by the gut, enter circulation, and destroy its RBCs.</li>
+                            </ul>
+
+                            <h3 class="text-2xl font-semibold mt-6 mb-3">2. Clinical Picture</h3>
+                            <p>Symptoms typically appear <strong>12-48 hours after birth</strong> (after colostrum intake):</p>
+                            <ul class="list-disc pl-6 space-y-2 mt-2">
+                                <li>Foal is born healthy and strong.</li>
+                                <li>Sudden weakness, lethargy, stops nursing.</li>
+                                <li>Pale and then intensely <strong>icteric</strong> mucous membranes.</li>
+                                <li>Tachycardia and tachypnea.</li>
+                                <li><strong>Hemoglobinuria</strong> (dark urine) in severe cases (intravascular hemolysis).</li>
+                                <li>Death if not treated rapidly (kernicterus, hypoxia).</li>
+                            </ul>
+
+                            <h3 class="text-2xl font-semibold mt-6 mb-3">3. Diagnosis</h3>
+                            <ul class="list-disc pl-6 space-y-2 mt-2">
+                                <li><strong>JFAT (Jaundice Foal Agglutination Test):</strong> Field test. Mix a drop of foal blood with mare's serum/colostrum (diluted). Agglutination indicates positive.</li>
+                                <li><strong>Direct Coombs Test:</strong> On foal's blood (detects antibodies bound to RBCs).</li>
+                                <li><strong>CBC:</strong> Severe anemia, hyperbilirubinemia.</li>
+                            </ul>
+
+                            <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 my-4">
+                                <h4 class="font-bold text-red-800">Immediate Action!</h4>
+                                <p>If NI is suspected, the first thing to do is <strong>MUZZLE THE FOAL</strong> to prevent further colostrum intake.</p>
+                            </div>
+
+                            <h3 class="text-2xl font-semibold mt-6 mb-3">4. Therapy</h3>
+                            <ol class="list-decimal pl-6 space-y-2 mt-2">
+                                <li><strong>Stop Maternal Colostrum:</strong> Separate mare and foal or muzzle for 24h (until gut closure). Milk out the mare to remove colostrum.</li>
+                                <li><strong>Ensure Passive Immunity:</strong> Since the foal cannot ingest maternal colostrum, it is <strong>crucial</strong> to administer colostrum from a healthy (compatible) donor mare or <strong>hyperimmune plasma</strong> intravenously to provide protective antibodies and prevent sepsis.</li>
+                                <li><strong>Transfusion:</strong> Necessary if PCV &lt; 12-15%.
+                                    <ul class="list-disc pl-6 mt-1 text-sm text-red-800">
+                                        <li>The ideal donor is the <strong>MARE</strong> (she has antibodies, but her RBCs are compatible because they lack the antigen). However, her RBCs must be "washed" (centrifuged) to remove the antibody-rich plasma.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Support:</strong> Fluids, oxygen, strict rest.</li>
+                            </ol>`;
+
+            // Dizionario delle traduzioni
+            const translations = {
+                siteTitle: { it: "Patologie Sistema Emopoietico", en: "Hematopoietic System Diseases" },
+                backToIndexText: { it: "Indice Patologie", en: "Pathology Index" },
+                pageTitle: { it: "Isoeritrolisi Neonatale (NI)", en: "Neonatal Isoerythrolysis (NI)" },
+                pageSubtitle: { it: "Anemia emolitica alloimmune del puledro.", en: "Alloimmune hemolytic anemia of the foal." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { it: summaryIT, en: summaryEN },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Infografica Dettagliata", en: "View the Detailed Infographic" },
+                infographicLinkDesc: { it: "Schema visivo: Patogenesi (Aa/Qa), Sintomi e Terapia.", en: "Visual guide: Pathogenesis (Aa/Qa), Symptoms and Therapy." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Audio lezione sintetica.", en: "Short audio lesson." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Reed SM, Bayly WM, Sellon DC. Equine Internal Medicine. 4th ed. Elsevier, 2018.</li><li>Smith BP. Large Animal Internal Medicine. 6th ed. Mosby, 2019.</li>`,
+                    en: `<li>Reed SM, Bayly WM, Sellon DC. Equine Internal Medicine. 4th ed. Elsevier, 2018.</li><li>Smith BP. Large Animal Internal Medicine. 6th ed. Mosby, 2019.</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            // Dati del quiz
+            const quizData = {
+                it: [
+                    { question: "Quali gruppi sanguigni sono più frequentemente coinvolti nella NI?", options: ["A e B", "Aa e Qa", "Ca e Ka", "De e Ua"], answer: "Aa e Qa" },
+                    { question: "Quando compaiono i primi sintomi di NI?", options: ["Alla nascita", "12-48 ore dopo la nascita", "Dopo 1 settimana", "Dopo 1 mese"], answer: "12-48 ore dopo la nascita" },
+                    { question: "Qual è il meccanismo di distruzione dei globuli rossi nella NI?", options: ["Autoimmune", "Alloimmune", "Infettivo", "Tossico"], answer: "Alloimmune" },
+                    { question: "Come si chiama il test da campo per diagnosticare la NI?", options: ["Coggins Test", "JFAT (Jaundice Foal Agglutination Test)", "PCR", "Test di Coombs"], answer: "JFAT (Jaundice Foal Agglutination Test)" },
+                    { question: "Qual è la prima cosa da fare se si sospetta NI?", options: ["Dare antibiotici", "Mettere la museruola al puledro", "Fare una trasfusione", "Eutanasia"], answer: "Mettere la museruola al puledro" },
+                    { question: "Chi è il donatore ideale di globuli rossi per un puledro con NI?", options: ["Lo stallone", "La madre (globuli lavati)", "Un cavallo qualsiasi", "Un bovino"], answer: "La madre (globuli lavati)" },
+                    { question: "Perché la madre è il donatore ideale di RBC?", options: ["Ha gli stessi anticorpi del puledro", "I suoi RBC non hanno l'antigene target", "È più facile prelevarla", "Il suo sangue è più nutriente"], answer: "I suoi RBC non hanno l'antigene target" },
+                    { question: "Fino a quando l'intestino del puledro assorbe gli anticorpi colostrali?", options: ["Per sempre", "Circa 24 ore", "Solo 2 ore", "1 settimana"], answer: "Circa 24 ore" },
+                    { question: "Un segno clinico caratteristico della NI grave è:", options: ["Diarrea", "Ittero marcato", "Zoppia", "Tosse"], answer: "Ittero marcato" },
+                    { question: "Come si previene la NI?", options: ["Vaccinando la madre", "Screening del gruppo sanguigno/anticorpi della fattrice", "Dando antibiotici al puledro", "Non facendo bere acqua alla madre"], answer: "Screening del gruppo sanguigno/anticorpi della fattrice" }
+                ],
+                en: [
+                    { question: "Which blood groups are most frequently involved in NI?", options: ["A and B", "Aa and Qa", "Ca and Ka", "De and Ua"], answer: "Aa and Qa" },
+                    { question: "When do the first symptoms of NI appear?", options: ["At birth", "12-48 hours after birth", "After 1 week", "After 1 month"], answer: "12-48 hours after birth" },
+                    { question: "What is the mechanism of RBC destruction in NI?", options: ["Autoimmune", "Alloimmune", "Infectious", "Toxic"], answer: "Alloimmune" },
+                    { question: "What is the field test to diagnose NI?", options: ["Coggins Test", "JFAT (Jaundice Foal Agglutination Test)", "PCR", "Coombs Test"], answer: "JFAT (Jaundice Foal Agglutination Test)" },
+                    { question: "What is the first thing to do if NI is suspected?", options: ["Give antibiotics", "Muzzle the foal", "Perform transfusion", "Euthanasia"], answer: "Muzzle the foal" },
+                    { question: "Who is the ideal RBC donor for a foal with NI?", options: ["The stallion", "The mare (washed RBCs)", "Any horse", "A cow"], answer: "The mare (washed RBCs)" },
+                    { question: "Why is the mare the ideal RBC donor?", options: ["She has same antibodies", "Her RBCs lack the target antigen", "Easier to collect", "Blood is more nutritious"], answer: "Her RBCs lack the target antigen" },
+                    { question: "How long does the foal's gut absorb colostral antibodies?", options: ["Forever", "About 24 hours", "Only 2 hours", "1 week"], answer: "About 24 hours" },
+                    { question: "A characteristic clinical sign of severe NI is:", options: ["Diarrhea", "Marked icterus", "Lameness", "Cough"], answer: "Marked icterus" },
+                    { question: "How is NI prevented?", options: ["Vaccinating mare", "Screening mare's blood group/antibodies", "Antibiotics to foal", "Withholding water from mare"], answer: "Screening mare's blood group/antibodies" }
+                ]
+            };
+            
+            // --- Script TTS (Text-to-Speech) - Corretto ---
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            // Ferma la sintesi vocale e resetta lo stato del pulsante attivo
+            function stopSpeech() {
+                if (synth.speaking || synth.paused) {
+                    synth.cancel();
+                }
+                if (activeTTSButton) {
+                    activeTTSButton.classList.remove('playing');
+                    activeTTSButton = null;
+                }
+                currentUtterance = null;
+            }
+
+            // Avvia/Riprende/Mette in pausa la sintesi vocale
+            function speak(text, button) {
+                if (activeTTSButton === button) {
+                    if (synth.paused) {
+                        synth.resume();
+                        button.classList.add('playing');
+                    } else if (synth.speaking) {
+                        synth.pause();
+                        button.classList.remove('playing');
+                    }
+                    return;
+                }
+
+                stopSpeech(); // Ferma la riproduzione precedente
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                utterance.onstart = () => {
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                };
+                
+                utterance.onend = () => {
+                    if (activeTTSButton === button) {
+                        button.classList.remove('playing');
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
+                };
+
+                utterance.onerror = (e) => {
+                    // Ignora gli errori di interruzione
+                    if (e.error !== 'interrupted' && e.error !== 'canceled') {
+                        console.error('TTS Error:', e);
+                    }
+                    if (activeTTSButton === button) {
+                        button.classList.remove('playing');
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
+                };
+
+                currentUtterance = utterance;
+                synth.speak(utterance);
+            }
+
+            window.addEventListener('beforeunload', stopSpeech);
+
+            // --- Script Howler (Audio Player) ---
+            let sound = null;
+            function initHowler() {
+                const audioFile = document.querySelector('#audio a[download]').href;
+                if (!audioFile) return;
+                sound = new Howl({
+                    src: [audioFile], html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onloaderror: (id, msg) => { console.error("Error loading audio:", msg); },
+                    onplayerror: (id, msg) => { console.error("Error playing audio:", msg); }
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            if(playPauseBtn) playPauseBtn.addEventListener('click', () => {
+                // Non usare il TTS di sistema se c'è l'audio Howler attivo
+                stopSpeech(); 
+                if (!sound) initHowler();
+                if(sound) { if (sound.playing()) sound.pause(); else sound.play(); }
+            });
+
+            // Collega i listener TTS a tutti i pulsanti .tts-button
+            function setupTTSListeners() {
+                // Rimuove i listener e ricrea i pulsanti per i contenuti dinamici (quiz) e statici
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    // Clona il pulsante per eliminare i vecchi listener
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        const grandParentElement = parentElement.parentElement;
+
+                        // Caso 1: Titolo principale (H1) + Sottotitolo (P)
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                            const subtitle = parentElement.nextElementSibling;
+                            if(subtitle && subtitle.dataset.langKey === 'pageSubtitle') {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        // Caso 2: Titolo di sezione (H2) + Contenuto riassunto
+                        else if (parentElement.tagName === 'H2') {
+                            const section = parentElement.closest('section');
+                            const titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                // Legge il titolo e poi tutto il contenuto del riassunto
+                                const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    // Sostituisce i tag HTML con spazi per una lettura fluida
+                                    const contentClone = content.cloneNode(true);
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        }
+                        // Caso 3: Domanda del quiz (H3)
+                        else if (parentElement.tagName === 'H3' && parentElement.closest('.quiz-question')) {
+                            const questionClone = parentElement.cloneNode(true);
+                            questionClone.querySelector('.tts-button').remove();
+                            textToRead = questionClone.textContent.trim();
+                        }
+                        // Caso 4: Opzione di risposta del quiz (span.tts-button all'interno di li.quiz-option)
+                        else if (grandParentElement && grandParentElement.classList.contains('quiz-option')) {
+                            const label = grandParentElement.querySelector('label');
+                            const textSpan = label.querySelector('span');
+                            textToRead = textSpan ? textSpan.textContent.trim() : label.textContent.trim();
+                        }
+
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            // Carica le domande del quiz (correzione del markup qui)
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                if(!quizContainer) return;
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    
+                    // Markup delle opzioni: CORRETTO. Il pulsante TTS è esterno alla label.
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-red-50 flex items-center justify-between">
+                            <label class="flex items-center w-full cursor-pointer flex-grow">
+                                <input type="radio" name="q${index}" value="${o}" class="mr-3">
+                                <span>${o}</span>
+                            </label>
+                            <span class="tts-button flex-shrink-0 ml-2 text-gray-400 hover:text-red-600" title="Ascolta risposta">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                            </span>
+                        </li>`).join('');
+                        
+                    // Markup della domanda: CORRETTO
+                    questionDiv.innerHTML = `
+                        <h3 class="text-xl font-semibold mb-4 flex items-center justify-between">
+                            ${index + 1}. ${q.question}
+                            <span class="tts-button flex-shrink-0 ml-2 text-gray-400 hover:text-red-600" title="Ascolta domanda">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                            </span>
+                        </h3>
+                        <ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+                setupTTSListeners();
+            }
+
+            // Aggiorna l'interfaccia con la lingua selezionata
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                stopSpeech(); // Ferma la riproduzione in corso prima di cambiare lingua
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            // Gestisce i nodi di testo per preservare il pulsante TTS
+                            const ttsButton = element.querySelector('.tts-button');
+                            const textNodes = [...element.childNodes].filter(node => node.nodeType === Node.TEXT_NODE);
+                            // Sostituisce il primo nodo di testo (il testo effettivo)
+                            if (textNodes.length > 0) {
+                                textNodes[0].textContent = translations[key][lang];
+                            } else {
+                                // Se non ci sono nodi di testo, sostituisce l'intero contenuto
+                                element.textContent = translations[key][lang];
+                            }
+                            if(ttsButton) element.appendChild(ttsButton);
+                        }
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                loadQuiz(lang);
+                setupTTSListeners();
+            }
+            
+            // --- Gestione Eventi ---
+
+            // Toggle Lingua
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            // Toggle Accessibilità/DSA Mode
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            // Sottomissione Quiz
+            const submitQuizBtn = document.getElementById('submit-quiz');
+            if (submitQuizBtn) submitQuizBtn.addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                const total = quizData[currentLanguage].length;
+                const resultText = {
+                    it: `Hai risposto correttamente a ${score} su ${total} domande.`,
+                    en: `You answered ${score} out of ${total} questions correctly.`
+                };
+                resultsContainer.textContent = resultText[currentLanguage];
+            });
+            
+            // Inizializzazione: Carica lingua, quiz e nav observer
+            updateLanguage(currentLanguage);
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('article section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    // Controlla se la sezione è in vista (punto centrale, 50% dal top/bottom)
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" }); // Aggiorna il link attivo quando la sezione è al centro
+            sections.forEach(sec => observer.observe(sec));
+        });
+    </script>
+</body>
+</html>
