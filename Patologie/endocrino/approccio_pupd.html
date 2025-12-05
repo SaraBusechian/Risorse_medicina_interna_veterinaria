@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approccio alla PU/PD - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fff1f2; color: #881337; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #f43f5e; color: #be185d; }
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdf6f7 !important; color: #34495e; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; color: #fff; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #34495e; }
+        .quiz-question { border: 1px solid #fecdd3; transition: all 0.3s; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        .tts-button { cursor: pointer; margin-left: 12px; color: #db2777; transition: all 0.2s; display: inline-flex; vertical-align: middle; }
+        .tts-button:hover, .tts-button.playing { color: #be185d; transform: scale(1.1); }
+        .step-box { border-left: 4px solid #db2777; background-color: #fff1f2; padding: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; }
+        .species-tag { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 0.3rem; font-size: 0.75rem; font-weight: bold; margin-right: 0.5rem; }
+        .tag-dog { background-color: #bfdbfe; color: #1e40af; }
+        .tag-cat { background-color: #fca5a5; color: #991b1b; }
+        .tag-horse { background-color: #dcfce7; color: #166534; }
+        /* Animazione pulsazione quando è in riproduzione */
+        .playing svg { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body class="bg-rose-50">
+
+    <header id="main-header" class="bg-rose-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Patologie Endocrine</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index_endocrino.html" class="inline-flex items-center bg-white text-rose-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-rose-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Endocrinologia</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-rose-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-rose-800 flex justify-center items-center gap-3 flex-wrap" data-lang-key="pageTitle">
+                    Approccio alla PU/PD
+                    <span class="tts-button" aria-label="Ascolta titolo">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                    </span>
+                </h1>
+                <p class="text-lg text-rose-700 mt-2" data-lang-key="pageSubtitle">Algoritmo diagnostico comparato: Cane, Gatto e Cavallo.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4 flex items-center" data-lang-key="summaryTitle">
+                        Riassunto Completo 
+                        <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                    </h2>
+                    <div class="prose max-w-none text-rose-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_endocrino.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-rose-500">
+                         <div class="flex items-center space-x-6">
+                              <div class="flex-shrink-0 w-24 h-24 bg-rose-500 rounded-lg flex items-center justify-center text-5xl">💧</div>
+                              <div>
+                                  <h3 class="text-xl font-bold text-rose-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica</h3>
+                                  <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Schema comparativo PU/PD nelle diverse specie.</p>
+                              </div>
+                          </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6"></div>
+                    <div class="mt-6 text-center"><button id="submit-quiz" class="bg-rose-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-rose-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button></div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                     <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="audioTitle">Audio</h2>
+                     <div class="p-4 bg-rose-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-rose-500 text-white rounded-full hover:bg-rose-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-rose-800" data-lang-key="audioListen">Ascolta l'algoritmo diagnostico</p>
+                        </div>
+                        <a href="#" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                     </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-rose-900" data-lang-key="bibliographyContent"></ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-rose-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Patologie Endocrine", en: "Endocrine Pathologies" },
+                backToIndexText: { it: "Indice Endocrinologia", en: "Endocrinology Index" },
+                pageTitle: { it: "Approccio alla PU/PD", en: "Approach to PU/PD" },
+                pageSubtitle: { it: "Algoritmo diagnostico comparato: Cane, Gatto e Cavallo.", en: "Comparative diagnostic algorithm: Dog, Cat, and Horse." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: {
+                    it: `<div class="mb-6">
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Definizioni Specie-Specifiche</h3>
+                            <p class="mb-2">La Polidipsia (PD) è definita come un'assunzione di acqua che supera i valori fisiologici. La Poliuria (PU) è una produzione urinaria eccessiva. È fondamentale usare i cut-off corretti per specie:</p>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left text-gray-700 border border-gray-200 rounded-lg mb-4">
+                                    <thead class="bg-rose-100 text-rose-800">
+                                        <tr>
+                                            <th class="p-2 border">Specie</th>
+                                            <th class="p-2 border">Polidipsia (PD)</th>
+                                            <th class="p-2 border">Poliuria (PU)</th>
+                                            <th class="p-2 border">Note Cliniche</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-white">
+                                            <td class="p-2 border font-bold">🐶 Cane</td>
+                                            <td class="p-2 border">> 80-100 ml/kg/die</td>
+                                            <td class="p-2 border">> 50 ml/kg/die</td>
+                                            <td class="p-2 border">Spesso primo segno di Cushing.</td>
+                                        </tr>
+                                        <tr class="bg-gray-50">
+                                            <td class="p-2 border font-bold">🐱 Gatto</td>
+                                            <td class="p-2 border">> 50-60 ml/kg/die</td>
+                                            <td class="p-2 border">> 40-50 ml/kg/die</td>
+                                            <td class="p-2 border">Il gatto è deserticolo; beve poco. Se beve "normalmente" è già sospetto.</td>
+                                        </tr>
+                                        <tr class="bg-white">
+                                            <td class="p-2 border font-bold">🐴 Cavallo</td>
+                                            <td class="p-2 border">> 100 ml/kg/die (o > 50L)</td>
+                                            <td class="p-2 border">> 50 ml/kg/die (o > 25L)</td>
+                                            <td class="p-2 border">Assunzione normale: 40-60 ml/kg/die (20-30L).</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                         </div>
+
+                         <div class="step-box">
+                            <h3 class="text-xl font-bold text-rose-800 mb-2">Step 1: Conferma e Screening di Base (Tutte le Specie)</h3>
+                            <p>Misurare l'assunzione reale (escludere perdite d'acqua, pioggia nel paddock, altri animali). Eseguire Emocromo, Biochimico, Urine (PS).</p>
+                            <ul class="list-disc pl-6 mt-2">
+                                <li><strong>Iperglicemia:</strong> Diabete Mellito (Comune in cane/gatto, raro nel cavallo se non secondario a PPID/EMS grave).</li>
+                                <li><strong>Azotemia + Ipostenuria/Isostenuria:</strong> Insufficienza Renale Cronica (Comune in cane/gatto anziani, possibile nel cavallo).</li>
+                                <li><strong>Ipercalcemia:</strong> Sindromi paraneoplastiche (Linfoma, adenocarcinoma sacchi anali nel cane).</li>
+                            </ul>
+                         </div>
+
+                         <div class="step-box border-l-orange-500 bg-orange-50">
+                            <h3 class="text-xl font-bold text-orange-800 mb-2">Step 2: Differenziazione per Specie (Screening Avanzato)</h3>
+                            <p>Se lo screening di base è normale, pensare alle cause ormonali o comportamentali più probabili per la specie:</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <span class="species-tag tag-dog">Cane</span>
+                                    <ul class="list-disc pl-4 text-sm mt-1">
+                                        <li><strong>Cushing (PDH/ADH):</strong> ALP alta, leucogramma da stress.</li>
+                                        <li><strong>Piometra:</strong> Femmina intera (E. coli).</li>
+                                        <li><strong>Addison:</strong> Sodio basso/Potassio alto (o normale).</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <span class="species-tag tag-cat">Gatto</span>
+                                    <ul class="list-disc pl-4 text-sm mt-1">
+                                        <li><strong>Ipertiroidismo:</strong> T4 Totale alto. Tachicardia, dimagrimento.</li>
+                                        <li><strong>Diabete:</strong> Spesso associato a obesità.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <span class="species-tag tag-horse">Cavallo</span>
+                                    <ul class="list-disc pl-4 text-sm mt-1">
+                                        <li><strong>Polidipsia Psicogena:</strong> Molto comune in cavalli scuderizzati (noia).</li>
+                                        <li><strong>PPID (Cushing):</strong> Cavallo anziano, irsutismo.</li>
+                                        <li><strong>Eccesso di Sale:</strong> Leccamento compulsivo del blocco.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                         </div>
+
+                         <div class="step-box border-l-blue-500 bg-blue-50">
+                            <h3 class="text-xl font-bold text-blue-800 mb-2">Step 3: Diagnosi di Esclusione (PS < 1.008)</h3>
+                            <p>Se PS è molto basso (urina "acqua di roccia"), sospettare deficit o resistenza all'ADH:</p>
+                            <ul class="list-disc pl-6 mt-2">
+                                <li><strong>Polidipsia Psicogena:</strong> Diagnosi di esclusione. Tipica del cavallo annoiato o del cane stressato.</li>
+                                <li><strong>Diabete Insipido Centrale:</strong> Carenza ADH. Risponde al test con desmopressina.</li>
+                                <li><strong>Diabete Insipido Nefrogenico:</strong> Raro congenito, o acquisito (da cause dello Step 1 non diagnosticate).</li>
+                            </ul>
+                         </div>`,
+                    en: `<div class="mb-6">
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Species-Specific Definitions</h3>
+                            <p class="mb-2">Polydipsia (PD) implies water intake exceeding physiological limits. Polyuria (PU) is excessive urine production. Correct cut-offs are crucial:</p>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left text-gray-700 border border-gray-200 rounded-lg mb-4">
+                                    <thead class="bg-rose-100 text-rose-800">
+                                        <tr><th class="p-2 border">Species</th><th class="p-2 border">Polydipsia (PD)</th><th class="p-2 border">Polyuria (PU)</th><th class="p-2 border">Notes</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-white"><td class="p-2 border font-bold">🐶 Dog</td><td class="p-2 border">> 80-100 ml/kg/day</td><td class="p-2 border">> 50 ml/kg/day</td><td class="p-2 border">Often first sign of Cushing's.</td></tr>
+                                        <tr class="bg-gray-50"><td class="p-2 border font-bold">🐱 Cat</td><td class="p-2 border">> 50-60 ml/kg/day</td><td class="p-2 border">> 40-50 ml/kg/day</td><td class="p-2 border">Cats are desert animals; >50 is already suspicious.</td></tr>
+                                        <tr class="bg-white"><td class="p-2 border font-bold">🐴 Horse</td><td class="p-2 border">> 100 ml/kg/day</td><td class="p-2 border">> 50 ml/kg/day</td><td class="p-2 border">Normal: 40-60 ml/kg/day.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                         </div>
+                         <div class="step-box">
+                            <h3 class="text-xl font-bold text-rose-800 mb-2">Step 1: Baseline Screening</h3>
+                            <p>Verify intake. Rule out Diabetes (Glucose), CKD (Azotemia+Isosthenuria), Hypercalcemia.</p>
+                         </div>
+                         <div class="step-box border-l-orange-500 bg-orange-50">
+                            <h3 class="text-xl font-bold text-orange-800 mb-2">Step 2: Species Specifics</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <span class="species-tag tag-dog">Dog</span> Cushing's, Pyometra, Addison's.
+                                </div>
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <span class="species-tag tag-cat">Cat</span> Hyperthyroidism, Diabetes.
+                                </div>
+                                <div class="bg-white p-3 rounded shadow-sm">
+                                    <span class="species-tag tag-horse">Horse</span> Psychogenic (boredom), PPID, Salt excess.
+                                </div>
+                            </div>
+                         </div>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Infografica", en: "View Infographic" },
+                infographicLinkDesc: { it: "Schema dell'algoritmo PU/PD.", en: "PU/PD algorithm chart." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Audio", en: "Audio" },
+                audioListen: { it: "Ascolta l'algoritmo diagnostico", en: "Listen to the diagnostic algorithm" },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li><li>Feldman EC, Nelson RW, Canine and Feline Endocrinology and Reproduction, 4th Edition, Elsevier, 2015.</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018.</li>`,
+                    en: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li><li>Feldman EC, Nelson RW, Canine and Feline Endocrinology and Reproduction, 4th Edition, Elsevier, 2015.</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018.</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Qual è la definizione di Polidipsia nel cane?", options: ["> 20 ml/kg/die", "> 50 ml/kg/die", "> 100 ml/kg/die", "> 200 ml/kg/die"], answer: "> 100 ml/kg/die" },
+                    { question: "Nel cavallo scuderizzato, qual è una causa comune di PU/PD senza alterazioni ematologiche?", options: ["Insufficienza renale acuta", "Polidipsia Psicogena (noia)", "Diabete Mellito", "Ipertiroidismo"], answer: "Polidipsia Psicogena (noia)" },
+                    { question: "Quale reperto urinario suggerisce Insufficienza Renale Cronica (IRC) in un animale PU/PD?", options: ["Peso Specifico > 1.050", "Isostenuria persistente con azotemia", "Ematuria", "Glucosuria"], answer: "Isostenuria persistente con azotemia" },
+                    { question: "Quale endocrinopatia causa spesso PU/PD nel gatto anziano ma raramente nel cane?", options: ["Cushing", "Ipertiroidismo", "Addison", "Diabete Insipido"], answer: "Ipertiroidismo" },
+                    { question: "Il PPID (Cushing equino) causa PU/PD. Qual è il meccanismo principale?", options: ["Diuresi osmotica da glucosio", "Compressione dell'ipotalamo e riduzione ADH", "Danno renale diretto", "Ipercalcemia"], answer: "Compressione dell'ipotalamo e riduzione ADH" },
+                    { question: "In un cane femmina intera con PU/PD, quale patologia va esclusa subito?", options: ["Piometra", "Ipotiroidismo", "Lussazione della rotula", "Gastrite"], answer: "Piometra" },
+                    { question: "Qual è il meccanismo della PU/PD nel Diabete Mellito?", options: ["Carenza di ADH", "Diuresi osmotica (glucosio)", "Washout midollare", "Polidipsia psicogena"], answer: "Diuresi osmotica (glucosio)" },
+                    { question: "L'ipercalcemia causa PU/PD inducendo:", options: ["Diabete Insipido Nefrogenico secondario", "Danno ai glomeruli", "Aumento della sete centrale", "Cistite"], answer: "Diabete Insipido Nefrogenico secondario" },
+                    { question: "Nel cane con Cushing, la PU/PD è causata da:", options: ["Interferenza del cortisolo con l'azione dell'ADH", "Distruzione dell'ipofisi posteriore", "Iperglicemia grave", "Insufficienza epatica"], answer: "Interferenza del cortisolo con l'azione dell'ADH" },
+                    { question: "Quale test differenzia il Diabete Insipido Centrale da quello Nefrogenico?", options: ["Test di stimolazione con ACTH", "Risposta alla desmopressina (ADH sintetico)", "Misurazione T4", "Ecografia addominale"], answer: "Risposta alla desmopressina (ADH sintetico)" }
+                ],
+                en: [
+                    { question: "Definition of Polydipsia in dogs?", options: ["> 20 ml/kg/day", "> 50 ml/kg/day", "> 100 ml/kg/day", "> 200 ml/kg/day"], answer: "> 100 ml/kg/day" },
+                    { question: "Common cause of PU/PD in stalled horses with normal labs?", options: ["Acute Renal Failure", "Psychogenic Polydipsia (boredom)", "Diabetes Mellitus", "Hyperthyroidism"], answer: "Psychogenic Polydipsia (boredom)" },
+                    { question: "Urinary finding suggesting CKD?", options: ["USG > 1.050", "Persistent Isosthenuria with azotemia", "Hematuria", "Glucosuria"], answer: "Persistent Isosthenuria with azotemia" },
+                    { question: "Endocrinopathy causing PU/PD in old cats but rare in dogs?", options: ["Cushing's", "Hyperthyroidism", "Addison's", "Diabetes Insipidus"], answer: "Hyperthyroidism" },
+                    { question: "Mechanism of PU/PD in Equine PPID?", options: ["Osmotic diuresis", "Hypothalamic compression reducing ADH", "Direct renal damage", "Hypercalcemia"], answer: "Hypothalamic compression reducing ADH" },
+                    { question: "In an intact female dog with PU/PD, rule out immediately:", options: ["Pyometra", "Hypothyroidism", "Patellar luxation", "Gastritis"], answer: "Pyometra" },
+                    { question: "Mechanism of PU/PD in Diabetes Mellitus?", options: ["ADH deficiency", "Osmotic diuresis (glucose)", "Medullary washout", "Psychogenic"], answer: "Osmotic diuresis (glucose)" },
+                    { question: "Hypercalcemia causes PU/PD by inducing:", options: ["Secondary Nephrogenic Diabetes Insipidus", "Glomerular damage", "Central thirst", "Cystitis"], answer: "Secondary Nephrogenic Diabetes Insipidus" },
+                    { question: "In canine Cushing's, PU/PD is caused by:", options: ["Cortisol interference with ADH action", "Posterior pituitary destruction", "Severe hyperglycemia", "Liver failure"], answer: "Cortisol interference with ADH action" },
+                    { question: "Test differentiating Central vs Nephrogenic DI?", options: ["ACTH stim", "Response to Desmopressin", "T4 measurement", "Ultrasound"], answer: "Response to Desmopressin" }
+                ]
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if(translations[key] && translations[key][lang]) {
+                         if(key.includes('Content')) el.innerHTML = translations[key][lang];
+                         else {
+                            const tts = el.querySelector('.tts-button');
+                            const txt = [...el.childNodes].find(n=>n.nodeType===Node.TEXT_NODE&&n.textContent.trim());
+                            if(txt) txt.textContent = translations[key][lang];
+                            else el.textContent = translations[key][lang];
+                            if(tts) el.appendChild(tts);
+                         }
+                    }
+                });
+                loadQuiz(lang);
+                setupTTS();
+            }
+
+            function loadQuiz(lang){
+                 const c = document.getElementById('quiz-container'); 
+                 if(!c) return; c.innerHTML='';
+                 quizData[lang].forEach((q,i)=>{
+                     c.innerHTML += `<div class="quiz-question p-4 rounded-lg border border-pink-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="font-bold">${i+1}. ${q.question}</p>
+                            <span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                        </div>
+                        ${q.options.map(o=>`<label class="block mb-1 cursor-pointer"><input type="radio" name="q${i}" value="${o}" class="mr-2"> ${o}</label>`).join('')}
+                     </div>`;
+                 });
+            }
+
+            function setupTTS() {
+                document.querySelectorAll('.tts-button').forEach(btn => {
+                    const newBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(newBtn, btn);
+                    
+                    newBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        
+                        if (activeTTSButton === newBtn) {
+                            if (synth.speaking) {
+                                if (synth.paused) {
+                                    synth.resume();
+                                    newBtn.classList.add('playing');
+                                } else {
+                                    synth.pause();
+                                    newBtn.classList.remove('playing');
+                                }
+                                return;
+                            }
+                        }
+
+                        synth.cancel();
+                        if (activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                        let text = "";
+                        // Logic to find text based on button position (Title, Summary, Quiz)
+                        const quizContainer = newBtn.closest('.quiz-question');
+                        if (quizContainer) {
+                            text = quizContainer.querySelector('p').textContent;
+                        } else {
+                            const parent = newBtn.parentElement;
+                            if(parent.tagName === 'H1' || parent.tagName === 'H2') {
+                                const clone = parent.cloneNode(true);
+                                clone.querySelector('.tts-button').remove();
+                                text = clone.textContent.trim();
+                                if(parent.dataset.langKey === 'summaryTitle') {
+                                    const content = document.querySelector('[data-lang-key="summaryContent"]');
+                                    if(content) {
+                                        const temp = document.createElement('div');
+                                        temp.innerHTML = content.innerHTML;
+                                        // Simple clean up for table reading
+                                        const rows = temp.querySelectorAll('tr');
+                                        if(rows.length > 0) {
+                                            let tableText = ". Tabella definizioni: ";
+                                            rows.forEach(row => {
+                                                const cells = row.querySelectorAll('td, th');
+                                                if(cells.length > 0) tableText += Array.from(cells).map(c => c.textContent).join(": ") + ". ";
+                                            });
+                                            const table = temp.querySelector('table');
+                                            if(table) table.textContent = ""; 
+                                            text += tableText;
+                                        }
+                                        text += ". " + temp.textContent.trim().replace(/\s\s+/g, ' ');
+                                    }
+                                }
+                            }
+                        }
+                        
+                        const u = new SpeechSynthesisUtterance(text);
+                        u.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                        u.onstart = () => {
+                            newBtn.classList.add('playing');
+                            activeTTSButton = newBtn;
+                        };
+                        u.onend = () => {
+                            newBtn.classList.remove('playing');
+                            activeTTSButton = null;
+                        };
+                        u.onerror = () => {
+                            newBtn.classList.remove('playing');
+                            activeTTSButton = null;
+                        };
+                        
+                        synth.speak(u);
+                    });
+                });
+            }
+
+            document.getElementById('lang-toggle').addEventListener('click', ()=>{ 
+                if(synth.speaking) { synth.cancel(); if(activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; }
+                currentLanguage=currentLanguage==='it'?'en':'it'; 
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage); 
+            });
+            document.getElementById('dsa-toggle')?.addEventListener('click', ()=>{ document.body.classList.toggle('dsa-mode'); });
+            
+            document.getElementById('submit-quiz')?.addEventListener('click', ()=>{
+                 const qs = document.querySelectorAll('.quiz-question');
+                 let s=0;
+                 qs.forEach((d,i)=>{
+                     const sel = d.querySelector('input:checked');
+                     d.classList.remove('correct','incorrect');
+                     d.classList.add(sel && sel.value===quizData[currentLanguage][i].answer ? 'correct' : 'incorrect');
+                     if(sel && sel.value===quizData[currentLanguage][i].answer) s++;
+                 });
+                 document.getElementById('quiz-results').textContent = `Score: ${s}/${qs.length}`;
+            });
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
