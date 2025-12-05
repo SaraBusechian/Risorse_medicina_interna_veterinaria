@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ridotto Rendimento Equino - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fff1f2; color: #881337; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #f43f5e; color: #be185d; }
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdf6f7 !important; color: #34495e; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; color: #fff; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #34495e; }
+        .quiz-question { border: 1px solid #fecdd3; transition: all 0.3s; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        .tts-button { cursor: pointer; margin-left: 12px; color: #db2777; transition: all 0.2s; display: inline-flex; vertical-align: middle; }
+        .tts-button:hover, .tts-button.playing { color: #be185d; transform: scale(1.1); }
+        .step-box { border-left: 4px solid #db2777; background-color: #fff1f2; padding: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; }
+        /* Animazione pulsazione quando è in riproduzione */
+        .playing svg { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body class="bg-rose-50">
+
+    <header id="main-header" class="bg-rose-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Patologie Endocrine</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index_endocrino.html" class="inline-flex items-center bg-white text-rose-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-rose-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Endocrinologia</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-rose-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-rose-800 flex justify-center items-center gap-3 flex-wrap" data-lang-key="pageTitle">
+                    Ridotto Rendimento Equino [Image of horse performance]
+                    <span class="tts-button" aria-label="Ascolta titolo">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                    </span>
+                </h1>
+                <p class="text-lg text-rose-700 mt-2" data-lang-key="pageSubtitle">Approccio diagnostico al cavallo che "non va avanti".</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4 flex items-center" data-lang-key="summaryTitle">
+                        Riassunto Completo 
+                        <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                    </h2>
+                    <div class="prose max-w-none text-rose-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_ridotto_rendimento_equino.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-rose-500">
+                         <div class="flex items-center space-x-6">
+                              <div class="flex-shrink-0 w-24 h-24 bg-rose-500 rounded-lg flex items-center justify-center text-5xl">🐎</div>
+                              <div>
+                                  <h3 class="text-xl font-bold text-rose-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica</h3>
+                                  <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Algoritmo diagnostico passo-passo.</p>
+                              </div>
+                          </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6"></div>
+                    <div class="mt-6 text-center"><button id="submit-quiz" class="bg-rose-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-rose-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button></div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                     <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="audioTitle">Audio</h2>
+                     <div class="p-4 bg-rose-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-rose-500 text-white rounded-full hover:bg-rose-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-rose-800" data-lang-key="audioListen">Ascolta il riassunto</p>
+                        </div>
+                        <a href="audio_ridotto_rendimento.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                     </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-rose-900" data-lang-key="bibliographyContent"></ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-rose-200">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Patologie Endocrine", en: "Endocrine Pathologies" },
+                backToIndexText: { it: "Indice Endocrinologia", en: "Endocrinology Index" },
+                pageTitle: { it: "Ridotto Rendimento Equino", en: "Equine Poor Performance" },
+                pageSubtitle: { it: "Approccio diagnostico al cavallo che 'non va avanti'.", en: "Diagnostic approach to the horse that 'won't go'." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: {
+                    it: `<div class="mb-6">
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Definizione e Cause Principali</h3>
+                            <p class="mb-2">Il "Ridotto Rendimento" (Poor Performance) è l'incapacità del cavallo di svolgere l'attività atletica al livello atteso. Le cause possono essere (in ordine di prevalenza):</p>
+                            <ul class="list-disc pl-6 mb-4">
+                                <li><strong>Ortopediche:</strong> Zoppie, anche subdole o bilaterali.</li>
+                                <li><strong>Respiratorie:</strong> Asma equina (lieve/moderata/grave), emiplegia laringea, dislocazione dorsale del palato molle.</li>
+                                <li><strong>Cardiovascolari:</strong> Fibrillazione atriale.</li>
+                                <li><strong>Sistemiche/Metaboliche:</strong> Qui entra in gioco l'endocrinologia.</li>
+                            </ul>
+                         </div>
+
+                         <div class="step-box">
+                            <h3 class="text-xl font-bold text-rose-800 mb-2">Step 1: Esclusione delle cause "Fisiche"</h3>
+                            <p>Prima di pensare agli ormoni, è obbligatorio eseguire:</p>
+                            <ul class="list-disc pl-6 mt-2">
+                                <li>Visita clinica completa.</li>
+                                <li>Visita ortopedica completa (incluse anestesie diagnostiche).</li>
+                                <li>Endoscopia delle vie aeree (a riposo e sotto sforzo) e BAL (Lavaggio Broncoalveolare).</li>
+                                <li>Esame emocromocitometrico e profilo biochimico clinico (per escludere anemia, infezioni o danni d'organo).</li>
+                            </ul>
+                         </div>
+
+                         <div class="step-box border-l-orange-500 bg-orange-50">
+                            <h3 class="text-xl font-bold text-orange-800 mb-2">Step 2: Profilo Metabolico-Endocrino</h3>
+                            <p>Se l'apparato locomotore e respiratorio sono sani, investigare:</p>
+                            <ul class="list-disc pl-6 mt-2">
+                                <li><strong>PPID (Cushing):</strong> Anche in fase precoce (solo letargia, calo muscolare). Dosare ACTH basale o fare test TRH.</li>
+                                <li><strong>EMS (Sindrome Metabolica):</strong> Insulino-resistenza può causare laminite subclinica (anche se è molto molto rara!). Test orale dello zucchero.</li>
+                                <li><strong>Miopatie (PSSM/RER):</strong> Rigidità muscolare ("Tying-up"). Dosare CK e AST (a riposo e dopo esercizio).</li>
+                                <li><strong>Ulcere Gastriche (EGUS):</strong> Spesso causano riluttanza al lavoro. Gastroscopia.</li>
+                            </ul>
+                         </div>`,
+                    en: `<div class="mb-6">
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Definition and Main Causes</h3>
+                            <p class="mb-2">"Poor Performance" is the inability to meet athletic expectations. Causes include (in order of prevalence):</p>
+                            <ul class="list-disc pl-6 mb-4">
+                                <li><strong>Orthopedic:</strong> Lameness.</li>
+                                <li><strong>Respiratory:</strong> Asthma, laryngeal hemiplegia.</li>
+                                <li><strong>Cardiovascular:</strong> Atrial fibrillation.</li>
+                                <li><strong>Systemic/Metabolic:</strong> The endocrine focus.</li>
+                            </ul>
+                         </div>
+                         <div class="step-box">
+                            <h3 class="text-xl font-bold text-rose-800 mb-2">Step 1: Rule out Physical Causes</h3>
+                            <p>Complete clinical exam, Orthopedic exam, Endoscopy + BAL, CBC and clinical biochemistry profile.</p>
+                         </div>
+                         <div class="step-box border-l-orange-500 bg-orange-50">
+                            <h3 class="text-xl font-bold text-orange-800 mb-2">Step 2: Metabolic Profile</h3>
+                            <p>Check for PPID (ACTH), EMS (Insulin, subclinical laminitis although very rare), Myopathies (CK/AST), Gastric Ulcers.</p>
+                         </div>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Infografica", en: "View Infographic" },
+                infographicLinkDesc: { it: "Algoritmo diagnostico passo-passo.", en: "Step-by-step diagnostic algorithm." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Audio", en: "Audio" },
+                audioListen: { it: "Ascolta il riassunto", en: "Listen to the summary" },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018.</li><li>Hinchcliff KW, Kaneps AJ, Geor RJ, Equine Sports Medicine and Surgery, 3rd Edition, Elsevier, 2024.</li>`,
+                    en: `<li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018.</li><li>Hinchcliff KW, Kaneps AJ, Geor RJ, Equine Sports Medicine and Surgery, 3rd Edition, Elsevier, 2024.</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Qual è la causa più frequente di ridotto rendimento nel cavallo?", options: ["Ortopedica (zoppia)", "Respiratoria", "Cardiaca", "Endocrina"], answer: "Ortopedica (zoppia)" },
+                    { question: "Quale esame è fondamentale per escludere cause respiratorie?", options: ["Ecografia addominale", "Endoscopia delle vie aeree (a riposo/sforzo)", "Radiografia dello zoccolo", "Esame delle urine"], answer: "Endoscopia delle vie aeree (a riposo/sforzo)" },
+                    { question: "Il PPID (Cushing) può causare calo di performance attraverso:", options: ["Ipertrofia muscolare", "Letargia e lassità legamentosa", "Aumento dell'ematocrito", "Ipertensione polmonare"], answer: "Letargia e lassità legamentosa" },
+                    { question: "Quali enzimi aumentano in caso di miopatia da sforzo (RER/PSSM)?", options: ["GGT e ALP", "CK e AST", "Lipasi e Amilasi", "Urea e Creatinina"], answer: "CK e AST" },
+                    { question: "L'aritmia cardiaca più comune che causa calo di performance è:", options: ["Blocco AV di II grado", "Fibrillazione Atriale", "Tachicardia Sinusale", "Bradicardia Sinusale"], answer: "Fibrillazione Atriale" },
+                    { question: "La Sindrome Metabolica Equina (EMS) riduce la performance predisponendo a:", options: ["Fratture spontanee", "Laminite subclinica o cronica", "Polmonite", "Colica"], answer: "Laminite subclinica o cronica" },
+                    { question: "Quale patologia gastrica è una causa comune di riluttanza al lavoro?", options: ["Dilatazione gastrica", "Ulcere gastriche (EGUS)", "Torsione dello stomaco", "Neoplasia gastrica"], answer: "Ulcere gastriche (EGUS)" },
+                    { question: "Se un cavallo ha 'Tying-up' (miopatia), quando si devono misurare CK e AST?", options: ["Solo a riposo", "Solo dopo 24 ore", "Sia a riposo che 4-6 ore dopo l'esercizio", "Mai"], answer: "Sia a riposo che 4-6 ore dopo l'esercizio" },
+                    { question: "Qual è un segno clinico precoce di asma equina lieve nel cavallo sportivo?", options: ["Dispnea grave a riposo", "Tempo di recupero respiratorio prolungato", "Febbre alta", "Epistassi"], answer: "Tempo di recupero respiratorio prolungato" },
+                    { question: "L'anemia nel cavallo è:", options: ["Una causa frequentissima di calo di performance", "Rara come causa primaria, spesso secondaria", "Sempre dovuta a carenza di ferro", "Fisiologica"], answer: "Rara come causa primaria, spesso secondaria" }
+                ],
+                en: [
+                    { question: "Most common cause of poor performance?", options: ["Orthopedic (lameness)", "Respiratory", "Cardiac", "Endocrine"], answer: "Orthopedic (lameness)" },
+                    { question: "Exam to rule out respiratory causes?", options: ["Abdominal ultrasound", "Airway endoscopy (resting/dynamic)", "Hoof X-ray", "Urinalysis"], answer: "Airway endoscopy (resting/dynamic)" },
+                    { question: "PPID causes poor performance via:", options: ["Muscle hypertrophy", "Lethargy and ligament laxity", "Increased PCV", "Pulmonary hypertension"], answer: "Lethargy and ligament laxity" },
+                    { question: "Enzymes elevated in exertional myopathy?", options: ["GGT/ALP", "CK/AST", "Lipase/Amylase", "Urea/Creatinine"], answer: "CK/AST" },
+                    { question: "Most common arrhythmia affecting performance?", options: ["2nd Degree AV Block", "Atrial Fibrillation", "Sinus Tachycardia", "Sinus Bradycardia"], answer: "Atrial Fibrillation" },
+                    { question: "EMS affects performance by predisposing to:", options: ["Spontaneous fractures", "Subclinical/chronic laminitis", "Pneumonia", "Colic"], answer: "Subclinical/chronic laminitis" },
+                    { question: "Gastric pathology causing reluctance to work?", options: ["Gastric dilation", "Gastric Ulcers (EGUS)", "Gastric torsion", "Gastric neoplasia"], answer: "Gastric Ulcers (EGUS)" },
+                    { question: "When to measure CK/AST for Tying-up?", options: ["Rest only", "After 24h only", "Resting and 4-6h post-exercise", "Never"], answer: "Resting and 4-6h post-exercise" },
+                    { question: "Early sign of mild Equine Asthma?", options: ["Severe resting dyspnea", "Prolonged respiratory recovery", "High fever", "Epistaxis"], answer: "Prolonged respiratory recovery" },
+                    { question: "Anemia in horses is:", options: ["Very common cause of poor performance", "Rare as primary cause", "Always iron deficiency", "Physiological"], answer: "Rare as primary cause" }
+                ]
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if(translations[key] && translations[key][lang]) {
+                         if(key.includes('Content')) el.innerHTML = translations[key][lang];
+                         else {
+                            const tts = el.querySelector('.tts-button');
+                            const txt = [...el.childNodes].find(n=>n.nodeType===Node.TEXT_NODE&&n.textContent.trim());
+                            if(txt) txt.textContent = translations[key][lang];
+                            else el.textContent = translations[key][lang];
+                            if(tts) el.appendChild(tts);
+                         }
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                
+                loadQuiz(lang);
+                setupTTS();
+            }
+
+            function loadQuiz(lang){
+                 const c = document.getElementById('quiz-container'); 
+                 if(!c) return; c.innerHTML='';
+                 quizData[lang].forEach((q,i)=>{
+                     c.innerHTML += `<div class="quiz-question p-4 rounded-lg border border-pink-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="font-bold">${i+1}. ${q.question}</p>
+                            <span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                        </div>
+                        ${q.options.map(o=>`
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="cursor-pointer flex items-center flex-grow">
+                                    <input type="radio" name="q${i}" value="${o}" class="mr-2"> ${o}
+                                </label>
+                                <span class="tts-button" aria-label="Ascolta opzione"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" /></svg></span>
+                            </div>
+                        `).join('')}
+                     </div>`;
+                 });
+            }
+
+            function setupTTS() {
+                document.querySelectorAll('.tts-button').forEach(btn => {
+                    const newBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(newBtn, btn);
+                    
+                    newBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        
+                        if (activeTTSButton === newBtn) {
+                            if (synth.speaking) {
+                                if (synth.paused) {
+                                    synth.resume();
+                                    newBtn.classList.add('playing');
+                                } else {
+                                    synth.pause();
+                                    newBtn.classList.remove('playing');
+                                }
+                                return;
+                            }
+                        }
+
+                        synth.cancel();
+                        if (activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                        let text = "";
+                        // Logic to find text based on button position (Title, Summary, Quiz, Option)
+                        const optionContainer = newBtn.closest('.flex.items-center.justify-between.mb-1');
+                        if (optionContainer) {
+                            const label = optionContainer.querySelector('label');
+                            if (label) text = label.textContent.trim();
+                        }
+                        else {
+                            const quizContainer = newBtn.closest('.quiz-question');
+                            if (quizContainer) {
+                                const questionP = quizContainer.querySelector('p.font-bold');
+                                if (questionP) text = questionP.textContent.trim();
+                            } 
+                            else {
+                                const parent = newBtn.parentElement;
+                                if(parent.tagName === 'H1' || parent.tagName === 'H2') {
+                                    const clone = parent.cloneNode(true);
+                                    clone.querySelector('.tts-button').remove();
+                                    text = clone.textContent.trim();
+                                    if(parent.dataset.langKey === 'summaryTitle') {
+                                        const content = document.querySelector('[data-lang-key="summaryContent"]');
+                                        if(content) {
+                                            const temp = document.createElement('div');
+                                            temp.innerHTML = content.innerHTML;
+                                            text += ". " + temp.textContent.trim().replace(/\s\s+/g, ' ');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        const u = new SpeechSynthesisUtterance(text);
+                        u.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                        u.onstart = () => {
+                            newBtn.classList.add('playing');
+                            activeTTSButton = newBtn;
+                        };
+                        u.onend = () => {
+                            newBtn.classList.remove('playing');
+                            activeTTSButton = null;
+                        };
+                        u.onerror = () => {
+                            newBtn.classList.remove('playing');
+                            activeTTSButton = null;
+                        };
+                        
+                        synth.speak(u);
+                    });
+                });
+            }
+
+            document.getElementById('lang-toggle').addEventListener('click', ()=>{ 
+                if(synth.speaking) { synth.cancel(); if(activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; }
+                currentLanguage=currentLanguage==='it'?'en':'it'; 
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage); 
+            });
+            
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+            
+            document.getElementById('submit-quiz')?.addEventListener('click', ()=>{
+                 const qs = document.querySelectorAll('.quiz-question');
+                 let s=0;
+                 qs.forEach((d,i)=>{
+                     const sel = d.querySelector('input:checked');
+                     d.classList.remove('correct','incorrect');
+                     d.classList.add(sel && sel.value===quizData[currentLanguage][i].answer ? 'correct' : 'incorrect');
+                     if(sel && sel.value===quizData[currentLanguage][i].answer) s++;
+                 });
+                 document.getElementById('quiz-results').textContent = `Score: ${s}/${qs.length}`;
+            });
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
