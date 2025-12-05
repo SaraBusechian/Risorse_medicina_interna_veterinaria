@@ -85,7 +85,7 @@
 
                 <section id="infografica">
                     <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
-                    <a href="infografica_endocrino.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-rose-500">
+                    <a href="infografica_pupd.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-rose-500">
                          <div class="flex items-center space-x-6">
                               <div class="flex-shrink-0 w-24 h-24 bg-rose-500 rounded-lg flex items-center justify-center text-5xl">💧</div>
                               <div>
@@ -113,7 +113,7 @@
                         <div class="flex-grow text-center sm:text-left">
                             <p class="font-semibold text-rose-800" data-lang-key="audioListen">Ascolta l'algoritmo diagnostico</p>
                         </div>
-                        <a href="#" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                        <a href="audio_pupd.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
                             <span data-lang-key="btnDownloadAudio">Scarica</span>
                         </a>
@@ -132,7 +132,7 @@
         </div>
     </main>
     
-    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-rose-100">
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-rose-200">
         <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
@@ -335,6 +335,14 @@
                          }
                     }
                 });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                
                 loadQuiz(lang);
                 setupTTS();
             }
@@ -378,7 +386,6 @@
                         if (activeTTSButton) activeTTSButton.classList.remove('playing');
 
                         let text = "";
-                        // Logic to find text based on button position (Title, Summary, Quiz)
                         const quizContainer = newBtn.closest('.quiz-question');
                         if (quizContainer) {
                             text = quizContainer.querySelector('p').textContent;
@@ -393,7 +400,6 @@
                                     if(content) {
                                         const temp = document.createElement('div');
                                         temp.innerHTML = content.innerHTML;
-                                        // Simple clean up for table reading
                                         const rows = temp.querySelectorAll('tr');
                                         if(rows.length > 0) {
                                             let tableText = ". Tabella definizioni: ";
@@ -437,7 +443,16 @@
                 localStorage.setItem('language', currentLanguage);
                 updateLanguage(currentLanguage); 
             });
-            document.getElementById('dsa-toggle')?.addEventListener('click', ()=>{ document.body.classList.toggle('dsa-mode'); });
+            
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
             
             document.getElementById('submit-quiz')?.addEventListener('click', ()=>{
                  const qs = document.querySelectorAll('.quiz-question');
