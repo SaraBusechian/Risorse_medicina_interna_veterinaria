@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approccio al Paziente Obeso - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fff1f2; color: #881337; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #f43f5e; color: #be185d; }
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdf6f7 !important; color: #34495e; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; color: #fff; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #34495e; }
+        .quiz-question { border: 1px solid #fecdd3; transition: all 0.3s; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        .tts-button { cursor: pointer; margin-left: 12px; color: #db2777; transition: all 0.2s; display: inline-flex; vertical-align: middle; opacity: 0.7; }
+        .tts-button:hover, .tts-button.playing { color: #be185d; transform: scale(1.1); opacity: 1; }
+        .step-box { border-left: 4px solid #db2777; background-color: #fff1f2; padding: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; }
+        .species-tag { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 0.3rem; font-size: 0.75rem; font-weight: bold; margin-right: 0.5rem; }
+        .tag-dog { background-color: #bfdbfe; color: #1e40af; }
+        .tag-cat { background-color: #fca5a5; color: #991b1b; }
+        .tag-horse { background-color: #dcfce7; color: #166534; }
+        /* Animazione pulsazione quando è in riproduzione */
+        .playing svg { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body class="bg-rose-50">
+
+    <header id="main-header" class="bg-rose-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Patologie Endocrine</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index_endocrino.html" class="inline-flex items-center bg-white text-rose-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-rose-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Endocrinologia</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-rose-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-rose-800 flex justify-center items-center gap-3 flex-wrap" data-lang-key="pageTitle">
+                    Approccio al Paziente Obeso [Image of obese dog]
+                    <span class="tts-button" aria-label="Ascolta titolo">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                    </span>
+                </h1>
+                <p class="text-lg text-rose-700 mt-2" data-lang-key="pageSubtitle">Algoritmo diagnostico: semplice sovrappeso o endocrinopatia?</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4 flex items-center" data-lang-key="summaryTitle">
+                        Riassunto Completo 
+                        <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                    </h2>
+                    <div class="prose max-w-none text-rose-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_obeso.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-rose-500">
+                         <div class="flex items-center space-x-6">
+                              <div class="flex-shrink-0 w-24 h-24 bg-rose-500 rounded-lg flex items-center justify-center text-5xl">⚖️</div>
+                              <div>
+                                  <h3 class="text-xl font-bold text-rose-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica</h3>
+                                  <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Schema: Quando l'obesità è una malattia.</p>
+                              </div>
+                          </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6"></div>
+                    <div class="mt-6 text-center"><button id="submit-quiz" class="bg-rose-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-rose-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button></div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                     <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="audioTitle">Audio</h2>
+                     <div class="p-4 bg-rose-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-rose-500 text-white rounded-full hover:bg-rose-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-rose-800" data-lang-key="audioListen">Ascolta il riassunto</p>
+                        </div>
+                        <a href="audio_obeso.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                     </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-rose-900" data-lang-key="bibliographyContent"></ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-rose-200">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Patologie Endocrine", en: "Endocrine Pathologies" },
+                backToIndexText: { it: "Indice Endocrinologia", en: "Endocrinology Index" },
+                pageTitle: { it: "Approccio al Paziente Obeso", en: "Approach to the Obese Patient" },
+                pageSubtitle: { it: "Algoritmo diagnostico: semplice sovrappeso o endocrinopatia?", en: "Diagnostic algorithm: simple overweight or endocrinopathy?" },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: {
+                    it: `<div class="mb-6">
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Definizione e Valutazione</h3>
+                            <p class="mb-4">L'obesità è definita come un accumulo eccessivo di tessuto adiposo che compromette la salute e il benessere. La valutazione deve essere oggettiva usando il <strong>Body Condition Score (BCS)</strong> (scala 1-9 o 1-5). È fondamentale distinguere l'obesità reale da condizioni patologiche che mimano l'aumento di volume (es. ascite, organomegalia, ipotonia muscolare del Cushing).</p>
+                            
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Tabelle di Riferimento BCS (Scala 1-9)</h3>
+                            <div class="overflow-x-auto mb-6">
+                                <table class="w-full text-sm text-left text-gray-700 border border-gray-200 rounded-lg">
+                                    <thead class="bg-rose-100 text-rose-800">
+                                        <tr>
+                                            <th class="p-2 border">BCS</th>
+                                            <th class="p-2 border">Cane & Gatto</th>
+                                            <th class="p-2 border">Cavallo (Henneke)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b">
+                                            <td class="p-2 font-bold">1-3<br><span class="text-xs font-normal text-slate-500">Sottopeso</span></td>
+                                            <td class="p-2">Costole facilmente palpabili e visibili. Assenza di grasso. Vita molto evidente.</td>
+                                            <td class="p-2">Strutture ossee prominenti (garrese, spalle, collo).</td>
+                                        </tr>
+                                        <tr class="bg-green-50 border-b">
+                                            <td class="p-2 font-bold">4-5<br><span class="text-xs font-normal text-green-700">Ideale</span></td>
+                                            <td class="p-2">Costole palpabili con leggero strato di grasso. Vita visibile dall'alto.</td>
+                                            <td class="p-2">Costole non visibili ma palpabili. Collo e spalle si fondono dolcemente.</td>
+                                        </tr>
+                                        <tr class="bg-white border-b">
+                                            <td class="p-2 font-bold">6-7<br><span class="text-xs font-normal text-yellow-600">Sovrappeso</span></td>
+                                            <td class="p-2">Costole palpabili con eccesso di grasso. Vita poco evidente.</td>
+                                            <td class="p-2">Grasso spugnoso sul garrese. Grasso dietro la spalla e sulla coda.</td>
+                                        </tr>
+                                        <tr class="bg-red-50">
+                                            <td class="p-2 font-bold">8-9<br><span class="text-xs font-normal text-red-600">Obeso</span></td>
+                                            <td class="p-2">Costole non palpabili sotto grasso spesso. Distensione addominale.</td>
+                                            <td class="p-2">"Cresty Neck" marcato. Depositi di grasso interni coscia e fianco.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Protocollo Diagnostico</h3>
+                            <p class="mb-2">Un approccio sistematico è essenziale per distinguere l'obesità semplice da quella patologica:</p>
+                            <ol class="list-decimal pl-6 mb-4 space-y-1">
+                                <li><strong>Anamnesi Nutrizionale Dettagliata:</strong> Calcolare l'apporto calorico attuale (inclusi snack e avanzi).</li>
+                                <li><strong>Esame Obiettivo Completo:</strong> Valutare BCS e <strong>Muscle Condition Score (MCS)</strong>. Cercare segni di endocrinopatie (alopecia, cute sottile, distensione addominale).</li>
+                                <li><strong>Database Minimo:</strong> Emocromo, Profilo Biochimico (colesterolo, trigliceridi, enzimi epatici), Esame delle Urine.</li>
+                                <li><strong>Test Specifici (se indicati):</strong> T4/TSH (cane), test per Cushing, Insulina/Glucosio (cavallo).</li>
+                            </ol>
+
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Diagnosi Differenziale per Specie</h3>
+                            <p class="mb-2">Se l'anamnesi nutrizionale è corretta (es. dieta bilanciata), bisogna escludere cause mediche:</p>
+                            <ul class="list-disc pl-6 mb-4 space-y-2">
+                                <li><span class="font-bold text-rose-600">Cane:</span>
+                                    <ul class="list-disc pl-6 mt-1">
+                                        <li><strong>Ipotiroidismo:</strong> Causa classica di aumento di peso senza aumento dell'appetito. Segni associati: letargia, ricerca di fonti di calore, "coda di topo".</li>
+                                        <li><strong>Iperadrenocorticismo (Cushing):</strong> Causa ridistribuzione del grasso e debolezza muscolare ("Pot-Belly"), mimando l'obesità addominale. Spesso c'è polifagia.</li>
+                                    </ul>
+                                </li>
+                                <li><span class="font-bold text-rose-600">Gatto:</span>
+                                    <ul class="list-disc pl-6 mt-1">
+                                        <li><strong>Acromegalia:</strong> Rara ma possibile causa di aumento di peso e diabete insulino-resistente.</li>
+                                        <li>La causa più comune rimane l'inattività fisica post-sterilizzazione e l'alimentazione ad libitum.</li>
+                                    </ul>
+                                </li>
+                                <li><span class="font-bold text-rose-600">Cavallo:</span>
+                                    <ul class="list-disc pl-6 mt-1">
+                                        <li><strong>EMS (Sindrome Metabolica):</strong> Adiposità regionale (Cresty Neck, base della coda).</li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Gestione Terapeutica</h3>
+                            <ul class="list-disc pl-6 mb-4">
+                                <li><strong>Calcolo Calorico:</strong> Calcolare il RER (Resting Energy Requirement) sul <strong>peso ideale</strong>, non su quello attuale.</li>
+                                <li><strong>Dieta:</strong> Non basta ridurre la dose del cibo di mantenimento (rischio carenze vitaminiche). Usare diete terapeutiche:
+                                    <ul class="list-disc pl-6 mt-1">
+                                        <li><strong>Cane:</strong> Alto contenuto di fibra (sazietà) e basso contenuto di grassi.</li>
+                                        <li><strong>Gatto:</strong> Alto contenuto proteico (mantiene massa magra) e basso contenuto di carboidrati (metabolismo carnivoro stretto).</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Esercizio:</strong> Graduale per evitare danni articolari.</li>
+                            </ul>
+                         </div>`,
+                    en: `<div class="mb-6">
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Definition and Assessment</h3>
+                            <p class="mb-4">Obesity is excessive adipose tissue accumulation. Objective assessment via <strong>Body Condition Score (BCS)</strong> is crucial. Differentiate true obesity from mimics like ascites or Cushingoid pot-belly.</p>
+                            
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">BCS Reference Tables (1-9 Scale)</h3>
+                            <div class="overflow-x-auto mb-6">
+                                <table class="w-full text-sm text-left text-gray-700 border border-gray-200 rounded-lg">
+                                    <thead class="bg-rose-100 text-rose-800">
+                                        <tr><th class="p-2 border">BCS</th><th class="p-2 border">Dog & Cat</th><th class="p-2 border">Horse (Henneke)</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-white border-b"><td class="p-2 font-bold">1-3<br>Underweight</td><td class="p-2">Ribs easily palpable/visible. No fat. Prominent waist.</td><td class="p-2">Prominent bone structures (withers, shoulders, neck).</td></tr>
+                                        <tr class="bg-green-50 border-b"><td class="p-2 font-bold">4-5<br>Ideal</td><td class="p-2">Ribs palpable with slight fat cover. Waist visible from above.</td><td class="p-2">Ribs not visible but palpable. Neck and shoulders blend smoothly.</td></tr>
+                                        <tr class="bg-white border-b"><td class="p-2 font-bold">6-7<br>Overweight</td><td class="p-2">Ribs palpable with excess fat. Waist barely visible.</td><td class="p-2">Spongy fat on withers. Fat behind shoulder and on tailhead.</td></tr>
+                                        <tr class="bg-red-50"><td class="p-2 font-bold">8-9<br>Obese</td><td class="p-2">Ribs not palpable under thick fat. Abdominal distension.</td><td class="p-2">Marked "Cresty Neck". Fat deposits on inner thighs and flank.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Diagnostic Protocol</h3>
+                            <p class="mb-2">A systematic approach is essential to distinguish simple obesity from pathological obesity:</p>
+                            <ol class="list-decimal pl-6 mb-4 space-y-1">
+                                <li><strong>Detailed Nutritional History:</strong> Calculate current caloric intake (including treats and table scraps).</li>
+                                <li><strong>Complete Physical Exam:</strong> Assess BCS and <strong>Muscle Condition Score (MCS)</strong>. Look for signs of endocrinopathies (alopecia, thin skin, abdominal distension).</li>
+                                <li><strong>Minimum Database:</strong> CBC, Biochemical Profile (cholesterol, triglycerides, liver enzymes), Urinalysis.</li>
+                                <li><strong>Specific Tests (if indicated):</strong> T4/TSH (dog), Cushing's tests, Insulin/Glucose (horse).</li>
+                            </ol>
+
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Differential Diagnosis by Species</h3>
+                            <p class="mb-2">If nutritional history is correct, rule out medical causes:</p>
+                            <ul class="list-disc pl-6 mb-4 space-y-2">
+                                <li><span class="font-bold text-rose-600">Dog:</span>
+                                    <ul class="list-disc pl-6 mt-1">
+                                        <li><strong>Hypothyroidism:</strong> Weight gain without increased appetite. Lethargy, heat-seeking.</li>
+                                        <li><strong>Cushing's:</strong> Fat redistribution and muscle weakness (Pot-Belly). Often polyphagic.</li>
+                                    </ul>
+                                </li>
+                                <li><span class="font-bold text-rose-600">Cat:</span>
+                                    <ul class="list-disc pl-6 mt-1">
+                                        <li><strong>Acromegaly:</strong> Rare cause of weight gain.</li>
+                                        <li>Most common: Inactivity post-neutering.</li>
+                                    </ul>
+                                </li>
+                                <li><span class="font-bold text-rose-600">Horse:</span>
+                                    <ul class="list-disc pl-6 mt-1">
+                                        <li><strong>EMS:</strong> Regional adiposity (Cresty Neck).</li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                            <h3 class="text-2xl font-bold text-rose-800 mb-3">Management</h3>
+                            <ul class="list-disc pl-6 mb-4">
+                                <li><strong>Caloric Calculation:</strong> RER based on <strong>ideal weight</strong>.</li>
+                                <li><strong>Diet:</strong> Use therapeutic diets.
+                                    <ul class="list-disc pl-6 mt-1">
+                                        <li><strong>Dog:</strong> High fiber (satiety) and low fat content.</li>
+                                        <li><strong>Cat:</strong> High protein (maintain lean mass) and low carbohydrate content.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                         </div>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Infografica", en: "View Infographic" },
+                infographicLinkDesc: { it: "Schema: Quando l'obesità è una malattia.", en: "Chart: When obesity is a disease." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Audio", en: "Audio" },
+                audioListen: { it: "Ascolta il riassunto", en: "Listen to the summary" },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li><li>Feldman EC, Nelson RW, Reusch C, Scott-Moncrieff JC, Canine and Feline Endocrinology, 4th Edition, Elsevier, 2015.</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018.</li>`,
+                    en: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li><li>Feldman EC, Nelson RW, Reusch C, Scott-Moncrieff JC, Canine and Feline Endocrinology, 4th Edition, Elsevier, 2015.</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018.</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Qual è il gold standard per valutare l'obesità in clinica?", options: ["Il peso corporeo in kg", "Il Body Condition Score (BCS)", "La circonferenza toracica", "L'indice di massa corporea"], answer: "Il Body Condition Score (BCS)" },
+                    { question: "Quale patologia nel cane causa aumento di peso SENZA aumento dell'appetito?", options: ["Diabete Mellito", "Cushing", "Ipotiroidismo", "EPI (Insufficienza Pancreatica Esocrina)"], answer: "Ipotiroidismo" },
+                    { question: "Nel Cushing, l'addome a botte è dovuto principalmente a:", options: ["Accumulo di grasso viscerale massivo", "Epatomegalia e debolezza muscolare", "Ascite", "Gravidanza"], answer: "Epatomegalia e debolezza muscolare" },
+                    { question: "Qual è il segno distintivo dell'EMS (Sindrome Metabolica Equina)?", options: ["Dimagrimento cronico", "Cresty Neck (adiposità sul collo)", "Poliuria", "Alopecia"], answer: "Cresty Neck (adiposità sul collo)" },
+                    { question: "Quale rara patologia felina causa aumento di peso e diabete incontrollabile?", options: ["Ipertiroidismo", "Acromegalia", "Addison", "Insufficienza renale"], answer: "Acromegalia" },
+                    { question: "Qual è la strategia dietetica ideale per la perdita di peso nel cane?", options: ["Digiuno intermittente", "Dieta ricca di grassi", "Dieta ad alto contenuto di fibra e basso contenuto di grassi", "Dieta casalinga solo carne"], answer: "Dieta ad alto contenuto di fibra e basso contenuto di grassi" },
+                    { question: "Qual è la strategia dietetica ideale per la perdita di peso nel gatto?", options: ["Dieta ricca di carboidrati", "Dieta ad alto contenuto proteico e basso contenuto di carboidrati", "Dieta vegetariana", "Riduzione drastica del cibo secco"], answer: "Dieta ad alto contenuto proteico e basso contenuto di carboidrati" },
+                    { question: "Cosa valuta il Muscle Condition Score (MCS)?", options: ["La quantità di grasso", "La perdita di massa magra (sarcopenia)", "La forza muscolare", "L'idratazione"], answer: "La perdita di massa magra (sarcopenia)" },
+                    { question: "Qual è il rischio di una perdita di peso troppo rapida nel gatto obeso?", options: ["Chetosi", "Lipidosi Epatica", "Ipertiroidismo", "Cistite"], answer: "Lipidosi Epatica" },
+                    { question: "Perché l'esercizio fisico è fondamentale nel piano di dimagrimento?", options: ["Per distrarre il cane dal cibo", "Per aumentare il dispendio energetico e preservare la massa magra", "Per ridurre la produzione di cortisolo", "Per aumentare la sete"], answer: "Per aumentare il dispendio energetico e preservare la massa magra" }
+                ],
+                en: [
+                    { question: "What is the gold standard for assessing obesity?", options: ["Body weight in kg", "Body Condition Score (BCS)", "Chest circumference", "BMI"], answer: "Body Condition Score (BCS)" },
+                    { question: "Which dog disease causes weight gain WITHOUT increased appetite?", options: ["Diabetes", "Cushing's", "Hypothyroidism", "EPI (Exocrine Pancreatic Insufficiency)"], answer: "Hypothyroidism" },
+                    { question: "In Cushing's, pot-belly is mainly due to:", options: ["Massive visceral fat", "Hepatomegaly and muscle weakness", "Ascites", "Pregnancy"], answer: "Hepatomegaly and muscle weakness" },
+                    { question: "Distinctive sign of EMS in horses?", options: ["Chronic weight loss", "Cresty Neck", "Polyuria", "Alopecia"], answer: "Cresty Neck" },
+                    { question: "Rare feline condition causing weight gain and uncontrolled diabetes?", options: ["Hyperthyroidism", "Acromegaly", "Addison's", "Renal failure"], answer: "Acromegaly" },
+                    { question: "Ideal diet strategy for dog weight loss?", options: ["Intermittent fasting", "High fat", "High fiber and low fat content", "All meat"], answer: "High fiber and low fat content" },
+                    { question: "Ideal diet strategy for cat weight loss?", options: ["High carb", "High protein and low carbohydrate content", "Vegetarian", "Drastic dry food reduction"], answer: "High protein and low carbohydrate content" },
+                    { question: "What does Muscle Condition Score (MCS) assess?", options: ["Fat amount", "Muscle wasting (sarcopenia)", "Strength", "Hydration"], answer: "Muscle wasting (sarcopenia)" },
+                    { question: "Risk of rapid weight loss in obese cats?", options: ["Ketosis", "Hepatic Lipidosis", "Hyperthyroidism", "Cystitis"], answer: "Hepatic Lipidosis" },
+                    { question: "Why is exercise crucial?", options: ["Distraction", "Increase energy expenditure and preserve lean mass", "Reduce cortisol", "Increase thirst"], answer: "Increase energy expenditure and preserve lean mass" }
+                ]
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if(translations[key] && translations[key][lang]) {
+                         if(key.includes('Content')) element.innerHTML = translations[key][lang];
+                         else {
+                            const tts = element.querySelector('.tts-button');
+                            const txt = [...element.childNodes].find(n=>n.nodeType===Node.TEXT_NODE&&n.textContent.trim());
+                            if(txt) txt.textContent = translations[key][lang];
+                            else element.textContent = translations[key][lang];
+                            if(tts) element.appendChild(tts);
+                         }
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                
+                loadQuiz(lang);
+                setupTTS();
+            }
+
+            function loadQuiz(lang){
+                 const c = document.getElementById('quiz-container'); 
+                 if(!c) return; c.innerHTML='';
+                 quizData[lang].forEach((q,i)=>{
+                     c.innerHTML += `<div class="quiz-question p-4 rounded-lg border border-pink-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="font-bold">${i+1}. ${q.question}</p>
+                            <span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                        </div>
+                        ${q.options.map(o=>`
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="cursor-pointer flex items-center flex-grow">
+                                    <input type="radio" name="q${i}" value="${o}" class="mr-2"> ${o}
+                                </label>
+                                <span class="tts-button" aria-label="Ascolta opzione"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" /></svg></span>
+                            </div>
+                        `).join('')}
+                     </div>`;
+                 });
+            }
+
+            function setupTTS() {
+                document.querySelectorAll('.tts-button').forEach(btn => {
+                    const newBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(newBtn, btn);
+                    
+                    newBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        
+                        if (activeTTSButton === newBtn) {
+                            if (synth.speaking) {
+                                if (synth.paused) {
+                                    synth.resume();
+                                    newBtn.classList.add('playing');
+                                } else {
+                                    synth.pause();
+                                    newBtn.classList.remove('playing');
+                                }
+                                return;
+                            }
+                        }
+
+                        synth.cancel();
+                        if (activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                        let text = "";
+                        // Logic to find text
+                        const optionContainer = newBtn.closest('.flex.items-center.justify-between.mb-1');
+                        if (optionContainer) {
+                            const label = optionContainer.querySelector('label');
+                            if (label) text = label.textContent.trim();
+                        }
+                        else {
+                            const quizContainer = newBtn.closest('.quiz-question');
+                            if (quizContainer) {
+                                const questionP = quizContainer.querySelector('p.font-bold');
+                                if (questionP) text = questionP.textContent.trim();
+                            } 
+                            else {
+                                const parent = newBtn.parentElement;
+                                if(parent.tagName === 'H1' || parent.tagName === 'H2') {
+                                    const clone = parent.cloneNode(true);
+                                    clone.querySelector('.tts-button').remove();
+                                    text = clone.textContent.trim();
+                                    if(parent.dataset.langKey === 'summaryTitle') {
+                                        const content = document.querySelector('[data-lang-key="summaryContent"]');
+                                        if(content) {
+                                            const temp = document.createElement('div');
+                                            temp.innerHTML = content.innerHTML;
+                                            // Clean text from tables for reading
+                                            const rows = temp.querySelectorAll('tr');
+                                            if(rows.length > 0) {
+                                                let tableText = ". Tabella BCS: ";
+                                                rows.forEach(row => {
+                                                    const cells = row.querySelectorAll('td, th');
+                                                    if(cells.length > 0) {
+                                                        tableText += Array.from(cells).map(c => c.textContent).join(": ") + ". ";
+                                                    }
+                                                });
+                                                const table = temp.querySelector('table');
+                                                if(table) table.textContent = ""; 
+                                                text += tableText;
+                                            }
+                                            text += ". " + temp.textContent.trim().replace(/\s\s+/g, ' ');
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        const u = new SpeechSynthesisUtterance(text);
+                        u.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                        u.onstart = () => {
+                            newBtn.classList.add('playing');
+                            activeTTSButton = newBtn;
+                        };
+                        u.onend = () => {
+                            newBtn.classList.remove('playing');
+                            activeTTSButton = null;
+                        };
+                        u.onerror = () => {
+                            newBtn.classList.remove('playing');
+                            activeTTSButton = null;
+                        };
+                        
+                        synth.speak(u);
+                    });
+                });
+            }
+
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            document.getElementById('submit-quiz')?.addEventListener('click', ()=>{
+                 const qs = document.querySelectorAll('.quiz-question');
+                 let s=0;
+                 qs.forEach((d,i)=>{
+                     const sel = d.querySelector('input:checked');
+                     d.classList.remove('correct','incorrect');
+                     d.classList.add(sel && sel.value===quizData[currentLanguage][i].answer ? 'correct' : 'incorrect');
+                     if(sel && sel.value===quizData[currentLanguage][i].answer) s++;
+                 });
+                 document.getElementById('quiz-results').textContent = `Score: ${s}/${qs.length}`;
+            });
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
