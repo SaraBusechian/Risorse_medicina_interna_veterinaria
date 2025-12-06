@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approccio al Paziente Magro - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fff1f2; color: #881337; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; padding-bottom: 4px; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #f43f5e; color: #be185d; }
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdf6f7 !important; color: #34495e; font-size: 1.15rem; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; color: #fff; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #34495e; }
+        .quiz-question { border: 1px solid #fecdd3; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #fff1f2; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        .tts-button { cursor: pointer; margin-left: 12px; color: #db2777; transition: all 0.2s; display: inline-flex; vertical-align: middle; opacity: 0.7; }
+        .tts-button:hover, .tts-button.playing { color: #be185d; transform: scale(1.1); opacity: 1; }
+        .step-box { border-left: 4px solid #db2777; background-color: #fff1f2; padding: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; }
+        .playing svg { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-rose-50">
+
+    <header id="main-header" class="bg-rose-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Patologie Endocrine</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-rose-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-rose-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Endocrinologia</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-rose-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-rose-800 flex justify-center items-center gap-3 flex-wrap" data-lang-key="pageTitle">
+                    Approccio al Paziente Magro
+                    <span class="tts-button" aria-label="Ascolta titolo">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>
+                    </span>
+                </h1>
+                <p class="text-lg text-rose-700 mt-2" data-lang-key="pageSubtitle">Dimagrimento e perdita di massa corporea: l'importanza dell'appetito.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4 flex items-center" data-lang-key="summaryTitle">
+                        Riassunto Completo 
+                        <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                    </h2>
+                    <div class="prose max-w-none text-rose-900" data-lang-key="summaryContent">
+                        <!-- Contenuto caricato da JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_dimagrimento.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-rose-500">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-rose-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona bilancia e freccia">⚖️⬇️</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-rose-800" data-lang-key="infographicLinkTitle">Visualizza il Flowchart Dimagrimento</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Algoritmo decisionale basato sull'appetito.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-rose-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-rose-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="audioTitle">Audio</h2>
+                    <div class="p-4 bg-rose-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                         <!-- Ho rimosso i riferimenti Howler/placeholder e mantenuto il pulsante generico -->
+                        <button id="audio-play-pause" class="p-3 bg-rose-500 text-white rounded-full hover:bg-rose-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-rose-800" data-lang-key="audioListen">Ascolta il riassunto</p>
+                            <p class="text-sm text-rose-600">Sintesi vocale del contenuto principale.</p>
+                        </div>
+                        <a href="#" download="audio_dimagrimento.mp3" class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center" data-lang-key="btnDownloadAudio">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span>Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-rose-900" data-lang-key="bibliographyContent">
+                        <!-- Contenuto caricato da JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-rose-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        // --- Variabili di Stato Globali ---
+        let currentLanguage = localStorage.getItem('language') || 'it';
+        const synth = window.speechSynthesis;
+        let activeTTSButton = null;
+        let voicesLoaded = false;
+        
+        // --- Contenuti e Dati ---
+        
+        // Riassunto HTML per la visualizzazione (IT)
+        const summaryHTML_IT = `<div class="mb-6">
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Definizione e Valutazione Iniziale</h3>
+            <p class="mb-4">Il dimagrimento o cachessia è una condizione comune che richiede un approccio diagnostico basato sulla distinzione tra <strong>Dimagrimento con Appetito Conservato o Aumentato (Polifagia)</strong> e <strong>Dimagrimento con Appetito Diminuito o Assente (Anoressia/Iporessia)</strong>. La perdita di peso è considerata significativa se supera il 10% del peso corporeo abituale. </p>
+            
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Dimagrimento con Appetito Normale/Aumentato (Polifagia)</h3>
+            <p class="mb-2">Se il paziente mangia molto ma perde peso, l'eziologia è solitamente un problema di malassorbimento/maldigestione o un disordine ipermetabolico.</p>
+            <div class="step-box bg-red-50">
+                <h4 class="font-bold text-rose-700">Principali Cause Endocrino/Metaboliche:</h4>
+                <ul class="list-disc pl-6">
+                    <li><strong>Ipertiroidismo Felino:</strong> La causa più comune nei gatti anziani. Aumento del metabolismo basale, tachicardia, T4 alto.</li>
+                    <li><strong>Diabete Mellito non Controllato:</strong> Il glucosio non entra nelle cellule, causando poliuria osmotica e mobilizzazione di grassi/proteine. Spesso PU/PD.</li>
+                    <li><strong>Insufficienza Pancreatica Esocrina (EPI, Cane):</strong> Maldigestione/malassorbimento di grassi e proteine nonostante appetito vorace. Feci voluminose e steatorrea.</li>
+                </ul>
+            </div>
+
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Dimagrimento con Appetito Diminuito (Iporessia/Anoressia)</h3>
+            <p class="mb-2">La perdita di appetito è un sintomo di malattia sistemica o dolore. Le cause sono molto più ampie e spesso non endocrine (es. IRC, epatopatie, neoplasie, dolore cronico).</p>
+            <div class="step-box bg-blue-50">
+                <h4 class="font-bold text-rose-700">Focus Endocrino/Metabolico (Cane e Gatto):</h4>
+                <ul class="list-disc pl-6">
+                    <li><strong>Morbo di Addison (Ipoadrenocorticismo):</strong> Sintomi gastrointestinali vaghi (vomito, diarrea, anoressia) che portano a dimagrimento. Spesso c'è iponatremia e iperkaliemia.</li>
+                    <li><strong>Insufficienza Renale Cronica (IRC):</strong> L'azotemia causa anoressia e nausea (uremia).</li>
+                    <li><strong>Neoplasie Occulte:</strong> Produzione di citochine infiammatorie che causano anoressia e cachessia.</li>
+                </ul>
+            </div>
+            
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Considerazioni sul Cavallo Magro</h3>
+            <p class="mb-2">Nel cavallo, il dimagrimento è quasi sempre legato a una grave inefficienza digestiva (malnutrizione o trattamento antiparassitario insufficiente) o a patologie croniche/neoplastiche. Raramente è di origine puramente endocrina, ma i test sono essenziali per escludere complicazioni:</p>
+            <div class="step-box bg-green-50">
+                <h4 class="font-bold text-rose-700">Cause Metaboliche e Gastrointestinali Chiave:</h4>
+                <ul class="list-disc pl-6">
+                    <li><strong>Anzianità / Problemi Dentali (Malnutrizione Primaria):</strong> Causa la non-digestione di fieno e cereali.</li>
+                    <li><strong>Trattamento Antiparassitario Inadeguato:</strong> Richiede l'analisi delle feci e l'adeguato trattamento antiparassitario.</li>
+                    <li><strong>EPI (Insufficienza Pancreatica Esocrina Equina):</strong> Molto rara, ma può causare dimagrimento severo.</li>
+                    <li><strong>PPID (Cushing Equino):</strong> Non causa dimagrimento primario, ma spesso si associa a <strong>sarcopenia</strong> (perdita di massa muscolare) sui fianchi e sulla schiena, mascherata da un pelo lungo (irsutismo).</li>
+                </ul>
+            </div>
+
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Protocollo Diagnostico per Dimagrimento (Generico)</h3>
+            <ol class="list-decimal pl-6 mb-4 space-y-1">
+                <li>Anamnesi Dettagliata: Distinguere PU/PD, vomito/diarrea e soprattutto <strong>se l'appetito è aumentato o diminuito</strong>.</li>
+                <li>Database Minimo: CBC, Biochimico completo (Glucosio, BUN/Creatinina, ALT/ALP, Ca, P), Urinalisi (PS).</li>
+                <li>Test Eziologici (Polifagia): T4 Totale (Gatto), Fruttosamina (per controllo DM), TLI (per EPI).</li>
+                <li>Test Eziologici (Iporessia/Anoressia): Test ACTH (sospetto Addison), Imaging (ecografia addominale per neoplasie/epatopatie), Test gastrointestinali specifici.</li>
+            </ol>
+        </div>`;
+
+        // Riassunto HTML per la visualizzazione (EN)
+        const summaryHTML_EN = `<div class="mb-6">
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Definition and Initial Assessment</h3>
+            <p class="mb-4">Weight loss or cachexia is a common condition requiring a diagnostic approach based on distinguishing between **Weight Loss with Maintained or Increased Appetite (Polyphagia)** and **Weight Loss with Decreased or Absent Appetite (Anorexia/Hyporexia)**. Weight loss is considered significant if it exceeds 10% of usual body weight. </p>
+            
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Weight Loss with Normal/Increased Appetite (Polyphagia)</h3>
+            <p class="mb-2">If the patient eats a lot but loses weight, the etiology is usually a malabsorption/maldigestion problem or a hypermetabolic disorder.</p>
+            <div class="step-box bg-red-50">
+                <h4 class="font-bold text-rose-700">Main Endocrine/Metabolic Causes:</h4>
+                <ul class="list-disc pl-6">
+                    <li><strong>Feline Hyperthyroidism:</strong> Most common cause in older cats. Increased basal metabolism, tachycardia, high T4.</li>
+                    <li><strong>Uncontrolled Diabetes Mellitus:</strong> Glucose does not enter cells, causing osmotic polyuria and fat/protein mobilization. Often PU/PD.</li>
+                    <li><strong>Exocrine Pancreatic Insufficiency (EPI, Dog):</strong> Malabsorption of fats and proteins despite ravenous appetite. Bulky stools and steatorrhea.</li>
+                </ul>
+            </div>
+
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Weight Loss with Decreased Appetite (Hyporexia/Anorexia)</h3>
+            <p class="mb-2">Loss of appetite is a symptom of systemic disease or pain. Causes are much broader and often non-endocrine (e.g., CKD, hepatopathies, neoplasia, chronic pain).</p>
+            <div class="step-box bg-blue-50">
+                <h4 class="font-bold text-rose-700">Endocrine/Metabolic Focus (Dog and Cat):</h4>
+                <ul class="list-disc pl-6">
+                    <li><strong>Addison's Disease (Hypoadrenocorticism):</strong> Vague GI symptoms (vomiting, diarrhea, anorexia) leading to weight loss. Often hyponatremia and hyperkalemia present.</li>
+                    <li><strong>Chronic Kidney Disease (CKD):</strong> Azotemia causes anorexia and nausea (uremia).</li>
+                    <li><strong>Occult Neoplasia:</strong> Production of inflammatory cytokines causing anorexia and cachexia.</li>
+                </ul>
+            </div>
+            
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Equine Considerations (Thin Horse)</h3>
+            <p class="mb-2">In horses, weight loss is almost always related to severe digestive inefficiency (malnutrition or inadequate anthelmintic treatment) or chronic/neoplastic diseases. It is rarely purely endocrine, but tests are essential to rule out complications:</p>
+            <div class="step-box bg-green-50">
+                <h4 class="font-bold text-rose-700">Key Metabolic and Gastrointestinal Causes:</h4>
+                <ul class="list-disc pl-6">
+                    <li><strong>Geriatric / Dental Issues (Primary Malnutrition):</strong> Causes non-digestion of hay and grains.</li>
+                    <li><strong>Inadequate Anthelmintic Treatment:</strong> Requires fecal analysis and adequate anthelmintic treatment.</li>
+                    <li><strong>EPI (Equine Exocrine Pancreatic Insufficiency):</strong> Very rare, but can cause severe weight loss.</li>
+                    <li><strong>PPID (Equine Cushing's):</strong> Does not cause primary emaciation, but often associates with **sarcopenia** (loss of muscle mass) over the hindquarters and back, masked by a long coat (hirsutism).</li>
+                </ul>
+            </div>
+
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Diagnostic Protocol for Weight Loss (General)</h3>
+            <ol class="list-decimal pl-6 mb-4 space-y-1">
+                <li>Detailed History: Distinguish PU/PD, vomiting/diarrhea, and especially **whether appetite is increased or decreased**.</li>
+                <li>Minimum Database: CBC, complete Biochemistry (Glucose, BUN/Creatinine, ALT/ALP, Ca, P), Urinalysis (USG).</li>
+                <li>Etiological Tests (Polyphagia): Total T4 (Cat), Fructosamine (for DM control), TLI (for EPI).</li>
+                <li>Etiological Tests (Hyporexia/Anorexia): ACTH Test (suspect Addison's), Imaging (abdominal ultrasound for neoplasia/hepatopathies), Specific GI tests.</li>
+            </ol>
+        </div>`;
+
+        // Dati Quiz
+        const quizData = {
+            it: [
+                { question: "Qual è la prima e più importante distinzione diagnostica da fare nel paziente magro?", options: ["Malassorbimento vs. perdita renale", "Cane vs. Gatto", "Appetito conservato/aumentato vs. diminuito", "Dimagrimento primario vs. secondario"], answer: "Appetito conservato/aumentato vs. diminuito" },
+                { question: "Quale endocrinopatia nel Gatto anziano è la causa più comune di dimagrimento con appetito vorace?", options: ["Diabete Mellito", "Ipertiroidismo", "Acromegalia", "Iperadrenocorticismo"], answer: "Ipertiroidismo" },
+                { question: "La polifagia in un cane che perde peso suggerisce primariamente:", options: ["Ipoadrenocorticismo", "IRC", "Maldigestione/Malassorbimento o ipermetabolismo", "Problemi ortopedici"], answer: "Maldigestione/Malassorbimento o ipermetabolismo" },
+                { question: "Quale patologia è caratterizzata da anoressia, vomito e una forte associazione con iponatremia/iperkaliemia?", options: ["Diabete Mellito", "Morbo di Addison", "Ipertiroidismo", "IRC"], answer: "Morbo di Addison" },
+                { question: "Quale test di screening è essenziale se si sospetta EPI (Insufficienza Pancreatica Esocrina) nel Cane?", options: ["T4 Totale", "Fruttosamina", "TLI (Immunoreattività tripsina-simile)", "Test di stimolazione con ACTH"], answer: "TLI (Immunoreattività tripsina-simile)" },
+                { question: "Nel Cavallo, la perdita di massa muscolare sui fianchi in un anziano con irsutismo è spesso associata a:", options: ["Diabete Mellito", "PPID (Cushing Equino)", "Laminite cronica", "Malnutrizione da EPI"], answer: "PPID (Cushing Equino)" },
+                { question: "Qual è la principale causa di dimagrimento e malnutrizione nei cavalli anziani?", options: ["Ipertiroidismo", "Problemi dentali e inefficienza digestiva", "Morbo di Addison", "Eccessiva attività fisica"], answer: "Problemi dentali e inefficienza digestiva" },
+                { question: "L'azotemia e la nausea come causa di dimagrimento con appetito diminuito indirizzano la diagnosi verso:", options: ["Epatopatia severa", "Insufficienza Renale Cronica (IRC)", "Insufficienza cardiaca", "Peritonite"], answer: "Insufficienza Renale Cronica (IRC)" },
+                { question: "Cosa si intende per cachessia?", options: ["Perdita di solo tessuto adiposo", "Perdita di solo tessuto muscolare", "Perdita di peso superiore al 5% in 3 mesi", "Perdita di massa magra (muscolare) associata a malattia cronica"], answer: "Perdita di massa magra (muscolare) associata a malattia cronica" },
+                { question: "Un PS (Peso Specifico) urinario molto basso in un paziente magro, con esami emato-biochimici normali, può indirizzare verso:", options: ["Diabete Mellito", "Ipertiroidismo", "Diabete Insipido", "Morbo di Addison"], answer: "Diabete Insipido" }
+            ],
+            en: [
+                { question: "What is the first and most important diagnostic distinction in a thin patient?", options: ["Malabsorption vs. renal loss", "Dog vs. Cat", "Maintained/increased vs. decreased appetite", "Primary vs. secondary weight loss"], answer: "Maintained/increased vs. decreased appetite" },
+                { question: "Which endocrinopathy in older Cats is the most common cause of weight loss with ravenous appetite?", options: ["Diabetes Mellitus", "Hyperthyroidism", "Acromegaly", "Hyperadrenocorticism"], answer: "Hyperthyroidism" },
+                { question: "Polyphagia in a dog losing weight primarily suggests:", options: ["Hypoadrenocorticism", "CKD", "Maldigestion/Malabsorption or hypermetabolism", "Orthopedic issues"], answer: "Maldigestion/Malabsorption or hypermetabolism" },
+                { question: "Which pathology is characterized by anorexia, vomiting, and a strong association with hyponatremia/hyperkalemia?", options: ["Diabetes Mellitus", "Addison's Disease", "Hyperthyroidism", "CKD"], answer: "Addison's Disease" },
+                { question: "Which screening test is essential if EPI (Exocrine Pancreatic Insufficiency) is suspected in a Dog?", options: ["Total T4", "Fructosamine", "TLI (Trypsin-Like Immunoreactivity)", "ACTH stimulation test"], answer: "TLI (Trypsin-Like Immunoreactivity)" },
+                { question: "In Horses, muscle loss over the hindquarters in an older animal with hirsutism is often associated with:", options: ["Diabetes Mellitus", "PPID (Equine Cushing's)", "Chronic Laminitis", "Malnutrition from EPI"], answer: "PPID (Equine Cushing's)" },
+                { question: "What is the primary cause of emaciation and malnutrition in older horses?", options: ["Hyperthyroidism", "Dental issues and digestive inefficiency", "Addison's Disease", "Excessive physical activity"], answer: "Dental issues and digestive inefficiency" },
+                { question: "Azotemia and nausea as a cause of weight loss with decreased appetite points the diagnosis towards:", options: ["Severe Hepatopathy", "Chronic Kidney Disease (CKD)", "Heart Failure", "Peritonitis"], answer: "Chronic Kidney Disease (CKD)" },
+                { question: "What is meant by cachexia?", options: ["Loss of adipose tissue only", "Loss of muscle tissue only", "Weight loss exceeding 5% in 3 months", "Loss of lean (muscle) mass associated with chronic disease"], answer: "Loss of lean (muscle) mass associated with chronic disease" },
+                { question: "A very low urinary SG in a thin patient, with normal hemato-biochemical tests, may suggest:", options: ["Diabetes Mellitus", "Hyperthyroidism", "Diabetes Insipidus", "Addison's Disease"], answer: "Diabetes Insipidus" }
+            ]
+        };
+
+        const translations = {
+            siteTitle: { it: "Patologie Endocrine", en: "Endocrine Diseases" },
+            backToIndexText: { it: "Indice Endocrinologia", en: "Endocrinology Index" },
+            pageTitle: { it: "Approccio al Paziente Magro", en: "Approach to the Thin Patient" },
+            pageSubtitle: { it: "Dimagrimento e perdita di massa corporea: l'importanza dell'appetito.", en: "Weight loss and body mass loss: the importance of appetite." },
+            navSummary: { it: "Riassunto", en: "Summary" },
+            navInfographic: { it: "Infografica", en: "Infographic" },
+            navQuiz: { it: "Quiz", en: "Quiz" },
+            navAudio: { it: "Audio", en: "Audio" },
+            navBibliography: { it: "Bibliografia", en: "Bibliography" },
+            summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+            summaryContent: { it: summaryHTML_IT, en: summaryHTML_EN },
+            infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+            infographicLinkTitle: { it: "Visualizza il Flowchart Dimagrimento", en: "View Weight Loss Flowchart" },
+            infographicLinkDesc: { it: "Algoritmo decisionale basato sull'appetito.", en: "Decision algorithm based on appetite." },
+            quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+            quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+            audioTitle: { it: "Audio", en: "Audio" },
+            audioListen: { it: "Ascolta il riassunto", en: "Listen to the summary" },
+            btnDownloadAudio: { it: "Scarica", en: "Download" },
+            bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+            bibliographyContent: { 
+                it: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li><li>Nelson RW, Couto CG, Small Animal Internal Medicine, 6th Edition, Mosby, 2019.</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Saunders, 2018.</li><li>Smith BP, Large Animal Internal Medicine, 5th Edition, Mosby, 2019.</li>`,
+                en: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li><li>Nelson RW, Couto CG, Small Animal Internal Medicine, 6th Edition, Mosby, 2019.</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Saunders, 2018.</li><li>Smith BP, Large Animal Internal Medicine, 5th Edition, Mosby, 2019.</li>`
+            },
+            btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+            accessibility: { it: "Accessibilità", en: "Accessibility" },
+            "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+        };
+
+
+        // --- Funzioni TTS ---
+        function stopSpeech() { 
+            if (synth.speaking || synth.paused) {
+                synth.cancel(); 
+            }
+        }
+        
+        function speak(text, button) {
+            // Verifica se le voci sono pronte
+            if (!voicesLoaded || synth.getVoices().length === 0) {
+                console.error("Voci TTS non caricate o non disponibili.");
+                // Puoi mostrare un piccolo messaggio UI qui se preferisci
+                return;
+            }
+            
+            // Gestione Pausa/Ripresa
+            if (activeTTSButton === button) {
+                if (synth.paused) { 
+                    synth.resume(); 
+                    button.classList.add('playing'); 
+                } 
+                else if (synth.speaking) { 
+                    synth.pause(); 
+                    button.classList.remove('playing'); 
+                }
+                return;
+            }
+            
+            // Nuovo Discorso
+            stopSpeech();
+            if(activeTTSButton) activeTTSButton.classList.remove('playing');
+
+            if (!text || text.length === 0) return;
+
+            const u = new SpeechSynthesisUtterance(text);
+            const langCode = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+            u.lang = langCode;
+            
+            // Cerca una voce specifica per la lingua
+            const voice = synth.getVoices().find(v => v.lang.startsWith(langCode));
+            if (voice) u.voice = voice;
+
+            const cleanup = () => {
+                button.classList.remove('playing');
+                if (activeTTSButton === button) { activeTTSButton = null; }
+            };
+
+            u.onstart = () => { button.classList.add('playing'); activeTTSButton = button; };
+            u.onend = u.onerror = cleanup;
+            u.onpause = () => button.classList.remove('playing'); 
+            u.onresume = () => button.classList.add('playing'); 
+            
+            synth.speak(u);
+        }
+
+        function setupTTS() {
+            voicesLoaded = true; // Marca le voci come caricate
+
+            // Rimuove tutti i listener precedenti e li ricrea sui nodi clonati
+            document.querySelectorAll('.tts-button').forEach(btn => {
+                const parent = btn.parentNode;
+                if (!parent) return;
+
+                const newBtn = btn.cloneNode(true);
+                parent.replaceChild(newBtn, btn);
+                
+                newBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+
+                    let text = "";
+                    const parentElement = newBtn.parentElement;
+                    const containerElement = newBtn.closest('.quiz-question') || newBtn.closest('.content-section') || parentElement;
+                    
+                    // --- Logica di Estrazione Testo ---
+                    if (newBtn.closest('.quiz-question')) {
+                        // Caso Quiz (Domanda o Opzione)
+                        const optionContainer = newBtn.closest('.flex.items-center.justify-between.mb-1');
+                        
+                        if (optionContainer) {
+                            // Opzione (pulsante con icona piccola)
+                            const label = optionContainer.querySelector('label');
+                            if (label) text = label.textContent.trim();
+                        } else {
+                            // Domanda (pulsante con icona grande)
+                            const questionP = newBtn.closest('.quiz-question').querySelector('p.font-bold');
+                            if (questionP) text = questionP.textContent.trim();
+                        }
+                    } else if (newBtn.closest('[data-lang-key="pageTitle"]')) {
+                        // Titolo principale
+                        const titleClone = parentElement.cloneNode(true);
+                        titleClone.querySelector('.tts-button')?.remove();
+                        text = titleClone.textContent.trim();
+                        const subtitle = parentElement.nextElementSibling;
+                        if(subtitle && subtitle.dataset.langKey === 'pageSubtitle') {
+                            text += '. ' + subtitle.textContent.trim();
+                        }
+                    } else if (newBtn.closest('[data-lang-key="summaryTitle"]')) {
+                        // Riassunto Completo
+                        const content = document.querySelector('[data-lang-key="summaryContent"]');
+                        if (content) {
+                            const temp = document.createElement('div');
+                            // Usiamo l'HTML corrente per ottenere tutte le sezioni
+                            temp.innerHTML = currentLanguage === 'it' ? summaryHTML_IT : summaryHTML_EN; 
+                            text = temp.textContent.trim().replace(/\s\s+/g, ' ');
+                        }
+                    }
+
+                    if (text) speak(text, newBtn);
+                });
+            });
+        }
+
+        // Funzione per il caricamento dinamico del Quiz
+        function loadQuiz(lang) {
+            const c = document.getElementById('quiz-container'); 
+            if(!c) return; c.innerHTML='';
+            document.getElementById('quiz-results').textContent = ''; 
+            quizData[lang].forEach((q,i)=>{
+                c.innerHTML += `<div class="quiz-question p-4 rounded-lg border border-pink-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="font-bold">${i+1}. ${q.question}</p>
+                        <span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                    </div>
+                    ${q.options.map(o=>`
+                        <div class="flex items-center justify-between mb-1 quiz-option">
+                            <label class="cursor-pointer flex items-center flex-grow py-1">
+                                <input type="radio" name="q${i}" value="${o}" class="mr-2"> ${o}
+                            </label>
+                            <span class="tts-button" aria-label="Ascolta opzione"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" /></svg></span>
+                        </div>
+                    `).join('')}
+                </div>`;
+            });
+            setupTTS(); // Ricrea i listener TTS dopo aver caricato il Quiz
+        }
+
+        function updateLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+            stopSpeech();
+            
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if(translations[key] && translations[key][lang]) {
+                     if(key.includes('Content')) element.innerHTML = translations[key][lang];
+                     else {
+                         const tts = element.querySelector('.tts-button');
+                         const txt = [...element.childNodes].find(n=>n.nodeType===Node.TEXT_NODE&&n.textContent.trim());
+                         if(txt) txt.textContent = translations[key][lang];
+                         else element.textContent = translations[key][lang];
+                         if(tts) element.appendChild(tts);
+                     }
+                }
+            });
+            
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            if (document.body.classList.contains('dsa-mode')) {
+                dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+            } else {
+                dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+            }
+            
+            loadQuiz(lang);
+            if (voicesLoaded) setupTTS(); 
+        }
+        
+        // --- Inizializzazione ---
+        window.onload = function() {
+            // Gestione robusta del caricamento delle voci per risolvere il bug:
+            if (synth.onvoiceschanged !== undefined) {
+                synth.onvoiceschanged = () => {
+                    if (synth.getVoices().length > 0) {
+                        setupTTS();
+                        updateLanguage(currentLanguage);
+                    }
+                };
+            }
+            // Fallback immediato nel caso le voci siano già caricate
+            if (synth.getVoices().length > 0) {
+                setupTTS();
+            }
+            
+            updateLanguage(currentLanguage); 
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+             // Event listeners (altri)
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('submit-quiz')?.addEventListener('click', ()=>{
+                const qs = document.querySelectorAll('.quiz-question');
+                let s=0;
+                qs.forEach((d,i)=>{
+                    const sel = d.querySelector('input:checked');
+                    d.classList.remove('correct','incorrect');
+                    d.classList.add(sel && sel.value===quizData[currentLanguage][i].answer ? 'correct' : 'incorrect');
+                    if(sel && sel.value===quizData[currentLanguage][i].answer) s++;
+                });
+                document.getElementById('quiz-results').textContent = `Score: ${s}/${qs.length}`;
+            });
+
+            document.getElementById('audio-play-pause')?.addEventListener('click', () => {
+                alert('La riproduzione audio è un placeholder. Scarica il file MP3 per l\'ascolto.');
+            });
+
+            // Gestione navigazione attiva
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('article section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            sections.forEach(sec => observer.observe(sec));
+        });
+    </script>
+</body>
+</html>
