@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica - Diagnosi EMS (Equina)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fff1f2; color: #881337; }
+        .card { background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 1.5rem; margin-bottom: 2rem; border-top: 5px solid #db2777; }
+        .card h2 { color: #be185d; font-weight: bold; margin-bottom: 1rem; font-size: 1.25rem; }
+        .list-check li { margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem; }
+        .list-check li::before { content: '✓'; color: #be185d; position: absolute; left: 0; font-weight: bold; }
+        .dsa-mode { font-family: 'Lexend', sans-serif; background: #fdf6f7 !important; color: #34495e; }
+        .dsa-mode #main-header { background-color: #000000 !important; }
+        .dsa-mode #main-header a, .dsa-mode #main-header button { color: #ffffff !important; }
+        .dsa-mode .card { background: #fffdfd; border-top-color: #34495e; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #34495e; }
+        .arrow-down { text-align: center; font-size: 2rem; color: #f9a8d4; margin-bottom: 1rem; }
+        .decision-box { border: 2px solid #be185d; background-color: #fce7f3; padding: 1rem; border-radius: 0.5rem; font-weight: bold; text-align: center; margin-top: 1rem; }
+        .result-positive { background-color: #d1fae5; border-color: #10b981; }
+        .result-negative { background-color: #fee2e2; border-color: #ef4444; }
+        .split-branch { display: flex; gap: 1rem; margin-top: 1rem; }
+        .branch { flex: 1; padding: 0.5rem; border: 1px solid #ddd; border-radius: 0.5rem; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header id="main-header" class="bg-rose-800 text-white shadow-md p-4 rounded-lg mb-8 flex justify-between items-center flex-wrap sticky top-0 z-50">
+        <a href="ems_riassunto.html" class="inline-flex items-center font-bold hover:underline">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+            <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+        </a>
+        <div class="flex items-center space-x-4">
+            <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+            <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+        </div>
+    </header>
+
+    <div class="container mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-rose-800" data-lang-key="pageTitle">Algoritmo Diagnostico Sindrome Metabolica Equina (EMS)</h1>
+            <p class="text-lg text-rose-600" data-lang-key="pageSubtitle">Schema: Identificazione dell'Insulino-Resistenza (IR) e gestione terapeutica.</p>
+            
+        </header>
+
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- START: Sospetto Clinico -->
+            <div class="card border-t-rose-500 text-center">
+                <h2 data-lang-key="startTitle">SOSPETTO CLINICO E FATTORI DI RISCHIO</h2>
+                <p data-lang-key="startDesc">Equino (Pony, Arabo) obeso con Cresty Neck (Score 3-5) e/o storia di Laminite Ricorrente. Valuta la coesistenza del PPID.</p>
+            </div>
+
+            <div class="arrow-down">↓</div>
+
+            <!-- STEP 1: Screening (Insulina Basale) -->
+            <div class="card border-t-blue-500">
+                <h2 class="text-blue-700" data-lang-key="step1Title">1. Test di Screening (Insulina Basale)</h2>
+                <div class="decision-box bg-blue-100 border-blue-500" data-lang-key="screeningTest">Insulina Plasmatica a Digiuno (Fasting Insulin)</div>
+                <p class="text-sm text-center text-blue-700 mt-2" data-lang-key="insulinNote">Nota: L'Insulina Basale è il test preferito sul campo.</p>
+                
+                <div class="split-branch">
+                    <div class="branch p-3 bg-red-100 border-red-500">
+                        <strong class="text-red-700" data-lang-key="insulinHigh">INSULINA ELEVATA (> 20-40 μU/mL)</strong>
+                        <p class="text-sm text-red-800" data-lang-key="insulinHighResult">DIAGNOSI CONFERMATA: Insulino-Resistenza (IR). &rarr; Prosegui al Passo 3.</p>
+                    </div>
+                    <div class="branch p-3 bg-yellow-100 border-yellow-500">
+                        <strong class="text-yellow-700" data-lang-key="insulinNormal">INSULINA BASALE NORMALE/BORDERLINE</strong>
+                        <p class="text-sm text-yellow-800" data-lang-key="insulinNormalResult">IR non esclusa (IR lieve o mascherata). &rarr; Prosegui al Passo 2 (Test Dinamico).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow-down">↓</div>
+
+            <!-- STEP 2: Conferma (Test Dinamico) -->
+            <div class="card border-t-purple-500">
+                <h2 class="text-purple-700" data-lang-key="step2Title">2. Test di Conferma (Test di Tolleranza Orale)</h2>
+                <p class="mb-2" data-lang-key="confirmInstruction">Per confermare l'IR non evidente a digiuno:</p>
+                <div class="decision-box bg-purple-100 border-purple-500" data-lang-key="confirmTest">Oral Glucose Test (OGT) / Oral Sugar Test (OST)</div>
+
+                <div class="split-branch">
+                    <div class="branch p-3 result-negative">
+                        <strong class="text-red-700" data-lang-key="ogttPositive">INSULINA NON RIENTRA / ALTA AL PICCO</strong>
+                        <p class="text-xs text-red-800" data-lang-key="ogttPositiveResult">DIAGNOSI CONFERMATA: IR (EMS). (Alternativa: Combined Glucose-Insulin Test, CGIT).</p>
+                    </div>
+                    <div class="branch p-3 result-positive">
+                        <strong class="text-green-700" data-lang-key="ogttNegative">INSULINA NORMALE AL PICCO</strong>
+                        <p class="text-xs text-green-800" data-lang-key="ogttNegativeResult">IR ESCLUSA. (L'obesità non è accompagnata da IR significativa).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow-down">↓</div>
+
+            <!-- STEP 3: Terapia e Monitoraggio -->
+            <div class="card border-t-orange-500 text-center">
+                <h2 class="text-orange-700" data-lang-key="step3Title">3. Gestione e Terapia</h2>
+                <p class="mt-2 font-bold" data-lang-key="therapyGoal">Obiettivo: Ridurre l'IR e prevenire la Laminite.</p>
+                
+                <div class="split-branch mt-4">
+                    <div class="branch p-3 bg-green-100 border-green-500">
+                        <strong data-lang-key="managementDiet">Dieta e Peso</strong>
+                        <ul class="list-disc text-left text-xs mt-1">
+                            <li>Fieno a basso NSC (< 10%).</li>
+                            <li>Dimagrimento graduale fino a BCS 5/9.</li>
+                        </ul>
+                    </div>
+                    <div class="branch p-3 bg-blue-100 border-blue-500">
+                        <strong data-lang-key="managementExercise">Esercizio e Farmaci</strong>
+                        <ul class="list-disc text-left text-xs mt-1">
+                            <li>Esercizio (se non laminite).</li>
+                            <li>Farmaci: **SGLT2 Inibitori** (es. Ertugliflozin), Metformina, Levotiroxina (per dimagrimento).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <footer class="text-center mt-16 pt-8 border-t border-rose-200 text-slate-500 text-sm">
+            <p data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                pageTitle: { it: "Algoritmo Diagnostico Sindrome Metabolica Equina (EMS)", en: "Equine Metabolic Syndrome (EMS) Diagnostic Algorithm" },
+                pageSubtitle: { it: "Schema: Identificazione dell'Insulino-Resistenza (IR) e gestione terapeutica.", en: "Flowchart: Identification of Insulin Resistance (IR) and therapeutic management." },
+
+                startTitle: { it: "SOSPETTO CLINICO E FATTORI DI RISCHIO", en: "CLINICAL SUSPICION AND RISK FACTORS" },
+                startDesc: { it: "Equino (Pony, Arabo) obeso con Cresty Neck (Score 3-5) e/o storia di Laminite Ricorrente. Valuta la coesistenza del PPID.", en: "Obese equine (Pony, Arabian) with Cresty Neck (Score 3-5) and/or history of Recurrent Laminitis. Assess for coexisting PPID." },
+
+                step1Title: { it: "1. Test di Screening (Insulina Basale)", en: "1. Screening Test (Basal Insulin)" },
+                screeningTest: { it: "Insulina Plasmatica a Digiuno (Fasting Insulin)", en: "Fasting Plasma Insulin" },
+                insulinNote: { it: "Nota: L'Insulina Basale è il test preferito sul campo.", en: "Note: Basal Insulin is the preferred field test." },
+                insulinHigh: { it: "INSULINA ELEVATA (> 20-40 μU/mL)", en: "ELEVATED INSULIN (> 20-40 μU/mL)" },
+                insulinHighResult: { it: "DIAGNOSI CONFERMATA: Insulino-Resistenza (IR). → Prosegui al Passo 3.", en: "DIAGNOSIS CONFIRMED: Insulin Resistance (IR). → Proceed to Step 3." },
+                insulinNormal: { it: "INSULINA BASALE NORMALE/BORDERLINE", en: "NORMAL/BORDERLINE BASAL INSULIN" },
+                insulinNormalResult: { it: "IR non esclusa (IR lieve o mascherata). → Prosegui al Passo 2 (Test Dinamico).", en: "IR not excluded (Mild or masked IR). → Proceed to Step 2 (Dynamic Test)." },
+
+                step2Title: { it: "2. Test di Conferma (Test di Tolleranza Orale)", en: "2. Confirmatory Test (Oral Tolerance Test)" },
+                confirmInstruction: { it: "Per confermare l'IR non evidente a digiuno:", en: "To confirm IR not evident while fasting:" },
+                confirmTest: { it: "Oral Glucose Test (OGT) / Oral Sugar Test (OST)", en: "Oral Glucose Test (OGT) / Oral Sugar Test (OST)" },
+                ogttPositive: { it: "INSULINA NON RIENTRA / ALTA AL PICCO", en: "INSULIN DOES NOT RETURN / HIGH AT PEAK" },
+                ogttPositiveResult: { it: "DIAGNOSI CONFERMATA: IR (EMS). (Alternativa: Combined Glucose-Insulin Test, CGIT).", en: "DIAGNOSIS CONFIRMED: IR (EMS). (Alternative: Combined Glucose-Insulin Test, CGIT)." },
+                ogttNegative: { it: "INSULINA NORMALE AL PICCO", en: "NORMAL INSULIN AT PEAK" },
+                ogttNegativeResult: { it: "IR ESCLUSA. (L'obesità non è accompagnata da IR significativa).", en: "IR EXCLUDED. (Obesity is not accompanied by significant IR)." },
+
+                step3Title: { it: "3. Gestione e Terapia", en: "3. Management and Therapy" },
+                therapyGoal: { it: "Obiettivo: Ridurre l'IR e prevenire la Laminite.", en: "Goal: Reduce IR and prevent Laminitis." },
+                managementDiet: { it: "Dieta e Peso", en: "Diet and Weight" },
+                managementExercise: { it: "Esercizio e Farmaci", en: "Exercise and Medication" },
+
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
