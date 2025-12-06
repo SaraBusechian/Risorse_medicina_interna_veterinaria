@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica - Diagnosi HAC (Cushing)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fff1f2; color: #881337; }
+        .card { background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 1.5rem; margin-bottom: 2rem; border-top: 5px solid #db2777; }
+        .card h2 { color: #be185d; font-weight: bold; margin-bottom: 1rem; font-size: 1.25rem; }
+        .list-check li { margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem; }
+        .list-check li::before { content: '✓'; color: #be185d; position: absolute; left: 0; font-weight: bold; }
+        .dsa-mode { font-family: 'Lexend', sans-serif; background: #fdf6f7 !important; color: #34495e; }
+        .dsa-mode #main-header { background-color: #000000 !important; }
+        .dsa-mode #main-header a, .dsa-mode #main-header button { color: #ffffff !important; }
+        .dsa-mode .card { background: #fffdfd; border-top-color: #34495e; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode p, .dsa-mode li, .dsa-mode span, .dsa-mode div { color: #34495e !important; }
+        .arrow-down { text-align: center; font-size: 2rem; color: #f9a8d4; margin-bottom: 1rem; }
+        .decision-box { border: 2px solid #be185d; background-color: #fce7f3; padding: 1rem; border-radius: 0.5rem; font-weight: bold; text-align: center; margin-top: 1rem; }
+        .result-positive { background-color: #d1fae5; border-color: #10b981; }
+        .result-negative { background-color: #fee2e2; border-color: #ef4444; }
+        .split-branch { display: flex; gap: 1rem; margin-top: 1rem; }
+        .branch { flex: 1; padding: 0.5rem; border: 1px solid #ddd; border-radius: 0.5rem; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header id="main-header" class="bg-rose-800 text-white shadow-md p-4 rounded-lg mb-8 flex justify-between items-center flex-wrap sticky top-0 z-50">
+        <a href="cushing_riassunto.html" class="inline-flex items-center font-bold hover:underline">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+            <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+        </a>
+        <div class="flex items-center space-x-4">
+            <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+            <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+        </div>
+    </header>
+
+    <div class="container mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-rose-800" data-lang-key="pageTitle">Algoritmo Diagnostico Iperadrenocorticismo (HAC)</h1>
+            <p class="text-lg text-rose-600" data-lang-key="pageSubtitle">Schema: Test di Screening, Conferma e Differenziazione (Cane)</p>
+            
+        </header>
+
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- START: Sospetto Clinico -->
+            <div class="card border-t-rose-500 text-center">
+                <h2 data-lang-key="startTitle">SOSPETTO CLINICO E DB MINIMO</h2>
+                <p data-lang-key="startDesc">Cane anziano con PU/PD, Polifagia, Distensione Addominale, ALP alta e Leucogramma da Stress.</p>
+            </div>
+
+            <div class="arrow-down">↓</div>
+
+            <!-- STEP 1: Screening (Esclusione) -->
+            <div class="card border-t-blue-500">
+                <h2 class="text-blue-700" data-lang-key="step1Title">1. Test di Screening (UCCR)</h2>
+                <div class="decision-box bg-blue-100 border-blue-500" data-lang-key="screeningTest">Rapporto Cortisolo/Creatinina Urinario (UCCR)</div>
+                <div class="split-branch">
+                    <div class="branch result-positive">
+                        <strong class="text-green-700" data-lang-key="ucrNegative">NEGATIVO (< soglia)</strong>
+                        <p class="text-sm text-green-800" data-lang-key="ucrNegativeResult">HAC ALTAMENTE IMPROPABILE. Fine workup. (Sensibilità 95%+)</p>
+                    </div>
+                    <div class="branch result-negative">
+                        <strong class="text-red-700" data-lang-key="ucrPositive">POSITIVO (> soglia)</strong>
+                        <p class="text-sm text-red-800" data-lang-key="ucrPositiveResult">HAC POSSIBILE (Falsi positivi da stress). &rarr; Prosegui al Passo 2.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow-down">↓</div>
+
+            <!-- STEP 2: Conferma -->
+            <div class="card border-t-purple-500">
+                <h2 class="text-purple-700" data-lang-key="step2Title">2. Test di Conferma (LDDST)</h2>
+                <div class="decision-box bg-purple-100 border-purple-500" data-lang-key="confirmTest">Test di Soppressione a Bassa Dose di Desametasone (LDDST)</div>
+                <div class="split-branch">
+                    <div class="branch result-positive">
+                        <strong class="text-green-700" data-lang-key="lddstNormal">NORMALE (Cortisolo Soppresso)</strong>
+                        <p class="text-sm text-green-800" data-lang-key="lddstNormalResult">HAC ESCLUSO (o rivaluta HAC Iatrogeno con Test da Stimolazione con ACTH).</p>
+                    </div>
+                    <div class="branch result-negative">
+                        <strong class="text-red-700" data-lang-key="lddstPositive">NON SOPPRESSO (Alto)</strong>
+                        <p class="text-sm text-red-800" data-lang-key="lddstPositiveResult">DIAGNOSI CONFERMATA: HAC (PDH o ADH). &rarr; Prosegui al Passo 3.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow-down">↓</div>
+
+            <!-- STEP 3: Differenziazione -->
+            <div class="card border-t-orange-500">
+                <h2 class="text-orange-700" data-lang-key="step3Title">3. Differenziazione (PDH vs. ADH)</h2>
+                <div class="decision-box bg-orange-100 border-orange-500" data-lang-key="differentiationTest">ACTH Endogeno e/o Ecografia Surrenali</div>
+                
+                <div class="split-branch mt-4">
+                    <div class="branch p-3 bg-red-100 border-red-500">
+                        <strong data-lang-key="resultADH">ACTH BASSO + 1 SURRENE GROSSO</strong>
+                        <p class="text-xs text-red-800" data-lang-key="adhType">Tumore Surrenale (ADH - 15%)</p>
+                        <strong class="block mt-1" data-lang-key="adhTherapy">TRATTAMENTO: Adrenalectomia (Chirurgia)</strong>
+                    </div>
+                    <div class="branch p-3 bg-green-100 border-green-500">
+                        <strong data-lang-key="resultPDH">ACTH ALTO/NORMALE + 2 SURRENI GROSSI</strong>
+                        <p class="text-xs text-green-800" data-lang-key="pdhType">Ipofisi-Dipendente (PDH - 85%)</p>
+                        <strong class="block mt-1" data-lang-key="pdhTherapy">TRATTAMENTO: Trilostano (Medica)</strong>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <footer class="text-center mt-16 pt-8 border-t border-rose-200 text-slate-500 text-sm">
+            <p data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                pageTitle: { it: "Algoritmo Diagnostico Iperadrenocorticismo (HAC)", en: "Hyperadrenocorticism (HAC) Diagnostic Algorithm" },
+                pageSubtitle: { it: "Schema: Test di Screening, Conferma e Differenziazione (Cane)", en: "Flowchart: Screening, Confirmatory, and Differentiation Tests (Dog)" },
+
+                startTitle: { it: "SOSPETTO CLINICO E DB MINIMO", en: "CLINICAL SUSPICION & MINIMUM DB" },
+                startDesc: { it: "Cane anziano con PU/PD, Polifagia, Distensione Addominale, ALP alta e Leucogramma da Stress.", en: "Older dog with PU/PD, Polyphagia, Abdominal Distension, high ALP, and Stress Leukogram." },
+
+                step1Title: { it: "1. Test di Screening (UCCR)", en: "1. Screening Test (UCCR)" },
+                screeningTest: { it: "Rapporto Cortisolo/Creatinina Urinario (UCCR)", en: "Urine Cortisol/Creatinine Ratio (UCCR)" },
+                ucrNegative: { it: "NEGATIVO (< soglia)", en: "NEGATIVE (< threshold)" },
+                ucrNegativeResult: { it: "HAC ALTAMENTE IMPROPABILE. Fine workup. (Sensibilità 95%+)", en: "HAC HIGHLY UNLIKELY. End workup. (Sensitivity 95%+)" },
+                ucrPositive: { it: "POSITIVO (> soglia)", en: "POSITIVE (> threshold)" },
+                ucrPositiveResult: { it: "HAC POSSIBILE (Falsi positivi da stress). → Prosegui al Passo 2.", en: "HAC POSSIBLE (Stress False Positives). → Proceed to Step 2." },
+
+                step2Title: { it: "2. Test di Conferma (LDDST)", en: "2. Confirmatory Test (LDDST)" },
+                confirmTest: { it: "Test di Soppressione a Bassa Dose di Desametasone (LDDST)", en: "Low-Dose Dexamethasone Suppression Test (LDDST)" },
+                lddstNormal: { it: "NORMALE (Cortisolo Soppresso)", en: "NORMAL (Cortisol Suppressed)" },
+                lddstNormalResult: { it: "HAC ESCLUSO (o rivaluta HAC Iatrogeno con Test da Stimolazione con ACTH).", en: "HAC EXCLUDED (or reassess Iatrogenic HAC with ACTH Stimulation Test)." },
+                lddstPositive: { it: "NON SOPPRESSO (Alto)", en: "NON-SUPPRESSED (High)" },
+                lddstPositiveResult: { it: "DIAGNOSI CONFERMATA: HAC (PDH o ADH). → Prosegui al Passo 3.", en: "DIAGNOSIS CONFIRMED: HAC (PDH or ADH). → Proceed to Step 3." },
+                
+                step3Title: { it: "3. Differenziazione (PDH vs. ADH)", en: "3. Differentiation (PDH vs. ADH)" },
+                differentiationTest: { it: "ACTH Endogeno e/o Ecografia Surrenali", en: "Endogenous ACTH and/or Adrenal Ultrasound" },
+                resultADH: { it: "ACTH BASSO + 1 SURRENE GROSSO", en: "LOW ACTH + 1 LARGE ADRENAL" },
+                adhType: { it: "Tumore Surrenale (ADH - 15%)", en: "Adrenal Tumor (ADH - 15%)" },
+                adhTherapy: { it: "TRATTAMENTO: Adrenalectomia (Chirurgia)", en: "TREATMENT: Adrenalectomy (Surgery)" },
+                resultPDH: { it: "ACTH ALTO/NORMALE + 2 SURRENI GROSSI", en: "HIGH/NORMAL ACTH + 2 LARGE ADRENALS" },
+                pdhType: { it: "Ipofisi-Dipendente (PDH - 85%)", en: "Pituitary-Dependent (PDH - 85%)" },
+                pdhTherapy: { it: "TRATTAMENTO: Trilostano (Medica)", en: "TREATMENT: Trilostane (Medical)" },
+
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
