@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica - Diagnosi Morbo di Addison</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fff1f2; color: #881337; }
+        .card { background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 1.5rem; margin-bottom: 2rem; border-top: 5px solid #db2777; }
+        .card h2 { color: #be185d; font-weight: bold; margin-bottom: 1rem; font-size: 1.25rem; }
+        .list-check li { margin-bottom: 0.5rem; position: relative; padding-left: 1.5rem; }
+        .list-check li::before { content: '✓'; color: #be185d; position: absolute; left: 0; font-weight: bold; }
+        
+        /* Stili Accessibilità (DSA) */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background: #fdf6f7 !important; color: #34495e; font-size: 1.15rem; }
+        .dsa-mode #main-header { background-color: #000000 !important; }
+        .dsa-mode #main-header a, .dsa-mode #main-header button { color: #ffffff !important; }
+        .dsa-mode .card { background: #fffdfd; border-top-color: #34495e; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode p, .dsa-mode li, .dsa-mode strong { color: #34495e !important; }
+        .dsa-mode .list-check li::before { color: #34495e; }
+        
+        /* Stili Flowchart */
+        .arrow-down { text-align: center; font-size: 2rem; color: #f9a8d4; margin-bottom: 1rem; }
+        .decision-box { border: 2px solid #be185d; background-color: #fce7f3; padding: 1rem; border-radius: 0.5rem; font-weight: bold; text-align: center; margin-top: 1rem; }
+        .result-positive { background-color: #d1fae5; border-color: #10b981; }
+        .result-negative { background-color: #fee2e2; border-color: #ef4444; }
+        .split-branch { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+        .branch { flex: 1; padding: 0.5rem; border: 1px solid #ddd; border-radius: 0.5rem; min-width: 250px; }
+    </style>
+</head>
+<body class="p-4 md:p-8 bg-rose-50">
+
+    <header id="main-header" class="bg-rose-800 text-white shadow-md p-4 rounded-lg mb-8 flex justify-between items-center flex-wrap sticky top-0 z-50">
+        <a href="addison_cane.html" class="inline-flex items-center font-bold hover:underline">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+            <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+        </a>
+        <div class="flex items-center space-x-4">
+            <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+            <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+        </div>
+    </header>
+
+    <div class="container mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-rose-800" data-lang-key="pageTitle">Algoritmo Diagnostico Ipoadrenocorticismo (Addison)</h1>
+            <p class="text-lg text-rose-600" data-lang-key="pageSubtitle">Schema diagnostico e gestione d'emergenza della crisi Addisoniana nel cane.</p>
+        </header>
+
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- START: Sospetto Clinico -->
+            <div class="card border-t-rose-500 text-center">
+                <h2 data-lang-key="startTitle">SOSPETTO CLINICO E DB MINIMO</h2>
+                <p data-lang-key="startDesc">Segni GI vaghi (vomito, letargia, diarrea) o Crisi Addisoniana (shock). Esegui biochimico ed elettroliti.</p>
+            </div>
+
+            <div class="arrow-down">↓</div>
+
+            <!-- STEP 1: Elettroliti e Azotemia -->
+            <div class="card border-t-blue-500">
+                <h2 class="text-blue-700" data-lang-key="step1Title">1. Test Iniziale: Valutazione Elettroliti (Na:K)</h2>
+                <div class="decision-box bg-blue-100 border-blue-500" data-lang-key="screeningTest">Rapporto Sodio:Potassio (Na:K)</div>
+                <p class="text-sm text-center text-blue-700 mt-2" data-lang-key="electrolytesNote">Anomalie tipiche: Iponatremia, Iperkaliemia, Azotemia Pre-renale. Rapporto Na:K &lt; 27:1 è fortemente indicativo (ma non necessario per la diagnosi!).</p>
+                
+                <div class="split-branch">
+                    <div class="branch p-3 bg-red-100 border-red-500">
+                        <strong class="text-red-700" data-lang-key="electrolytesHighRisk">Na:K Basso (&lt; 27:1) O Crisi</strong>
+                        <p class="text-sm text-red-800" data-lang-key="electrolytesHighRiskResult">Alto Sospetto Addison Primario. &rarr; **Trattamento d'Emergenza** (se in crisi, con Desametasone) e Passo 2.</p>
+                    </div>
+                    <div class="branch p-3 bg-yellow-100 border-yellow-500">
+                        <strong class="text-yellow-700" data-lang-key="electrolytesNormal">Na:K NORMALE (Sospetto Persiste)</strong>
+                        <p class="text-sm text-yellow-800" data-lang-key="electrolytesNormalResult">Sospetto Addison Atipico o Secondario. Escludere la 'Malattia non surrenale'. → Passo 2 (Test ACTH).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow-down">↓</div>
+
+            <!-- STEP 2: Conferma (ACTH Stim) -->
+            <div class="card border-t-purple-500">
+                <h2 class="text-purple-700" data-lang-key="step2Title">2. Test di Conferma (Gold Standard)</h2>
+                <p class="mb-2" data-lang-key="confirmInstruction">Per diagnosticare Addison Primario o Atipico:</p>
+                <div class="decision-box bg-purple-100 border-purple-500" data-lang-key="confirmTest">Test di Stimolazione con ACTH</div>
+
+                <div class="split-branch">
+                    <div class="branch p-3 result-negative">
+                        <strong class="text-red-700" data-lang-key="acthPositive">CORTISOLO POST-STIMOLAZIONE BASSO</strong>
+                        <p class="text-xs text-red-800" data-lang-key="acthPositiveResult">DIAGNOSI CONFERMATA: Ipoadrenocorticismo (Addison). Inizia Terapia Cronica.</p>
+                    </div>
+                    <div class="branch p-3 result-positive">
+                        <strong class="text-green-700" data-lang-key="acthNegative">CORTISOLO POST-STIMOLAZIONE NORMALE</strong>
+                        <p class="text-xs text-green-800" data-lang-key="acthNegativeResult">Addison ESCLUSO. (Cerca altre cause per la sintomatologia).</p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <footer class="text-center mt-16 pt-8 border-t border-rose-200 text-slate-500 text-sm">
+            <p data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+        </footer>
+    </div>
+
+    <script>
+        // Variabili di Stato Globali
+        let currentLanguage = localStorage.getItem('language') || 'it';
+        const synth = window.speechSynthesis;
+        let activeTTSButton = null;
+        let voicesLoaded = false;
+
+        const translations = {
+            'backToSummaryText': { it: "Torna al Riassunto", en: "Back to Summary" },
+            'accessibility': { it: "Accessibilità", en: "Accessibility" },
+            'pageTitle': { it: "Algoritmo Diagnostico Ipoadrenocorticismo (Addison)", en: "Hypoadrenocorticism (Addison's) Diagnostic Algorithm" },
+            'pageSubtitle': { it: "Schema diagnostico e gestione d'emergenza della crisi Addisoniana nel cane.", en: "Diagnostic flowchart and emergency management of Addisonian crisis in dogs." },
+            'startTitle': { it: "SOSPETTO CLINICO E DB MINIMO", en: "CLINICAL SUSPICION & MINIMUM DB" },
+            'startDesc': { it: "Segni GI vaghi (vomito, letargia, diarrea) o Crisi Addisoniana (shock). Esegui biochimico ed elettroliti.", en: "Vague signs (vomiting, lethargy, diarrhea) or Addisonian Crisis (shock). Perform biochemistry and electrolytes." },
+            'step1Title': { it: "1. Test Iniziale: Valutazione Elettroliti (Na:K)", en: "1. Initial Test: Electrolyte Assessment (Na:K)" },
+            'screeningTest': { it: "Rapporto Sodio:Potassio (Na:K)", en: "Sodium:Potassium Ratio (Na:K)" },
+            'electrolytesNote': { it: "Anomalie tipiche: Iponatremia, Iperkaliemia, Azotemia Pre-renale. Rapporto Na:K < 27:1 è fortemente indicativo (ma non necessario per la diagnosi!).", en: "Typical abnormalities: Hyponatremia, Hyperkalemia, Pre-renal Azotemia. Na:K Ratio < 27:1 is strongly indicative (but not required for diagnosis!)." },
+            'electrolytesHighRisk': { it: "Na:K Basso (< 27:1) O Crisi", en: "LOW Na:K (< 27:1) OR Crisis" },
+            'electrolytesHighRiskResult': { it: "Alto Sospetto Addison Primario. → Trattamento d'Emergenza (se in crisi, con Desametasone) e Passo 2.", en: "High Suspect Primary Addison's. → Emergency Treatment (if in crisis, with Dexamethasone) and Step 2." },
+            'electrolytesNormal': { it: "Na:K NORMALE (Sospetto Persiste)", en: "NORMAL Na:K (Suspicion Persists)" },
+            'electrolytesNormalResult': { it: "Sospetto Addison Atipico o Secondario. Escludere la 'Malattia non surrenale'. → Passo 2 (Test ACTH).", en: "Suspect Atypical or Secondary Addison's. Rule out 'Non-adrenal Illness'. → Step 2 (ACTH Test)." },
+            'step2Title': { it: "2. Test di Conferma (Gold Standard)", en: "2. Confirmatory Test (Gold Standard)" },
+            'confirmInstruction': { it: "Per diagnosticare Addison Primario o Atipico:", en: "To definitively diagnose Primary or Atypical Addison's:" },
+            'confirmTest': { it: "Test di Stimolazione con ACTH", en: "ACTH Stimulation Test" },
+            'acthPositive': { it: "CORTISOLO POST-STIMOLAZIONE BASSO", en: "LOW POST-STIMULATION CORTISOL" },
+            'acthPositiveResult': { it: "DIAGNOSI CONFERMATA: Ipoadrenocorticismo (Addison). Inizia Terapia Cronica.", en: "DIAGNOSIS CONFIRMED: Hypoadrenocorticism (Addison's). Initiate Chronic Therapy." },
+            'acthNegative': { it: "CORTISOLO POST-STIMOLAZIONE NORMALE", en: "NORMAL POST-STIMULATION CORTISOL" },
+            'acthNegativeResult': { it: "Addison ESCLUSO. (La sintomatologia è dovuta ad altra eziologia).", en: "Addison's EXCLUDED. (Symptomatology is due to other etiology)." },
+            'footer-credit': { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+        };
+
+        // --- Funzioni TTS (Mantenute per la stabilità) ---
+        function stopSpeech() { 
+            if (synth.speaking || synth.paused) { synth.cancel(); }
+        }
+        
+        function speak(text, button) {
+            if (!voicesLoaded) return;
+            if (activeTTSButton === button) {
+                if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                return;
+            }
+            stopSpeech();
+            if(activeTTSButton) activeTTSButton.classList.remove('playing');
+            if (!text || text.length === 0) return;
+            const u = new SpeechSynthesisUtterance(text);
+            const langCode = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+            u.lang = langCode;
+            const voice = synth.getVoices().find(v => v.lang.startsWith(langCode));
+            if (voice) u.voice = voice;
+            const cleanup = () => { button.classList.remove('playing'); if (activeTTSButton === button) { activeTTSButton = null; } };
+            u.onstart = () => { button.classList.add('playing'); activeTTSButton = button; };
+            u.onend = u.onerror = cleanup;
+            u.onpause = () => button.classList.remove('playing'); u.onresume = () => button.classList.add('playing'); 
+            synth.speak(u);
+        }
+
+        function setupTTS() {
+            voicesLoaded = true;
+            document.querySelectorAll('[data-lang-key] [aria-label="Ascolta titolo"]').forEach(btn => {
+                const parent = btn.parentNode;
+                if (!parent) return;
+                const newBtn = btn.cloneNode(true);
+                parent.replaceChild(newBtn, btn);
+                
+                newBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    let text = "";
+                    const elementKey = parent.dataset.langKey;
+                    
+                    if (elementKey && translations[elementKey]) {
+                        const sourceHTML = translations[elementKey][currentLanguage];
+                        const temp = document.createElement('div');
+                        temp.innerHTML = sourceHTML;
+                        text = temp.textContent.trim().replace(/\s\s+/g, ' ');
+                    }
+                    if (text) speak(text, newBtn);
+                });
+            });
+        }
+        
+        // Funzioni di Controllo e Traduzione (Isolate per l'Infografica)
+        function updateDsaToggleText(lang) {
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            if (document.body.classList.contains('dsa-mode')) {
+                dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+            } else {
+                dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+            }
+        }
+        
+        function updateLanguage(lang) {
+            currentLanguage = lang; 
+            document.documentElement.lang = lang;
+            document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+            stopSpeech();
+            
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if (translations[key] && translations[key][lang]) {
+                    // Questa infografica non ha quiz, quindi aggiorniamo direttamente innerHTML
+                    element.innerHTML = translations[key][lang];
+                }
+            });
+            
+            updateDsaToggleText(lang);
+            if (voicesLoaded) setupTTS(); // Ri-aggancia il TTS ai nuovi nodi
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inizializzazione TTS
+            const initVoices = () => {
+                if (synth.getVoices().length > 0) {
+                    setupTTS();
+                    voicesLoaded = true;
+                }
+                updateLanguage(currentLanguage);
+            };
+
+            if (synth.onvoiceschanged !== undefined) {
+                synth.onvoiceschanged = initVoices;
+            }
+            initVoices();
+
+            // Event Listeners
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                const newLang = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', newLang);
+                updateLanguage(newLang);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                updateDsaToggleText(currentLanguage); 
+            });
+        });
+    </script>
+</body>
+</html>
