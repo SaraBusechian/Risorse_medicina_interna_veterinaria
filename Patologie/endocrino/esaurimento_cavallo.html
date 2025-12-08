@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sindrome da Esaurimento del Cavallo Sportivo - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fff1f2; color: #881337; transition: background-color 0.3s, color 0.3s; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; padding-bottom: 4px; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #f43f5e; color: #be185d; }
+        
+        /* Modalità DSA / Accessibilità */
+        body.dsa-mode { font-family: 'Lexend', sans-serif !important; background-color: #fdf6f7 !important; color: #34495e !important; font-size: 1.15rem; line-height: 1.6; }
+        .dsa-mode .content-section { background-color: #ffffff !important; box-shadow: none !important; border: 2px solid #34495e; }
+        .dsa-mode button { border: 2px solid #ffffff; }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #2c3e50 !important; color: #fff !important; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #1a252f !important; letter-spacing: 0.05em; }
+        .dsa-mode a { text-decoration: underline; }
+        
+        /* Quiz Styles */
+        .quiz-question { border: 1px solid #fecdd3; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #fff1f2; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        
+        /* TTS Button */
+        .tts-button { cursor: pointer; margin-left: 12px; color: #db2777; transition: all 0.2s; display: inline-flex; vertical-align: middle; opacity: 0.8; }
+        .dsa-mode .tts-button { color: #2c3e50; }
+        .tts-button:hover, .tts-button.playing { color: #be185d; transform: scale(1.1); opacity: 1; }
+        .step-box { border-left: 4px solid #db2777; background-color: #fff1f2; padding: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; }
+        .dsa-mode .step-box { background-color: #e2e8f0; border-left-color: #2c3e50; }
+
+        /* Animazione pulsazione quando è in riproduzione */
+        .playing svg { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, #accessibility-toggle, #lang-toggle { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-rose-50">
+
+    <header id="main-header" class="bg-rose-800 text-white shadow-md sticky top-0 z-50 transition-colors duration-300">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap gap-4">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Patologie Endocrine</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition flex items-center gap-2">
+                    <span id="access-text">Accessibilità</span>
+                </button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition border border-transparent">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="#" class="inline-flex items-center bg-white text-rose-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-rose-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Endocrinologia</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-rose-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-rose-800 flex justify-center items-center gap-3 flex-wrap" data-lang-key="pageTitle">
+                    Sindrome da Esaurimento del Cavallo Sportivo
+                </h1>
+                <!-- Il pulsante TTS per il titolo viene iniettato via JS per non perderlo nelle traduzioni -->
+                <div id="title-tts-container" class="mt-2 flex justify-center"></div>
+
+                <p class="text-lg text-rose-700 mt-4" data-lang-key="pageSubtitle">Patologia multisistemica acuta e disidratazione nell'equino atleta (Endurance/Competizione).</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4 flex items-center gap-2" data-lang-key="summaryTitle">
+                        Riassunto Completo 
+                    </h2>
+                    <div class="prose max-w-none text-rose-900" data-lang-key="summaryContent">
+                        <!-- Contenuto iniettato via JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="#" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-rose-500 cursor-default">
+                        <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-rose-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona del cavallo atleta in esaurimento">🐴⚡</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-rose-800" data-lang-key="infographicLinkTitle">Visualizza il Flowchart Emergenza</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Algoritmo per la stabilizzazione idroelettrolitica nel cavallo da endurance.</p>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-rose-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-rose-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <!-- Sezione Audio Ripristinata -->
+                <section id="audio">
+                     <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="audioTitle">Audio</h2>
+                     <div class="p-4 bg-rose-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                         <button id="audio-play-pause" class="p-3 bg-rose-500 text-white rounded-full hover:bg-rose-600 transition-colors duration-200">
+                             <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                             <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                         </button>
+                         <div class="flex-grow text-center sm:text-left">
+                             <p class="font-semibold text-rose-800" data-lang-key="audioListen">Ascolta il riassunto</p>
+                             <p class="text-sm text-rose-600">Sintesi vocale del contenuto principale.</p>
+                         </div>
+                         <a href="audio_esaurimento.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center" data-lang-key="btnDownloadAudio">
+                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                             <span data-lang-key="btnDownloadAudioText">Scarica</span>
+                         </a>
+                     </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-rose-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-rose-900" data-lang-key="bibliographyContent">
+                        <!-- Contenuto caricato da JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 pb-8 border-t border-rose-100 transition-colors duration-300">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        // --- Dati e Traduzioni ---
+        const speakerIconSVG = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414z"/></svg>`;
+        
+        const summaryHTML_IT = `<div class="mb-6" data-lang-key="exhaustionSummary">
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Definizione e Contesto Clinico</h3>
+            <p class="mb-4">La Sindrome da Esaurimento del Cavallo Sportivo è una condizione multisistemica acuta che si verifica negli equini (soprattutto da endurance o competizione) a seguito di un esercizio prolungato e intenso. Il quadro clinico è dominato da disidratazione, squilibri elettrolitici e muscolari.</p>
+            
+            <div class="step-box bg-red-50">
+                <h4 class="font-bold text-rose-700">Fisiopatologia (Triade Clinica): <span class="tts-button" aria-label="Ascolta Fisiopatologia">${speakerIconSVG}</span></h4>
+                <ul class="list-disc pl-6 mt-2">
+                    <li>Disidratazione Iperosmotica: Perdita massiva di liquidi con sudore.</li>
+                    <li>Squilibrio Elettrolitico: Perdita di Sodio (Na), Cloro (Cl), Potassio (K) e Calcio (Ca).</li>
+                    <li>Miofibrillare/Muscolare: Rabdomiolisi (rottura muscolare) secondaria all'esaurimento energetico e squilibri.</li>
+                </ul>
+            </div>
+
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Segni Clinici e Anomalie di Laboratorio</h3>
+            <p class="mb-2">La gravità dipende dal grado di disidratazione e squilibrio. </p>
+            <ul class="list-disc pl-6 mb-4 space-y-1">
+                <li>Segni Fisici: Tempo di riempimento capillare rallentato, Tachicardia, Polipnea, Aumento dell'Ematocrito, Coliche.</li>
+                <li>Squilibri Elettrolitici: Iponatremia, Ipokaliemia, Ipocalcemia.</li>
+                <li>Anomalie Aggiuntive: Azotemia prerenale e Acidosi Metabolica.</li>
+            </ul>
+
+            <h3 class="2xl font-bold text-rose-800 mb-3">Diagnosi e Gestione (Emergenza)</h3>
+            <div class="step-box">
+                <h4 class="font-bold text-rose-700">Trattamento e Prevenzione: <span class="tts-button" aria-label="Ascolta Trattamento">${speakerIconSVG}</span></h4>
+                <ul class="list-disc pl-6 mt-2">
+                    <li>Fluidoterapia IV aggressiva (Isotonica).</li>
+                    <li>Integrazione elettrolitica (Sodio, Potassio).</li>
+                    <li>Dieta ricca di grassi/fibre per il recupero.</li>
+                </ul>
+            </div>
+        </div>`;
+
+        const summaryHTML_EN = `<div class="mb-6" data-lang-key="exhaustionSummary">
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Definition and Clinical Context</h3>
+            <p class="mb-4">Equine Exhaustion Syndrome is an acute multisystemic condition occurring in equines (especially endurance or competition horses) following prolonged and intense exercise. The clinical picture is dominated by dehydration, electrolyte imbalance, and muscle breakdown.</p>
+            
+            <div class="step-box bg-red-50">
+                <h4 class="font-bold text-rose-700">Pathophysiology (Clinical Triad): <span class="tts-button" aria-label="Listen Pathophysiology">${speakerIconSVG}</span></h4>
+                <ul class="list-disc pl-6 mt-2">
+                    <li>Hyperosmotic Dehydration: Massive fluid loss through sweat.</li>
+                    <li>Electrolyte Imbalance: Loss of Sodium (Na), Chloride (Cl), Potassium (K), and Calcium (Ca).</li>
+                    <li>Myofibrillar/Muscular: Rhabdomyolysis secondary to energy exhaustion.</li>
+                </ul>
+            </div>
+
+            <h3 class="text-2xl font-bold text-rose-800 mb-3">Clinical Signs and Laboratory Abnormalities</h3>
+            <p class="mb-2">Severity depends on the degree of dehydration and imbalance.</p>
+            <ul class="list-disc pl-6 mb-4 space-y-1">
+                <li>Physical Signs: Delayed Capillary Refill Time, Tachycardia, Polypnea, Increased Hematocrit, Colic.</li>
+                <li>Electrolyte Imbalances: Hyponatremia, Hypokalemia, Hypocalcemia.</li>
+                <li>Additional Abnormalities: Prerenal azotemia and Metabolic Acidosis.</li>
+            </ul>
+
+            <h3 class="2xl font-bold text-rose-800 mb-3">Diagnosis and Management (Emergency)</h3>
+            <div class="step-box">
+                <h4 class="font-bold text-rose-700">Treatment and Prevention: <span class="tts-button" aria-label="Listen Treatment">${speakerIconSVG}</span></h4>
+                <ul class="list-disc pl-6 mt-2">
+                    <li>Aggressive IV fluid therapy (Isotonic).</li>
+                    <li>Electrolyte supplementation (Sodium, Potassium).</li>
+                    <li>Diet high in fat/fiber for recovery.</li>
+                </ul>
+            </div>
+        </div>`;
+        
+        const translations = {
+            backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+            pageTitle: { it: "Sindrome da Esaurimento del Cavallo Sportivo", en: "Equine Exhaustion Syndrome" },
+            pageSubtitle: { it: "Patologia multisistemica acuta e disidratazione nell'equino atleta (Endurance/Competizione).", en: "Acute multisystemic pathology and dehydration in athletic equines (Endurance/Competition)." },
+            navSummary: { it: "Riassunto", en: "Summary" },
+            navInfographic: { it: "Infografica", en: "Infographic" },
+            navQuiz: { it: "Quiz", en: "Quiz" },
+            navAudio: { it: "Audio", en: "Audio" },
+            navBibliography: { it: "Bibliografia", en: "Bibliography" },
+            summaryTitle: { it: `Riassunto Completo <span class="tts-button ml-2">${speakerIconSVG}</span>`, en: `Full Summary <span class="tts-button ml-2">${speakerIconSVG}</span>` },
+            summaryContent: { it: summaryHTML_IT, en: summaryHTML_EN },
+            infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+            infographicLinkTitle: { it: "Visualizza il Flowchart Emergenza", en: "View Emergency Flowchart" },
+            infographicLinkDesc: { it: "Algoritmo per la stabilizzazione idroelettrolitica nel cavallo da endurance.", en: "Algorithm for hydroelectrolytic stabilization in the endurance horse." },
+            quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+            quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+            audioTitle: { it: "Audio", en: "Audio" },
+            audioListen: { it: "Ascolta il riassunto", en: "Listen to the summary" },
+            btnDownloadAudio: { it: "Scarica", en: "Download" },
+            btnDownloadAudioText: { it: "Scarica", en: "Download" },
+            bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+            bibliographyContent: { 
+                it: `<li>HINCHCLIFF-KANEPS-GEOR-VAN ERCK-WESTERGREN. Equine sports medicine and surgery - Basic and clinical sciences of the equine athlete, 3rd ed., 1427 pages, 1000 ill., Elsevier, April 2024.</li>`,
+                en: `<li>HINCHCLIFF-KANEPS-GEOR-VAN ERCK-WESTERGREN. Equine sports medicine and surgery - Basic and clinical sciences of the equine athlete, 3rd ed., 1427 pages, 1000 ill., Elsevier, April 2024.</li>`
+            },
+            btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+            "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+        };
+        
+        const quizData = [
+            { question: "La causa primaria dell'Esaurimento del Cavallo Sportivo è la perdita massiva di:", options: ["Glucosio", "Proteine", "Fluidi ed Elettroliti", "Acido Lattico"], answer: "Fluidi ed Elettroliti" },
+            { question: "Quale anomalia del laboratorio si verifica a causa della disidratazione prerenale?", options: ["Ipercalcemia", "Azotemia (aumento di BUN/Creatinina)", "Ipoglicemia", "Iperinsulinemia"], answer: "Azotemia (aumento di BUN/Creatinina)" },
+            { question: "Qual è il segno clinico più rapido da monitorare durante la stabilizzazione in un cavallo da endurance?", options: ["Temperatura rettale", "Tono venoso e frequenza cardiaca", "Grado di zoppia", "Livello di cortisolo"], answer: "Tono venoso e frequenza cardiaca" },
+            { question: "La perdita di sudore ipotonico porta tipicamente a quale squilibrio elettrolitico?", options: ["Ipernatremia", "Ipokaliemia", "Iponatremia", "Ipocalcemia"], answer: "Iponatremia" },
+            { question: "La rabdomiolisi (rottura muscolare) nell'esaurimento è misurata da un aumento di quale enzima nel sangue?", options: ["ALT e AST", "Creatinchinasi (CK) e AST", "Fosfatasi Alcalina (ALP)", "Amilasi"], answer: "Creatinchinasi (CK) e AST" },
+            { question: "Quale tipo di fluido IV è la scelta iniziale per correggere lo shock ipovolemico?", options: ["Destrosio ipertonico", "Soluzione Salina Isotonica (0.9% NaCl)", "Plasma iperimmune", "Acqua sterile"], answer: "Soluzione Salina Isotonica (0.9% NaCl)" },
+            { question: "La prevenzione dell'esaurimento si concentra sulla dieta con alto contenuto di:", options: ["Amido e zuccheri", "Proteine non digeribili", "Grassi e fibra per energia non glicogenica", "Calcio elementare"], answer: "Grassi e fibra per energia non glicogenica" },
+            { question: "Il trattamento aggressivo con fluidi IV mira a correggere:", options: ["Acidosi metabolica", "Lo shock ipovolemico", "Laminite coesistente", "Irsutismo"], answer: "Lo shock ipovolemico" },
+            { question: "Perché l'integrazione elettrolitica per via orale è cruciale dopo la stabilizzazione IV?", options: ["Per ripristinare il pH ruminale", "Per prevenire il PPID", "Per sostenere il volume dei fluidi e ripristinare il Potassio", "Per curare la rabdomiolisi"], answer: "Per sostenere il volume dei fluidi e ripristinare il Potassio" },
+            { question: "L'Ematocrito è aumentato nell'esaurimento a causa di:", options: ["Anemia", "Iperproteinemia", "Emoconcentrazione (disidratazione)", "Eccessiva splenocontrazione"], answer: "Emoconcentrazione (disidratazione)" }
+        ];
+
+        const quizDataEN = [
+            { question: "The primary cause of Equine Exhaustion Syndrome is the massive loss of:", options: ["Glucose", "Proteins", "Fluids and Electrolytes", "Lactic Acid"], answer: "Fluids and Electrolytes" },
+            { question: "Which lab abnormality occurs due to pre-renal dehydration?", options: ["Hypercalcemia", "Azotemia (increased BUN/Creatinine)", "Hypoglycemia", "Hyperinsulinemia"], answer: "Azotemia (increased BUN/Creatinine)" },
+            { question: "What is the quickest clinical sign to monitor during stabilization in an endurance horse?", options: ["Rectal temperature", "Jugular refill and heart rate", "Degree of lameness", "Cortisol level"], answer: "Jugular refill and heart rate" },
+            { question: "Hypotonic sweat loss typically leads to which electrolyte imbalance?", options: ["Hypernatremia", "Hypokalemia", "Hyponatremia", "Hypocalcemia"], answer: "Hyponatremia" },
+            { question: "Rhabdomyolysis (muscle breakdown) in exhaustion is measured by an increase in which blood enzyme?", options: ["ALT and AST", "Creatine Kinase (CK) and AST", "Alkaline Phosphatase (ALP)", "Amylase"], answer: "Creatine Kinase (CK) and AST" },
+            { question: "Which type of IV fluid is the initial choice for correcting hypovolemic shock?", options: ["Hypertonic Dextrose", "Isotonic Saline Solution (0.9% NaCl)", "Hyperimmune Plasma", "Sterile Water"], answer: "Isotonic Saline Solution (0.9% NaCl)" },
+            { question: "Prevention of exhaustion focuses on diets high in:", options: ["Starch and sugars", "Indigestible protein", "Fat and fiber for non-glycogenic energy", "Elemental Calcium"], answer: "Fat and fiber for non-glycogenic energy" },
+            { question: "Aggressive IV fluid treatment aims to correct:", options: ["Metabolic acidosis", "Hypovolemic shock", "Coexisting laminitis", "Hirsutism"], answer: "Hypovolemic shock" },
+            { question: "Why is oral electrolyte supplementation crucial after IV stabilization?", options: ["To restore ruminal pH", "To prevent PPID", "To sustain fluid volume and restore Potassium", "To cure rhabdomyolysis"], answer: "To sustain fluid volume and restore Potassium" },
+            { question: "Hematocrit is increased in exhaustion due to:", options: ["Anemia", "Hyperproteinemia", "Hemoconcentration (dehydration)", "Excessive splenocontraction"], answer: "Hemoconcentration (dehydration)" }
+        ];
+
+        const combinedQuizData = { 'it': quizData, 'en': quizDataEN };
+
+        // Variabili Globali
+        let currentLanguage = localStorage.getItem('language') || 'it';
+        let synth = window.speechSynthesis;
+        let activeTTSButton = null;
+        let voicesLoaded = false;
+        let currentUtterance = null;
+        
+        // --- Player MP3 (Nuova Logica) ---
+        const mp3Player = new Audio('audio_esaurimento.mp3');
+        
+        function initMp3Player() {
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+
+            if (playPauseBtn) {
+                playPauseBtn.addEventListener('click', () => {
+                    if (mp3Player.paused) {
+                        mp3Player.play().catch(e => console.log("Audio non trovato o bloccato: ", e));
+                        playIcon.classList.add('hidden');
+                        pauseIcon.classList.remove('hidden');
+                    } else {
+                        mp3Player.pause();
+                        playIcon.classList.remove('hidden');
+                        pauseIcon.classList.add('hidden');
+                    }
+                });
+            }
+            
+            // Reset quando finisce
+            mp3Player.addEventListener('ended', () => {
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+            });
+        }
+
+        // --- Logica Text to Speech ---
+        function stopSpeech() { 
+            if (synth.speaking || synth.paused) { synth.cancel(); }
+            if (activeTTSButton) {
+                activeTTSButton.classList.remove('playing');
+                activeTTSButton = null;
+            }
+            currentUtterance = null;
+        }
+        
+        function speak(text, button) {
+            if (!voicesLoaded) setupVoices();
+
+            if (activeTTSButton === button) {
+                if (synth.paused) {
+                    synth.resume();
+                    button.classList.add('playing');
+                    return;
+                } else if (synth.speaking) {
+                    synth.pause();
+                    button.classList.remove('playing');
+                    return;
+                }
+            }
+            
+            stopSpeech();
+            
+            if (!text || text.length === 0) return;
+
+            const u = new SpeechSynthesisUtterance(text);
+            currentUtterance = u;
+            
+            const langCode = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+            u.lang = langCode;
+            
+            const voices = synth.getVoices();
+            const bestVoice = voices.find(v => v.lang.startsWith(langCode));
+            if (bestVoice) u.voice = bestVoice;
+
+            u.onstart = () => { button.classList.add('playing'); activeTTSButton = button; };
+            u.onend = () => { 
+                button.classList.remove('playing'); 
+                activeTTSButton = null; 
+                currentUtterance = null; 
+            };
+            u.onerror = (e) => { 
+                if (e.error === 'interrupted' || e.error === 'canceled') {
+                    button.classList.remove('playing');
+                    return;
+                }
+                console.error("TTS Error:", e); 
+                button.classList.remove('playing'); 
+                activeTTSButton = null; 
+                currentUtterance = null;
+            };
+            
+            synth.speak(u);
+        }
+
+        function extractTextForTTS(button) {
+            let text = "";
+            const parent = button.closest('.step-box') || button.parentElement;
+
+            if (button.closest('.quiz-question')) {
+                const qDiv = button.closest('.quiz-question');
+                text = qDiv.querySelector('.font-bold').textContent.replace(/^\d+\.\s*/, '');
+            } 
+            else if (button.closest('.quiz-option')) {
+                 text = button.closest('.quiz-option').querySelector('label').textContent.trim();
+            }
+            else if (parent.tagName === 'H1') {
+                text = parent.textContent.trim();
+            }
+            else if (parent.tagName === 'H2') {
+                 const summaryDiv = document.querySelector('[data-lang-key="summaryContent"]');
+                 if(summaryDiv) text = summaryDiv.textContent.trim();
+            }
+            else if (button.closest('.step-box')) {
+                const box = button.closest('.step-box');
+                const clone = box.cloneNode(true);
+                clone.querySelectorAll('.tts-button').forEach(b => b.remove());
+                text = clone.textContent.trim();
+            }
+            return text.replace(/\s+/g, ' ');
+        }
+
+        function attachTTSListeners() {
+            document.querySelectorAll('.tts-button').forEach(btn => {
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+                
+                newBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    const textToRead = extractTextForTTS(newBtn);
+                    speak(textToRead, newBtn);
+                });
+            });
+        }
+
+        function setupVoices() {
+            const voices = synth.getVoices();
+            if (voices.length > 0) {
+                voicesLoaded = true;
+            }
+        }
+
+        // --- Gestione Contenuti e Lingua ---
+
+        function loadQuiz(lang) {
+            const c = document.getElementById('quiz-container'); 
+            if(!c) return; 
+            
+            const data = combinedQuizData[lang];
+            c.innerHTML='';
+            document.getElementById('quiz-results').textContent = ''; 
+            document.getElementById('quiz-results').className = "mt-6 text-center text-xl font-bold";
+            
+            data.forEach((q,i)=>{
+                c.innerHTML += `<div class="quiz-question p-4 rounded-lg border border-pink-200 bg-white">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="font-bold text-rose-900">${i+1}. ${q.question}</p>
+                        <span class="tts-button" aria-label="Ascolta domanda">${speakerIconSVG}</span>
+                    </div>
+                    <div class="space-y-2">
+                    ${q.options.map((o, idx)=>`
+                        <div class="flex items-center justify-between quiz-option p-2 rounded cursor-pointer">
+                            <label class="cursor-pointer flex items-center flex-grow w-full">
+                                <input type="radio" name="q${i}" value="${o}" class="mr-3 h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300"> 
+                                <span class="text-gray-800">${o}</span>
+                            </label>
+                            <span class="tts-button" aria-label="Ascolta opzione">${speakerIconSVG}</span>
+                        </div>
+                    `).join('')}
+                    </div>
+                </div>`;
+            });
+        }
+
+        function updateLanguage(lang) {
+            document.documentElement.lang = lang;
+            
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.dataset.langKey;
+                if(translations[key] && translations[key][lang]) {
+                    if (key.includes('Content') || key.includes('Summary') || key.includes('Title')) {
+                        element.innerHTML = translations[key][lang];
+                    } else {
+                        element.textContent = translations[key][lang];
+                    }
+                }
+            });
+
+            // Gestione specifica per il testo del pulsante download che include l'icona svg
+            const downloadBtn = document.querySelector('[data-lang-key="btnDownloadAudio"]');
+            if(downloadBtn) {
+                const span = downloadBtn.querySelector('span');
+                if(span) span.textContent = translations['btnDownloadAudioText'][lang];
+            }
+
+            document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+            updateAccessibilityButtonText();
+            loadQuiz(lang);
+
+            const mainTitleTTS = document.getElementById('title-tts-container');
+            if(mainTitleTTS) {
+                mainTitleTTS.innerHTML = `<span class="tts-button" aria-label="Ascolta titolo pagina">${speakerIconSVG}</span>`;
+            }
+
+            setTimeout(attachTTSListeners, 100);
+        }
+
+        function updateAccessibilityButtonText() {
+            const isDsa = document.body.classList.contains('dsa-mode');
+            const span = document.getElementById('access-text');
+            if (currentLanguage === 'it') {
+                span.textContent = isDsa ? 'Vista Standard' : 'Accessibilità';
+            } else {
+                span.textContent = isDsa ? 'Standard View' : 'Accessibility';
+            }
+        }
+
+        function checkQuiz() {
+            const data = combinedQuizData[currentLanguage];
+            let score = 0;
+            let total = data.length;
+            
+            document.querySelectorAll('.quiz-question').forEach(el => {
+                el.classList.remove('correct', 'incorrect');
+                el.classList.add('bg-white');
+            });
+
+            data.forEach((q, i) => {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                const questionDiv = document.querySelector(`input[name="q${i}"]`).closest('.quiz-question');
+                
+                if (selected) {
+                    if (selected.value === q.answer) {
+                        score++;
+                        questionDiv.classList.add('correct');
+                        questionDiv.classList.remove('bg-white');
+                    } else {
+                        questionDiv.classList.add('incorrect');
+                        questionDiv.classList.remove('bg-white');
+                    }
+                }
+            });
+
+            const resultDiv = document.getElementById('quiz-results');
+            const msg = currentLanguage === 'it' ? `Punteggio: ${score} su ${total}` : `Score: ${score} out of ${total}`;
+            resultDiv.textContent = msg;
+            
+            if(score === total) resultDiv.classList.add('text-green-600');
+            else resultDiv.classList.add('text-rose-800');
+        }
+
+        // --- Inizializzazione ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = setupVoices;
+            }
+            setupVoices();
+
+            updateLanguage(currentLanguage);
+            initMp3Player(); // Avvia il listener per l'audio
+
+            document.getElementById('lang-toggle').addEventListener('click', function() {
+                const newLang = currentLanguage === 'it' ? 'en' : 'it';
+                currentLanguage = newLang; 
+                localStorage.setItem('language', newLang);
+                updateLanguage(newLang); 
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                updateAccessibilityButtonText();
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', checkQuiz);
+        });
+    </script>
+</body>
+</html>
