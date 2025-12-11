@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poliuria e Polidipsia (PU/PD) - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f9ff; color: #0c4a6e; } /* sky-50, sky-900 */
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #0284c7; color: #0369a1; } /* sky-600, sky-700 */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #fffdfd; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #1e293b; }
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .quiz-question { border: 1px solid #bae6fd; transition: all 0.3s; } /* sky-200 */
+        .quiz-option:hover { background-color: #f0f9ff; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        
+        /* Table styles inside prose */
+        .med-table { width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1rem; }
+        .med-table th { background-color: #e0f2fe; color: #0369a1; padding: 10px; text-align: left; font-weight: 700; border: 1px solid #bae6fd; }
+        .med-table td { border: 1px solid #e2e8f0; padding: 10px; }
+        
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"] { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="bg-sky-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Apparato Urinario</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-sky-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-sky-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Patologie Urinarie</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-sky-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-sky-800" data-lang-key="pageTitle">Approccio alla PU/PD<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-sky-700 mt-2" data-lang-key="pageSubtitle">Diagnosi differenziale e gestione della poliuria e polidipsia nel cane, gatto e cavallo.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    
+                    <!-- Calculator Widget (Embedded) -->
+                    <div class="mb-8 bg-sky-100 rounded-lg p-6 border border-sky-200">
+                        <h3 class="font-bold text-xl text-sky-800 mb-3 flex items-center gap-2">
+                            <span class="text-2xl">💧</span> <span data-lang-key="calc-title">Calcolatore Rapido Polidipsia</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                            <div>
+                                <label class="block text-sm text-sky-900 mb-1 font-semibold" data-lang-key="calc-species">Specie</label>
+                                <select id="species" class="w-full p-2 border border-sky-300 rounded text-slate-800 bg-white">
+                                    <option value="dog" data-lang-key="species-dog">Cane</option>
+                                    <option value="cat" data-lang-key="species-cat">Gatto</option>
+                                    <option value="horse" data-lang-key="species-horse">Cavallo</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-sky-900 mb-1 font-semibold" data-lang-key="calc-weight">Peso (kg)</label>
+                                <input type="number" id="weight" class="w-full p-2 border border-sky-300 rounded text-slate-800" placeholder="Es. 20 (Cane) o 500 (Cavallo)">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-sky-900 mb-1 font-semibold" data-lang-key="calc-intake">Acqua 24h (ml)</label>
+                                <input type="number" id="intake" class="w-full p-2 border border-sky-300 rounded text-slate-800" placeholder="Es. 2500 o 50000">
+                            </div>
+                            <button onclick="calculatePD()" class="bg-sky-600 text-white font-bold py-2 px-4 rounded hover:bg-sky-700 transition" data-lang-key="calc-btn">Verifica</button>
+                        </div>
+                        <div id="calc-result" class="mt-4 hidden p-3 rounded font-semibold"></div>
+                    </div>
+
+                    <div class="prose max-w-none text-sky-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                      <a href="infografica_pupd.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-sky-500">
+                          <div class="flex items-center space-x-6">
+                              <div class="flex-shrink-0 w-24 h-24 bg-sky-500 rounded-lg flex items-center justify-center">
+                                  <span class="text-5xl" role="img" aria-label="Icona goccia d'acqua">💧</span>
+                              </div>
+                              <div>
+                                  <h3 class="text-xl font-bold text-sky-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica Dettagliata</h3>
+                                  <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca qui per una guida visuale completa sui valori soglia e l'iter diagnostico.</p>
+                              </div>
+                          </div>
+                      </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-sky-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-sky-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold text-sky-800"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-sky-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-sky-500 text-white rounded-full hover:bg-sky-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-sky-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-sky-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_pupd.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-sky-900 space-y-2" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-sky-100 pb-8">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        // --- Calculator Logic ---
+        function calculatePD() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const intake = parseFloat(document.getElementById('intake').value);
+            const species = document.getElementById('species').value;
+            const resultDiv = document.getElementById('calc-result');
+            const lang = localStorage.getItem('language') || 'it';
+
+            if (!weight || !intake) {
+                resultDiv.textContent = lang === 'it' ? "Inserisci peso e assunzione acqua." : "Please enter weight and water intake.";
+                resultDiv.className = "mt-4 p-3 bg-red-100 text-red-800 border border-red-200 rounded";
+                resultDiv.classList.remove('hidden');
+                return;
+            }
+
+            const mlPerKg = intake / weight;
+            let diagnosis = "";
+            let colorClass = "";
+            let thresholdPD, thresholdGray;
+
+            // Define thresholds based on species
+            if (species === 'cat') {
+                thresholdPD = 45;
+                thresholdGray = 45; // No gray area for cat in this logic, keeping strict
+            } else if (species === 'horse') {
+                thresholdPD = 100;
+                thresholdGray = 60; // Normal 40-60
+            } else {
+                // Dog
+                thresholdPD = 100;
+                thresholdGray = 60; // Normal < 60-80
+            }
+
+            if (mlPerKg > thresholdPD) {
+                diagnosis = lang === 'it' 
+                    ? `Polidipsia Confermata (${mlPerKg.toFixed(1)} ml/kg/die). > ${thresholdPD} ml/kg.`
+                    : `Polydipsia Confirmed (${mlPerKg.toFixed(1)} ml/kg/day). > ${thresholdPD} ml/kg.`;
+                colorClass = "bg-red-100 text-red-800 border border-red-200";
+            } else if (mlPerKg > thresholdGray && species !== 'cat') {
+                 diagnosis = lang === 'it' 
+                    ? `Area Grigia / Sospetta (${mlPerKg.toFixed(1)} ml/kg/die). Monitorare.`
+                    : `Gray Area / Suspicious (${mlPerKg.toFixed(1)} ml/kg/day). Monitor.`;
+                colorClass = "bg-yellow-100 text-yellow-800 border border-yellow-200";
+            } else {
+                 diagnosis = lang === 'it' 
+                    ? `Assunzione Normale (${mlPerKg.toFixed(1)} ml/kg/die).`
+                    : `Normal Intake (${mlPerKg.toFixed(1)} ml/kg/day).`;
+                colorClass = "bg-green-100 text-green-800 border border-green-200";
+            }
+
+            resultDiv.textContent = diagnosis;
+            resultDiv.className = `mt-4 p-3 rounded font-bold shadow-sm border ${colorClass}`;
+            resultDiv.classList.remove('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Patologie Apparato Urinario", en: "Urinary System Diseases" },
+                backToIndexText: { it: "Indice Patologie Urinarie", en: "Urinary Pathology Index" },
+                pageTitle: { it: "Approccio alla PU/PD", en: "Approach to PU/PD" },
+                pageSubtitle: { it: "Diagnosi differenziale e gestione della poliuria e polidipsia nel cane, gatto e cavallo.", en: "Differential diagnosis and management of polyuria and polydipsia in dogs, cats, and horses." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                
+                // Calculator Translations
+                "calc-title": { it: "Calcolatore Rapido Polidipsia", en: "Polydipsia Quick Calculator" },
+                "calc-species": { it: "Specie", en: "Species" },
+                "species-dog": { it: "Cane", en: "Dog" },
+                "species-cat": { it: "Gatto", en: "Cat" },
+                "species-horse": { it: "Cavallo", en: "Horse" },
+                "calc-weight": { it: "Peso (kg)", en: "Weight (kg)" },
+                "calc-intake": { it: "Acqua 24h (ml)", en: "Water 24h (ml)" },
+                "calc-btn": { it: "Verifica", en: "Check" },
+
+                summaryContent: { 
+                    it: `<p>La poliuria (PU) e la polidipsia (PD) sono problemi clinici comuni che riflettono spesso patologie sistemiche non primariamente renali. Una corretta definizione è il primo passo:</p>
+                        <ul class="list-disc pl-6 space-y-2 mb-4">
+                            <li><strong>Cane:</strong> Polidipsia > 100 ml/kg/die.</li>
+                            <li><strong>Gatto:</strong> Polidipsia > 45 ml/kg/die.</li>
+                            <li><strong>Cavallo:</strong> Assunzione normale 40-60 ml/kg/die. Polidipsia > 100 ml/kg/die.</li>
+                            <li><strong>Poliuria (Tutti):</strong> > 50 ml/kg/die.</li>
+                        </ul>
+                        <p class="mb-6"><strong>Attenzione:</strong> La polidipsia è quasi sempre compensatoria alla poliuria, tranne nella polidipsia psicogena (frequente nel cavallo stabulato).</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Diagnosi Differenziale (DAMNIT)</h3>
+                        <table class="med-table">
+                            <thead><tr><th>Meccanismo</th><th>Patologie Principali</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Diuresi Osmotica</strong></td><td>Diabete Mellito, Insufficienza Renale Cronica (soluti), Diuresi post-ostruttiva.</td></tr>
+                                <tr><td><strong>Carenza di ADH</strong> (D.I. Centrale)</td><td>Traumi, Neoplasie, Congenito.</td></tr>
+                                <tr><td><strong>Resistenza all'ADH</strong> (D.I. Nefrogenico)</td><td><strong>Acquisito:</strong> Piometra, Cushing (Cane), <strong>PPID (Cavallo)</strong>, Ipercalcemia, Ipokaliemia.<br><strong>Primario:</strong> Raro (Congenito).</td></tr>
+                                <tr><td><strong>Washout Midollare</strong></td><td><strong>Polidipsia psicogena (Noia/Stabulazione nel Cavallo)</strong>, Epatopatie.</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Iter Diagnostico</h3>
+                        <ul class="space-y-4">
+                            <li>
+                                <strong class="text-sky-800 block">Step 1: Segnalamento, Anamnesi ed Esame Clinico</strong>
+                                Raccogliere storia dettagliata (farmaci, calore, cambi dieta). <br>
+                                <em>Cavallo:</em> Esplorazione rettale per masse o calcoli vescicali. Palpazione linfonodi. Valutazione mantello (irsutismo per PPID).
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 2: Database Minimo Completo (Sangue e Urine)</strong>
+                                L'esame delle urine (in particolare il <strong>Peso Specifico - USG</strong>) e il profilo ematobiochimico devono essere valutati <strong>insieme</strong> per una diagnosi corretta.
+                                <ul class="list-disc pl-6 mt-1">
+                                    <li><strong>Isostenuria (1.008-1.012) + Azotemia:</strong> Conferma di Insufficienza Renale (CKD/AKI). Nel cavallo valutare anche enzimi urinari (GGT/Creatinina) per danno tubulare.</li>
+                                    <li><strong>Ipostenuria (< 1.008) + Esami sangue normali:</strong> Forte sospetto di Diabete Insipido, Cushing/PPID iniziale o Polidipsia Psicogena.</li>
+                                    <li><strong>USG Adeguato (> 1.030 Cane / > 1.035 Gatto) + Nessuna azotemia:</strong> Esclude origine renale primaria. Cercare cause come cistite o problemi comportamentali.</li>
+                                    <li><strong>Altri parametri ematici fondamentali:</strong> Glucosio (Diabete Mellito), Calcio (Ipercalcemia), Enzimi epatici (Cushing/Epatopatie), T4 Totale (Gatto).</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 3: Diagnostica per Immagini</strong>
+                                <strong>Ecografia addominale:</strong> Valutazione reni (morfologia, pielonefrite), surreni (Cushing), fegato, utero (piometra).<br>
+                                <strong>Radiografie:</strong> Urolitiasi radiopaca.
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 4: Test Specifici / Funzionali</strong>
+                                Coltura urinaria (cistite occulta), Test di stimolazione con ACTH (Cushing), misurazione ACTH endogeno (PPID cavallo).
+                            </li>
+                        </ul>
+                        
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mt-6">
+                            <p><strong>Test di Privazione dell'acqua:</strong> Da eseguire <strong>SOLO</strong> come ultima risorsa se il paziente è idratato, NON azotemico e sono state escluse tutte le altre cause. Serve a differenziare la Polidipsia Psicogena dal Diabete Insipido.</p>
+                        </div>`,
+                    en: `<p>Polyuria (PU) and polydipsia (PD) are common clinical problems reflecting systemic diseases. Correct definition is key:</p>
+                        <ul class="list-disc pl-6 space-y-2 mb-4">
+                            <li><strong>Dog:</strong> Polydipsia > 100 ml/kg/day.</li>
+                            <li><strong>Cat:</strong> Polydipsia > 45 ml/kg/day.</li>
+                            <li><strong>Horse:</strong> Normal intake 40-60 ml/kg/day. Polydipsia > 100 ml/kg/day.</li>
+                            <li><strong>Polyuria (All):</strong> > 50 ml/kg/day.</li>
+                        </ul>
+                        <p class="mb-6"><strong>Note:</strong> Polydipsia is compensatory to polyuria, except in psychogenic polydipsia (common in stalled horses).</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Differential Diagnosis (DAMNIT)</h3>
+                        <table class="med-table">
+                            <thead><tr><th>Mechanism</th><th>Main Pathologies</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Osmotic Diuresis</strong></td><td>Diabetes Mellitus, Chronic Kidney Disease (solutes), Post-obstructive diuresis.</td></tr>
+                                <tr><td><strong>ADH Deficiency</strong> (Central D.I.)</td><td>Trauma, Neoplasia, Congenital.</td></tr>
+                                <tr><td><strong>ADH Resistance</strong> (Nephrogenic D.I.)</td><td><strong>Acquired:</strong> Pyometra, Cushing's (Dog), <strong>PPID (Horse)</strong>, Hypercalcemia, Hypokalemia.<br><strong>Primary:</strong> Rare.</td></tr>
+                                <tr><td><strong>Medullary Washout</strong></td><td><strong>Psychogenic polydipsia (Boredom/Stalling in Horses)</strong>, Liver disease.</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Diagnostic Approach</h3>
+                        <ul class="space-y-4">
+                            <li>
+                                <strong class="text-sky-800 block">Step 1: History and Clinical Exam</strong>
+                                Detailed history (drugs, estrus, diet). <br>
+                                <em>Horse:</em> Rectal palpation for masses or bladder stones. Lymph nodes. Coat evaluation (hirsutism for PPID).
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 2: Complete Minimum Database (Blood & Urine)</strong>
+                                Urinalysis (specifically <strong>Specific Gravity - USG</strong>) and blood biochemistry must be evaluated <strong>together</strong> for a correct diagnosis.
+                                <ul class="list-disc pl-6 mt-1">
+                                    <li><strong>Isosthenuria (1.008-1.012) + Azotemia:</strong> Confirms Renal Failure (CKD/AKI). In horses, also check urinary enzymes (GGT/Creatinine) for tubular damage.</li>
+                                    <li><strong>Hyposthenuria (< 1.008) + Normal Bloods:</strong> Strong suspicion of Diabetes Insipidus, early Cushing's/PPID, or Psychogenic Polydipsia.</li>
+                                    <li><strong>Adequate USG (> 1.030 Dog / > 1.035 Cat) + No Azotemia:</strong> Excludes primary renal origin. Look for causes like cystitis or behavioral issues.</li>
+                                    <li><strong>Other key blood parameters:</strong> Glucose (Diabetes Mellitus), Calcium (Hypercalcemia), Liver enzymes (Cushing's/Liver disease), Total T4 (Cat).</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 3: Diagnostic Imaging</strong>
+                                <strong>Abdominal Ultrasound:</strong> Evaluate kidneys (morphology), adrenals (Cushing's), liver, uterus (pyometra).<br>
+                                <strong>Radiographs:</strong> Radiopaque uroliths.
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 4: Specific / Functional Tests</strong>
+                                Urine culture (occult cystitis), ACTH stimulation test (Cushing's), endogenous ACTH (Equine PPID).
+                            </li>
+                        </ul>
+                        
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mt-6">
+                            <p><strong>Water Deprivation Test:</strong> Perform <strong>ONLY</strong> as a last resort if hydrated, NON-azotemic, and other causes excluded. Differentiates Psychogenic Polydipsia from Diabetes Insipidus.</p>
+                        </div>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Infografica Dettagliata", en: "View Detailed Infographic" },
+                infographicLinkDesc: { it: "Clicca qui per una guida visuale completa sui valori soglia e l'iter diagnostico.", en: "Click here for a complete visual guide on thresholds and diagnostic workflow." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018</li>`,
+                    en: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Qual è il limite per definire la polidipsia nel cane e nel cavallo?", options: ["> 50 ml/kg/die", "> 80 ml/kg/die", "> 100 ml/kg/die", "> 120 ml/kg/die"], answer: "> 100 ml/kg/die" },
+                    { question: "Qual è la causa più frequente di polidipsia in un cavallo sano stabulato senza altri sintomi?", options: ["Insufficienza renale", "Polidipsia psicogena (noia)", "Diabete mellito", "PPID"], answer: "Polidipsia psicogena (noia)" },
+                    { question: "La PPID (Cushing equino) causa PU/PD attraverso quale meccanismo?", options: ["Diuresi osmotica", "Resistenza all'ADH (D.I. Nefrogenico)", "Carenza di ADH", "Washout midollare"], answer: "Resistenza all'ADH (D.I. Nefrogenico)" },
+                    { question: "Quando è CONTROINDICATO il test di privazione dell'acqua?", options: ["Se l'animale è disidratato o azotemico", "Se l'USG è < 1.005", "Se si sospetta polidipsia psicogena", "Se il calcio è normale"], answer: "Se l'animale è disidratato o azotemico" },
+                    { question: "Un peso specifico (USG) di 1.010 indica:", options: ["Ipostenuria", "Isostenuria", "Concentrazione normale", "Iperstenuria"], answer: "Isostenuria" },
+                    { question: "Qual è la definizione di poliuria?", options: ["Produzione di urina > 20 ml/kg/die", "Produzione di urina > 50 ml/kg/die", "Aumento della frequenza delle minzioni", "Perdita involontaria di urina"], answer: "Produzione di urina > 50 ml/kg/die" },
+                    { question: "Nel Diabete Mellito, la poliuria è causata da:", options: ["Carenza di ADH", "Diuresi osmotica da glicosuria", "Insufficienza epatica", "Polidipsia primaria"], answer: "Diuresi osmotica da glicosuria" },
+                    { question: "Nel cane, un USG > 1.030 indica:", options: ["Funzionalità renale di concentrazione adeguata", "Insufficienza renale grave", "Diabete insipido", "Pielonefrite"], answer: "Funzionalità renale di concentrazione adeguata" },
+                    { question: "Qual è il primo step diagnostico dopo aver confermato la PU/PD?", options: ["Risonanza magnetica", "Test di privazione dell'acqua", "Database minimo (emocromo, biochimico, urine)", "Biopsia renale"], answer: "Database minimo (emocromo, biochimico, urine)" },
+                    { question: "Il 'Washout Midollare' renale è spesso conseguenza di:", options: ["Dieta iperproteica", "Esercizio fisico intenso", "Polidipsia psicogena prolungata o epatopatie", "Cistite batterica"], answer: "Polidipsia psicogena prolungata o epatopatie" }
+                ],
+                en: [
+                    { question: "What is the threshold for defining polydipsia in dogs and horses?", options: ["> 50 ml/kg/day", "> 80 ml/kg/day", "> 100 ml/kg/day", "> 120 ml/kg/day"], answer: "> 100 ml/kg/day" },
+                    { question: "What is the most common cause of polydipsia in a healthy stalled horse with no other symptoms?", options: ["Renal failure", "Psychogenic polydipsia (boredom)", "Diabetes mellitus", "PPID"], answer: "Psychogenic polydipsia (boredom)" },
+                    { question: "PPID (Equine Cushing's) causes PU/PD through which mechanism?", options: ["Osmotic diuresis", "ADH Resistance (Nephrogenic D.I.)", "ADH Deficiency", "Medullary Washout"], answer: "ADH Resistance (Nephrogenic D.I.)" },
+                    { question: "When is the water deprivation test CONTRAINDICATED?", options: ["If the animal is dehydrated or azotemic", "If USG is < 1.005", "If psychogenic polydipsia is suspected", "If calcium is normal"], answer: "If the animal is dehydrated or azotemic" },
+                    { question: "A specific gravity (USG) of 1.010 indicates:", options: ["Hyposthenuria", "Isosthenuria", "Normal concentration", "Hypersthenuria"], answer: "Isosthenuria" },
+                    { question: "What is the definition of polyuria?", options: ["Urine production > 20 ml/kg/day", "Urine production > 50 ml/kg/day", "Increased frequency of urination", "Involuntary urine leakage"], answer: "Urine production > 50 ml/kg/day" },
+                    { question: "In Diabetes Mellitus, polyuria is caused by:", options: ["ADH deficiency", "Osmotic diuresis due to glycosuria", "Liver failure", "Primary polydipsia"], answer: "Osmotic diuresis due to glycosuria" },
+                    { question: "In dogs, a USG > 1.030 indicates:", options: ["Adequate renal concentration function", "Severe renal failure", "Diabetes insipidus", "Pyelonephritis"], answer: "Adequate renal concentration function" },
+                    { question: "What is the first diagnostic step after confirming PU/PD?", options: ["MRI", "Water deprivation test", "Minimum database (CBC, Chem, UA)", "Renal biopsy"], answer: "Minimum database (CBC, Chem, UA)" },
+                    { question: "Renal 'Medullary Washout' is often a consequence of:", options: ["High protein diet", "Intense exercise", "Prolonged psychogenic polydipsia or liver disease", "Bacterial cystitis"], answer: "Prolonged psychogenic polydipsia or liver disease" }
+                ]
+            };
+            
+            // --- GENERIC SCRIPT ---
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() { if (synth.speaking) synth.cancel(); }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else if (synth.speaking) { synth.pause(); button.classList.remove('playing'); }
+                    return; 
+                }
+                stopSpeech();
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                currentUtterance.onend = () => { if (button) button.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                currentUtterance.onerror = (event) => { if (button) button.classList.remove('playing'); activeTTSButton = null; currentUtterance = null; };
+                activeTTSButton = button; button.classList.add('playing');
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+            function initHowler() {
+                const audioFile = document.querySelector('#audio a[download]').href;
+                if (!audioFile) return;
+                sound = new Howl({
+                    src: [audioFile], html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            if(playPauseBtn) playPauseBtn.addEventListener('click', () => {
+                if (!sound) initHowler();
+                if(sound) { if (sound.playing()) sound.pause(); else sound.play(); }
+            });
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        if (parentElement.tagName === 'H1' || parentElement.tagName === 'H2') {
+                             const titleClone = parentElement.cloneNode(true);
+                             titleClone.querySelector('.tts-button').remove();
+                             textToRead = titleClone.textContent.trim();
+                             // Read content if it's the summary
+                             const section = parentElement.closest('section');
+                             if(section && section.id === 'riassunto') {
+                                 const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                 if(content) textToRead += '. ' + content.textContent.trim();
+                             } else if (parentElement.nextElementSibling && parentElement.nextElementSibling.tagName === 'P') {
+                                 textToRead += '. ' + parentElement.nextElementSibling.textContent.trim();
+                             }
+                        }
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                if(!quizContainer) return;
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg bg-white';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-sky-50 cursor-pointer">
+                            <label class="flex items-center w-full cursor-pointer">
+                                <input type="radio" name="q${index}" value="${o}" class="mr-3 text-sky-600">${o}
+                            </label>
+                        </li>`).join('');
+                    questionDiv.innerHTML = `<h3 class="font-semibold mb-2 text-sky-900">${index + 1}. ${q.question}</h3><ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            const ttsButton = element.querySelector('.tts-button');
+                            const icon = element.querySelector('svg');
+                            // Handle logic to preserve icons if present
+                            if (element.tagName === 'A' && icon) {
+                                element.innerHTML = "";
+                                element.appendChild(icon);
+                                element.append(" " + translations[key][lang]);
+                            } else if (ttsButton) {
+                                element.childNodes[0].textContent = translations[key][lang] + " ";
+                            } else {
+                                element.textContent = translations[key][lang];
+                            }
+                        }
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                dsaToggle.textContent = document.body.classList.contains('dsa-mode') 
+                    ? (lang === 'it' ? 'Vista Standard' : 'Standard View') 
+                    : translations['accessibility'][lang];
+                
+                loadQuiz(lang);
+                // Rerun calc logic to update texts
+                const resultDiv = document.getElementById('calc-result');
+                if(!resultDiv.classList.contains('hidden')) calculatePD();
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+
+            const submitQuizBtn = document.getElementById('submit-quiz');
+            if (submitQuizBtn) submitQuizBtn.addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                resultsContainer.textContent = currentLanguage === 'it' 
+                    ? `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`
+                    : `You answered ${score} out of ${quizData.en.length} questions correctly.`;
+            });
+            
+            updateLanguage(currentLanguage);
+            setupTTSListeners();
+
+             // Scroll Spy
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('article section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            sections.forEach(sec => observer.observe(sec));
+        });
+    </script>
+</body>
+</html>
