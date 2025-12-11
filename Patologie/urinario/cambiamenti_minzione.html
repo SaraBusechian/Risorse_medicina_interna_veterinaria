@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiamenti della Minzione - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f9ff; color: #0c4a6e; } /* sky-50, sky-900 */
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #0284c7; color: #0369a1; } /* sky-600, sky-700 */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        /* FIX: Target only buttons inside header for white text */
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode #main-header button { color: #ffffff !important; }
+        .dsa-mode #main-header button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #fffdfd; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #1e293b; }
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .quiz-question { border: 1px solid #bae6fd; transition: all 0.3s; } /* sky-200 */
+        .quiz-option:hover { background-color: #f0f9ff; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        
+        /* Table styles inside prose */
+        .med-table { width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1rem; }
+        .med-table th { background-color: #e0f2fe; color: #0369a1; padding: 10px; text-align: left; font-weight: 700; border: 1px solid #bae6fd; }
+        .med-table td { border: 1px solid #e2e8f0; padding: 10px; }
+        
+        .choice-btn { transition: all 0.2s; border: 2px solid #bae6fd; }
+        .choice-btn:hover { background-color: #e0f2fe; border-color: #0284c7; }
+        .choice-btn.selected { background-color: #0ea5e9; color: white; border-color: #0369a1; }
+
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"] { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="bg-sky-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Apparato Urinario</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-sky-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-sky-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Patologie Urinarie</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-sky-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-sky-800" data-lang-key="pageTitle">Cambiamenti della Minzione<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-sky-700 mt-2" data-lang-key="pageSubtitle">Disuria, Stranguria, Pollachiuria: definizioni, fisiopatologia e localizzazione anatomica.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    
+                    <!-- Symptom Localizer Widget -->
+                    <div class="mb-8 bg-sky-50 rounded-lg p-6 border border-sky-200 shadow-sm">
+                        <h3 class="font-bold text-xl text-sky-800 mb-4 flex items-center gap-2">
+                            <span class="text-2xl">🔍</span> <span data-lang-key="widget-title">Localizzatore del Problema</span>
+                        </h3>
+                        <p class="text-sm text-sky-700 mb-4" data-lang-key="widget-intro">Rispondi alle domande per localizzare l'origine anatomica del problema urinario.</p>
+                        
+                        <div id="q1" class="step">
+                            <p class="font-semibold mb-3" data-lang-key="w-q1">1. L'animale assume la postura per urinare?</p>
+                            <div class="flex gap-3">
+                                <button onclick="nextStep(1, 'yes')" class="choice-btn px-4 py-2 rounded bg-white text-sky-700" data-lang-key="btn-yes">Sì</button>
+                                <button onclick="nextStep(1, 'no')" class="choice-btn px-4 py-2 rounded bg-white text-sky-700" data-lang-key="btn-no">No (perde urina mentre dorme/cammina)</button>
+                            </div>
+                        </div>
+
+                        <div id="q2" class="step hidden mt-4 pt-4 border-t border-sky-100">
+                            <p class="font-semibold mb-3" data-lang-key="w-q2">2. Com'è il volume di urina per singola minzione?</p>
+                            <div class="flex gap-3">
+                                <button onclick="nextStep(2, 'small')" class="choice-btn px-4 py-2 rounded bg-white text-sky-700" data-lang-key="btn-small">Piccolo (gocce/schizzi)</button>
+                                <button onclick="nextStep(2, 'large')" class="choice-btn px-4 py-2 rounded bg-white text-sky-700" data-lang-key="btn-large">Normale o Grande</button>
+                            </div>
+                        </div>
+
+                        <div id="q3" class="step hidden mt-4 pt-4 border-t border-sky-100">
+                            <p class="font-semibold mb-3" data-lang-key="w-q3">3. C'è sforzo evidente o dolore (Stranguria)?</p>
+                            <div class="flex gap-3">
+                                <button onclick="nextStep(3, 'yes')" class="choice-btn px-4 py-2 rounded bg-white text-sky-700" data-lang-key="btn-yes">Sì</button>
+                                <button onclick="nextStep(3, 'no')" class="choice-btn px-4 py-2 rounded bg-white text-sky-700" data-lang-key="btn-no">No</button>
+                            </div>
+                        </div>
+
+                        <div id="result-box" class="hidden mt-6 p-4 rounded-lg font-bold text-center text-white transition-all duration-300"></div>
+                        <button id="reset-btn" onclick="resetWidget()" class="hidden mt-4 text-sm text-sky-600 underline" data-lang-key="btn-reset">Ricomincia</button>
+                    </div>
+
+                    <div class="prose max-w-none text-sky-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                      <a href="infografica_cambiamenti_minzione.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-sky-500">
+                          <div class="flex items-center space-x-6">
+                              <div class="flex-shrink-0 w-24 h-24 bg-sky-100 rounded-lg flex items-center justify-center border border-sky-200">
+                                  <span class="text-5xl" role="img" aria-label="Tabella Definizioni">📋</span>
+                              </div>
+                              <div>
+                                  <h3 class="text-xl font-bold text-sky-800" data-lang-key="infographicLinkTitle">Tabella Definizioni</h3>
+                                  <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Visualizza la tabella comparativa: Pollachiuria vs Poliuria vs Incontinenza.</p>
+                              </div>
+                          </div>
+                      </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-sky-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-sky-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold text-sky-800"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-sky-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-sky-500 text-white rounded-full hover:bg-sky-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-sky-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-sky-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_cambiamenti_minzione.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-sky-900 space-y-2" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-sky-100 pb-8">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        // --- Widget Logic ---
+        function nextStep(step, answer) {
+            const currentDiv = document.getElementById(`q${step}`);
+            const buttons = currentDiv.querySelectorAll('button');
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+
+            const resultBox = document.getElementById('result-box');
+            const resetBtn = document.getElementById('reset-btn');
+            
+            if (step === 1) {
+                if (answer === 'no') {
+                    showResult("Incontinenza Urinaria", "Problema dello sfintere uretrale o neurogeno.", "bg-purple-600");
+                } else {
+                    document.getElementById('q2').classList.remove('hidden');
+                }
+            } else if (step === 2) {
+                if (answer === 'small') {
+                    document.getElementById('q3').classList.remove('hidden');
+                } else {
+                    showResult("Poliuria (PU)", "Problema sistemico o renale (es. CKD, Diabete).", "bg-teal-600");
+                }
+            } else if (step === 3) {
+                if (answer === 'yes') {
+                    showResult("Stranguria / Disuria", "Problema Basse Vie Urinarie (Cistite, Ostruzione).", "bg-red-600");
+                } else {
+                    showResult("Pollachiuria", "Irritazione Basse Vie Urinarie o problema comportamentale.", "bg-orange-500");
+                }
+            }
+        }
+
+        function showResult(title, desc, colorClass) {
+            const resultBox = document.getElementById('result-box');
+            resultBox.innerHTML = `<h3 class="text-2xl mb-2">${title}</h3><p>${desc}</p>`;
+            resultBox.className = `mt-6 p-6 rounded-lg font-bold text-center text-white transition-all duration-300 ${colorClass}`;
+            resultBox.classList.remove('hidden');
+            document.getElementById('reset-btn').classList.remove('hidden');
+        }
+
+        function resetWidget() {
+            document.querySelectorAll('.step').forEach((el, index) => {
+                if(index > 0) el.classList.add('hidden');
+                el.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+            });
+            document.getElementById('result-box').classList.add('hidden');
+            document.getElementById('reset-btn').classList.add('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Patologie Apparato Urinario", en: "Urinary System Diseases" },
+                backToIndexText: { it: "Indice Patologie Urinarie", en: "Urinary Pathology Index" },
+                pageTitle: { it: "Cambiamenti della Minzione", en: "Changes in Micturition" },
+                pageSubtitle: { it: "Disuria, Stranguria, Pollachiuria: definizioni, fisiopatologia e localizzazione anatomica.", en: "Dysuria, Stranguria, Pollakiuria: definitions, pathophysiology, and anatomical localization." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                
+                "widget-title": { it: "Localizzatore del Problema", en: "Problem Localizer" },
+                "widget-intro": { it: "Rispondi alle domande per localizzare l'origine anatomica del problema urinario.", en: "Answer the questions to localize the anatomical origin of the urinary problem." },
+                "w-q1": { it: "1. L'animale assume la postura per urinare?", en: "1. Does the animal posture to urinate?" },
+                "btn-yes": { it: "Sì", en: "Yes" },
+                "btn-no": { it: "No (perde urina mentre dorme/cammina)", en: "No (leaks while sleeping/walking)" },
+                "w-q2": { it: "2. Com'è il volume di urina per singola minzione?", en: "2. What is the urine volume per single void?" },
+                "btn-small": { it: "Piccolo (gocce/schizzi)", en: "Small (drops/squirts)" },
+                "btn-large": { it: "Normale o Grande", en: "Normal or Large" },
+                "w-q3": { it: "3. C'è sforzo evidente o dolore (Stranguria)?", en: "3. Is there evident straining or pain (Stranguria)?" },
+                "btn-reset": { it: "Ricomincia", en: "Restart" },
+
+                summaryContent: { 
+                    it: `<p>La corretta identificazione del pattern urinario è cruciale per distinguere le patologie delle basse vie urinarie (vescica/uretra) da quelle sistemiche (reni/endocrino) o neurologiche.</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Il Dizionario Clinico</h3>
+                        <dl class="space-y-4">
+                            <div>
+                                <dt class="font-bold text-sky-900">Pollachiuria</dt>
+                                <dd class="pl-4 border-l-4 border-sky-200">Aumento della frequenza delle minzioni. Spesso associata a volumi ridotti. Tipica di cistiti, calcoli o neoplasie vescicali (irritazione).</dd>
+                            </div>
+                            <div>
+                                <dt class="font-bold text-sky-900">Stranguria / Disuria</dt>
+                                <dd class="pl-4 border-l-4 border-red-200">Minzione difficoltosa, lenta o dolorosa (tenesmo vescicale). L'animale assume la posizione ma produce poche gocce. Indica infiammazione o ostruzione.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-bold text-sky-900">Periuria</dt>
+                                <dd class="pl-4 border-l-4 border-yellow-200">Minzione in luoghi inappropriati (es. fuori dalla lettiera). Spesso comportamentale nel gatto, ma può sottendere dolore (FLUTD).</dd>
+                            </div>
+                            <div>
+                                <dt class="font-bold text-sky-900">Incontinenza Urinaria</dt>
+                                <dd class="pl-4 border-l-4 border-purple-200">Perdita <strong>involontaria</strong> di urina. L'animale <strong>non</strong> assume la posizione. Avviene spesso durante il sonno o il riposo. Causa principale: Incompetenza dello sfintere uretrale (USMI).</dd>
+                            </div>
+                            <div>
+                                <dt class="font-bold text-sky-900">Oliguria / Anuria</dt>
+                                <dd class="pl-4 border-l-4 border-red-500">Riduzione drastica o assenza di produzione di urina. È un'<strong>emergenza medica</strong> (AKI grave o ostruzione uretrale completa).</dd>
+                            </div>
+                        </dl>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Diagnosi Differenziale: Pollachiuria vs Poliuria</h3>
+                        <p>È l'errore più comune. Il proprietario dice "fa tanta pipì".</p>
+                        <ul class="list-disc pl-6 space-y-2 mt-2">
+                            <li><strong>Pollachiuria:</strong> Tante volte, poche gocce. -> <strong>Basse Vie Urinarie</strong> (es. Cistite).</li>
+                            <li><strong>Poliuria:</strong> Tante volte (o normale), laghi di pipì. -> <strong>Sistemico/Renale</strong> (es. CKD, Diabete).</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Approccio Clinico</h3>
+                        <ol class="list-decimal pl-6 space-y-3">
+                            <li><strong>Anamnesi:</strong> Chiedere "Trovate il lago o trovate le gocce?", "Assume la posizione o la perde dormendo?".</li>
+                            <li><strong>Esame Fisico:</strong> Palpazione vescica (piena e dura = ostruzione/neurologica UMN; piccola/vuota = cistite; flaccida e facile da svuotare = neurologica LMN).</li>
+                            <li><strong>Database Minimo:</strong> Esame delle urine (USG per distinguere poliuria, sedimento per infiammazione) e profilo ematobiochimico (funzionalità renale).</li>
+                            <li><strong>Esame Neurologico:</strong> Valutare tono anale, riflessi perineali e della coda (spesso deficitari nella vescica neurologica LMN).</li>
+                            <li><strong>Specificità Cavallo:</strong> Osservare la minzione (il cavallo non urina mai mentre cammina, se lo fa è incontinenza/neurologico). Calcoli vescicali causano ematuria post-esercizio e stranguria.</li>
+                        </ol>`,
+                    en: `<p>Correct identification of the urinary pattern is crucial to distinguish lower urinary tract diseases (bladder/urethra) from systemic (renal/endocrine) or neurological ones.</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Clinical Dictionary</h3>
+                        <dl class="space-y-4">
+                            <div>
+                                <dt class="font-bold text-sky-900">Pollakiuria</dt>
+                                <dd class="pl-4 border-l-4 border-sky-200">Increased frequency of urination. Often associated with reduced volumes. Typical of cystitis, stones, or bladder neoplasia (irritation).</dd>
+                            </div>
+                            <div>
+                                <dt class="font-bold text-sky-900">Stranguria / Dysuria</dt>
+                                <dd class="pl-4 border-l-4 border-red-200">Difficult, slow, or painful urination (bladder tenesmus). The animal postures but produces few drops. Indicates inflammation or obstruction.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-bold text-sky-900">Periuria</dt>
+                                <dd class="pl-4 border-l-4 border-yellow-200">Urination in inappropriate places (e.g., outside the litter box). Often behavioral in cats, but can underlie pain (FLUTD).</dd>
+                            </div>
+                            <div>
+                                <dt class="font-bold text-sky-900">Urinary Incontinence</dt>
+                                <dd class="pl-4 border-l-4 border-purple-200"><strong>Involuntary</strong> leakage of urine. The animal does <strong>not</strong> posture. Often occurs during sleep or rest. Main cause: Urethral Sphincter Mechanism Incompetence (USMI).</dd>
+                            </div>
+                            <div>
+                                <dt class="font-bold text-sky-900">Oliguria / Anuria</dt>
+                                <dd class="pl-4 border-l-4 border-red-500">Drastic reduction or absence of urine production. It is a <strong>medical emergency</strong> (severe AKI or complete urethral obstruction).</dd>
+                            </div>
+                        </dl>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Differential Diagnosis: Pollakiuria vs Polyuria</h3>
+                        <p>This is the most common mistake. The owner says "he pees a lot".</p>
+                        <ul class="list-disc pl-6 space-y-2 mt-2">
+                            <li><strong>Pollakiuria:</strong> Many times, few drops. -> <strong>Lower Urinary Tract</strong> (e.g., Cystitis).</li>
+                            <li><strong>Polyuria:</strong> Many times (or normal), large puddles. -> <strong>Systemic/Renal</strong> (e.g., CKD, Diabetes).</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Clinical Approach</h3>
+                        <ol class="list-decimal pl-6 space-y-3">
+                            <li><strong>History:</strong> Ask "Do you find a lake or drops?", "Does he posture or leak while sleeping?".</li>
+                            <li><strong>Physical Exam:</strong> Bladder palpation (full and hard = obstruction/UMN neuro; small/empty = cystitis; flaccid and easy to express = LMN neuro).</li>
+                            <li><strong>Minimum Database:</strong> Urinalysis (USG to distinguish polyuria, sediment for inflammation) and blood work (renal function).</li>
+                            <li><strong>Neurological Exam:</strong> Evaluate anal tone, perineal and tail reflexes (often deficient in LMN neuro bladder).</li>
+                            <li><strong>Horse Specifics:</strong> Observe urination (horses never urinate while walking, if they do it's incontinence/neuro). Bladder stones cause post-exercise hematuria and stranguria.</li>
+                        </ol>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Tabella Definizioni", en: "Definitions Chart" },
+                infographicLinkDesc: { it: "Visualizza la tabella comparativa: Pollachiuria vs Poliuria vs Incontinenza.", en: "View the comparative chart: Pollakiuria vs Polyuria vs Incontinence." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024</li><li>Nelson RW, Couto CG. Small Animal Internal Medicine, 6th Edition. Elsevier, 2019.</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018</li>`,
+                    en: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024</li><li>Nelson RW, Couto CG. Small Animal Internal Medicine, 6th Edition. Elsevier, 2019.</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Qual è la definizione corretta di Pollachiuria?", options: ["Aumento del volume totale di urina", "Aumento della frequenza delle minzioni", "Minzione dolorosa", "Perdita involontaria di urina"], answer: "Aumento della frequenza delle minzioni" },
+                    { question: "La Stranguria indica:", options: ["Poliuria grave", "Minzione lenta e dolorosa con tenesmo", "Incontinenza urinaria", "Sangue nelle urine"], answer: "Minzione lenta e dolorosa con tenesmo" },
+                    { question: "Se un cane perde urina mentre dorme, si tratta probabilmente di:", options: ["Pollachiuria", "Periuria", "Incontinenza Urinaria", "Poliuria"], answer: "Incontinenza Urinaria" },
+                    { question: "Un gatto che urina fuori dalla lettiera sta manifestando:", options: ["Periuria", "Anuria", "Poliuria", "Disuria"], answer: "Periuria" },
+                    { question: "Quale reperto distingue la Pollachiuria dalla Poliuria?", options: ["Il volume per singola minzione (ridotto in pollachiuria)", "Il colore delle urine", "La presenza di sangue", "L'età dell'animale"], answer: "Il volume per singola minzione (ridotto in pollachiuria)" },
+                    { question: "L'Anuria è definita come:", options: ["Produzione di urina molto ridotta", "Assenza di produzione di urina", "Minzione frequente", "Minzione dolorosa"], answer: "Assenza di produzione di urina" },
+                    { question: "Una vescica 'piena e dura' alla palpazione, impossibile da svuotare, suggerisce:", options: ["Incontinenza da carenza ormonale", "Ostruzione uretrale o Vescica Neurologica UMN", "Cistite batterica", "Vescica Neurologica LMN"], answer: "Ostruzione uretrale o Vescica Neurologica UMN" },
+                    { question: "Nel cavallo, l'urinare mentre cammina è segno di:", options: ["Comportamento normale", "Marcatura del territorio", "Incontinenza o problema neurologico", "Colica"], answer: "Incontinenza o problema neurologico" },
+                    { question: "L'incontinenza paradossa si verifica quando:", options: ["La vescica è vuota", "C'è un'ostruzione che causa il riempimento eccessivo e lo sgocciolamento", "Lo sfintere è troppo debole", "Il cane è eccitato"], answer: "C'è un'ostruzione che causa il riempimento eccessivo e lo sgocciolamento" },
+                    { question: "La disuria è un sintomo tipico di patologie a carico di:", options: ["Rene (Glomerulo)", "Rene (Tubulo)", "Basse Vie Urinarie (Vescica/Uretra)", "Ipofisi"], answer: "Basse Vie Urinarie (Vescica/Uretra)" }
+                ],
+                en: [
+                    { question: "What is the correct definition of Pollakiuria?", options: ["Increased total urine volume", "Increased frequency of urination", "Painful urination", "Involuntary urine leakage"], answer: "Increased frequency of urination" },
+                    { question: "Stranguria indicates:", options: ["Severe polyuria", "Slow, painful urination with tenesmus", "Urinary incontinence", "Blood in urine"], answer: "Slow, painful urination with tenesmus" },
+                    { question: "If a dog leaks urine while sleeping, it is likely:", options: ["Pollakiuria", "Periuria", "Urinary Incontinence", "Polyuria"], answer: "Urinary Incontinence" },
+                    { question: "A cat urinating outside the litter box is demonstrating:", options: ["Periuria", "Anuria", "Polyuria", "Dysuria"], answer: "Periuria" },
+                    { question: "Which finding distinguishes Pollakiuria from Polyuria?", options: ["Volume per single void (reduced in pollakiuria)", "Urine color", "Presence of blood", "Animal's age"], answer: "Volume per single void (reduced in pollakiuria)" },
+                    { question: "Anuria is defined as:", options: ["Very reduced urine production", "Absence of urine production", "Frequent urination", "Painful urination"], answer: "Absence of urine production" },
+                    { question: "A 'full and hard' bladder on palpation, impossible to express, suggests:", options: ["Hormonal incontinence", "Urethral obstruction or UMN Neuro Bladder", "Bacterial cystitis", "LMN Neuro Bladder"], answer: "Urethral obstruction or UMN Neuro Bladder" },
+                    { question: "In horses, urinating while walking is a sign of:", options: ["Normal behavior", "Territory marking", "Incontinence or neurological problem", "Colic"], answer: "Incontinence or neurological problem" },
+                    { question: "Paradoxical incontinence occurs when:", options: ["The bladder is empty", "There is obstruction causing overflow and dripping", "The sphincter is too weak", "The dog is excited"], answer: "There is obstruction causing overflow and dripping" },
+                    { question: "Dysuria is a typical symptom of diseases affecting:", options: ["Kidney (Glomerulus)", "Kidney (Tubule)", "Lower Urinary Tract (Bladder/Urethra)", "Pituitary"], answer: "Lower Urinary Tract (Bladder/Urethra)" }
+                ]
+            };
+            
+            // --- GENERIC SCRIPT ---
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() { if (synth.speaking) synth.cancel(); }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button) {
+                    if (synth.speaking) {
+                        if (synth.paused) {
+                            synth.resume();
+                            button.classList.add('playing');
+                        } else {
+                            synth.pause();
+                            button.classList.remove('playing');
+                        }
+                        return;
+                    }
+                }
+
+                stopSpeech();
+                if (activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                activeTTSButton = button;
+                button.classList.add('playing');
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                currentUtterance.onend = () => {
+                    button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+                currentUtterance.onerror = (event) => {
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('TTS Error:', event.error);
+                    }
+                    button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+                
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+            function initHowler() {
+                const audioFile = document.querySelector('#audio a[download]').href;
+                if (!audioFile) return;
+                sound = new Howl({
+                    src: [audioFile], html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            if(playPauseBtn) playPauseBtn.addEventListener('click', () => {
+                if (!sound) initHowler();
+                if(sound) { if (sound.playing()) sound.pause(); else sound.play(); }
+            });
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        
+                        // Handle H1/H2 headers (Summary, etc)
+                        if (parentElement.tagName === 'H1' || parentElement.tagName === 'H2' || parentElement.tagName === 'H3') {
+                             const clone = parentElement.cloneNode(true);
+                             clone.querySelector('.tts-button')?.remove();
+                             textToRead = clone.textContent.trim();
+                             
+                             // If it's a quiz question (inside .quiz-question), read options too
+                             if (parentElement.closest('.quiz-question')) {
+                                 const optionsList = parentElement.nextElementSibling; // The UL
+                                 if (optionsList && optionsList.tagName === 'UL') {
+                                     const optionsText = Array.from(optionsList.querySelectorAll('li')).map(li => li.textContent.trim()).join('. ');
+                                     textToRead += '. ' + optionsText;
+                                 }
+                             }
+                             // If it's section header, try reading content (e.g. Summary)
+                             else {
+                                 const section = parentElement.closest('section');
+                                 if(section && section.id === 'riassunto') {
+                                     const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                     if(content) textToRead += '. ' + content.textContent.trim();
+                                 }
+                             }
+                        }
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                if(!quizContainer) return;
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg bg-white';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-sky-50 cursor-pointer">
+                            <label class="flex items-center w-full cursor-pointer">
+                                <input type="radio" name="q${index}" value="${o}" class="mr-3 text-sky-600">${o}
+                            </label>
+                        </li>`).join('');
+                    
+                    // Added TTS button to question header
+                    questionDiv.innerHTML = `
+                        <h3 class="font-semibold mb-2 text-sky-900 flex items-center justify-between">
+                            <span>${index + 1}. ${q.question}</span>
+                            <span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                        </h3>
+                        <ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            const ttsButton = element.querySelector('.tts-button');
+                            const icon = element.querySelector('svg');
+                            // Handle logic to preserve icons if present
+                            if (element.tagName === 'A' && icon) {
+                                element.innerHTML = "";
+                                element.appendChild(icon);
+                                element.append(" " + translations[key][lang]);
+                            } else if (ttsButton) {
+                                element.childNodes[0].textContent = translations[key][lang] + " ";
+                            } else {
+                                element.textContent = translations[key][lang];
+                            }
+                        }
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                dsaToggle.textContent = document.body.classList.contains('dsa-mode') 
+                    ? (lang === 'it' ? 'Vista Standard' : 'Standard View') 
+                    : translations['accessibility'][lang];
+                
+                loadQuiz(lang);
+                // Call setupTTSListeners again after loadQuiz injects new buttons
+                setupTTSListeners(); 
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+
+            const submitQuizBtn = document.getElementById('submit-quiz');
+            if (submitQuizBtn) submitQuizBtn.addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                resultsContainer.textContent = currentLanguage === 'it' 
+                    ? `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`
+                    : `You answered ${score} out of ${quizData.en.length} questions correctly.`;
+            });
+            
+            updateLanguage(currentLanguage);
+            setupTTSListeners();
+
+             // Scroll Spy
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('article section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            sections.forEach(sec => observer.observe(sec));
+        });
+    </script>
+</body>
+</html>
