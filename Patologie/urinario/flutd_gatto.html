@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLUTD - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f9ff; color: #0c4a6e; } /* sky-50, sky-900 */
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #0284c7; color: #0369a1; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode #main-header button { color: #ffffff !important; }
+        .dsa-mode #main-header button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #fffdfd; border: 1px solid #e0e0e0; }
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .quiz-question { border: 1px solid #bae6fd; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #f0f9ff; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        .med-table { width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1rem; }
+        .med-table th { background-color: #e0f2fe; color: #0369a1; padding: 10px; text-align: left; font-weight: 700; border: 1px solid #bae6fd; }
+        .med-table td { border: 1px solid #e2e8f0; padding: 10px; }
+        
+        .choice-btn { transition: all 0.2s; border: 2px solid #bae6fd; }
+        .choice-btn:hover { background-color: #e0f2fe; border-color: #0284c7; }
+        .choice-btn.selected { background-color: #0ea5e9; color: white; border-color: #0369a1; }
+
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"] { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="bg-sky-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Apparato Urinario</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-sky-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-sky-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Patologie Urinarie</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-sky-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-sky-800" data-lang-key="pageTitle">FLUTD (Feline Lower Urinary Tract Disease)<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-sky-700 mt-2" data-lang-key="pageSubtitle">Cistite idiopatica, urolitiasi e gestione dell'ostruzione uretrale nel gatto.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    
+                    <!-- FLUTD Triage Widget -->
+                    <div class="mb-8 bg-white rounded-lg p-6 border-l-8 border-sky-500 shadow-md">
+                        <h3 class="font-bold text-xl text-sky-800 mb-4 flex items-center gap-2">
+                            <span class="text-2xl">🚨</span> <span data-lang-key="widget-title">Triage Rapido: È Ostruito?</span>
+                        </h3>
+                        <p class="text-sm text-sky-700 mb-4" data-lang-key="widget-intro">Rispondi per valutare il rischio di ostruzione uretrale (Emergenza).</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="font-semibold mb-2" data-lang-key="w-sex">Sesso del Gatto</p>
+                                <div class="flex gap-2">
+                                    <button onclick="setTriage('sex', 'M')" class="choice-btn w-full py-2 rounded" id="btn-male">Maschio</button>
+                                    <button onclick="setTriage('sex', 'F')" class="choice-btn w-full py-2 rounded" id="btn-female">Femmina</button>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="font-semibold mb-2" data-lang-key="w-urine">Produzione Urina</p>
+                                <div class="flex gap-2">
+                                    <button onclick="setTriage('urine', 'NO')" class="choice-btn w-full py-2 rounded" id="btn-no-urine">Nulla / Gocce</button>
+                                    <button onclick="setTriage('urine', 'YES')" class="choice-btn w-full py-2 rounded" id="btn-urine">Normale / Lago</button>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <p class="font-semibold mb-2" data-lang-key="w-bladder">Vescica alla Palpazione</p>
+                                <div class="flex gap-2">
+                                    <button onclick="setTriage('bladder', 'BIG')" class="choice-btn w-full py-2 rounded" id="btn-big">Grande e Dura (Palla da Tennis)</button>
+                                    <button onclick="setTriage('bladder', 'SMALL')" class="choice-btn w-full py-2 rounded" id="btn-small">Piccola / Vuota / Soffice</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="triage-result" class="hidden mt-6 p-4 rounded-lg font-bold text-center text-white transition-all duration-300"></div>
+                        <button id="reset-triage" onclick="resetTriage()" class="hidden mt-2 text-sm text-sky-600 underline w-full text-center">Ricomincia</button>
+                    </div>
+
+                    <div class="prose max-w-none text-sky-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                      <a href="infografica_flutd.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-sky-500">
+                          <div class="flex items-center space-x-6">
+                              <div class="flex-shrink-0 w-24 h-24 bg-sky-100 rounded-lg flex items-center justify-center border border-sky-200">
+                                  <span class="text-5xl" role="img" aria-label="Gatto">🐱</span>
+                              </div>
+                              <div>
+                                  <h3 class="text-xl font-bold text-sky-800" data-lang-key="infographicLinkTitle">Schema FLUTD: Ostruttiva vs Non Ostruttiva</h3>
+                                  <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Visualizza l'albero decisionale, la gestione MEMO e i protocolli di emergenza.</p>
+                              </div>
+                          </div>
+                      </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-sky-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-sky-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold text-sky-800"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-sky-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-sky-500 text-white rounded-full hover:bg-sky-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-sky-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-sky-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_flutd.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-sky-900 space-y-2" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-sky-100 pb-8">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        // --- Widget Logic ---
+        const triageState = { sex: null, urine: null, bladder: null };
+
+        function setTriage(key, value) {
+            triageState[key] = value;
+            // UI Update
+            const btnIdMap = {
+                'sex-M': 'btn-male', 'sex-F': 'btn-female',
+                'urine-NO': 'btn-no-urine', 'urine-YES': 'btn-urine',
+                'bladder-BIG': 'btn-big', 'bladder-SMALL': 'btn-small'
+            };
+            // Deselect siblings
+            if (key === 'sex') { document.getElementById('btn-male').classList.remove('selected'); document.getElementById('btn-female').classList.remove('selected'); }
+            if (key === 'urine') { document.getElementById('btn-no-urine').classList.remove('selected'); document.getElementById('btn-urine').classList.remove('selected'); }
+            if (key === 'bladder') { document.getElementById('btn-big').classList.remove('selected'); document.getElementById('btn-small').classList.remove('selected'); }
+            
+            // Select current
+            document.getElementById(btnIdMap[key + '-' + value]).classList.add('selected');
+
+            checkTriage();
+        }
+
+        function checkTriage() {
+            const { sex, urine, bladder } = triageState;
+            const resultBox = document.getElementById('triage-result');
+            const resetBtn = document.getElementById('reset-triage');
+
+            if (sex && urine && bladder) {
+                let status = "";
+                let color = "";
+                
+                if (sex === 'M' && (urine === 'NO') && bladder === 'BIG') {
+                    status = "EMERGENZA: Probabile Ostruzione Uretrale! 🚨<br>Rischio iperkaliemia e rottura vescica. Decompressione immediata.";
+                    color = "bg-red-600";
+                } else if (sex === 'M' && urine === 'NO' && bladder === 'SMALL') {
+                    status = "URGENZA: Vescica vuota? <br>O è cistite (pollachiuria) o è rottura vescicale (cerca liquido in addome).";
+                    color = "bg-orange-500";
+                } else if (urine === 'YES') {
+                    status = "Probabile FLUTD Non-Ostruttiva (Cistite).<br>Gestione medica e ambientale.";
+                    color = "bg-green-600";
+                } else if (sex === 'F' && urine === 'NO') {
+                    status = "Cautela: Ostruzione rara ma possibile (o anuria renale).<br>Indagare ulteriormente.";
+                    color = "bg-yellow-600";
+                } else {
+                     status = "Quadro Misto: Necessaria valutazione clinica approfondita.";
+                     color = "bg-yellow-500";
+                }
+
+                resultBox.innerHTML = status;
+                resultBox.className = `mt-6 p-4 rounded-lg font-bold text-center text-white transition-all duration-300 ${color}`;
+                resultBox.classList.remove('hidden');
+                resetBtn.classList.remove('hidden');
+            }
+        }
+
+        function resetTriage() {
+            triageState.sex = null; triageState.urine = null; triageState.bladder = null;
+            document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+            document.getElementById('triage-result').classList.add('hidden');
+            document.getElementById('reset-triage').classList.add('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Patologie Apparato Urinario", en: "Urinary System Diseases" },
+                backToIndexText: { it: "Indice Patologie Urinarie", en: "Urinary Pathology Index" },
+                pageTitle: { it: "FLUTD (Feline Lower Urinary Tract Disease)", en: "FLUTD (Feline Lower Urinary Tract Disease)" },
+                pageSubtitle: { it: "Cistite idiopatica, urolitiasi e gestione dell'ostruzione uretrale nel gatto.", en: "Idiopathic cystitis, urolithiasis, and management of urethral obstruction in cats." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                
+                "widget-title": { it: "Triage Rapido: È Ostruito?", en: "Rapid Triage: Is it Obstructed?" },
+                "widget-intro": { it: "Rispondi per valutare il rischio di ostruzione uretrale (Emergenza).", en: "Answer to assess the risk of urethral obstruction (Emergency)." },
+                "w-sex": { it: "Sesso del Gatto", en: "Cat's Sex" },
+                "w-urine": { it: "Produzione Urina", en: "Urine Output" },
+                "w-bladder": { it: "Vescica alla Palpazione", en: "Bladder Palpation" },
+
+                summaryContent: { 
+                    it: `<p>La <strong>FLUTD</strong> non è una diagnosi specifica, ma un termine "ombrello" che descrive qualsiasi condizione che colpisce la vescica o l'uretra del gatto. I sintomi sono sempre gli stessi: <strong>stranguria, pollachiuria, ematuria, periuria</strong>.</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Eziologia: I "Tre Grandi"</h3>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Cistite Idiopatica Felina (FIC):</strong> La causa più comune (60-70% dei casi). È una patologia infiammatoria sterile, neurogena, scatenata dallo <strong>STRESS</strong>.</li>
+                            <li><strong>Urolitiasi:</strong> Calcoli di struvite o ossalato di calcio (15-20%).</li>
+                            <li><strong>Tappi Uretrali (Plugs):</strong> Matrice proteica + cristalli. Causa frequente di ostruzione nei maschi.</li>
+                            <li><em>Meno comuni:</em> Infezioni batteriche (rare nei gatti giovani!), neoplasie, difetti anatomici.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">L'Emergenza: Ostruzione Uretrale</h3>
+                        <p>Colpisce quasi esclusivamente i <strong>maschi</strong>. È un'emergenza medica che richiede intervento immediato.
+                        <br><strong>Segni di allarme:</strong> Gatto che va alla lettiera continuamente senza produrre nulla, vocalizza, si lecca i genitali, vomito, abbattimento (segni di uremia/iperkaliemia).</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Diagnosi</h3>
+                        <ol class="list-decimal pl-6 space-y-2">
+                            <li><strong>Palpazione Addominale:</strong> Distinguere vescica piena (ostruzione) da vuota (FIC).</li>
+                            <li><strong>Esame Urine:</strong> Peso specifico (concentrato nei gatti sani), sedimento (cristalli? ematuria?). La batteriologia è indicata nei gatti anziani o con USG basso.</li>
+                            <li><strong>Imaging (RX/Eco):</strong> Fondamentale per vedere uroliti radiopachi o radiotrasparenti.</li>
+                        </ol>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Gestione della FIC (Non Ostruttiva)</h3>
+                        <p>Poiché non c'è una "cura" per lo stress, la terapia è multimodale:</p>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Analgesia:</strong> Buprenorfina o FANS (se reni ok). Il dolore genera stress -> circolo vizioso.</li>
+                            <li><strong>MEMO (Multimodal Environmental Modification):</strong> Arricchimento ambientale, lettiere pulite e numerose (n+1), fontanelle d'acqua, nascondigli, feromoni.</li>
+                            <li><strong>Dieta:</strong> Cibo umido per aumentare l'assunzione di acqua e diluire le urine (riduce irritanti e rischio cristalli).</li>
+                        </ul>`,
+                    en: `<p><strong>FLUTD</strong> is not a specific diagnosis but an umbrella term for conditions affecting the feline bladder or urethra. Symptoms are consistent: <strong>stranguria, pollakiuria, hematuria, periuria</strong>.</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Etiology: The "Big Three"</h3>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Feline Idiopathic Cystitis (FIC):</strong> Most common (60-70%). Sterile, neurogenic inflammation triggered by <strong>STRESS</strong>.</li>
+                            <li><strong>Urolithiasis:</strong> Struvite or Calcium Oxalate stones (15-20%).</li>
+                            <li><strong>Urethral Plugs:</strong> Protein matrix + crystals. Common cause of obstruction in males.</li>
+                            <li><em>Less common:</em> Bacterial infections (rare in young cats!), neoplasia, defects.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">The Emergency: Urethral Obstruction</h3>
+                        <p>Affects almost exclusively <strong>males</strong>. Immediate intervention required.
+                        <br><strong>Warning signs:</strong> Repeated litter box visits with no output, vocalizing, licking genitals, vomiting, lethargy (signs of uremia/hyperkalemia).</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Diagnosis</h3>
+                        <ol class="list-decimal pl-6 space-y-2">
+                            <li><strong>Palpation:</strong> Distinguish full bladder (obstruction) from empty (FIC).</li>
+                            <li><strong>Urinalysis:</strong> USG, sediment (crystals? hematuria?). Bacteriology needed in seniors or low USG.</li>
+                            <li><strong>Imaging (XR/US):</strong> Essential to visualize stones.</li>
+                        </ol>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">FIC Management (Non-Obstructive)</h3>
+                        <p>Since stress has no "cure", therapy is multimodal:</p>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Analgesia:</strong> Buprenorphine or NSAIDs (if kidneys ok). Pain causes stress -> vicious cycle.</li>
+                            <li><strong>MEMO (Multimodal Environmental Modification):</strong> Enrichment, clean litter boxes (n+1), water fountains, hiding spots, pheromones.</li>
+                            <li><strong>Diet:</strong> Wet food to increase water intake and dilute urine.</li>
+                        </ul>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Schema FLUTD: Ostruttiva vs Non Ostruttiva", en: "FLUTD Chart: Obstructive vs Non-Obstructive" },
+                infographicLinkDesc: { it: "Visualizza l'albero decisionale, la gestione MEMO e i protocolli di emergenza.", en: "View decision tree, MEMO management, and emergency protocols." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024</li><li>Nelson RW, Couto CG. Small Animal Internal Medicine, 6th Edition. Elsevier, 2019.</li>`,
+                    en: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024</li><li>Nelson RW, Couto CG. Small Animal Internal Medicine, 6th Edition. Elsevier, 2019.</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Qual è la causa più frequente di FLUTD in un gatto giovane (< 10 anni)?", options: ["Infezione batterica (UTI)", "Cistite Idiopatica (FIC)", "Neoplasia", "Calcoli di ossalato"], answer: "Cistite Idiopatica (FIC)" },
+                    { question: "Qual è il segno clinico più allarmante in un gatto maschio con FLUTD?", options: ["Periuria", "Ematuria", "Stranguria senza produzione di urina", "Leccamento eccessivo"], answer: "Stranguria senza produzione di urina" },
+                    { question: "La Cistite Idiopatica Felina è scatenata principalmente da:", options: ["Batteri", "Stress", "Virus", "Dieta ipoproteica"], answer: "Stress" },
+                    { question: "L'ostruzione uretrale prolungata causa una grave alterazione elettrolitica. Quale?", options: ["Iperkaliemia", "Ipokaliemia", "Ipercalcemia", "Iponatriemia"], answer: "Iperkaliemia" },
+                    { question: "Cosa si intende per MEMO?", options: ["Modificazione Multimodale Ambientale", "Misurazione Elettroliti Monitoraggio Orario", "Medicazione Endovescicale", "Metodo Esclusione Malattie Ostruttive"], answer: "Modificazione Multimodale Ambientale" },
+                    { question: "Qual è il reperto palpatorio tipico di un gatto ostruito?", options: ["Vescica piccola e vuota", "Vescica grande, dura e dolorante", "Reni ingrossati", "Addome trattabile senza dolore"], answer: "Vescica grande, dura e dolorante" },
+                    { question: "In un gatto di 2 anni con primo episodio di cistite, l'uso di antibiotici è:", options: ["Sempre raccomandato", "Raramente indicato (sospetto FIC sterile)", "Indicato solo se c'è febbre", "Obbligatorio per prevenire l'ostruzione"], answer: "Raramente indicato (sospetto FIC sterile)" },
+                    { question: "Quale tipo di dieta è spesso raccomandata per la prevenzione a lungo termine?", options: ["Dieta secca (croccantini)", "Dieta umida (scatolette) per aumentare diluizione", "Dieta casalinga solo carne", "Digiuno intermittente"], answer: "Dieta umida (scatolette) per aumentare diluizione" },
+                    { question: "I 'tappi uretrali' (plugs) sono composti da:", options: ["Solo sangue coagulato", "Matrice proteica e cristalli", "Tessuto tumorale", "Batteri"], answer: "Matrice proteica e cristalli" },
+                    { question: "La Periuria è:", options: ["Urinare sangue", "Urinare spesso", "Urinare fuori dalla lettiera", "Non riuscire a urinare"], answer: "Urinare fuori dalla lettiera" }
+                ],
+                en: [
+                    { question: "What is the most common cause of FLUTD in a young cat (< 10 years)?", options: ["Bacterial infection (UTI)", "Idiopathic Cystitis (FIC)", "Neoplasia", "Oxalate stones"], answer: "Idiopathic Cystitis (FIC)" },
+                    { question: "What is the most alarming sign in a male cat with FLUTD?", options: ["Periuria", "Hematuria", "Stranguria with no urine production", "Excessive licking"], answer: "Stranguria with no urine production" },
+                    { question: "Feline Idiopathic Cystitis is mainly triggered by:", options: ["Bacteria", "Stress", "Viruses", "Low-protein diet"], answer: "Stress" },
+                    { question: "Prolonged urethral obstruction causes a severe electrolyte imbalance. Which one?", options: ["Hyperkalemia", "Hypokalemia", "Hypercalcemia", "Hyponatremia"], answer: "Hyperkalemia" },
+                    { question: "What does MEMO stand for?", options: ["Multimodal Environmental Modification", "Measurement Electrolyte Monitoring Hourly", "Medication Endo-bladder", "Method Excluding Obstructive Diseases"], answer: "Multimodal Environmental Modification" },
+                    { question: "What is the typical palpation finding in an obstructed cat?", options: ["Small and empty bladder", "Large, hard, and painful bladder", "Enlarged kidneys", "Soft non-painful abdomen"], answer: "Large, hard, and painful bladder" },
+                    { question: "In a 2-year-old cat with first cystitis episode, antibiotics are:", options: ["Always recommended", "Rarely indicated (suspect sterile FIC)", "Indicated only if fever", "Mandatory to prevent obstruction"], answer: "Rarely indicated (suspect sterile FIC)" },
+                    { question: "Which diet type is often recommended for long-term prevention?", options: ["Dry diet (kibble)", "Wet diet (canned) to increase dilution", "Home-cooked meat only", "Intermittent fasting"], answer: "Wet diet (canned) to increase dilution" },
+                    { question: "Urethral plugs are composed of:", options: ["Only clotted blood", "Protein matrix and crystals", "Tumor tissue", "Bacteria"], answer: "Protein matrix and crystals" },
+                    { question: "Periuria is:", options: ["Urinating blood", "Urinating often", "Urinating outside the litter box", "Unable to urinate"], answer: "Urinating outside the litter box" }
+                ]
+            };
+            
+            // --- GENERIC SCRIPT ---
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() { if (synth.speaking) synth.cancel(); }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button) {
+                    if (synth.speaking) {
+                        if (synth.paused) {
+                            synth.resume();
+                            button.classList.add('playing');
+                        } else {
+                            synth.pause();
+                            button.classList.remove('playing');
+                        }
+                        return;
+                    }
+                }
+
+                stopSpeech();
+                if (activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                activeTTSButton = button;
+                button.classList.add('playing');
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                currentUtterance.onend = () => {
+                    button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+                currentUtterance.onerror = (event) => {
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('TTS Error:', event.error);
+                    }
+                    button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+                
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+            function initHowler() {
+                const audioFile = document.querySelector('#audio a[download]').href;
+                if (!audioFile) return;
+                sound = new Howl({
+                    src: [audioFile], html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            if(playPauseBtn) playPauseBtn.addEventListener('click', () => {
+                if (!sound) initHowler();
+                if(sound) { if (sound.playing()) sound.pause(); else sound.play(); }
+            });
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        
+                        // Handle H1/H2 headers
+                        if (parentElement.tagName === 'H1' || parentElement.tagName === 'H2' || parentElement.tagName === 'H3') {
+                             const clone = parentElement.cloneNode(true);
+                             clone.querySelector('.tts-button')?.remove();
+                             textToRead = clone.textContent.trim();
+                             
+                             if (parentElement.closest('.quiz-question')) {
+                                 const optionsList = parentElement.nextElementSibling; 
+                                 if (optionsList && optionsList.tagName === 'UL') {
+                                     const optionsText = Array.from(optionsList.querySelectorAll('li')).map(li => li.textContent.trim()).join('. ');
+                                     textToRead += '. ' + optionsText;
+                                 }
+                             }
+                             else {
+                                 const section = parentElement.closest('section');
+                                 if(section && section.id === 'riassunto') {
+                                     const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                     if(content) textToRead += '. ' + content.textContent.trim();
+                                 }
+                             }
+                        }
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                if(!quizContainer) return;
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg bg-white';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-sky-50 cursor-pointer">
+                            <label class="flex items-center w-full cursor-pointer">
+                                <input type="radio" name="q${index}" value="${o}" class="mr-3 text-sky-600">${o}
+                            </label>
+                        </li>`).join('');
+                    
+                    questionDiv.innerHTML = `
+                        <h3 class="font-semibold mb-2 text-sky-900 flex items-center justify-between">
+                            <span>${index + 1}. ${q.question}</span>
+                            <span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                        </h3>
+                        <ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            const ttsButton = element.querySelector('.tts-button');
+                            const icon = element.querySelector('svg');
+                            if (element.tagName === 'A' && icon) {
+                                element.innerHTML = "";
+                                element.appendChild(icon);
+                                element.append(" " + translations[key][lang]);
+                            } else if (ttsButton) {
+                                element.childNodes[0].textContent = translations[key][lang] + " ";
+                            } else {
+                                element.textContent = translations[key][lang];
+                            }
+                        }
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                dsaToggle.textContent = document.body.classList.contains('dsa-mode') 
+                    ? (lang === 'it' ? 'Vista Standard' : 'Standard View') 
+                    : translations['accessibility'][lang];
+                
+                loadQuiz(lang);
+                setupTTSListeners(); 
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+
+            const submitQuizBtn = document.getElementById('submit-quiz');
+            if (submitQuizBtn) submitQuizBtn.addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                resultsContainer.textContent = currentLanguage === 'it' 
+                    ? `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`
+                    : `You answered ${score} out of ${quizData.en.length} questions correctly.`;
+            });
+            
+            updateLanguage(currentLanguage);
+            setupTTSListeners();
+
+             // Scroll Spy
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('article section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            sections.forEach(sec => observer.observe(sec));
+        });
+    </script>
+</body>
+</html>
