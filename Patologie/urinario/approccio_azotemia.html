@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approccio all'Azotemia - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f9ff; color: #0c4a6e; } /* sky-50, sky-900 */
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #0284c7; color: #0369a1; } /* sky-600, sky-700 */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        /* FIX: Target only buttons inside header for white text */
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode #main-header button { color: #ffffff !important; }
+        .dsa-mode #main-header button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #fffdfd; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #1e293b; }
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .quiz-question { border: 1px solid #bae6fd; transition: all 0.3s; } /* sky-200 */
+        .quiz-option:hover { background-color: #f0f9ff; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        
+        /* Table styles inside prose */
+        .med-table { width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1rem; }
+        .med-table th { background-color: #e0f2fe; color: #0369a1; padding: 10px; text-align: left; font-weight: 700; border: 1px solid #bae6fd; }
+        .med-table td { border: 1px solid #e2e8f0; padding: 10px; }
+        
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"] { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="bg-sky-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Apparato Urinario</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-sky-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-sky-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Patologie Urinarie</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-sky-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-sky-800" data-lang-key="pageTitle">Approccio all'Azotemia<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-sky-700 mt-2" data-lang-key="pageSubtitle">Differenziare cause Pre-renali, Renali e Post-renali per una diagnosi corretta.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    
+                    <!-- Azotemia Solver Widget -->
+                    <div class="mb-8 bg-sky-100 rounded-lg p-6 border border-sky-200">
+                        <h3 class="font-bold text-xl text-sky-800 mb-4 flex items-center gap-2">
+                            <span class="text-2xl">🧮</span> <span data-lang-key="widget-title">Il Localizzatore dell'Azotemia</span>
+                        </h3>
+                        <p class="text-sm text-sky-700 mb-4" data-lang-key="widget-intro">Inserisci i dati per identificare l'origine probabile dell'azotemia.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-sky-900 mb-1" data-lang-key="w-species">Specie</label>
+                                <select id="az-species" class="w-full p-2 rounded border border-sky-300 bg-white">
+                                    <option value="dog">Cane</option>
+                                    <option value="cat">Gatto</option>
+                                    <option value="horse">Cavallo</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-sky-900 mb-1" data-lang-key="w-usg">Peso Specifico (USG)</label>
+                                <input type="number" id="az-usg" placeholder="es. 1020" class="w-full p-2 rounded border border-sky-300">
+                            </div>
+                        </div>
+                        
+                        <button onclick="calculateAzotemia()" class="bg-sky-600 text-white font-bold py-2 px-6 rounded hover:bg-sky-700 transition w-full md:w-auto" data-lang-key="w-btn">Analizza</button>
+                        
+                        <div id="az-result" class="hidden mt-4 p-4 rounded-lg font-bold text-white transition-all duration-300 text-center"></div>
+                    </div>
+
+                    <div class="prose max-w-none text-sky-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                      <a href="infografica_azotemia.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-sky-500">
+                          <div class="flex items-center space-x-6">
+                              <div class="flex-shrink-0 w-24 h-24 bg-sky-100 rounded-lg flex items-center justify-center border border-sky-200">
+                                  <span class="text-5xl" role="img" aria-label="Rene">🩺</span>
+                              </div>
+                              <div>
+                                  <h3 class="text-xl font-bold text-sky-800" data-lang-key="infographicLinkTitle">Schema della Localizzazione</h3>
+                                  <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Visualizza l'algoritmo per distinguere Pre-renale, Renale e Post-renale.</p>
+                              </div>
+                          </div>
+                      </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-sky-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-sky-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold text-sky-800"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-sky-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-sky-500 text-white rounded-full hover:bg-sky-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-sky-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-sky-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_azotemia.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-sky-900 space-y-2" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-sky-100 pb-8">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        // --- Widget Logic ---
+        function calculateAzotemia() {
+            const species = document.getElementById('az-species').value;
+            let usg = parseFloat(document.getElementById('az-usg').value);
+            const resultBox = document.getElementById('az-result');
+            
+            if (!usg || isNaN(usg)) {
+                resultBox.className = "mt-4 p-4 rounded-lg font-bold text-white text-center bg-red-500";
+                resultBox.textContent = "Inserisci un valore USG valido.";
+                resultBox.classList.remove('hidden');
+                return;
+            }
+
+            // Normalizzazione: se l'utente inserisce 1.020, lo portiamo a 1020
+            if (usg < 2) {
+                usg = usg * 1000;
+            }
+            
+            // Controllo range fisiologico (es. 1000 - 1080)
+            if (usg < 1000 || usg > 1080) {
+                 resultBox.className = "mt-4 p-4 rounded-lg font-bold text-white text-center bg-red-500";
+                 resultBox.textContent = "Valore USG fuori range fisiologico (1000 - 1080).";
+                 resultBox.classList.remove('hidden');
+                 return;
+            }
+
+            let threshold;
+            if (species === 'dog') threshold = 1030;
+            else if (species === 'cat') threshold = 1035;
+            else if (species === 'horse') threshold = 1025;
+
+            let result = "";
+            let color = "";
+
+            if (usg >= threshold) {
+                result = "Azotemia Pre-renale Probabile";
+                color = "bg-green-600";
+                result += ` (USG adeguato > ${threshold}). Il rene sta concentrando. Cerca disidratazione.`;
+            } else if (usg >= 1008 && usg <= 1012) {
+                result = "Azotemia Renale (Isostenuria)";
+                color = "bg-red-600";
+                result += " (USG 1008-1012). Il rene ha perso capacità di concentrazione.";
+            } else if (usg < 1008) {
+                result = "Azotemia Renale o Pre-renale (Ipostenuria)?";
+                color = "bg-orange-500";
+                result += " Attenzione: se il rene diluisce, i tubuli funzionano in parte, ma l'azotemia non dovrebbe esserci.";
+            } else {
+                result = "Zona Grigia (Renale sospetta o Pre-renale iniziale)";
+                color = "bg-yellow-500";
+                result += ` (USG < ${threshold} ma > 1012). Cautela.`;
+            }
+
+            resultBox.className = `mt-4 p-4 rounded-lg font-bold text-white text-center shadow-md ${color}`;
+            resultBox.textContent = result;
+            resultBox.classList.remove('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Patologie Apparato Urinario", en: "Urinary System Diseases" },
+                backToIndexText: { it: "Indice Patologie Urinarie", en: "Urinary Pathology Index" },
+                pageTitle: { it: "Approccio all'Azotemia", en: "Approach to Azotemia" },
+                pageSubtitle: { it: "Differenziare cause Pre-renali, Renali e Post-renali per una diagnosi corretta.", en: "Differentiating Pre-renal, Renal, and Post-renal causes for correct diagnosis." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                
+                "widget-title": { it: "Il Localizzatore dell'Azotemia", en: "The Azotemia Localizer" },
+                "widget-intro": { it: "Inserisci i dati per identificare l'origine probabile dell'azotemia.", en: "Enter data to identify the likely origin of azotemia." },
+                "w-species": { it: "Specie", en: "Species" },
+                "w-usg": { it: "Peso Specifico (USG)", en: "Specific Gravity (USG)" },
+                "w-btn": { it: "Analizza", en: "Analyze" },
+
+                summaryContent: { 
+                    it: `<p>L'azotemia è l'aumento della concentrazione ematica di composti azotati non proteici, principalmente <strong>Urea (BUN)</strong> e <strong>Creatinina</strong>. La diagnosi corretta richiede sempre di localizzare l'origine del problema.</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">I Tre Tipi di Azotemia</h3>
+                        <div class="space-y-4">
+                            <div class="border-l-4 border-green-500 pl-4">
+                                <strong class="text-green-700">1. Pre-renale (Funzionale)</strong>
+                                <p>Causa: Ridotta perfusione renale (disidratazione, shock, insufficienza cardiaca).<br>
+                                <strong>Marker chiave:</strong> USG Elevato (> 1030 cane, > 1035 gatto, > 1025 cavallo). Il rene "funziona" e concentra le urine per trattenere acqua.<br>
+                                <em>Eccezione:</em> Nel cavallo a digiuno, l'urea può aumentare per catabolismo proteico senza creatinina aumentata.</p>
+                            </div>
+                            <div class="border-l-4 border-red-500 pl-4">
+                                <strong class="text-red-700">2. Renale (Strutturale)</strong>
+                                <p>Causa: Perdita di almeno il 75% dei nefroni (AKI o CKD).<br>
+                                <strong>Marker chiave:</strong> Isostenuria (USG 1008 - 1012) concomitante all'azotemia. Il rene non riesce a concentrare le urine nonostante la disidratazione.</p>
+                            </div>
+                            <div class="border-l-4 border-purple-500 pl-4">
+                                <strong class="text-purple-700">3. Post-renale (Ostruttiva/Rottura)</strong>
+                                <p>Causa: Ostruzione uretrale/ureterale o rottura vie urinarie (uroperitoneo).<br>
+                                <strong>Clinica:</strong> Anuria/Disuria, vescica enorme (ostruzione) o assente (rottura), liquido libero in addome. Potenziale iperkaliemia letale.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Iter Diagnostico</h3>
+                        <ul class="space-y-4">
+                            <li>
+                                <strong class="text-sky-800 block">Step 1: Segnalamento e Anamnesi</strong>
+                                Verificare assunzione di acqua e produzione di urina. Storia di disidratazione o traumi?
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 2: Esame Fisico</strong>
+                                Valutare lo stato di idratazione (valutazione della plica cutanea, mucose) e la vescica (piena o vuota?).
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 3: Analisi di Laboratorio (Conferma Azotemia)</strong>
+                                Misurare Urea e Creatinina sieriche. Se dubbi, ripetere.
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 4: Localizzazione (USG)</strong>
+                                Eseguire l'analisi delle urine per determinare il Peso Specifico. Questo è il passaggio chiave per distinguere Pre-renale da Renale.
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 5: Imaging e Test Specifici</strong>
+                                Ecografia/Radiografie per valutare la struttura renale (Acuto vs Cronico) o cause post-renali. Coltura urinaria, test per Leptospirosi, pressione arteriosa.
+                            </li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Peculiarità nel Cavallo</h3>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li>La <strong>Creatinina</strong> è il marker più affidabile, ma dipende dalla massa muscolare. Cavalli molto magri o cachettici possono avere creatinina falsamente bassa nonostante danno renale.</li>
+                            <li>L'<strong>Urea</strong> è meno specifica perché viene escreta anche nel cieco/colon e riciclata per la sintesi proteica batterica. Aumenta col digiuno.</li>
+                            <li>Il <strong>Calcio</strong> nel cavallo è escreto attivamente dal rene. In Insufficienza Renale Cronica (CKD) si ha spesso <strong>Ipercalcemia</strong> (contrario di cane/gatto), mentre in AKI si può avere ipocalcemia.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Acuto (AKI) vs Cronico (CKD)</h3>
+                        <table class="med-table text-sm">
+                            <thead><tr><th>Parametro</th><th>Acuto (AKI)</th><th>Cronico (CKD)</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>Anamnesi</strong></td><td>Insulto recente (tossine, ischemia)</td><td>Perdita peso, PU/PD da mesi</td></tr>
+                                <tr><td><strong>Volume Urinario</strong></td><td>Spesso Oliguria/Anuria</td><td>Spesso Poliuria</td></tr>
+                                <tr><td><strong>BCS</strong></td><td>Normale</td><td>Scarso (cachessia)</td></tr>
+                                <tr><td><strong>Ematocrito</strong></td><td>Normale o Alto (emoconcentrazione)</td><td>Basso (Anemia non rigenerativa)</td></tr>
+                                <tr><td><strong>Reni (Eco)</strong></td><td>Normali o Grandi</td><td>Piccoli e irregolari</td></tr>
+                                <tr><td><strong>Potassio</strong></td><td>Spesso Alto (Iperkaliemia)</td><td>Spesso Basso (Ipokaliemia, spec. Gatto)</td></tr>
+                            </tbody>
+                        </table>`,
+                    en: `<p>Azotemia is the increased blood concentration of non-protein nitrogenous compounds, mainly <strong>Urea (BUN)</strong> and <strong>Creatinine</strong>. Correct diagnosis always requires localizing the origin.</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">The Three Types of Azotemia</h3>
+                        <div class="space-y-4">
+                            <div class="border-l-4 border-green-500 pl-4">
+                                <strong class="text-green-700">1. Pre-renal (Functional)</strong>
+                                <p>Cause: Reduced renal perfusion (dehydration, shock, heart failure).<br>
+                                <strong>Key Marker:</strong> High USG (> 1030 dog, > 1035 cat, > 1025 horse). The kidney "works" and concentrates urine to retain water.<br>
+                                <em>Exception:</em> In fasting horses, urea can increase due to protein catabolism without increased creatinine.</p>
+                            </div>
+                            <div class="border-l-4 border-red-500 pl-4">
+                                <strong class="text-red-700">2. Renal (Structural)</strong>
+                                <p>Cause: Loss of at least 75% of nephrons (AKI or CKD).<br>
+                                <strong>Key Marker:</strong> Isosthenuria (USG 1008 - 1012) with azotemia. The kidney fails to concentrate urine despite dehydration.</p>
+                            </div>
+                            <div class="border-l-4 border-purple-500 pl-4">
+                                <strong class="text-purple-700">3. Post-renal (Obstructive/Rupture)</strong>
+                                <p>Cause: Urethral/ureteral obstruction or urinary tract rupture (uroperitoneum).<br>
+                                <strong>Clinical:</strong> Anuria/Dysuria, large bladder (obstruction) or absent (rupture), free abdominal fluid. Potential lethal hyperkalemia.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Diagnostic Workflow</h3>
+                        <ul class="space-y-4">
+                            <li>
+                                <strong class="text-sky-800 block">Step 1: History and Clinical Exam</strong>
+                                Verify water intake and urine output. History of dehydration or trauma?
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 2: Physical Exam</strong>
+                                Assess hydration status (skin turgor, mucous membranes) and bladder (full or empty?).
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 3: Lab Analysis (Confirm Azotemia)</strong>
+                                Measure serum Urea and Creatinine. Repeat if in doubt.
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 4: Localization (USG)</strong>
+                                Perform urinalysis to determine Specific Gravity. This is the key step to distinguish Pre-renal from Renal.
+                            </li>
+                            <li>
+                                <strong class="text-sky-800 block">Step 5: Imaging and Specific Tests</strong>
+                                Ultrasound/X-rays to evaluate renal structure (Acute vs Chronic) or post-renal causes. Urine culture, Leptospirosis test, blood pressure.
+                            </li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Specifics in Horses</h3>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Creatinine</strong> is the most reliable marker but depends on muscle mass. Very thin/cachectic horses may have falsely low creatinine despite renal damage.</li>
+                            <li><strong>Urea</strong> is less specific as it's excreted into the cecum/colon and recycled. Increases with fasting.</li>
+                            <li><strong>Calcium</strong> is actively excreted by the kidney in horses. In Chronic Kidney Disease (CKD) <strong>Hypercalcemia</strong> is common (unlike dog/cat), while AKI may show hypocalcemia.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Acute (AKI) vs Chronic (CKD)</h3>
+                        <table class="med-table text-sm">
+                            <thead><tr><th>Parameter</th><th>Acute (AKI)</th><th>Chronic (CKD)</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>History</strong></td><td>Recent insult (toxins, ischemia)</td><td>Weight loss, PU/PD for months</td></tr>
+                                <tr><td><strong>Urine Volume</strong></td><td>Often Oliguria/Anuria</td><td>Often Polyuria</td></tr>
+                                <tr><td><strong>BCS</strong></td><td>Normal</td><td>Poor (cachexia)</td></tr>
+                                <tr><td><strong>Hematocrit</strong></td><td>Normal or High (hemoconcentration)</td><td>Low (Non-regenerative anemia)</td></tr>
+                                <tr><td><strong>Kidneys (US)</strong></td><td>Normal or Large</td><td>Small and irregular</td></tr>
+                                <tr><td><strong>Potassium</strong></td><td>Often High (Hyperkalemia)</td><td>Often Low (Hypokalemia, esp. Cat)</td></tr>
+                            </tbody>
+                        </table>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Schema della Localizzazione", en: "Localization Chart" },
+                infographicLinkDesc: { it: "Visualizza l'algoritmo per distinguere Pre-renale, Renale e Post-renale.", en: "View the algorithm to distinguish Pre-renal, Renal, and Post-renal." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018</li>`,
+                    en: `<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Un cane presenta azotemia e USG 1045. Qual è la localizzazione più probabile?", options: ["Renale", "Pre-renale", "Post-renale", "Indeterminata"], answer: "Pre-renale" },
+                    { question: "In un gatto con CKD avanzata, cosa ti aspetti di trovare?", options: ["Reni grandi e dolenti", "Anemia non rigenerativa", "Iperkaliemia grave", "Oliguria"], answer: "Anemia non rigenerativa" },
+                    { question: "Qual è il marker renale più affidabile nel cavallo?", options: ["Urea (BUN)", "Creatinina", "Glucosio", "Bilirubina"], answer: "Creatinina" },
+                    { question: "Quale range di USG definisce l'isostenuria?", options: ["1000 - 1005", "1008 - 1012", "1025 - 1035", "1040 - 1060"], answer: "1008 - 1012" },
+                    { question: "Quale alterazione elettrolitica è tipica della CKD nel cavallo (ma non nel cane)?", options: ["Iperkaliemia", "Ipocalcemia", "Ipercalcemia", "Iponatriemia"], answer: "Ipercalcemia" },
+                    { question: "L'azotemia post-renale è causata da:", options: ["Disidratazione", "Pielonefrite", "Ostruzione o rottura delle vie urinarie", "Ipertensione"], answer: "Ostruzione o rottura delle vie urinarie" },
+                    { question: "In caso di AKI (Danno Renale Acuto), il volume urinario è spesso:", options: ["Aumentato (Poliuria)", "Ridotto (Oliguria/Anuria)", "Normale", "Irrilevante"], answer: "Ridotto (Oliguria/Anuria)" },
+                    { question: "Se un cane ha azotemia e USG 1010, l'origine è:", options: ["Pre-renale", "Renale", "Post-renale", "Fisiologica"], answer: "Renale" },
+                    { question: "L'urea nel cavallo può aumentare fisiologicamente in caso di:", options: ["Esercizio fisico intenso", "Digiuno", "Abbondante beveraggio", "Gravidanza"], answer: "Digiuno" },
+                    { question: "Quale di questi segni suggerisce una cronicizzazione (CKD) rispetto all'acuto?", options: ["Buono stato di nutrizione", "Reni di dimensioni ridotte e irregolari", "Dolore alla palpazione renale", "Insorgenza improvvisa"], answer: "Reni di dimensioni ridotte e irregolari" }
+                ],
+                en: [
+                    { question: "A dog has azotemia and USG 1045. What is the most likely localization?", options: ["Renal", "Pre-renal", "Post-renal", "Indeterminate"], answer: "Pre-renal" },
+                    { question: "In a cat with advanced CKD, what do you expect to find?", options: ["Large, painful kidneys", "Non-regenerative anemia", "Severe hyperkalemia", "Oliguria"], answer: "Non-regenerative anemia" },
+                    { question: "What is the most reliable renal marker in the horse?", options: ["Urea (BUN)", "Creatinine", "Glucose", "Bilirubin"], answer: "Creatinine" },
+                    { question: "Which USG range defines isosthenuria?", options: ["1000 - 1005", "1008 - 1012", "1025 - 1035", "1040 - 1060"], answer: "1008 - 1012" },
+                    { question: "Which electrolyte abnormality is typical of CKD in horses (but not dogs)?", options: ["Hyperkalemia", "Hypocalcemia", "Hypercalcemia", "Hyponatremia"], answer: "Hypercalcemia" },
+                    { question: "Post-renal azotemia is caused by:", options: ["Dehydration", "Pyelonephritis", "Obstruction or rupture of urinary tract", "Hypertension"], answer: "Obstruction or rupture of urinary tract" },
+                    { question: "In case of AKI (Acute Kidney Injury), urine volume is often:", options: ["Increased (Polyuria)", "Reduced (Oliguria/Anuria)", "Normal", "Irrelevant"], answer: "Reduced (Oliguria/Anuria)" },
+                    { question: "If a dog has azotemia and USG 1010, the origin is:", options: ["Pre-renal", "Renal", "Post-renal", "Physiological"], answer: "Renal" },
+                    { question: "Urea in horses can physiologically increase in case of:", options: ["Intense exercise", "Fasting", "Excessive drinking", "Pregnancy"], answer: "Fasting" },
+                    { question: "Which of these signs suggests chronicity (CKD) vs acute?", options: ["Good body condition", "Small, irregular kidneys", "Pain on renal palpation", "Sudden onset"], answer: "Small, irregular kidneys" }
+                ]
+            };
+            
+            // --- GENERIC SCRIPT ---
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() { if (synth.speaking) synth.cancel(); }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button) {
+                    if (synth.speaking) {
+                        if (synth.paused) {
+                            synth.resume();
+                            button.classList.add('playing');
+                        } else {
+                            synth.pause();
+                            button.classList.remove('playing');
+                        }
+                        return;
+                    }
+                }
+
+                stopSpeech();
+                if (activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                activeTTSButton = button;
+                button.classList.add('playing');
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                currentUtterance.onend = () => {
+                    button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+                currentUtterance.onerror = (event) => {
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('TTS Error:', event.error);
+                    }
+                    button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+                
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+            function initHowler() {
+                const audioFile = document.querySelector('#audio a[download]').href;
+                if (!audioFile) return;
+                sound = new Howl({
+                    src: [audioFile], html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            if(playPauseBtn) playPauseBtn.addEventListener('click', () => {
+                if (!sound) initHowler();
+                if(sound) { if (sound.playing()) sound.pause(); else sound.play(); }
+            });
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        
+                        // Handle H1/H2 headers
+                        if (parentElement.tagName === 'H1' || parentElement.tagName === 'H2' || parentElement.tagName === 'H3') {
+                             const clone = parentElement.cloneNode(true);
+                             clone.querySelector('.tts-button')?.remove();
+                             textToRead = clone.textContent.trim();
+                             
+                             if (parentElement.closest('.quiz-question')) {
+                                 const optionsList = parentElement.nextElementSibling; 
+                                 if (optionsList && optionsList.tagName === 'UL') {
+                                     const optionsText = Array.from(optionsList.querySelectorAll('li')).map(li => li.textContent.trim()).join('. ');
+                                     textToRead += '. ' + optionsText;
+                                 }
+                             }
+                             else {
+                                 const section = parentElement.closest('section');
+                                 if(section && section.id === 'riassunto') {
+                                     const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                     if(content) textToRead += '. ' + content.textContent.trim();
+                                 }
+                             }
+                        }
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                if(!quizContainer) return;
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg bg-white';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-sky-50 cursor-pointer">
+                            <label class="flex items-center w-full cursor-pointer">
+                                <input type="radio" name="q${index}" value="${o}" class="mr-3 text-sky-600">${o}
+                            </label>
+                        </li>`).join('');
+                    
+                    questionDiv.innerHTML = `
+                        <h3 class="font-semibold mb-2 text-sky-900 flex items-center justify-between">
+                            <span>${index + 1}. ${q.question}</span>
+                            <span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                        </h3>
+                        <ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            const ttsButton = element.querySelector('.tts-button');
+                            const icon = element.querySelector('svg');
+                            if (element.tagName === 'A' && icon) {
+                                element.innerHTML = "";
+                                element.appendChild(icon);
+                                element.append(" " + translations[key][lang]);
+                            } else if (ttsButton) {
+                                element.childNodes[0].textContent = translations[key][lang] + " ";
+                            } else {
+                                element.textContent = translations[key][lang];
+                            }
+                        }
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                dsaToggle.textContent = document.body.classList.contains('dsa-mode') 
+                    ? (lang === 'it' ? 'Vista Standard' : 'Standard View') 
+                    : translations['accessibility'][lang];
+                
+                loadQuiz(lang);
+                setupTTSListeners(); 
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+
+            const submitQuizBtn = document.getElementById('submit-quiz');
+            if (submitQuizBtn) submitQuizBtn.addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                resultsContainer.textContent = currentLanguage === 'it' 
+                    ? `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`
+                    : `You answered ${score} out of ${quizData.en.length} questions correctly.`;
+            });
+            
+            updateLanguage(currentLanguage);
+            setupTTSListeners();
+
+             // Scroll Spy
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('article section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            sections.forEach(sec => observer.observe(sec));
+        });
+    </script>
+</body>
+</html>
