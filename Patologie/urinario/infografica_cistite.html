@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica - Cistite e UTI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f9ff; color: #0c4a6e; } /* sky-50, sky-900 */
+        .card {
+            background-color: #ffffff; border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .card-header { border-bottom: 2px solid #e0f2fe; }
+        .list-item::before { content: '•'; color: #0284c7; font-weight: bold; display: inline-block; width: 1em; margin-left: -1em; }
+        .key-point::before { content: '❗'; display: inline-block; width: 1em; margin-left: -1em; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif; background-color: #f8fafc !important; color: #1e293b;
+        }
+        .dsa-mode #main-header { background-color: #000000 !important; }
+        .dsa-mode #main-header a, .dsa-mode #main-header button { color: #ffffff !important; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header id="main-header" class="bg-sky-800 text-white shadow-md p-4 rounded-lg mb-8 flex justify-between items-center flex-wrap">
+        <a href="cistite_uti.html" class="inline-flex items-center font-bold hover:underline" data-lang-key="backToSummary">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+            <span data-lang-key="backToSummaryText">Torna al Riassunto</span>
+        </a>
+        <div class="flex items-center space-x-4">
+            <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+            <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+        </div>
+    </header>
+
+    <div class="container mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-sky-800" data-lang-key="pageTitle">Mappa delle UTI (ISCAID)</h1>
+            <p class="text-lg text-sky-700 mt-2" data-lang-key="pageSubtitle">Diagnosi corretta e uso razionale degli antibiotici</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- Card 1: Batteriuria Subclinica -->
+            <div class="card border-red-500 col-span-1 md:col-span-2 lg:col-span-3">
+                <div class="card-header p-5 bg-red-50 rounded-t-lg flex items-center gap-3">
+                    <span class="text-3xl">🛑</span>
+                    <h2 class="text-2xl font-bold text-red-800" data-lang-key="subclinicalTitle">Batteriuria Subclinica</h2>
+                </div>
+                <div class="p-5 flex flex-col md:flex-row gap-6 items-center">
+                    <div class="flex-1">
+                        <p class="font-bold text-lg mb-2">Batteri + NO Sintomi + NO Pus = <span class="text-red-600">NON TRATTARE!</span></p>
+                        <p class="text-slate-700 text-sm">La presenza di batteri senza infiammazione (piuria) o segni clinici non è una malattia. Dare antibiotici crea solo resistenze.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded border border-red-200 text-sm">
+                        <strong>Eccezioni rare:</strong>
+                        <ul class="list-disc pl-4 mt-1">
+                            <li>Prima di chirurgia urologica.</li>
+                            <li>Sospetta pielonefrite ascendente.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Classificazione -->
+            <div class="card border-blue-500">
+                <div class="card-header p-5 bg-blue-50 rounded-t-lg">
+                    <h2 class="text-2xl font-bold text-blue-800" data-lang-key="classTitle">Classificazione</h2>
+                </div>
+                <div class="p-5 space-y-4">
+                    <ul class="space-y-2 text-sm pl-4">
+                        <li class="list-item" data-lang-key="class1"><strong>Sporadica:</strong> &lt; 3 episodi/anno. Cane sano.</li>
+                        <li class="list-item" data-lang-key="class2"><strong>Ricorrente:</strong> > 3/anno o 2/6 mesi.</li>
+                        <li class="key-point font-bold text-blue-700" data-lang-key="class3">Ricorrente = Cerca la causa sottostante! (Cushing, Calcoli, Anatomia).</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Card 3: Il Prelievo -->
+            <div class="card border-purple-500">
+                <div class="card-header p-5 bg-purple-50 rounded-t-lg">
+                    <h2 class="text-2xl font-bold text-purple-800" data-lang-key="sampleTitle">Il Prelievo (Gold Standard)</h2>
+                </div>
+                <div class="p-5 space-y-4">
+                    <p class="text-sm font-semibold text-center border-b pb-2 mb-2">Cistocentesi 💉</p>
+                    <ul class="space-y-2 text-sm pl-4">
+                        <li class="list-item" data-lang-key="samp1">Unico metodo sterile sicuro.</li>
+                        <li class="list-item" data-lang-key="samp2"><strong>Minzione spontanea:</strong> Contaminata da batteri genitali/distali.</li>
+                        <li class="list-item" data-lang-key="samp3"><strong>Catetere:</strong> Rischio di portare batteri dentro.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card 4: Falsi Amici (Gatto) -->
+            <div class="card border-orange-500">
+                <div class="card-header p-5 bg-orange-50 rounded-t-lg">
+                    <h2 class="text-2xl font-bold text-orange-800" data-lang-key="catTitle">Il Gatto Giovane 🐱</h2>
+                </div>
+                <div class="p-5 space-y-4">
+                     <p class="text-sm font-bold text-center text-orange-700 mb-2">Età &lt; 10 anni</p>
+                     <ul class="space-y-2 text-sm pl-4">
+                        <li class="list-item" data-lang-key="cat1">Cistite batterica rarissima (< 2%).</li>
+                        <li class="list-item" data-lang-key="cat2">Sintomi urinari = <strong>FIC (Stress)</strong>.</li>
+                        <li class="key-point font-bold text-orange-900" data-lang-key="cat3">NON dare antibiotici! (Analgesia + MEMO).</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Card 5: Iter Diagnostico (SPOSTATO QUI) -->
+            <div class="card border-emerald-500">
+                <div class="card-header p-5 bg-emerald-50 rounded-t-lg">
+                    <h2 class="text-2xl font-bold text-emerald-800" data-lang-key="diagTitle">Iter Diagnostico</h2>
+                </div>
+                <div class="p-5 space-y-4">
+                    <ul class="space-y-2 text-sm pl-4">
+                        <li class="list-item" data-lang-key="diag1"><strong>Step 1:</strong> Esame Urine (Stick + Sedimento).</li>
+                        <li class="list-item" data-lang-key="diag2"><strong>Step 2:</strong> Conferma <strong>Piuria</strong> (infiammazione).</li>
+                        <li class="list-item" data-lang-key="diag3"><strong>Step 3:</strong> Urinocoltura (se indicata).</li>
+                        <li class="list-item" data-lang-key="diag4"><strong>Step 4:</strong> Imaging (se ricorrente).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Card 6: Terapia (SPOSTATO QUI) -->
+            <div class="card border-green-500">
+                <div class="card-header p-5 bg-green-50 rounded-t-lg">
+                    <h2 class="text-2xl font-bold text-green-800" data-lang-key="txTitle">Terapia Antibiotica</h2>
+                </div>
+                <div class="p-5 space-y-4">
+                    <ul class="space-y-2 text-sm pl-4">
+                        <li class="list-item" data-lang-key="tx1"><strong>Sporadica:</strong> Empirica (Amoxi/TMS) x 3-5 gg.</li>
+                        <li class="list-item" data-lang-key="tx2"><strong>Ricorrente:</strong> SOLO su Antibiogramma.</li>
+                        <li class="list-item" data-lang-key="tx3"><strong>Follow-up:</strong> Coltura intra-terapia NON raccomandata (tranne pielonefrite).</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="text-center mt-16 pt-8 border-t border-sky-100 pb-8">
+            <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                backToSummaryText: { it: "Torna al Riassunto", en: "Back to Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                pageTitle: { it: "Mappa delle UTI (ISCAID)", en: "UTI Map (ISCAID)" },
+                pageSubtitle: { it: "Diagnosi corretta e uso razionale degli antibiotici", en: "Correct diagnosis and rational antibiotic use" },
+                
+                subclinicalTitle: { it: "Batteriuria Subclinica", en: "Subclinical Bacteriuria" },
+                // Content for subclinical card is hardcoded in HTML structure for layout, simpler not to key every line.
+
+                classTitle: { it: "Classificazione", en: "Classification" },
+                class1: { it: "<strong>Sporadica:</strong> &lt; 3 episodi/anno. Cane sano.", en: "<strong>Sporadic:</strong> &lt; 3 episodes/year. Healthy dog." },
+                class2: { it: "<strong>Ricorrente:</strong> > 3/anno o 2/6 mesi.", en: "<strong>Recurrent:</strong> > 3/year or 2/6 months." },
+                class3: { it: "Ricorrente = Cerca la causa sottostante! (Cushing, Calcoli, Anatomia).", en: "Recurrent = Find underlying cause! (Cushing's, Stones, Anatomy)." },
+
+                sampleTitle: { it: "Il Prelievo (Gold Standard)", en: "Sampling (Gold Standard)" },
+                samp1: { it: "Unico metodo sterile sicuro.", en: "Only safe sterile method." },
+                samp2: { it: "<strong>Minzione spontanea:</strong> Contaminata da batteri genitali/distali.", en: "<strong>Free catch:</strong> Contaminated by genital/distal bacteria." },
+                samp3: { it: "<strong>Catetere:</strong> Rischio di portare batteri dentro.", en: "<strong>Catheter:</strong> Risk of introducing bacteria." },
+
+                catTitle: { it: "Il Gatto Giovane 🐱", en: "The Young Cat 🐱" },
+                cat1: { it: "Cistite batterica rarissima (< 2%).", en: "Bacterial cystitis very rare (< 2%)." },
+                cat2: { it: "Sintomi urinari = <strong>FIC (Stress)</strong>.", en: "Urinary signs = <strong>FIC (Stress)</strong>." },
+                cat3: { it: "NON dare antibiotici! (Analgesia + MEMO).", en: "NO antibiotics! (Analgesia + MEMO)." },
+
+                txTitle: { it: "Terapia Antibiotica", en: "Antibiotic Therapy" },
+                tx1: { it: "<strong>Sporadica:</strong> Empirica (Amoxi/TMS) x 3-5 gg.", en: "<strong>Sporadic:</strong> Empirical (Amoxi/TMS) x 3-5 days." },
+                tx2: { it: "<strong>Ricorrente:</strong> SOLO su Antibiogramma.", en: "<strong>Recurrent:</strong> ONLY on Antibiogram." },
+                tx3: { it: "<strong>Follow-up:</strong> Coltura intra-terapia NON raccomandata.", en: "<strong>Follow-up:</strong> Intra-treatment culture NOT recommended." },
+
+                diagTitle: { it: "Iter Diagnostico", en: "Diagnostic Workflow" },
+                diag1: { it: "<strong>Step 1:</strong> Esame Urine (Stick + Sedimento).", en: "<strong>Step 1:</strong> Urinalysis (Stick + Sediment)." },
+                diag2: { it: "<strong>Step 2:</strong> Conferma <strong>Piuria</strong> (infiammazione).", en: "<strong>Step 2:</strong> Confirm <strong>Pyuria</strong> (inflammation)." },
+                diag3: { it: "<strong>Step 3:</strong> Urinocoltura (se indicata).", en: "<strong>Step 3:</strong> Urine Culture (if indicated)." },
+                diag4: { it: "<strong>Step 4:</strong> Imaging (se ricorrente).", en: "<strong>Step 4:</strong> Imaging (if recurrent)." },
+
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        element.innerHTML = translations[key][lang];
+                    }
+                });
+
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                dsaToggle.textContent = document.body.classList.contains('dsa-mode') 
+                    ? (lang === 'it' ? 'Vista Standard' : 'Standard View') 
+                    : translations['accessibility'][lang];
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
