@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insufficienza Renale Acuta (AKI) - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f9ff; color: #0c4a6e; } /* sky-50, sky-900 */
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #0284c7; color: #0369a1; }
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #1e293b;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        /* FIX: Target only buttons inside header for white text */
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode #main-header button { color: #ffffff !important; }
+        .dsa-mode #main-header button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #fffdfd; border: 1px solid #e0e0e0; }
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .quiz-question { border: 1px solid #bae6fd; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #f0f9ff; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        .med-table { width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1rem; }
+        .med-table th { background-color: #e0f2fe; color: #0369a1; padding: 10px; text-align: left; font-weight: 700; border: 1px solid #bae6fd; }
+        .med-table td { border: 1px solid #e2e8f0; padding: 10px; }
+        
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"] { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="bg-sky-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Apparato Urinario</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-sky-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-sky-100 transition duration-300" data-lang-key="backToIndex">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Patologie Urinarie</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-sky-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-sky-800" data-lang-key="pageTitle">Insufficienza Renale Acuta (AKI)<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-sky-700 mt-2" data-lang-key="pageSubtitle">Danno renale improvviso: eziologia, grading IRIS e gestione dell'emergenza uremica.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    
+                    <!-- IRIS AKI Grading Widget -->
+                    <div class="mb-8 bg-sky-100 rounded-lg p-6 border border-sky-200 shadow-md">
+                        <h3 class="font-bold text-xl text-sky-800 mb-4 flex items-center gap-2">
+                            <span class="text-2xl">⚡</span> <span data-lang-key="widget-title">Grading IRIS AKI</span>
+                        </h3>
+                        <p class="text-sm text-sky-700 mb-4" data-lang-key="widget-intro">Inserisci la Creatinina attuale per definire il grado di severità (indipendentemente dalla specie).</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-sky-900 mb-1" data-lang-key="w-creat">Creatinina (mg/dL)</label>
+                                <input type="number" id="aki-creat" step="0.1" placeholder="es. 2.0" class="w-full p-2 rounded border border-sky-300">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-sky-900 mb-1" data-lang-key="w-oligo">Produzione Urina</label>
+                                <select id="aki-urine" class="w-full p-2 rounded border border-sky-300 bg-white">
+                                    <option value="normal">Normale/Poliuria</option>
+                                    <option value="oliguria">Oliguria (< 1 ml/kg/h)</option>
+                                    <option value="anuria">Anuria (Assente)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button onclick="calculateAKIGrade()" class="bg-sky-600 text-white font-bold py-2 px-6 rounded hover:bg-sky-700 transition w-full md:w-auto" data-lang-key="w-btn">Calcola Grado</button>
+                        
+                        <div id="aki-result" class="hidden mt-4 p-4 rounded-lg font-bold text-center transition-all duration-300 border-l-4"></div>
+                    </div>
+
+                    <div class="prose max-w-none text-sky-900" data-lang-key="summaryContent">
+                        <!-- Content loaded by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                      <a href="infografica_aki.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-sky-500">
+                          <div class="flex items-center space-x-6">
+                              <div class="flex-shrink-0 w-24 h-24 bg-sky-100 rounded-lg flex items-center justify-center border border-sky-200">
+                                  <span class="text-5xl" role="img" aria-label="Rene danneggiato">🚑</span>
+                              </div>
+                              <div>
+                                  <h3 class="text-xl font-bold text-sky-800" data-lang-key="infographicLinkTitle">Schema AKI: Cause e Terapia</h3>
+                                  <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Visualizza le fasi (Induzione, Mantenimento, Recupero) e il protocollo fluidico.</p>
+                              </div>
+                          </div>
+                      </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions loaded by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-sky-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-sky-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold text-sky-800"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-sky-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-sky-500 text-white rounded-full hover:bg-sky-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-sky-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-sky-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_aki.mp3" download class="bg-gray-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-600 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-sky-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-sky-900 space-y-2" data-lang-key="bibliographyContent">
+                        <!-- Content loaded by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-sky-100 pb-8">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        // --- Widget Logic ---
+        function calculateAKIGrade() {
+            const creat = parseFloat(document.getElementById('aki-creat').value);
+            const urine = document.getElementById('aki-urine').value;
+            const resultBox = document.getElementById('aki-result');
+            
+            if (!creat || isNaN(creat) || creat < 0) {
+                resultBox.className = "mt-4 p-4 rounded-lg font-bold text-white text-center bg-red-500";
+                resultBox.textContent = "Inserisci un valore valido di creatinina.";
+                resultBox.classList.remove('hidden');
+                return;
+            }
+
+            let grade = 0;
+            let desc = "";
+            let color = "";
+
+            // IRIS AKI Grading (General guidelines)
+            if (creat < 1.6) {
+                grade = 1;
+                desc = "AKI Grado I. Danno renale non azotemico. Monitorare idratazione.";
+                color = "bg-green-600 border-green-800";
+            } else if (creat >= 1.6 && creat <= 2.5) {
+                grade = 2;
+                desc = "AKI Grado II. Azotemia lieve. Richiede fluidoterapia e monitoraggio.";
+                color = "bg-yellow-500 text-black border-yellow-700";
+            } else if (creat > 2.5 && creat <= 5.0) {
+                grade = 3;
+                desc = "AKI Grado III. Azotemia moderata. Ospedalizzazione necessaria.";
+                color = "bg-orange-500 border-orange-700";
+            } else if (creat > 5.0 && creat <= 10.0) {
+                grade = 4;
+                desc = "AKI Grado IV. Azotemia grave. Rischio di vita.";
+                color = "bg-red-600 border-red-800";
+            } else {
+                grade = 5;
+                desc = "AKI Grado V. Crisi uremica fatale probabile. Dialisi?";
+                color = "bg-purple-700 border-purple-900";
+            }
+
+            // Oliguria modifier
+            if (urine === 'oliguria') {
+                desc += "<br><span class='text-sm underline'>ATTENZIONE: Oliguria. Rischio Overidratazione.</span>";
+                if(grade < 3) color = "bg-orange-500 border-orange-700"; // Oliguria worsens prognosis
+            } else if (urine === 'anuria') {
+                desc += "<br><span class='text-sm underline'>EMERGENZA: Anuria. Prognosi riservata/infausta.</span>";
+                color = "bg-purple-700 border-purple-900"; // Worst case
+            }
+
+            resultBox.innerHTML = `
+                <h4 class="text-xl font-bold mb-2">Risultato: IRIS Grado ${grade}</h4>
+                <p>${desc}</p>
+            `;
+            resultBox.className = `mt-4 p-4 rounded-lg font-bold text-center text-white transition-all duration-300 shadow-md ${color}`;
+            resultBox.classList.remove('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: "Patologie Apparato Urinario", en: "Urinary System Diseases" },
+                backToIndexText: { it: "Indice Patologie Urinarie", en: "Urinary Pathology Index" },
+                pageTitle: { it: "Insufficienza Renale Acuta (AKI)", en: "Acute Kidney Injury (AKI)" },
+                pageSubtitle: { it: "Danno renale improvviso: eziologia, grading IRIS e gestione dell'emergenza uremica.", en: "Sudden kidney damage: etiology, IRIS grading, and uremic emergency management." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                
+                "widget-title": { it: "Grading IRIS AKI", en: "IRIS AKI Grading" },
+                "widget-intro": { it: "Inserisci la Creatinina attuale per definire il grado di severità (indipendentemente dalla specie).", en: "Enter current Creatinine to define severity grade (species independent)." },
+                "w-creat": { it: "Creatinina (mg/dL)", en: "Creatinine (mg/dL)" },
+                "w-oligo": { it: "Produzione Urina", en: "Urine Output" },
+                "w-btn": { it: "Calcola Grado", en: "Calculate Grade" },
+
+                summaryContent: { 
+                    it: `<p>L'<strong>AKI (Acute Kidney Injury)</strong> è una rapida (ore/giorni) diminuzione della funzione di filtrazione renale, con accumulo di tossine uremiche e squilibri idro-elettrolitici. È una condizione dinamica, potenzialmente reversibile se gestita correttamente.</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Eziologia: Chi è il colpevole?</h3>
+                        <p>Le cause si dividono in:</p>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Ischemica:</strong> Ipotensione prolungata (anestesia), shock, colpo di calore.</li>
+                            <li><strong>Tossica:</strong>
+                                <br><em>Piccoli Animali:</em> Uva/Uvetta (Cane), Gigli (Gatto), FANS (Ibuprofene), Glicole etilenico (Antigelo).
+                                <br><em>Grandi Animali:</em> Aminoglicosidi (Gentamicina), FANS, Ghiande (Quercia), Pigmenti (Mioglobina da rabdomiolisi).
+                            </li>
+                            <li><strong>Infettiva:</strong> <strong>Leptospirosi</strong> (da considerare SEMPRE nel cane), Pielonefrite.</li>
+                        </ul>
+                        
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Segni Clinici e Diagnosi</h3>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Segni Clinici:</strong> Anoressia improvvisa, vomito, diarrea (spesso melena), alitosi uremica, disidratazione. 
+                            <br>I reni alla palpazione sono spesso <strong>ingrossati e dolenti</strong> (a differenza della CKD dove sono piccoli).</li>
+                            <li><strong>Laboratorio:</strong> Aumento rapido di Urea e Creatinina. 
+                            <br><strong>Iperkaliemia</strong> (pericolosa in oliguria), Acidosi metabolica.</li>
+                            <li><strong>Urine:</strong> Isostenuria (1.008-1.012) o scarsamente concentrate. Presenza di <strong>cilindri granulari</strong> (segno di danno tubulare acuto) e glicosuria normoglicemica.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Le 3 Fasi dell'AKI</h3>
+                        <ol class="list-decimal pl-6 space-y-2">
+                            <li><strong>Induzione:</strong> Momento dell'insulto (ore). Spesso asintomatica. L'intervento qui previene il danno.</li>
+                            <li><strong>Mantenimento:</strong> Danno stabilito (giorni/settimane). Azotemia, uremia, possibile oliguria. Il rene non risponde più alle terapie semplici.</li>
+                            <li><strong>Recupero:</strong> Riparazione tissutale (settimane/mesi). Spesso poliuria compensatoria massiva.</li>
+                        </ol>
+
+                         <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Focus sul Cavallo 🐴</h3>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Cause principali:</strong> Disidratazione (colica, sudorazione), FANS (Fenilbutazone), Aminoglicosidi (Gentamicina) e <strong>Mioglobinuria</strong> (Rabdomiolisi).</li>
+                            <li><strong>Marker:</strong> La <strong>Creatinina</strong> è l'unico marker affidabile. L'Urea può rimanere normale anche in AKI grave (riciclo enterico).</li>
+                            <li><strong>Elettroliti:</strong> Spesso si osserva iponatriemia e ipocloremia. Il Calcio è variabile (basso/normale in AKI, alto in CKD).</li>
+                            <li><strong>Poliuria:</strong> Spesso mantengono una buona produzione di urina (AKI non-oligurica) nelle fasi iniziali, rendendo la diagnosi clinica più difficile senza esami del sangue.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Terapia: "Fluidi con Cervello"</h3>
+                        <p>La base è la fluidoterapia endovenosa per ripristinare la perfusione e correggere gli squilibri.</p>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Reidratazione:</strong> Correggere il deficit entro 4-6 ore.</li>
+                            <li><strong>Gestione Oliguria/Anuria:</strong> Se dopo la reidratazione l'animale non urina (< 1-2 ml/kg/h), <strong>STOP FLUIDI</strong>! Rischio edema polmonare ("annegare il paziente").
+                                <br><em>Farmaci:</em> Furosemide (diuretico) o Mannitolo per convertire l'oliguria in poliuria (non migliorano la GFR, ma facilitano la gestione).
+                            </li>
+                            <li><strong>Monitoraggio:</strong> Peso corporeo (aumenta = ritenzione idrica), output urinario (catetere), pressione arteriosa.</li>
+                        </ul>`,
+                    en: `<p><strong>AKI (Acute Kidney Injury)</strong> is a rapid (hours/days) decline in renal filtration function, with accumulation of uremic toxins and electrolyte imbalances. It is a dynamic condition, potentially reversible if managed correctly.</p>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Etiology: Who is the culprit?</h3>
+                        <p>Causes are divided into:</p>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Ischemic:</strong> Prolonged hypotension (anesthesia), shock, heat stroke.</li>
+                            <li><strong>Toxic:</strong>
+                                <br><em>Small Animals:</em> Grapes/Raisins (Dog), Lilies (Cat), NSAIDs, Ethylene Glycol.
+                                <br><em>Large Animals:</em> Aminoglycosides, NSAIDs, Acorns (Oak), Pigments (Myoglobin).
+                            </li>
+                            <li><strong>Infectious:</strong> <strong>Leptospirosis</strong> (ALWAYS consider in dogs), Pyelonephritis.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Clinical Signs and Diagnosis</h3>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Clinical Signs:</strong> Sudden anorexia, vomiting, diarrhea (melena), uremic breath, dehydration. 
+                            <br>Kidneys are often <strong>enlarged and painful</strong> on palpation (unlike small kidneys in CKD).</li>
+                            <li><strong>Laboratory:</strong> Rapid rise in BUN and Creatinine. 
+                            <br><strong>Hyperkalemia</strong> (dangerous in oliguria), Metabolic acidosis.</li>
+                            <li><strong>Urinalysis:</strong> Isosthenuria (1.008-1.012) or poorly concentrated. Presence of <strong>granular casts</strong> (sign of acute tubular damage) and normoglycemic glucosuria.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">The 3 Phases of AKI</h3>
+                        <ol class="list-decimal pl-6 space-y-2">
+                            <li><strong>Induction:</strong> Time of insult (hours). Often asymptomatic. Intervention here prevents damage.</li>
+                            <li><strong>Maintenance:</strong> Established damage (days/weeks). Azotemia, uremia, possible oliguria. Kidney no longer responds to simple therapies.</li>
+                            <li><strong>Recovery:</strong> Tissue repair (weeks/months). Often massive compensatory polyuria.</li>
+                        </ol>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Horse Focus 🐴</h3>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Main Causes:</strong> Dehydration (colic, sweating), NSAIDs (Phenylbutazone), and Aminoglycosides (Gentamicin).</li>
+                            <li><strong>Markers:</strong> <strong>Creatinine</strong> is the only reliable marker. Urea can remain normal even in severe AKI (enteric recycling).</li>
+                            <li><strong>Electrolytes:</strong> Hyponatremia and hypochloremia are often observed. Calcium is variable (low/normal in AKI, high in CKD).</li>
+                            <li><strong>Polyuria:</strong> They often maintain good urine production (non-oliguric AKI) in early stages, making clinical diagnosis harder without blood work.</li>
+                        </ul>
+
+                        <h3 class="text-2xl font-semibold mt-6 mb-3 text-sky-800">Therapy: "Fluids with Brains"</h3>
+                        <p>The foundation is IV fluid therapy to restore perfusion and correct imbalances.</p>
+                        <ul class="list-disc pl-6 space-y-2">
+                            <li><strong>Rehydration:</strong> Correct deficit within 4-6 hours.</li>
+                            <li><strong>Managing Oliguria/Anuria:</strong> If after rehydration the animal does not urinate (< 1-2 ml/kg/h), <strong>STOP FLUIDS</strong>! Risk of pulmonary edema.
+                                <br><em>Drugs:</em> Furosemide or Mannitol to convert oliguria to polyuria.
+                            </li>
+                            <li><strong>Monitoring:</strong> Body weight (increase = fluid retention), urine output, blood pressure.</li>
+                        </ul>`
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Schema AKI: Cause e Terapia", en: "AKI Chart: Causes and Therapy" },
+                infographicLinkDesc: { it: "Visualizza le fasi (Induzione, Mantenimento, Recupero) e il protocollo fluidico.", en: "View phases (Induction, Maintenance, Recovery) and fluid protocol." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: `<li>IRIS AKI Guidelines (www.iris-kidney.com)</li><li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018</li>`,
+                    en: `<li>IRIS AKI Guidelines (www.iris-kidney.com)</li><li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024</li><li>Reed SM, Bayly WM, Sellon DC, Equine Internal Medicine, 4th Edition, Elsevier, 2018</li>`
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            const quizData = {
+                it: [
+                    { question: "Qual è la definizione di AKI (Acute Kidney Injury)?", options: ["Danno renale presente da > 3 mesi", "Rapida perdita della funzione renale (ore/giorni)", "Infezione cronica della vescica", "Presenza di calcoli renali"], answer: "Rapida perdita della funzione renale (ore/giorni)" },
+                    { question: "Quale tossina vegetale causa AKI nel gatto?", options: ["Uva", "Gigli (Lilium spp.)", "Cioccolato", "Cipolla"], answer: "Gigli (Lilium spp.)" },
+                    { question: "Quale farmaco è una causa comune di AKI nefrotossica nel cavallo?", options: ["Penicillina", "Gentamicina (Aminoglicosidi)", "Ivermectina", "Desametasone"], answer: "Gentamicina (Aminoglicosidi)" },
+                    { question: "La Leptospirosi nel cane causa tipicamente:", options: ["CKD progressiva", "AKI acuta con possibile interessamento epatico", "Cistite emorragica", "Incontinenza urinaria"], answer: "AKI acuta con possibile interessamento epatico" },
+                    { question: "In fase di mantenimento dell'AKI, se il paziente è anurico nonostante la reidratazione, bisogna:", options: ["Aumentare la velocità dei fluidi", "Ridurre i fluidi e monitorare il peso (rischio overidratazione)", "Somministrare antibiotici", "Attendere"], answer: "Ridurre i fluidi e monitorare il peso (rischio overidratazione)" },
+                    { question: "Qual è il marker clinico più semplice di overidratazione (edema)?", options: ["Aumento della creatinina", "Aumento del peso corporeo", "Aumento dell'appetito", "Diminuzione della temperatura"], answer: "Aumento del peso corporeo" },
+                    { question: "L'ingestione di uva o uvetta nel cane causa:", options: ["Danno tubulare acuto (AKI)", "Calcoli di struvite", "Glomerulonefrite", "Cistite"], answer: "Danno tubulare acuto (AKI)" },
+                    { question: "Il Grado I della scala IRIS AKI corrisponde a:", options: ["Creatinina > 5.0 mg/dL", "Creatinina < 1.6 mg/dL (danno non azotemico)", "Anuria completa", "Morte"], answer: "Creatinina < 1.6 mg/dL (danno non azotemico)" },
+                    { question: "Quale elettrolita tende ad aumentare pericolosamente in corso di anuria/oliguria?", options: ["Sodio", "Calcio", "Potassio", "Cloro"], answer: "Potassio" },
+                    { question: "La fase di recupero dell'AKI è spesso caratterizzata da:", options: ["Poliuria massiva", "Anuria persistente", "Ipertensione grave", "Convulsioni"], answer: "Poliuria massiva" }
+                ],
+                en: [
+                    { question: "What is the definition of AKI (Acute Kidney Injury)?", options: ["Kidney damage present for > 3 months", "Rapid loss of kidney function (hours/days)", "Chronic bladder infection", "Presence of kidney stones"], answer: "Rapid loss of kidney function (hours/days)" },
+                    { question: "Which plant toxin causes AKI in cats?", options: ["Grapes", "Lilies (Lilium spp.)", "Chocolate", "Onion"], answer: "Lilies (Lilium spp.)" },
+                    { question: "Which drug is a common cause of nephrotoxic AKI in horses?", options: ["Penicillin", "Gentamicin (Aminoglycosides)", "Ivermectin", "Dexamethasone"], answer: "Gentamicin (Aminoglycosides)" },
+                    { question: "Leptospirosis in dogs typically causes:", options: ["Progressive CKD", "Acute AKI with possible liver involvement", "Hemorrhagic cystitis", "Urinary incontinence"], answer: "Acute AKI with possible liver involvement" },
+                    { question: "In the maintenance phase of AKI, if the patient is anuric despite rehydration, you must:", options: ["Increase fluid rate", "Reduce fluids and monitor weight (risk of overhydration)", "Give antibiotics", "Wait"], answer: "Reduce fluids and monitor weight (risk of overhydration)" },
+                    { question: "What is the simplest clinical marker of overhydration (edema)?", options: ["Increased creatinine", "Increased body weight", "Increased appetite", "Decreased temperature"], answer: "Increased body weight" },
+                    { question: "Grape or raisin ingestion in dogs causes:", options: ["Acute tubular damage (AKI)", "Struvite stones", "Glomerulonephritis", "Cystitis"], answer: "Acute tubular damage (AKI)" },
+                    { question: "IRIS AKI Grade I corresponds to:", options: ["Creatinine > 5.0 mg/dL", "Creatinine < 1.6 mg/dL (non-azotemic damage)", "Complete anuria", "Death"], answer: "Creatinine < 1.6 mg/dL (non-azotemic damage)" },
+                    { question: "Which electrolyte tends to increase dangerously during anuria/oliguria?", options: ["Sodium", "Calcium", "Potassium", "Chloride"], answer: "Potassium" },
+                    { question: "The recovery phase of AKI is often characterized by:", options: ["Massive polyuria", "Persistent anuria", "Severe hypertension", "Seizures"], answer: "Massive polyuria" }
+                ]
+            };
+            
+            // --- GENERIC SCRIPT ---
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() { if (synth.speaking) synth.cancel(); }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button) {
+                    if (synth.speaking) {
+                        if (synth.paused) {
+                            synth.resume();
+                            button.classList.add('playing');
+                        } else {
+                            synth.pause();
+                            button.classList.remove('playing');
+                        }
+                        return;
+                    }
+                }
+
+                stopSpeech();
+                if (activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                activeTTSButton = button;
+                button.classList.add('playing');
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                currentUtterance.onend = () => {
+                    button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+                currentUtterance.onerror = (event) => {
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('TTS Error:', event.error);
+                    }
+                    button.classList.remove('playing');
+                    activeTTSButton = null;
+                    currentUtterance = null;
+                };
+                
+                synth.speak(currentUtterance);
+            }
+
+            let sound = null;
+            function initHowler() {
+                const audioFile = document.querySelector('#audio a[download]').href;
+                if (!audioFile) return;
+                sound = new Howl({
+                    src: [audioFile], html5: true, 
+                    onplay: () => { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: () => { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                });
+            }
+
+            const playPauseBtn = document.getElementById('audio-play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            if(playPauseBtn) playPauseBtn.addEventListener('click', () => {
+                if (!sound) initHowler();
+                if(sound) { if (sound.playing()) sound.pause(); else sound.play(); }
+            });
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        
+                        // Handle H1/H2 headers
+                        if (parentElement.tagName === 'H1' || parentElement.tagName === 'H2' || parentElement.tagName === 'H3') {
+                             const clone = parentElement.cloneNode(true);
+                             clone.querySelector('.tts-button')?.remove();
+                             textToRead = clone.textContent.trim();
+                             
+                             if (parentElement.closest('.quiz-question')) {
+                                 const optionsList = parentElement.nextElementSibling; 
+                                 if (optionsList && optionsList.tagName === 'UL') {
+                                     const optionsText = Array.from(optionsList.querySelectorAll('li')).map(li => li.textContent.trim()).join('. ');
+                                     textToRead += '. ' + optionsText;
+                                 }
+                             }
+                             else {
+                                 const section = parentElement.closest('section');
+                                 if(section && section.id === 'riassunto') {
+                                     const content = section.querySelector('[data-lang-key="summaryContent"]');
+                                     if(content) textToRead += '. ' + content.textContent.trim();
+                                 }
+                             }
+                        }
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                const quizContainer = document.getElementById('quiz-container');
+                if(!quizContainer) return;
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                quizData[lang].forEach((q, index) => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg bg-white';
+                    let optionsHtml = q.options.map(o => `
+                        <li class="quiz-option p-2 rounded hover:bg-sky-50 cursor-pointer">
+                            <label class="flex items-center w-full cursor-pointer">
+                                <input type="radio" name="q${index}" value="${o}" class="mr-3 text-sky-600">${o}
+                            </label>
+                        </li>`).join('');
+                    
+                    questionDiv.innerHTML = `
+                        <h3 class="font-semibold mb-2 text-sky-900 flex items-center justify-between">
+                            <span>${index + 1}. ${q.question}</span>
+                            <span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>
+                        </h3>
+                        <ul class="space-y-1">${optionsHtml}</ul>`;
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            const ttsButton = element.querySelector('.tts-button');
+                            const icon = element.querySelector('svg');
+                            if (element.tagName === 'A' && icon) {
+                                element.innerHTML = "";
+                                element.appendChild(icon);
+                                element.append(" " + translations[key][lang]);
+                            } else if (ttsButton) {
+                                element.childNodes[0].textContent = translations[key][lang] + " ";
+                            } else {
+                                element.textContent = translations[key][lang];
+                            }
+                        }
+                    }
+                });
+                
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                dsaToggle.textContent = document.body.classList.contains('dsa-mode') 
+                    ? (lang === 'it' ? 'Vista Standard' : 'Standard View') 
+                    : translations['accessibility'][lang];
+                
+                loadQuiz(lang);
+                setupTTSListeners(); 
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('accessibility-toggle');
+            dsaToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+
+            const submitQuizBtn = document.getElementById('submit-quiz');
+            if (submitQuizBtn) submitQuizBtn.addEventListener('click', () => {
+                let score = 0;
+                const questions = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach((q, index) => {
+                    const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                    questions[index].classList.remove('correct', 'incorrect');
+                    if (selected) {
+                        if (selected.value === q.answer) {
+                            score++;
+                            questions[index].classList.add('correct');
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    } else {
+                        questions[index].classList.add('incorrect');
+                    }
+                });
+                const resultsContainer = document.getElementById('quiz-results');
+                resultsContainer.textContent = currentLanguage === 'it' 
+                    ? `Hai risposto correttamente a ${score} su ${quizData.it.length} domande.`
+                    : `You answered ${score} out of ${quizData.en.length} questions correctly.`;
+            });
+            
+            updateLanguage(currentLanguage);
+            setupTTSListeners();
+
+             // Scroll Spy
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('article section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            sections.forEach(sec => observer.observe(sec));
+        });
+    </script>
+</body>
+</html>
