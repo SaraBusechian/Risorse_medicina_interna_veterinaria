@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approccio al Prurito - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modifiche ai colori per tema Dermatologia (Ambra) */
+        body { font-family: 'Inter', sans-serif; background-color: #fffbeb; color: #713f12; } /* amber-50 / amber-900 */
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #f59e0b; color: #d97706; } /* amber-500 / amber-700 */
+        
+        /* Modalità Accessibilità (DSA) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important; /* slate-50 */
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #34495e;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #fffdfd; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+        
+        /* Controlli Audio e Quiz (colore Ambra) */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #f59e0b; transition: color 0.2s; } /* amber-500 */
+        .tts-button:hover, .tts-button.playing { color: #d97706; } /* amber-700 */
+        .quiz-question { border: 1px solid #fde68a; transition: all 0.3s; } /* amber-200 */
+        .quiz-option:hover { background-color: #fffbeb; } /* amber-50 */
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"] { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-amber-50">
+
+    <header id="main-header" class="bg-amber-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Dermatologiche</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-amber-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-amber-100 transition duration-300">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Dermatologia</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-amber-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-amber-800" data-lang-key="pageTitle">Approccio al Prurito<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-amber-700 mt-2" data-lang-key="pageSubtitle">Algoritmo diagnostico e valutazione del paziente pruriginoso.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none text-amber-900" data-lang-key="summaryContent">
+                        <!-- Content will be injected here by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_approccio_prurito.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-amber-500">
+                         <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-amber-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona algoritmo">📊</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-amber-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica Dettagliata: Algoritmo</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca qui per la guida visuale completa per l'approccio diagnostico.</p>
+                            </div>
+                         </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions will be injected here by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-amber-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-amber-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-amber-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-amber-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-amber-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_approccio_prurito.mp3" download class="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-amber-900" data-lang-key="bibliographyContent">
+                        <!-- Content will be injected here by JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-amber-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var translations = {
+                siteTitle: { it: "Patologie Dermatologiche", en: "Dermatological Diseases" },
+                backToIndexText: { it: "Indice Dermatologia", en: "Dermatology Index" },
+                pageTitle: { it: "Approccio al Prurito", en: "Approach to Pruritus" },
+                pageSubtitle: { it: "Algoritmo diagnostico e valutazione del paziente pruriginoso.", en: "Diagnostic algorithm and evaluation of the pruritic patient." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: '<p>Il <strong>prurito</strong> è un sintomo, non una diagnosi. Rappresenta la sensazione sgradevole che induce l\'animale a grattarsi, leccarsi o mordicchiarsi. È la manifestazione più comune delle malattie dermatologiche nel cane e nel gatto, e il corretto approccio diagnostico (spesso un approccio sequenziale) è cruciale per identificare la causa primaria.</p><h3 class="text-2xl font-semibold mt-6 mb-3">1. Valutazione Iniziale e Anamnesi</h3><p>L\'anamnesi è il primo strumento. Bisogna valutare:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Localizzazione:</strong> La distribuzione del prurito e delle lesioni (auto-indotte o primarie).</li><li><strong>Stagionalità:</strong> Il prurito è presente tutto l\'anno (più probabile Allergia Alimentare o ambientali indoor) o solo in alcuni mesi (Dermatite Atopica stagionale, Ipersensibilità a punture di insetto).</li><li><strong>Età di insorgenza:</strong> Le cause parassitarie e la dermatite atopica tendono a manifestarsi in giovane età.</li><li><strong>Gravità:</strong> Utilizzo di scale di valutazione, come la <strong>Visual Analog Scale (VAS)</strong> o la <strong>Pruritus Extent and Severity Index (PESI)</strong>, per quantificare la risposta alla terapia e l\'impatto sulla qualità della vita.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">2. Algoritmo Diagnostico (I pilastri)</h3><p>L\'approccio moderno segue tipicamente questi passaggi, che mirano a escludere le cause più comuni e trattabili prima di passare alle diagnosi più complesse:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Esclusione di Parassiti (Passo 1):</strong><p>Anche in assenza di riscontro, è fondamentale escludere le cause parassitarie, come pulci (DAP), acari (es. Rogna Sarcoptica), tramite trattamenti efficaci (Trial Terapeutico) con antiparassitari moderni (es. Isoxazoline) per almeno 4-8 settimane. Il prurito da Rogna Sarcoptica è spesso il più intenso.</p></li><li><strong>Trattamento di Infezioni Secondarie (Passo 2):</strong><p>Spesso il prurito è esacerbato da infezioni batteriche (Piodermiti) o da lieviti (Malassezia). È necessario eseguire citologia per confermare e trattare l\'infezione (antifungini e/o antibiotici per 3-4 settimane). Il prurito deve essere ricollegato alla causa primaria dopo la risoluzione dell\'infezione secondaria.</p></li><li><strong>Valutazione Allergica (Passo 3):</strong><p>Se il prurito persiste, la causa è quasi sempre allergica (Dermatite Atopica o Allergia Alimentare). Si procede con una <strong>Dieta a Eliminazione</strong> per 8-12 settimane, seguita da un trial di provocazione, per distinguere tra le due.</p></li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">3. Peculiarità nei Grandi Animali (Cavallo, Bovino, Piccoli Ruminanti)</h3><p>Sebbene l\'algoritmo sequenziale sia primariamente sviluppato per i piccoli animali, nei grandi animali il prurito è spesso legato a cause parassitarie, infettive o da ipersensibilità a insetti:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Cavallo:</strong> La causa più comune di prurito stagionale è la <strong>Ipersensibilità a Insetti Culicoidi (IBH - Sweet Itch)</strong>. Il prurito non stagionale è spesso dovuto a pidocchi (Pediculosi) o acari (es. Rogna Chorioptica, tipica del pastorale). L\'allergia alimentare è rara.</li><li><strong>Bovino e Piccoli Ruminanti:</strong> Cause frequenti sono Rogne (es. Sarcoptica, Psoroptica), Pediculosi o Dermatofitosi, spesso con distribuzione dorsale e cervicale. L\'approccio diagnostico si concentra sull\'identificazione microscopica dei parassiti o sulla coltura fungina (cultura DTM).</li><li><strong>Svezzamento:</strong> Nei puledri e vitelli in crescita, le cause infettive/parassitarie (Dermatofitosi, Rogna) sono estremamente comuni e spesso associate a vita di gruppo.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">4. Farmaci Antinfiammatori e Antipuriginosi (Specie-specifici)</h3><p>I farmaci moderni agiscono rapidamente sul sintomo, ma non curano la causa primaria. Il loro uso è spesso diagnostico o palliativo:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Piccoli Animali:</strong> Inibitori JAK (es. Oclacitinib) e Anticorpi Monoclonali anti-IL-31 (es. Lokivetmab) offrono un sollievo rapido e mirato.</li><li><strong>Glucocorticoidi:</strong> Offrono un sollievo rapido ma non selettivo in tutte le specie. La loro risposta positiva è uno dei criteri diagnostici di Favrot per la DAC, ma sono da usare con cautela per gli effetti collaterali a lungo termine.</li><li><strong>Grandi Animali:</strong> La gestione del prurito si basa spesso sul controllo della causa e sull\'uso di steroidi topici o antistaminici (efficacia variabile). Il trattamento sistemico è spesso mirato all\'eziologia (antiparassitari).</li></ul>',
+                    en: '<p><strong>Pruritus</strong> is a symptom, not a diagnosis. It represents the unpleasant sensation that causes the animal to scratch, lick, or chew itself. It is the most common manifestation of dermatological diseases in dogs and cats, and the correct diagnostic approach (often a sequential approach) is crucial to identify the primary cause.</p><h3 class="text-2xl font-semibold mt-6 mb-3">1. Initial Evaluation and History</h3><p>The history is the primary tool. It is necessary to evaluate:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Localization:</strong> The distribution of pruritus and lesions (self-induced or primary).</li><li><strong>Seasonality:</strong> Is the pruritus present all year round (more likely Food Allergy or indoor environmental allergies) or only in certain months (Seasonal Atopic Dermatitis, Insect Hypersensitivity)?</li><li><strong>Age of Onset:</strong> Parasitic causes and atopic dermatitis tend to manifest at a young age.</li><li><strong>Severity:</strong> Use of scoring scales, such as the <strong>Visual Analog Scale (VAS)</strong> or the <strong>Pruritus Extent and Severity Index (PESI)</strong>, to quantify the response to therapy and the impact on quality of life.</li><li><strong>Severity:</strong> Use of scoring scales, such as the <strong>Visual Analog Scale (VAS)</strong> or the <strong>Pruritus Extent and Severity Index (PESI)</strong>, to quantify the response to therapy and the impact on quality of life.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">2. Diagnostic Algorithm (The Pillars)</h3><p>The modern approach typically follows these steps, aiming to rule out the most common and treatable causes before moving on to more complex diagnoses:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Exclusion of Parasites (Step 1):</strong><p>Even without evidence, it is essential to rule out parasitic causes, such as fleas (FAD), mites (e.g., Sarcoptic Mange), through effective treatments (Therapeutic Trial) with modern antiparasitics (e.g., Isoxazolines) for at least 4-8 weeks. Pruritus from Sarcoptic Mange is often the most intense.</p></li><li><strong>Treatment of Secondary Infections (Step 2):</strong><p>Pruritus is often exacerbated by bacterial (Pyoderma) or yeast (Malassezia) infections. Cytology is necessary to confirm and treat the infection (antifungals and/or antibiotics for 3-4 weeks). Pruritus must be traced back to the primary cause after the secondary infection resolves.</p></li><li><strong>Allergy Evaluation (Step 3):</strong><p>If pruritus persists, the cause is almost always allergic (Atopic Dermatitis or Food Allergy). Proceed with an <strong>Elimination Diet</strong> for 8-12 weeks, followed by a provocation trial, to distinguish between the two.</p></li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">3. Peculiarities in Large Animals (Horse, Cattle, Small Ruminants)</h3><p>Although the sequential algorithm is primarily developed for small animals, in large animals, pruritus is often linked to parasitic, infectious, or insect hypersensitivity causes:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Horse:</strong> The most common cause of seasonal pruritus is <strong>Culicoides Insect Hypersensitivity (IBH - Sweet Itch)</strong>. Non-seasonal pruritus is often due to lice (Pediculosis) or mites (e.g., Chorioptic Mange, typical of the pastern). Food allergy is rare.</li><li><strong>Cattle and Small Ruminants:</strong> Frequent causes are Rogne (es. Sarcoptica, Psoroptica), Pediculosis, or Dermatofitosi (Ringworm), often with dorsal and cervical distribution. The diagnostic approach focuses on microscopic identification of parasites or fungal culture (DTM culture).</li><li><strong>Weaning:</strong> In growing foals and calves, infectious/parasitic causes (Dermatophytosis, Rogna) are extremely common and often associated with group housing.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">4. Anti-inflammatory and Anti-pruritic Drugs (Species-Specific)</h3><p>Modern drugs act rapidly on the symptom but do not cure the primary cause. Their use is often diagnostic or palliative:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Small Animals:</strong> JAK Inhibitors (e.g., Oclacitinib) and Anti-IL-31 Monoclonal Antibodies (e.g., Lokivetmab) offrono un sollievo rapido e mirato.</li><li><strong>Glucocorticoids:</strong> Offer rapid but non-selective relief in all species. Their positive response is one of Favrot\'s diagnostic criteria for CAD, but they should be used cautiously due to potential long-term side effects.</li><li><strong>Large Animals:</strong> Pruritus management often relies on controlling the cause and using topical steroids or antihistamines (variable efficacy). Systemic treatment is often directed at the etiology (antiparasitics).</li></ul>'
+                },
+                infografica_approccio_prurito_file: { it: "infografica_approccio_prurito.html", en: "infografica_approccio_prurito.html" },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: '<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li><li>Smith BP, Large Animal Internal Medicine, 5th Edition, Mosby, 2017.</li>',
+                    en: '<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li><li>Smith BP, Large Animal Internal Medicine, 5th Edition, Mosby, 2017.</li>'
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" },
+
+                // Traduzioni specifiche per gli elementi DOM con data-lang-key
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                backToIndexText: { it: "Indice Dermatologia", en: "Dermatology Index" },
+            };
+
+            var quizData = {
+                it: [
+                    { question: "Qual è il primo passo nell'algoritmo diagnostico del prurito cronico?", options: ["Test allergologici", "Dieta a eliminazione", "Esclusione di cause parassitarie", "Biopsia cutanea"], answer: "Esclusione di cause parassitarie" },
+                    { question: "Quale causa di prurito nei piccoli animali è spesso caratterizzata da un prurito non stagionale e risponde male ai glucocorticoidi?", options: ["Rogna Sarcoptica", "Dermatite Atopica (DAC) stagionale", "Allergia Alimentare", "Piodermite"], answer: "Allergia Alimentare" },
+                    { question: "La VAS (Visual Analog Scale) e il PESI servono a:", options: ["Diagnosticare la causa del prurito", "Quantificare la gravità del prurito e la risposta terapeutica", "Identificare le lesioni primarie", "Trattare le infezioni secondarie"], answer: "Quantificare la gravità del prurito e la risposta terapeutica" },
+                    { question: "L'esacerbazione del prurito in un cane atopico è spesso dovuta a:", options: ["Insufficienza renale", "Infezioni secondarie (batteri o Malassezia)", "Artrite", "Malattie endocrine"], answer: "Infezioni secondarie (batteri o Malassezia)" },
+                    { question: "Quale farmaco moderno agisce neutralizzando selettivamente la citochina IL-31 (es. Lokivetmab)?", options: ["Glucocorticoidi", "Inibitori JAK", "Antistaminici", "Anticorpi Monoclonali anti-IL-31"], answer: "Anticorpi Monoclonali anti-IL-31" },
+                    { question: "Qual è la durata minima raccomandata per un trial con dieta a eliminazione?", options: ["2 settimane", "4 settimane", "8-12 settimane", "6 mesi"], answer: "8-12 settimane" },
+                    { question: "Se il prurito è insorto prima delle lesioni, questo è un forte indizio per:", options: ["Piodermite profonda", "Rogna Demodettica", "Malattia allergica", "Dermatofitosi"], answer: "Malattia allergica" },
+                    { question: "Perché è importante trattare le infezioni secondarie prima di definire una diagnosi primaria?", options: ["Perché l'infezione è sempre la causa primaria", "Perché l'infezione aggrava il prurito e confonde la diagnosi", "Perché gli antibiotici sono l'unica cura", "Perché riduce il rischio di zoonosi"], answer: "Perché l'infezione aggrava il prurito e confonde la diagnosi" },
+                    { question: "Qual è la causa più frequente di prurito stagionale nel Cavallo?", options: ["Allergia alimentare", "Rogna Sarcoptica", "Ipersensibilità a Insetti Culicoidi (IBH)", "Fotosensibilizzazione"], answer: "Ipersensibilità a Insetti Culicoidi (IBH)" },
+                    { question: "Nei Bovini e Piccoli Ruminanti, le patologie pruriginose più comuni in condizioni di allevamento intensivo sono:", options: ["Ipercheratosi e Dermatite Digitale", "Rogna e Dermatofitosi", "Orticaria e Ectoparassitosi", "Allergia Alimentare e Pediculosi"], answer: "Rogna e Dermatofitosi" }
+                ],
+                en: [
+                    { question: "What is the first step in the diagnostic algorithm for chronic pruritus?", options: ["Allergy testing", "Elimination diet", "Exclusion of parasitic causes", "Skin biopsy"], answer: "Exclusion of parasitic causes" },
+                    { question: "Which cause of pruritus in small animals is often characterized by non-seasonal pruritus and poor response to glucocorticoids?", options: ["Sarcoptic Mange", "Seasonal Atopic Dermatitis (CAD)", "Food Allergy", "Pyoderma"], answer: "Food Allergy" },
+                    { question: "VAS (Visual Analog Scale) and PESI are used to:", options: ["Diagnose the cause of pruritus", "Quantify the severity of pruritus and therapeutic response", "Identify primary lesions", "Treat secondary infections"], answer: "Quantify the severity of pruritus and therapeutic response" },
+                    { question: "The exacerbation of pruritus in an atopic dog is often due to:", options: ["Renal failure", "Secondary infections (bacteria or Malassezia)", "Arthritis", "Endocrine diseases"], answer: "Secondary infections (bacteria or Malassezia)" },
+                    { question: "Which modern drug acts by selectively neutralizing the cytokine IL-31 (e.g., Lokivetmab)?", options: ["Glucocorticoids", "JAK Inhibitors", "Antihistamines", "Anti-IL-31 Monoclonal Antibodies"], answer: "Anti-IL-31 Monoclonal Antibodies" },
+                    { question: "What is the minimum recommended duration for an elimination diet trial?", options: ["2 weeks", "4 weeks", "8-12 weeks", "6 months"], answer: "8-12 weeks" },
+                    { question: "If pruritus started before the lesions, this is a strong indicator of:", options: ["Deep pyoderma", "Demodectic Mange", "Allergic disease", "Dermatophytosis"], answer: "Allergic disease" },
+                    { question: "Why is it important to treat secondary infections before defining a primary diagnosis?", options: ["Because the infection is always the primary cause", "Because the infection aggravates pruritus and confuses the diagnosis", "Because antibiotics are the only cure", "Because it reduces the risk of zoonosis"], answer: "Because the infection aggravates pruritus and confuses the diagnosis" },
+                    { question: "What is the most frequent cause of seasonal pruritus in the Horse?", options: ["Food allergy", "Sarcoptic Mange", "Culicoides Insect Hypersensitivity (IBH)", "Photosensitization"], answer: "Culicoides Insect Hypersensitivity (IBH)" },
+                    { question: "In Cattle and Small Ruminants, the most common pruritic pathologies under intensive farming conditions are:", options: ["Hyperkeratosis and Digital Dermatitis", "Mange and Dermatophytosis", "Urticaria and Ectoparasitosis", "Food Allergy and Pediculosis"], answer: "Mange and Dermatophytosis" }
+                ]
+            };
+            
+            // --- GENERIC SCRIPT (INIZIO) ---
+
+            var currentLanguage = localStorage.getItem('language') || 'it';
+            var synth = window.speechSynthesis;
+            var currentUtterance = null;
+            var activeTTSButton = null;
+            var voicesLoaded = false;
+
+            // Function to ensure voices are loaded (common TTS issue fix)
+            function loadVoices() {
+                if ('speechSynthesis' in window && !voicesLoaded) {
+                    var checkVoices = function() {
+                        if (synth.getVoices().length > 0) {
+                            voicesLoaded = true;
+                        }
+                    };
+                    checkVoices();
+                    synth.onvoiceschanged = checkVoices;
+                }
+            }
+
+            function stopSpeech() { if (synth.speaking) { synth.cancel(); } }
+            
+            function speak(text, button) {
+                // 1. Check if the current button is pressed again (Pause/Resume/Stop logic)
+                if (activeTTSButton === button) {
+                    if (synth.paused) { 
+                        synth.resume(); 
+                        button.classList.add('playing'); 
+                    } else if (synth.speaking) { 
+                        synth.pause(); 
+                        button.classList.remove('playing'); 
+                    } else {
+                        stopSpeech();
+                    }
+                    return; 
+                }
+
+                // 2. Stop any existing speech and reset button state
+                stopSpeech();
+                if(activeTTSButton) { activeTTSButton.classList.remove('playing'); }
+                
+                // 3. Start new speech
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                var cleanup = function() {
+                    if (button) { button.classList.remove('playing'); }
+                    if (activeTTSButton === button) {
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
+                };
+                
+                currentUtterance.onend = cleanup;
+                currentUtterance.onerror = function(event) {
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') { console.error('TTS Error:', event.error); }
+                    cleanup();
+                };
+                
+                currentUtterance.onstart = function() {
+                    button.classList.add('playing');
+                    activeTTSButton = button;
+                };
+                
+                synth.speak(currentUtterance);
+            }
+
+
+            var sound = null;
+            function initHowler() {
+                var audioFile = document.querySelector('#audio a[download]').href;
+                if (!audioFile) { return; }
+                sound = new Howl({
+                    src: [audioFile], html5: true, 
+                    onplay: function() { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: function() { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: function() { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onloaderror: function(id, msg) { console.error("Error loading audio:", msg); },
+                    onplayerror: function(id, msg) { console.error("Error playing audio:", msg); }
+                });
+            }
+
+            var playPauseBtn = document.getElementById('audio-play-pause');
+            var playIcon = document.getElementById('play-icon');
+            var pauseIcon = document.getElementById('pause-icon');
+            if(playPauseBtn) { 
+                playPauseBtn.addEventListener('click', function() {
+                    if (!sound) { initHowler(); }
+                    if(sound) { if (sound.playing()) { sound.pause(); } else { sound.play(); } }
+                });
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(function(button) {
+                    // Clone the button to remove old listeners and prevent breakage
+                    var newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    
+                    newButton.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var textToRead = '';
+                        var parentElement = newButton.parentElement;
+
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            var titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                            var subtitle = parentElement.nextElementSibling;
+                            if(subtitle && subtitle.dataset.langKey === 'pageSubtitle') {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        else if (parentElement.tagName === 'H2') {
+                            var section = parentElement.closest('section');
+                            var titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                var content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    var contentClone = content.cloneNode(true);
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        }
+                        if (textToRead) { speak(textToRead, newButton); }
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                var quizContainer = document.getElementById('quiz-container');
+                var currentQuizData = quizData[lang];
+                if(!quizContainer || !currentQuizData) { return; }
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                currentQuizData.forEach(function(q, index) {
+                    var questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    var optionsHtml = q.options.map(function(o) {
+                        return '<li class="quiz-option p-2 rounded hover:bg-amber-50"><label class="flex items-center w-full cursor-pointer"><input type="radio" name="q' + index + '" value="' + o + '" class="mr-3">' + o + '</label></li>';
+                    }).join('');
+                    questionDiv.innerHTML = '<h3 class="font-semibold mb-2">' + (index + 1) + '. ' + q.question + '</h3><ul class="space-y-1">' + optionsHtml + '</ul>';
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(function(element) {
+                    var key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        
+                        if (key.includes('Content')) {
+                            element.innerHTML = translations[key][lang];
+                        } else {
+                            var ttsButton = element.querySelector('.tts-button');
+                            var text = translations[key][lang];
+                            
+                            // 1. Remove TTS button if present
+                            if (ttsButton) {
+                                element.removeChild(ttsButton);
+                            }
+
+                            // 2. Safely update the main text content
+                            element.textContent = text;
+                            
+                            // 3. Re-append TTS button if it existed
+                            if(ttsButton) {
+                                element.appendChild(ttsButton);
+                            }
+                        }
+                    }
+                });
+                
+                var dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                loadQuiz(lang);
+                setupTTSListeners(); // Cruciale: riattacca i listener dopo la traduzione
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', function() {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', function() {
+                document.body.classList.toggle('dsa-mode');
+                var dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            var submitQuizBtn = document.getElementById('submit-quiz');
+            if (submitQuizBtn) { 
+                submitQuizBtn.addEventListener('click', function() {
+                    var score = 0;
+                    var questions = document.querySelectorAll('.quiz-question');
+                    quizData[currentLanguage].forEach(function(q, index) {
+                        var selected = document.querySelector('input[name="q' + index + '"]:checked');
+                        questions[index].classList.remove('correct', 'incorrect');
+                        if (selected) {
+                            if (selected.value === q.answer) {
+                                score++;
+                                questions[index].classList.add('correct');
+                            } else {
+                                questions[index].classList.add('incorrect');
+                            }
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    });
+                    var resultsContainer = document.getElementById('quiz-results');
+                    var resultText = {
+                        it: 'Hai risposto correttamente a ' + score + ' su ' + quizData.it.length + ' domande.',
+                        en: 'You answered ' + score + ' out of ' + quizData.en.length + ' questions correctly.'
+                    };
+                    resultsContainer.textContent = resultText[currentLanguage];
+                });
+            }
+            
+            loadVoices(); // Load voices at startup
+            updateLanguage(currentLanguage);
+            var navLinks = document.querySelectorAll('.nav-link');
+            var sections = document.querySelectorAll('article section');
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(function(link) {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            sections.forEach(function(sec) { observer.observe(sec); });
+            // --- GENERIC SCRIPT (FINE) ---
+        });
+    </script>
+</body>
+</html>
