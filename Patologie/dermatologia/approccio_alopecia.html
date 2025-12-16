@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approccio all'Alopecia - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modifiche ai colori per tema Dermatologia (Ambra) */
+        body { font-family: 'Inter', sans-serif; background-color: #fffbeb; color: #713f12; } /* amber-50 / amber-900 */
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #f59e0b; color: #d97706; } /* amber-500 / amber-700 */
+        
+        /* Modalità Accessibilità (DSA) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important; /* slate-50 */
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #34495e;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #fffdfd; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+        
+        /* Controlli Audio e Quiz (colore Ambra) */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #f59e0b; transition: color 0.2s; } /* amber-500 */
+        .tts-button:hover, .tts-button.playing { color: #d97706; } /* amber-700 */
+        .quiz-question { border: 1px solid #fde68a; transition: all 0.3s; } /* amber-200 */
+        .quiz-option:hover { background-color: #fffbeb; } /* amber-50 */
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img, a[href*="infografica"] { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-amber-50">
+
+    <header id="main-header" class="bg-amber-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Dermatologiche</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-amber-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-amber-100 transition duration-300">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Dermatologia</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-amber-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-amber-800" data-lang-key="pageTitle">Approccio all'Alopecia<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-amber-700 mt-2" data-lang-key="pageSubtitle">Algoritmo differenziale per la perdita di pelo e distinzione tra cause auto-indotte e spontanee.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none text-amber-900" data-lang-key="summaryContent">
+                        <!-- Content will be injected here by JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_approccio_alopecia.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-amber-500">
+                         <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-amber-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona microscopio">🔬</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-amber-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica Dettagliata: Algoritmo</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca qui per la guida visuale completa all'algoritmo diagnostico.</p>
+                            </div>
+                         </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions will be injected here by JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-amber-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-amber-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-amber-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-amber-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-amber-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_approccio_alopecia.mp3" download class="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul class="list-disc pl-6 text-amber-900" data-lang-key="bibliographyContent">
+                        <li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li><li>Smith BP, Large Animal Internal Medicine, 5th Edition, Mosby, 2017.</li>
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-amber-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var translations = {
+                siteTitle: { it: "Patologie Dermatologiche", en: "Dermatological Diseases" },
+                backToIndexText: { it: "Indice Dermatologia", en: "Dermatology Index" },
+                pageTitle: { it: "Approccio all'Alopecia", en: "Approach to Alopecia" },
+                pageSubtitle: { it: "Algoritmo differenziale per la perdita di pelo e distinzione tra cause auto-indotte e spontanee.", en: "Differential algorithm for hair loss and distinction between self-induced and spontaneous causes." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: '<p>L\'<strong>alopecia</strong> è la perdita anomala di peli ed è un segno clinico comune in molte specie. L\'approccio diagnostico si basa primariamente sulla distinzione tra: <strong>alopecia auto-indotta</strong> (il pelo è rimosso dal paziente a causa di prurito o stress) e <strong>alopecia spontanea</strong> (il pelo cade da solo per un difetto nel ciclo follicolare, tipicamente ormonale o genetico).</p><h3 class="text-2xl font-semibold mt-6 mb-3">1. Distinzione Preliminare: Auto-indotta vs. Spontanea</h3><ul class="list-disc pl-6 space-y-2"><li><strong>Alopecia Auto-indotta (Pruriginosa):</strong> Le lesioni sono spesso asimmetriche e irregolari. Il <strong>Tricogramma</strong> (esame del pelo) mostra fusti rotti o danneggiati (fratture). Si segue l\'Algoritmo del Prurito.</li><li><strong>Alopecia Spontanea (Non pruriginosa):</strong> Le lesioni sono tipicamente bilaterali e simmetriche, senza segni di infiammazione primaria. Il Tricogramma mostra <strong>radici non traumatizzate</strong> (fase Telogen). Si prosegue con gli esami per le cause metaboliche/endocrine.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">2. Esami Diagnostici Dermatologici (Base)</h3><p>Questi esami sono essenziali per categorizzare l\'alopecia e stabilire se sia coinvolta una causa infiammatoria o parassitaria:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Esame a luce di Wood/Coltura DTM:</strong> Esclusione di <strong>Dermatofitosi</strong> (Tigna).</li><li><strong>Raschiato Cutaneo:</strong> Profondo (per <strong>Rogna Demodettica</strong>) e superficiale (per <strong>Sarcoptica/Cheyletiella</strong>).</li><li><strong>Citologia:</strong> Esclusione di infezioni secondarie (batteriche, Malassezia).</li><li><strong>Biopsia cutanea:</strong> Necessaria per le patologie complesse, infiammatorie o per confermare endocrinopatie e displasie.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">3. Alopecia Spontanea (Endocrinopatie - Piccoli Animali)</h3><p>Se l\'alopecia è simmetrica, bilaterale e non pruriginosa, si indaga una causa ormonale. La distribuzione tipica è sui fianchi e sull\'addome, risparmiando testa ed estremità. Le cause principali includono:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Iperadrenocorticismo (Cushing):</strong> Alopecia simmetrica, cute sottile (atrofica), addome pendulo. Diagnosi tramite test di soppressione/stimolazione.</li><li><strong>Ipotiroidismo:</strong> Alopecia simmetrica, "coda da topo", cute secca/squamosa, melanodermia, letargia. Diagnosi tramite profilo tiroideo completo.</li><li><strong>Alopecia X / Displasia Follicolare:</strong> Diagnosi di esclusione dopo aver escluso tutte le cause ormonali primarie.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">4. Peculiarità nei Grandi Animali (Cavallo e Bovino)</h3><p>Nei grandi animali, l\'alopecia è prevalentemente auto-indotta o focale, con la causa endocrina simmetrica molto meno comune che nel cane.</p><ul class="list-disc pl-6 space-y-2"><li><strong>Alopecia Auto-indotta:</strong> Causata da forte prurito (es. Ipersensibilità a insetti, Rogne). Si valuta il prurito sottostante.</li><li><strong>Alopecia focale infettiva:</strong> La <strong>Dermatofitosi (Tigna)</strong> è la causa più frequente di aree alopeciche focali nei giovani bovini, equini e piccoli ruminanti.</li><li><strong>Alopecia da carenza:</strong> Alopecia generalizzata o localizzata su collo/fianchi può essere dovuta a carenze nutrizionali (es. Zinco, Selenio) in sistemi di allevamento carenti.</li></ul>',
+                    en: '<p><strong>Alopecia</strong> is the abnormal loss of hair and is a common clinical sign in many species. The diagnostic approach is primarily based on distinguishing between: <strong>self-induced alopecia</strong> (hair is removed by the patient due to pruritus or stress) and <strong>spontaneous alopecia</strong> (hair falls out by itself due to a defect in the follicular cycle, typically hormonal or genetic).</p><h3 class="text-2xl font-semibold mt-6 mb-3">1. Preliminary Distinction: Self-induced vs. Spontaneous</h3><ul class="list-disc pl-6 space-y-2"><li><strong>Self-induced Alopecia (Pruritic):</strong> Lesions are often asymmetrical and irregular. The <strong>Trichogram</strong> (hair examination) shows broken or damaged shafts (fractures). The Pruritus Algorithm is followed.</li><li><strong>Spontaneous Alopecia (Non-pruritic):</strong> Lesions are typically bilateral and symmetrical, without signs of primary inflammation. The Trichogram shows <strong>non-traumatized roots</strong> (Telogen phase). Metabolic/endocrine causes are investigated.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">2. Basic Dermatological Diagnostic Tests</h3><p>These tests are essential to categorize alopecia and establish whether an inflammatory or parasitic cause is involved:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Wood\'s Lamp Examination/DTM Culture:</strong> Exclusion of <strong>Dermatophytosis</strong> (Ringworm).</li><li><strong>Skin Scraping:</strong> Deep (for <strong>Demodectic Mange</strong>) and superficial (for <strong>Sarcoptic/Cheyletiella</strong>).</li><li><strong>Cytology:</strong> Exclusion of secondary infections (bacterial, Malassezia).</li><li><strong>Skin Biopsy:</strong> Necessary for complex, inflammatory pathologies or to confirm endocrinopathies and dysplasias.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">3. Spontaneous Alopecia (Endocrinopathies - Small Animals)</h3><p>If alopecia is symmetrical, bilateral, and non-pruritic, a hormonal cause is investigated. The typical distribution is on the flanks and abdomen, sparing the head and extremities. The main causes include:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Hyperadrenocorticism (Cushing\'s):</strong> Symmetrical alopecia, thin (atrophic) skin, pendulous abdomen. Diagnosis via suppression/stimulation tests.</li><li><strong>Hypothyroidism:</strong> Symmetrical alopecia, \'rat tail\', dry/scaly skin, melanoderma, lethargy. Diagnosis via complete thyroid profile.</li><li><strong>Alopecia X / Follicular Dysplasia:</strong> Diagnosis of exclusion after ruling out all primary hormonal causes.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">4. Peculiarities in Large Animals (Horse and Cattle)</h3><p>In large animals, alopecia is predominantly self-induced or focal, with the symmetrical endocrine cause being much less common than in the dog.</p><ul class="list-disc pl-6 space-y-2"><li><strong>Self-induced Alopecia:</strong> Caused by severe pruritus (e.g., Insect Hypersensitivity, Mange). The underlying pruritus is evaluated.</li><li><strong>Focal Infectious Alopecia:</strong> <strong>Dermatophytosis (Ringworm)</strong> is the most frequent cause of focal alopecic areas in young horses, cattle, and small ruminants.</li><li><strong>Deficiency Alopecia:</strong> Generalized or localized alopecia on the neck/flanks may be due to nutritional deficiencies (e.g., Zinc, Selenium) in deficient farming systems.</li></ul>'
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l'Infografica Dettagliata: Algoritmo", en: "View the Detailed Infographic: Algorithm" },
+                infographicLinkDesc: { it: "Clicca qui per la guida visuale completa all'algoritmo diagnostico.", en: "Click here for the complete visual guide to the diagnostic algorithm." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" },
+                backToSummary: { it: "approccio_alopecia.html", en: "approccio_alopecia.html" },
+                backToSummaryText: { it: "Ritorno al Riassunto", en: "Return to Summary" },
+            };
+
+            var quizData = {
+                it: [
+                    { question: "La prima distinzione da fare nell'approccio all'alopecia è tra:", options: ["Alopecia infettiva e parassitaria", "Alopecia focale e generalizzata", "Alopecia auto-indotta e spontanea", "Alopecia congenita e acquisita"], answer: "Alopecia auto-indotta e spontanea" },
+                    { question: "L'alopecia auto-indotta è tipicamente causata da:", options: ["Disfunzione ormonale", "Prurito e trauma", "Follicolite batterica", "Displasia del follicolo pilifero"], answer: "Prurito e trauma" },
+                    { question: "Se un tricogramma mostra peli con radici non traumatizzate e fusti intatti, la causa più probabile è:", options: ["Rogna Sarcoptica", "Allergia", "Alopecia auto-indotta", "Alopecia spontanea (Endocrinopatia)"], answer: "Alopecia spontanea (Endocrinopatia)" },
+                    { question: "L'alopecia spontanea (non pruriginosa) nei piccoli animali ha una distribuzione classica che tipicamente risparmia:", options: ["Il tronco", "La testa e le estremità", "L'addome e i fianchi", "L'area perioculare"], answer: "La testa e le estremità" },
+                    { question: "Quale test è essenziale per escludere la Rogna Demodettica?", options: ["Tricogramma", "Raschiato cutaneo profondo", "Citologia", "Test di soppressione al desametasone"], answer: "Raschiato cutaneo profondo" },
+                    { question: "Quale endocrinopatia nei piccoli animali è associata a cute sottile e addome pendulo, oltre all'alopecia?", options: ["Ipotiroidismo", "Diabete Mellito", "Iperadrenocorticismo", "Alopecia X"], answer: "Iperadrenocorticismo" },
+                    { question: "L'alopecia asimmetrica con lesioni irregolari è un indizio per:", options: ["Iperadrenocorticismo", "Ipotiroidismo", "Alopecia auto-indotta", "Displasia follicolare"], answer: "Alopecia auto-indotta" },
+                    { question: "Nei bovini in crescita, la causa più frequente di aree alopeciche focali è:", options: ["Rogna Demodettica", "Dermatofitosi (Tigna)", "Carenza di Selenio", "Ipersensibilità alimentare"], answer: "Dermatofitosi (Tigna)" },
+                    { question: "La maggior parte dell'alopecia nel Cavallo è considerata:", options: ["Spontanea di origine ormonale", "Auto-indotta (da prurito)", "Dovuta a vaccinazioni", "Congenita"], answer: "Auto-indotta (da prurito)" },
+                    { question: "La 'coda da topo' (perdita di pelo sulla coda) è un segno cutaneo classico di:", options: ["Iperadrenocorticismo", "Ipotiroidismo", "Dermatite Atopica", "Rogna Sarcoptica"], answer: "Ipotiroidismo" }
+                ]
+                ,
+                en: [
+                    { question: "The first distinction to make in the approach to alopecia is between:", options: ["Infectious and parasitic alopecia", "Focal and generalized alopecia", "Self-induced and spontaneous alopecia", "Congenital and acquired alopecia"], answer: "Self-induced and spontaneous alopecia" },
+                    { question: "Self-induced alopecia is typically caused by:", options: ["Hormonal dysfunction", "Pruritus and trauma", "Bacterial folliculitis", "Hair follicle dysplasia"], answer: "Pruritus and trauma" },
+                    { question: "If a trichogram shows hairs with non-traumatized roots and intact shafts, the most likely cause is:", options: ["Sarcoptic Mange", "Allergy", "Self-induced alopecia", "Spontaneous alopecia (Endocrinopathy)"], answer: "Spontaneous alopecia (Endocrinopathy)" },
+                    { question: "Spontaneous alopecia (non-pruritic) in small animals has a classic distribution that typically spares:", options: ["The trunk", "The head and extremities", "The abdomen and flanks", "The periorbital area"], answer: "The head and extremities" },
+                    { question: "Which test is essential to rule out Demodectic Mange?", options: ["Trichogram", "Deep skin scraping", "Cytology", "Dexamethasone suppression test"], answer: "Deep skin scraping" },
+                    { question: "Which endocrinopathy in small animals is associated with thin skin and a pendulous abdomen, in addition to alopecia?", options: ["Hypothyroidism", "Diabetes Mellitus", "Hyperadrenocorticism", "Alopecia X"], answer: "Hyperadrenocorticism" },
+                    { question: "Asymmetrical alopecia with irregular lesions is an indication of:", options: ["Hyperadrenocorticism", "Hypothyroidism", "Self-induced alopecia", "Follicular dysplasia"], answer: "Self-induced alopecia" },
+                    { question: "In growing cattle, the most frequent cause of focal alopecic areas is:", options: ["Demodectic Mange", "Dermatophytosis (Ringworm)", "Selenium Deficiency", "Food Hypersensitivity"], answer: "Dermatophytosis (Ringworm)" },
+                    { question: "Most alopecia in Horses is considered:", options: ["Spontaneous hormonal origin", "Self-induced (due to pruritus)", "Due to vaccinations", "Congenital"], answer: "Self-induced (due to pruritus)" },
+                    { question: "The 'rat tail' (hair loss on the tail) is a classic cutaneous sign of:", options: ["Hyperadrenocorticism", "Hypothyroidism", "Atopic Dermatitis", "Sarcoptic Mange"], answer: "Hypothyroidism" }
+                ]
+            };
+            
+            // --- GENERIC SCRIPT (INIZIO) ---
+
+            var currentLanguage = localStorage.getItem('language') || 'it';
+            var synth = window.speechSynthesis;
+            var currentUtterance = null;
+            var activeTTSButton = null;
+            var voicesLoaded = false;
+
+            // Function to ensure voices are loaded (common TTS issue fix)
+            function loadVoices() {
+                if ('speechSynthesis' in window && !voicesLoaded) {
+                    var checkVoices = function() {
+                        if (synth.getVoices().length > 0) {
+                            voicesLoaded = true;
+                        }
+                    };
+                    checkVoices();
+                    synth.onvoiceschanged = checkVoices;
+                }
+            }
+
+            function stopSpeech() { if (synth.speaking) { synth.cancel(); } }
+            
+            function speak(text, button) {
+                // 1. Check if the current button is pressed again (Pause/Resume/Stop logic)
+                if (activeTTSButton === button) {
+                    if (synth.paused) { 
+                        synth.resume(); 
+                        button.classList.add('playing'); 
+                    } else if (synth.speaking) { 
+                        synth.pause(); 
+                        button.classList.remove('playing'); 
+                    } else {
+                        stopSpeech();
+                    }
+                    return; 
+                }
+
+                // 2. Stop any existing speech and reset button state
+                stopSpeech();
+                if(activeTTSButton) { activeTTSButton.classList.remove('playing'); }
+                
+                // 3. Start new speech
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                var cleanup = function() {
+                    if (button) { button.classList.remove('playing'); }
+                    if (activeTTSButton === button) {
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
+                };
+                
+                currentUtterance.onend = cleanup;
+                currentUtterance.onerror = function(event) {
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') { console.error('TTS Error:', event.error); }
+                    cleanup();
+                };
+                
+                currentUtterance.onstart = function() {
+                    button.classList.add('playing');
+                    activeTTSButton = button;
+                };
+                
+                synth.speak(currentUtterance);
+            }
+
+
+            var sound = null;
+            function initHowler() {
+                var audioFile = document.querySelector('#audio a[download]').href;
+                if (!audioFile) { return; }
+                sound = new Howl({
+                    src: [audioFile], html5: true, 
+                    onplay: function() { playIcon.classList.add('hidden'); pauseIcon.classList.remove('hidden'); },
+                    onpause: function() { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onend: function() { playIcon.classList.remove('hidden'); pauseIcon.classList.add('hidden'); },
+                    onloaderror: function(id, msg) { console.error("Error loading audio:", msg); },
+                    onplayerror: function(id, msg) { console.error("Error playing audio:", msg); }
+                });
+            }
+
+            var playPauseBtn = document.getElementById('audio-play-pause');
+            var playIcon = document.getElementById('play-icon');
+            var pauseIcon = document.getElementById('pause-icon');
+            if(playPauseBtn) { 
+                playPauseBtn.addEventListener('click', function() {
+                    if (!sound) { initHowler(); }
+                    if(sound) { if (sound.playing()) { sound.pause(); } else { sound.play(); } }
+                });
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(function(button) {
+                    // Clone the button to remove old listeners and prevent breakage
+                    var newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    
+                    newButton.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var textToRead = '';
+                        var parentElement = newButton.parentElement;
+
+                        if (parentElement.tagName === 'H1' && parentElement.dataset.langKey === 'pageTitle') {
+                            var titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                            var subtitle = parentElement.nextElementSibling;
+                            if(subtitle && subtitle.dataset.langKey === 'pageSubtitle') {
+                                textToRead += '. ' + subtitle.textContent.trim();
+                            }
+                        }
+                        else if (parentElement.tagName === 'H2') {
+                            var section = parentElement.closest('section');
+                            var titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+
+                            if (section && section.id === 'riassunto') {
+                                var content = section.querySelector('[data-lang-key="summaryContent"]');
+                                if (content) {
+                                    var contentClone = content.cloneNode(true);
+                                    textToRead += '. ' + contentClone.textContent.trim().replace(/\s\s+/g, ' ');
+                                }
+                            }
+                        }
+                        if (textToRead) { speak(textToRead, newButton); }
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                var quizContainer = document.getElementById('quiz-container');
+                var currentQuizData = quizData[lang];
+                if(!quizContainer || !currentQuizData) { return; }
+                quizContainer.innerHTML = '';
+                document.getElementById('quiz-results').innerHTML = ''; 
+                currentQuizData.forEach(function(q, index) {
+                    var questionDiv = document.createElement('div');
+                    questionDiv.className = 'quiz-question p-4 rounded-lg';
+                    var optionsHtml = q.options.map(function(o) {
+                        return '<li class="quiz-option p-2 rounded hover:bg-amber-50"><label class="flex items-center w-full cursor-pointer"><input type="radio" name="q' + index + '" value="' + o + '" class="mr-3">' + o + '</label></li>';
+                    }).join('');
+                    questionDiv.innerHTML = '<h3 class="font-semibold mb-2">' + (index + 1) + '. ' + q.question + '</h3><ul class="space-y-1">' + optionsHtml + '</ul>';
+                    quizContainer.appendChild(questionDiv);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(function(element) {
+                    var key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        
+                        if (key.includes('Content') || key.includes('Item') || key.includes('Desc')) {
+                            // Convert **text** to <strong>text</strong> for bolding inside the content blocks
+                            var contentHTML = translations[key][lang].replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                            element.innerHTML = contentHTML;
+                        } else {
+                            var ttsButton = element.querySelector('.tts-button');
+                            var text = translations[key][lang];
+                            
+                            // 1. Remove TTS button if present
+                            if (ttsButton) {
+                                element.removeChild(ttsButton);
+                            }
+
+                            // 2. Safely update the main text content
+                            element.textContent = text;
+                            
+                            // 3. Re-append TTS button if it existed
+                            if(ttsButton) {
+                                element.appendChild(ttsButton);
+                            }
+                        }
+                    }
+                });
+                
+                var dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                loadQuiz(lang);
+                setupTTSListeners(); // Cruciale: riattacca i listener dopo la traduzione
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', function() {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', function() {
+                document.body.classList.toggle('dsa-mode');
+                var dsaToggle = document.getElementById('accessibility-toggle');
+                if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+            });
+
+            var submitQuizBtn = document.getElementById('submit-quiz');
+            if (submitQuizBtn) { 
+                submitQuizBtn.addEventListener('click', function() {
+                    var score = 0;
+                    var questions = document.querySelectorAll('.quiz-question');
+                    quizData[currentLanguage].forEach(function(q, index) {
+                        var selected = document.querySelector('input[name="q' + index + '"]:checked');
+                        questions[index].classList.remove('correct', 'incorrect');
+                        if (selected) {
+                            if (selected.value === q.answer) {
+                                score++;
+                                questions[index].classList.add('correct');
+                            } else {
+                                questions[index].classList.add('incorrect');
+                            }
+                        } else {
+                            questions[index].classList.add('incorrect');
+                        }
+                    });
+                    var resultsContainer = document.getElementById('quiz-results');
+                    var resultText = {
+                        it: 'Hai risposto correttamente a ' + score + ' su ' + quizData.it.length + ' domande.',
+                        en: 'You answered ' + score + ' out of ' + quizData.en.length + ' questions correctly.'
+                    };
+                    resultsContainer.textContent = resultText[currentLanguage];
+                });
+            }
+            
+            loadVoices(); // Load voices at startup
+            updateLanguage(currentLanguage);
+            var navLinks = document.querySelectorAll('.nav-link');
+            var sections = document.querySelectorAll('article section');
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(function(link) {
+                            link.classList.toggle('active', link.getAttribute('href').substring(1) === entry.target.id);
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            sections.forEach(function(sec) { observer.observe(sec); });
+            // --- GENERIC SCRIPT (FINE) ---
+        });
+    </script>
+</body>
+</html>
