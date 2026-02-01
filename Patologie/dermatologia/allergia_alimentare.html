@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allergia Alimentare - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fffbeb; color: #713f12; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #f59e0b; color: #d97706; }
+        
+        /* Modalità Accessibilità (DSA) */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #34495e;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #fffdfd; border: 1px solid #e0e0e0; }
+        
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #f59e0b; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #d97706; }
+        .tts-button.paused { opacity: 0.6; }
+        
+        .quiz-question { border: 1px solid #fde68a; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #fffbeb; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-amber-50">
+
+    <header id="main-header" class="bg-amber-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Dermatologiche</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-amber-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-amber-100 transition duration-300">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Dermatologia</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-amber-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-amber-800" data-lang-key="pageTitle">Allergia Alimentare (Cane e Gatto)<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-amber-700 mt-2" data-lang-key="pageSubtitle">Diagnosi tramite dieta a eliminazione e gestione dei sintomi cutanei e gastrointestinali.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none text-amber-900" data-lang-key="summaryContent">
+                        <!-- Caricato via JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_allergia_alimentare.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-amber-500">
+                         <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-amber-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona ciotola">🍲</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-amber-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica: Protocollo Dieta</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca qui per la guida visuale alla dieta a eliminazione e gestione.</p>
+                            </div>
+                         </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Caricato via JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-amber-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-amber-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-amber-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-amber-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-amber-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_allergia_alimentare.mp3" download class="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul id="bib-list" class="list-disc pl-6 text-amber-900" data-lang-key="bibliographyContent">
+                        <!-- Caricato via JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-amber-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var translations = {
+                siteTitle: { it: "Patologie Dermatologiche", en: "Dermatological Diseases" },
+                backToIndexText: { it: "Indice Dermatologia", en: "Dermatology Index" },
+                pageTitle: { it: "Allergia Alimentare (Cane e Gatto)", en: "Food Allergy (Dog and Cat)" },
+                pageSubtitle: { it: "Diagnosi tramite dieta a eliminazione e gestione dei sintomi cutanei e gastrointestinali.", en: "Diagnosis via elimination diet and management of cutaneous and GI symptoms." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: '<p>L\'<strong>allergia alimentare (AA)</strong> è una reazione di ipersensibilità verso un componente dietetico, spesso una proteina. È la seconda causa più comune di prurito non stagionale. A differenza della DAC, l\'AA può insorgere a qualsiasi età.</p><h3 class="text-2xl font-semibold mt-6 mb-3">1. Segni Clinici e Distribuzione</h3><ul class="list-disc pl-6 space-y-2"><li><strong>Cane:</strong> Prurito non stagionale (spesso resistente ai glucocorticoidi), otite esterna ricorrente bilaterale (80%), pododermatite.</li><li><strong>Gatto:</strong> Prurito al capo e al collo, dermatite miliare o complessi eosinofilici.</li><li><strong>Sintomi GI:</strong> Vomito o diarrea cronica nel 30-50% dei casi.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">2. Allergeni Comuni</h3><p>Proteine come manzo, latticini, pollo e grano sono i colpevoli più frequenti. Non sono i carboidrati in sé a causare l\'allergia, ma le proteine residue.</p><h3 class="text-2xl font-semibold mt-6 mb-3">3. Diagnosi: Dieta a Eliminazione</h3><ul class="list-disc pl-6 space-y-2"><li><strong>Protocollo:</strong> Dieta con fonte proteica/carboidrati "nuova" o dieta idrolizzata per <strong>8-12 settimane</strong>.</li><li><strong>Sfida (Provocazione):</strong> Rintroduzione della vecchia dieta. Se i sintomi ricompaiono entro 1-14 giorni, la diagnosi è confermata.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">4. Gestione Terapeutica</h3><p>La terapia definitiva consiste nell\'<strong>esclusione a vita</strong> degli allergeni identificati. Durante la fase diagnostica si possono usare farmaci anti-pruriginosi (es. Oclacitinib) solo per sollievo temporaneo, ma vanno sospesi per valutare la risposta alla dieta.</p>',
+                    en: '<p><strong>Food allergy (FA)</strong> is a hypersensitivity reaction to a dietary component. It is the second most common cause of non-seasonal pruritus. Unlike Atopy, FA can start at any age.</p><h3 class="text-2xl font-semibold mt-6 mb-3">1. Clinical Signs</h3><ul class="list-disc pl-6 space-y-2"><li><strong>Dog:</strong> Non-seasonal pruritus (steroid resistant), bilateral recurrent otitis (80%), pododermatitis.</li><li><strong>Cat:</strong> Head and neck pruritus, miliary dermatitis.</li><li><strong>GI Symptoms:</strong> Vomiting or chronic diarrhea in 30-50% of cases.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">2. Common Allergens</h3><p>Beef, dairy, chicken, and wheat are the most frequent culprits. It is the protein, not the carbohydrate itself, that triggers the reaction.</p><h3 class="text-2xl font-semibold mt-6 mb-3">3. Diagnosis: Elimination Diet</h3><p>Administer a novel protein or hydrolyzed diet for <strong>8-12 weeks</strong>, followed by a provocation trial.</p><h3 class="text-2xl font-semibold mt-6 mb-3">4. Therapeutic Management</h3><p>Management relies on <strong>lifelong exclusion</strong> of identified allergens. Symptomatic drugs (e.g., Oclacitinib) may be used for temporary relief but should be tapered to assess diet efficacy.</p>'
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l\'Infografica: Protocollo Dieta", en: "View Infographic: Diet Protocol" },
+                infographicLinkDesc: { it: "Clicca qui per la guida visuale alla dieta a eliminazione e gestione.", en: "Click here for the visual guide to the elimination diet and management." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: '<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li>',
+                    en: '<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li>'
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            var quizData = {
+                it: [
+                    { question: "Qual è il gold standard per la diagnosi di AA?", options: ["Sierologia IgE", "Trial dietetico ad eliminazione", "Biopsia", "Test intradermico"], answer: "Trial dietetico ad eliminazione" },
+                    { question: "L\'AA causa tipicamente prurito:", options: ["Stagionale", "Solo notturno", "Non stagionale", "Solo alle estremità"], answer: "Non stagionale" },
+                    { question: "La durata minima raccomandata del trial dietetico è:", options: ["2 settimane", "4 settimane", "8-12 settimane", "6 mesi"], answer: "8-12 settimane" },
+                    { question: "Qual è il reperto auricolare comune nel cane con AA?", options: ["Sordità", "Otite esterna ricorrente bilaterale", "Ematoma", "Otite media"], answer: "Otite esterna ricorrente bilaterale" },
+                    { question: "Nel gatto, l\'AA si manifesta spesso con prurito al:", options: ["Dorso", "Capo e collo", "Solo ai piedi", "Coda"], answer: "Capo e collo" },
+                    { question: "La fase di provocazione (challenge) serve a:", options: ["Curare l\'animale", "Confermare la diagnosi di AA", "Testare nuovi farmaci", "Pulire la cute"], answer: "Confermare la diagnosi di AA" },
+                    { question: "Cosa si intende per dieta idrolizzata?", options: ["Dieta ricca di acqua", "Proteine frammentate per non essere riconosciute", "Dieta priva di grassi", "Dieta a base di carboidrati"], answer: "Proteine frammentate per non essere riconosciute" }
+                ],
+                en: [
+                    { question: "What is the gold standard for FA diagnosis?", options: ["IgE Serology", "Elimination diet trial", "Biopsy", "Intradermal test"], answer: "Elimination diet trial" },
+                    { question: "FA typically causes pruritus that is:", options: ["Seasonal", "Night-only", "Non-seasonal", "Extremities-only"], answer: "Non-seasonal" },
+                    { question: "The minimum recommended duration for the diet trial is:", options: ["2 weeks", "4 weeks", "8-12 weeks", "6 months"], answer: "8-12 weeks" },
+                    { question: "What is a common ear finding in dogs with FA?", options: ["Deafness", "Bilateral recurrent otitis externa", "Hematoma", "Otitis media"], answer: "Bilateral recurrent otitis externa" },
+                    { question: "In cats, FA often manifests with pruritus of the:", options: ["Back", "Head and neck", "Feet only", "Tail"], answer: "Head and neck" },
+                    { question: "The provocation phase (challenge) is used to:", options: ["Cure the animal", "Confirm FA diagnosis", "Test new drugs", "Clean the skin"], answer: "Confirm FA diagnosis" },
+                    { question: "What is a hydrolyzed diet?", options: ["High water diet", "Proteins fragmented to avoid recognition", "Fat-free diet", "Carbohydrate-based diet"], answer: "Proteins fragmented to avoid recognition" }
+                ]
+            };
+
+            var currentLanguage = localStorage.getItem('language') || 'it';
+            var synth = window.speechSynthesis;
+            var activeTTSButton = null;
+
+            function stopSpeech() { 
+                if (synth.speaking || synth.pending) {
+                    synth.cancel(); 
+                }
+            }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button) {
+                    if (synth.paused) {
+                        synth.resume();
+                        button.classList.add('playing');
+                        button.classList.remove('paused');
+                    } else if (synth.speaking) {
+                        synth.pause();
+                        button.classList.remove('playing');
+                        button.classList.add('paused');
+                    }
+                    return; 
+                }
+
+                stopSpeech();
+                if(activeTTSButton) {
+                    activeTTSButton.classList.remove('playing');
+                    activeTTSButton.classList.remove('paused');
+                }
+
+                var utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                utterance.onstart = function() {
+                    button.classList.add('playing');
+                    button.classList.remove('paused');
+                    activeTTSButton = button;
+                };
+
+                utterance.onend = function() {
+                    button.classList.remove('playing');
+                    button.classList.remove('paused');
+                    if (activeTTSButton === button) activeTTSButton = null;
+                };
+
+                utterance.onerror = function() {
+                    button.classList.remove('playing');
+                    button.classList.remove('paused');
+                    activeTTSButton = null;
+                };
+
+                synth.speak(utterance);
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(function(button) {
+                    var newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var textToRead = '';
+                        var parentElement = newButton.parentElement;
+                        
+                        if (parentElement.dataset.langKey === 'pageTitle') {
+                            var titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                        } else if (parentElement.tagName === 'H2') {
+                            var section = parentElement.closest('section');
+                            var titleText = parentElement.cloneNode(true);
+                            titleText.querySelector('.tts-button').remove();
+                            textToRead = titleText.textContent.trim();
+                            var content = section.querySelector('[data-lang-key$="Content"]');
+                            if (content) textToRead += '. ' + content.textContent.trim();
+                        }
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                var container = document.getElementById('quiz-container');
+                if(!container) return;
+                container.innerHTML = '';
+                quizData[lang].forEach(function(q, i) {
+                    var div = document.createElement('div');
+                    div.className = 'quiz-question p-4 rounded-lg';
+                    var opts = q.options.map(function(o) {
+                        return '<li class="p-2 hover:bg-amber-50 rounded"><label class="flex items-center cursor-pointer"><input type="radio" name="q'+i+'" value="'+o+'" class="mr-3">'+o+'</label></li>';
+                    }).join('');
+                    div.innerHTML = '<h3 class="font-semibold mb-2">'+(i+1)+'. '+q.question+'</h3><ul class="space-y-1">'+opts+'</ul>';
+                    container.appendChild(div);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(function(el) {
+                    var key = el.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                            el.innerHTML = translations[key][lang];
+                        } else {
+                            var btn = el.querySelector('.tts-button');
+                            var textNode = Array.prototype.find.call(el.childNodes, function(n) { return n.nodeType === 3 && n.textContent.trim(); });
+                            if (textNode) textNode.textContent = translations[key][lang];
+                            else el.textContent = translations[key][lang];
+                            if (btn) el.appendChild(btn);
+                        }
+                    }
+                });
+                var toggle = document.getElementById('accessibility-toggle');
+                toggle.textContent = document.body.classList.contains('dsa-mode') ? (lang === 'it' ? 'Vista Standard' : 'Standard View') : (lang === 'it' ? 'Accessibilità' : 'Accessibility');
+                loadQuiz(lang);
+                setupTTSListeners();
+            }
+
+            document.getElementById('lang-toggle').addEventListener('click', function() {
+                currentLanguage = (currentLanguage === 'it' ? 'en' : 'it');
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', function() {
+                document.body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', function() {
+                var score = 0;
+                var qs = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach(function(q, i) {
+                    var sel = document.querySelector('input[name="q'+i+'"]:checked');
+                    qs[i].classList.remove('correct', 'incorrect');
+                    if (sel && sel.value === q.answer) { score++; qs[i].classList.add('correct'); }
+                    else qs[i].classList.add('incorrect');
+                });
+                document.getElementById('quiz-results').textContent = (currentLanguage === 'it' ? 'Punteggio: ' : 'Score: ') + score + '/' + quizData[currentLanguage].length;
+            });
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
