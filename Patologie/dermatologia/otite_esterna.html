@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otite Esterna - Medicina Interna Veterinaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fffbeb; color: #713f12; }
+        .content-section { background-color: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .nav-link { transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .nav-link:hover, .nav-link.active { border-bottom-color: #f59e0b; color: #d97706; }
+        
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f8fafc !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+            color: #34495e;
+        }
+        .dsa-mode #main-header, .dsa-mode #main-footer { background-color: #000000 !important; }
+        .dsa-mode #main-header h1, .dsa-mode #main-header a, .dsa-mode #main-footer p, .dsa-mode button { color: #ffffff !important; }
+        .dsa-mode button { border: 1px solid #ffffff; }
+        .dsa-mode .content-section { background-color: #fffdfd; border: 1px solid #e0e0e0; }
+        
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #f59e0b; transition: color 0.2s; }
+        .tts-button:hover, .tts-button.playing { color: #d97706; }
+        .tts-button.paused { opacity: 0.6; }
+        
+        .quiz-question { border: 1px solid #fde68a; transition: all 0.3s; }
+        .quiz-option:hover { background-color: #fffbeb; }
+        .quiz-question.correct { background-color: #d1fae5; border-color: #10b981; }
+        .quiz-question.incorrect { background-color: #fee2e2; border-color: #ef4444; }
+        
+        @media print {
+            #main-header, #main-footer, #page-nav, #infografica, #quiz, #audio, #print-button, .tts-button, video, img { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-amber-50">
+
+    <header id="main-header" class="bg-amber-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Patologie Dermatologiche</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-10">
+        <div class="text-left mb-8">
+            <a href="index.html" class="inline-flex items-center bg-white text-amber-700 font-bold py-2 px-4 rounded-lg shadow hover:bg-amber-100 transition duration-300">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                <span data-lang-key="backToIndexText">Indice Dermatologia</span>
+            </a>
+        </div>
+        
+        <div class="content-section p-6 md:p-10">
+            <header class="text-center border-b-2 border-amber-200 pb-6 mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-amber-800" data-lang-key="pageTitle">Otite Esterna (Cane e Gatto)<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h1>
+                <p class="text-lg text-amber-700 mt-2" data-lang-key="pageSubtitle">Approccio sistematico basato sui fattori primari, predisponenti e perpetuanti.</p>
+            </header>
+
+            <nav id="page-nav" class="flex justify-center flex-wrap gap-4 md:gap-8 mb-10 border-b border-gray-200">
+                <a href="#riassunto" class="nav-link font-semibold py-2" data-lang-key="navSummary">Riassunto</a>
+                <a href="#infografica" class="nav-link font-semibold py-2" data-lang-key="navInfographic">Infografica</a>
+                <a href="#quiz" class="nav-link font-semibold py-2" data-lang-key="navQuiz">Quiz</a>
+                <a href="#audio" class="nav-link font-semibold py-2" data-lang-key="navAudio">Audio</a>
+                <a href="#bibliografia" class="nav-link font-semibold py-2" data-lang-key="navBibliography">Bibliografia</a>
+            </nav>
+
+            <article class="space-y-12">
+                <section id="riassunto">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4 flex items-center" data-lang-key="summaryTitle">Riassunto Completo <span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
+                    <div class="prose max-w-none text-amber-900" data-lang-key="summaryContent">
+                        <!-- Caricato via JS -->
+                    </div>
+                </section>
+
+                <section id="infografica">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="infographicTitle">Infografica Riepilogativa</h2>
+                    <a href="infografica_otite_esterna.html" target="_blank" class="block bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow border-l-4 border-amber-500">
+                         <div class="flex items-center space-x-6">
+                            <div class="flex-shrink-0 w-24 h-24 bg-amber-500 rounded-lg flex items-center justify-center">
+                                <span class="text-5xl" role="img" aria-label="Icona orecchio">👂</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-amber-800" data-lang-key="infographicLinkTitle">Visualizza l'Infografica: Gestione Otite</h3>
+                                <p class="text-gray-600 mt-1" data-lang-key="infographicLinkDesc">Clicca qui per la guida visuale all'algoritmo dei Fattori P.</p>
+                            </div>
+                         </div>
+                    </a>
+                </section>
+
+                <section id="quiz">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="quizTitle">Quiz di Autovalutazione</h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Caricato via JS -->
+                    </div>
+                    <div class="mt-6 text-center">
+                        <button id="submit-quiz" class="bg-amber-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-amber-700 transition" data-lang-key="quizSubmit">Verifica Risposte</button>
+                    </div>
+                    <div id="quiz-results" class="mt-6 text-center text-xl font-bold"></div>
+                </section>
+
+                <section id="audio">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="audioTitle">Ascolta il Riassunto</h2>
+                    <div class="p-4 bg-amber-100/50 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full">
+                        <button id="audio-play-pause" class="p-3 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors duration-200">
+                            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zM14.25 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z" /></svg>
+                        </button>
+                        <div class="flex-grow text-center sm:text-left">
+                            <p class="font-semibold text-amber-800" data-lang-key="audioListen">Ascolta il riassunto completo</p>
+                            <p class="text-sm text-amber-600" data-lang-key="audioDesc">Ideale per ripassare mentre sei in movimento.</p>
+                        </div>
+                        <a href="audio_otite_esterna.mp3" download class="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 transition inline-flex items-center w-full sm:w-auto justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            <span data-lang-key="btnDownloadAudio">Scarica</span>
+                        </a>
+                    </div>
+                </section>
+
+                <section id="bibliografia">
+                    <h2 class="text-3xl font-bold text-amber-700 mb-4" data-lang-key="bibliographyTitle">Riferimenti Bibliografici</h2>
+                    <ul id="bib-list" class="list-disc pl-6 text-amber-900" data-lang-key="bibliographyContent">
+                        <!-- Caricato via JS -->
+                    </ul>
+                </section>
+            </article>
+            
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-700 transition inline-flex items-center" data-lang-key="btnPrint">Stampa Riassunto</button>
+            </div>
+        </div>
+    </main>
+    <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-amber-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var translations = {
+                siteTitle: { it: "Patologie Dermatologiche", en: "Dermatological Diseases" },
+                backToIndexText: { it: "Indice Dermatologia", en: "Dermatology Index" },
+                pageTitle: { it: "Otite Esterna (Cane e Gatto)", en: "Otitis Externa (Dog and Cat)" },
+                pageSubtitle: { it: "Approccio sistematico basato sui fattori primari, predisponenti e perpetuanti.", en: "Systematic approach based on primary, predisposing, and perpetuating factors." },
+                navSummary: { it: "Riassunto", en: "Summary" },
+                navInfographic: { it: "Infografica", en: "Infographic" },
+                navQuiz: { it: "Quiz", en: "Quiz" },
+                navAudio: { it: "Audio", en: "Audio" },
+                navBibliography: { it: "Bibliografia", en: "Bibliography" },
+                summaryTitle: { it: "Riassunto Completo", en: "Full Summary" },
+                summaryContent: { 
+                    it: '<p>L\'<strong>otite esterna</strong> è l\'infiammazione del condotto uditivo esterno, pinna compresa. È una delle cause più frequenti di visita veterinaria. La chiave del successo clinico risiede nell\'identificazione della <strong>causa primaria</strong> e dei fattori che la sostengono.</p><h3 class="text-2xl font-semibold mt-6 mb-3">1. La Classificazione dei Fattori (I "Fattori P")</h3><ul class="list-disc pl-6 space-y-2"><li><strong>Fattori Predisponenti:</strong> Alterano il microambiente del condotto. Esempi: orecchie pendule (conformazione), eccessiva umidità (nuoto), pulizia eccessiva o scorretta.</li><li><strong>Cause Primarie:</strong> Innescano l\'infiammazione iniziale. Le più comuni sono le <strong>allergie</strong> (Dermatite Atopica, Allergia Alimentare - 80% dei casi), parassiti (<em>Otodectes cynotis</em>), corpi estranei o disordini cheratoseborroici.</li><li><strong>Fattori Perpetuanti:</strong> Impediscono la guarigione e mantengono l\'otite. Includono infezioni batteriche (<em>Staphylococcus</em>, <em>Pseudomonas</em>), lieviti (<em>Malassezia</em>) e alterazioni patologiche croniche (stenosi, calcificazione).</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">2. Diagnosi: Il Protocollo Essenziale</h3><p>La diagnosi non deve limitarsi a "orecchio rosso", ma deve identificare l\'agente coinvolto:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Citologia (Fondamentale):</strong> Esame citologico del cerume per identificare batteri, cocchi o Malassezia. Guida la scelta del farmaco topico.</li><li><strong>Otoscopia:</strong> Valutazione del condotto e dell\'integrità della <strong>membrana timpanica</strong>. Fondamentale per decidere se usare farmaci ototossici.</li><li><strong>Coltura e Antibiogramma:</strong> Da riservare ai casi di otite cronica, purulenta o resistente, specialmente se si sospetta <em>Pseudomonas</em>.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">3. Principi di Terapia</h3><p>La terapia dell\'otite esterna si basa su due pilastri:</p><ul class="list-disc pl-6 space-y-2"><li><strong>Pulizia del Condotto:</strong> È il 50% della terapia. Rimuove il cerume e l\'essudato che inattivano i farmaci e proteggono i batteri.</li><li><strong>Terapia Topica:</strong> Gocce auricolari contenenti antibiotici, antifungini e glucocorticoidi, scelte in base alla citologia.</li><li><strong>Controllo della Causa Primaria:</strong> Se non si gestisce l\'allergia sottostante, l\'otite tornerà costantemente.</li></ul>',
+                    en: '<p><strong>Otitis externa</strong> is the inflammation of the external ear canal, including the pinna. It is one of the most frequent reasons for veterinary visits. Success lies in identifying the <strong>primary cause</strong> and supporting factors.</p><h3 class="text-2xl font-semibold mt-6 mb-3">1. Factor Classification (The "P Factors")</h3><ul class="list-disc pl-6 space-y-2"><li><strong>Predisposing Factors:</strong> Alter the microenvironment. Examples: pendulous ears (conformation), moisture (swimming), improper cleaning.</li><li><strong>Primary Causes:</strong> Trigger initial inflammation. Most common: <strong>allergies</strong> (Atopy, Food Allergy - 80% of cases), parasites (<em>Otodectes</em>), foreign bodies.</li><li><strong>Perpetuating Factors:</strong> Prevent healing. Include bacteria (<em>Staphylococcus</em>, <em>Pseudomonas</em>), yeast (<em>Malassezia</em>), and chronic stenosis.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">2. Diagnosis: Essential Protocol</h3><ul class="list-disc pl-6 space-y-2"><li><strong>Cytology (Essential):</strong> Microscopic exam to identify bacteria or Malassezia.</li><li><strong>Otoscopy:</strong> Evaluation of the canal and <strong>tympanic membrane</strong> integrity.</li><li><strong>Culture:</strong> Reserved for chronic or resistant cases.</li></ul><h3 class="text-2xl font-semibold mt-6 mb-3">3. Therapy Principles</h3><p>Cleaning is 50% of the therapy. Topical drops must be selected based on cytology findings.</p>'
+                },
+                infographicTitle: { it: "Infografica Riepilogativa", en: "Summary Infographic" },
+                infographicLinkTitle: { it: "Visualizza l\'Infografica: Gestione Otite", en: "View Infographic: Otitis Management" },
+                infographicLinkDesc: { it: "Clicca qui per la guida visuale all\'algoritmo dei Fattori P.", en: "Click here for the visual guide to the P Factors algorithm." },
+                quizTitle: { it: "Quiz di Autovalutazione", en: "Self-Assessment Quiz" },
+                quizSubmit: { it: "Verifica Risposte", en: "Check Answers" },
+                audioTitle: { it: "Ascolta il Riassunto", en: "Listen to the Summary" },
+                btnDownloadAudio: { it: "Scarica", en: "Download" },
+                audioListen: { it: "Ascolta il riassunto completo", en: "Listen to the full summary" },
+                audioDesc: { it: "Ideale per ripassare mentre sei in movimento.", en: "Ideal for reviewing on the go." },
+                bibliographyTitle: { it: "Riferimenti Bibliografici", en: "Bibliographical References" },
+                bibliographyContent: { 
+                    it: '<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li>',
+                    en: '<li>Ettinger SJ, Feldman EC, Côté E, Textbook of Veterinary Internal Medicine, 9th Edition, Elsevier, 2024.</li>'
+                },
+                btnPrint: { it: "Stampa Riassunto", en: "Print Summary" },
+                accessibility: { it: "Accessibilità", en: "Accessibility" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria", en: "Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings" }
+            };
+
+            var quizData = {
+                it: [
+                    { question: "Qual è la causa primaria più frequente di otite esterna bilaterale nel cane?", options: ["Corpi estranei", "Allergie (Atopia/Alimentare)", "Acari dell'orecchio", "Neoplasie"], answer: "Allergie (Atopia/Alimentare)" },
+                    { question: "La citologia auricolare è considerata:", options: ["Un esame opzionale", "Fondamentale per guidare la terapia topica", "Utile solo se l'otoscopia è negativa", "Necessaria solo nel gatto"], answer: "Fondamentale per guidare la terapia topica" },
+                    { question: "Cosa si intende per fattore 'perpetuante' nell'otite?", options: ["La causa che innesca l'infiammazione", "Un difetto genetico dell'orecchio", "Fattori che mantengono l'otite impedendo la guarigione (es. batteri)", "L'umidità del condotto"], answer: "Fattori che mantengono l'otite impedendo la guarigione (es. batteri)" },
+                    { question: "L'otoscopia è fondamentale soprattutto per valutare:", options: ["Il colore del cerume", "L'integrità della membrana timpanica", "La presenza di acari", "Il tipo di batterio"], answer: "L'integrità della membrana timpanica" },
+                    { question: "Quale percentuale della terapia è rappresentata dalla corretta pulizia del condotto?", options: ["10%", "25%", "50%", "100%"], answer: "50%" },
+                    { question: "Quale lievito è comunemente associato all'otite esterna?", options: ["Candida", "Malassezia", "Aspergillus", "Microsporum"], answer: "Malassezia" },
+                    { question: "Un'otite che non risponde alla terapia topica nonostante la pulizia suggerisce:", options: ["Otite media o resistenza batterica", "Mancanza di vitamine", "Solo stress", "Troppo esercizio fisico"], answer: "Otite media o resistenza batterica" },
+                    { question: "I fattori predisponenti sono quelli che:", options: ["Causano direttamente l'otite", "Rendono il condotto suscettibile all'infiammazione", "Curano l'otite", "Riducono il prurito"], answer: "Rendono il condotto suscettibile all'infiammazione" },
+                    { question: "In caso di sospetta perforazione timpanica, bisogna evitare:", options: ["La pulizia", "Farmaci potenzialmente ototossici", "La citologia", "L'anestesia"], answer: "Farmaci potenzialmente ototossici" },
+                    { question: "Quale batterio è spesso associato a otiti croniche purulente e resistenti?", options: ["Staphylococcus", "Pseudomonas", "Streptococcus", "E. coli"], answer: "Pseudomonas" }
+                ],
+                en: [
+                    { question: "What is the most frequent primary cause of bilateral otitis externa in dogs?", options: ["Foreign bodies", "Allergies (Atopy/Food)", "Ear mites", "Neoplasms"], answer: "Allergies (Atopy/Food)" },
+                    { question: "Ear cytology is considered:", options: ["Optional", "Essential to guide topical therapy", "Useful only if otoscopy is negative", "Necessary only in cats"], answer: "Essential to guide topical therapy" },
+                    { question: "What is a 'perpetuating' factor in otitis?", options: ["The trigger cause", "A genetic defect", "Factors that maintain otitis preventing healing (e.g., bacteria)", "Canal moisture"], answer: "Factors that maintain otitis preventing healing (e.g., bacteria)" },
+                    { question: "Otoscopy is essential primarily to evaluate:", options: ["Cerumen color", "Tympanic membrane integrity", "Mite presence", "Bacteria type"], answer: "Tympanic membrane integrity" },
+                    { question: "What percentage of therapy is represented by canal cleaning?", options: ["10%", "25%", "50%", "100%"], answer: "50%" },
+                    { question: "Which yeast is commonly associated with otitis externa?", options: ["Candida", "Malassezia", "Aspergillus", "Microsporum"], answer: "Malassezia" },
+                    { question: "Otitis not responding to topical therapy despite cleaning suggests:", options: ["Otitis media or bacterial resistance", "Vitamin lack", "Stress only", "Too much exercise"], answer: "Otitis media or bacterial resistance" },
+                    { question: "Predisposing factors are those that:", options: ["Directly cause otitis", "Make the canal susceptible to inflammation", "Cure otitis", "Reduce itching"], answer: "Make the canal susceptible to inflammation" },
+                    { question: "In case of suspected tympanic perforation, avoid:", options: ["Cleaning", "Potentially ototoxic drugs", "Cytology", "Anesthesia"], answer: "Potentially ototoxic drugs" },
+                    { question: "Which bacterium is often associated with chronic purulent and resistant otitis?", options: ["Staphylococcus", "Pseudomonas", "Streptococcus", "E. coli"], answer: "Pseudomonas" }
+                ]
+            };
+
+            var currentLanguage = localStorage.getItem('language') || 'it';
+            var synth = window.speechSynthesis;
+            var activeTTSButton = null;
+
+            function stopSpeech() { 
+                if (synth.speaking || synth.pending) { synth.cancel(); }
+            }
+            
+            function speak(text, button) {
+                if (activeTTSButton === button) {
+                    if (synth.paused) {
+                        synth.resume();
+                        button.classList.add('playing');
+                        button.classList.remove('paused');
+                    } else if (synth.speaking) {
+                        synth.pause();
+                        button.classList.remove('playing');
+                        button.classList.add('paused');
+                    }
+                    return; 
+                }
+                stopSpeech();
+                if(activeTTSButton) {
+                    activeTTSButton.classList.remove('playing');
+                    activeTTSButton.classList.remove('paused');
+                }
+                var utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onstart = function() {
+                    button.classList.add('playing');
+                    button.classList.remove('paused');
+                    activeTTSButton = button;
+                };
+                utterance.onend = function() {
+                    button.classList.remove('playing');
+                    button.classList.remove('paused');
+                    if (activeTTSButton === button) activeTTSButton = null;
+                };
+                utterance.onerror = function() {
+                    button.classList.remove('playing');
+                    button.classList.remove('paused');
+                    activeTTSButton = null;
+                };
+                synth.speak(utterance);
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(function(button) {
+                    var newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var textToRead = '';
+                        var parentElement = newButton.parentElement;
+                        if (parentElement.dataset.langKey === 'pageTitle') {
+                            var titleClone = parentElement.cloneNode(true);
+                            titleClone.querySelector('.tts-button').remove();
+                            textToRead = titleClone.textContent.trim();
+                        } else if (parentElement.tagName === 'H2') {
+                            var section = parentElement.closest('section');
+                            var titleText = parentElement.cloneNode(true);
+                            titleText.querySelector('.tts-button').remove();
+                            textToRead = titleText.textContent.trim();
+                            var content = section.querySelector('[data-lang-key$="Content"]');
+                            if (content) textToRead += '. ' + content.textContent.trim();
+                        }
+                        if (textToRead) speak(textToRead, newButton);
+                    });
+                });
+            }
+
+            function loadQuiz(lang) {
+                var container = document.getElementById('quiz-container');
+                if(!container) return;
+                container.innerHTML = '';
+                quizData[lang].forEach(function(q, i) {
+                    var div = document.createElement('div');
+                    div.className = 'quiz-question p-4 rounded-lg';
+                    var opts = q.options.map(function(o) {
+                        return '<li class="p-2 hover:bg-amber-50 rounded"><label class="flex items-center cursor-pointer"><input type="radio" name="q'+i+'" value="'+o+'" class="mr-3">'+o+'</label></li>';
+                    }).join('');
+                    div.innerHTML = '<h3 class="font-semibold mb-2">'+(i+1)+'. '+q.question+'</h3><ul class="space-y-1">'+opts+'</ul>';
+                    container.appendChild(div);
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(function(el) {
+                    var key = el.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        if (key.includes('Content')) {
+                            var html = translations[key][lang].replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                            el.innerHTML = html;
+                        } else {
+                            var btn = el.querySelector('.tts-button');
+                            var textNode = Array.prototype.find.call(el.childNodes, function(n) { return n.nodeType === 3 && n.textContent.trim(); });
+                            if (textNode) textNode.textContent = translations[key][lang];
+                            else el.textContent = translations[key][lang];
+                            if (btn) el.appendChild(btn);
+                        }
+                    }
+                });
+                var toggle = document.getElementById('accessibility-toggle');
+                toggle.textContent = document.body.classList.contains('dsa-mode') ? (lang === 'it' ? 'Vista Standard' : 'Standard View') : (lang === 'it' ? 'Accessibilità' : 'Accessibility');
+                loadQuiz(lang);
+                setupTTSListeners();
+            }
+
+            document.getElementById('lang-toggle').addEventListener('click', function() {
+                currentLanguage = (currentLanguage === 'it' ? 'en' : 'it');
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', function() {
+                document.body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('submit-quiz').addEventListener('click', function() {
+                var score = 0;
+                var qs = document.querySelectorAll('.quiz-question');
+                quizData[currentLanguage].forEach(function(q, i) {
+                    var sel = document.querySelector('input[name="q'+i+'"]:checked');
+                    qs[i].classList.remove('correct', 'incorrect');
+                    if (sel && sel.value === q.answer) { score++; qs[i].classList.add('correct'); }
+                    else qs[i].classList.add('incorrect');
+                });
+                document.getElementById('quiz-results').textContent = (currentLanguage === 'it' ? 'Punteggio: ' : 'Score: ') + score + '/' + quizData[currentLanguage].length;
+            });
+
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
