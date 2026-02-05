@@ -3,350 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infografica: La Raccolta dell'Anamnesi</title>
+    <title>Infografica: La Raccolta dell'Anamnesi - Medicina Interna</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
-        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
-        @media (min-width: 768px) { .chart-container { height: 350px; } }
-        .flow-step { background-color: white; border: 2px solid #003f5c; color: #003f5c; }
-        .flow-arrow { color: #003f5c; font-weight: bold; font-size: 2rem; }
-        .nav-link { transition: color 0.3s; }
-        .nav-link:hover { color: #93C5FD; }
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        /* Navigazione */
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #93C5FD !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        .chart-container { position: relative; width: 100%; height: 350px; }
+        
+        .flow-step { background-color: #f8fafc; border: 2px solid #1E3A8A; color: #1E3A8A; }
+        .flow-arrow { color: #3B82F6; font-weight: bold; font-size: 1.5rem; }
+
+        /* --- STILI DSA --- */
         .dsa-mode {
             font-family: 'Lexend', sans-serif;
-            background-color: #fdfaf5 !important;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
             letter-spacing: 0.05em;
-            line-height: 1.75;
+            line-height: 2;
         }
-        .dsa-mode #main-header, .dsa-mode #main-footer {
-            background-color: #000000 !important;
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
             background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
         }
-        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
-            color: #ffffff !important;
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
         }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
-        .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
-        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode div { color: #34495e; }
+
+        .dsa-mode .section-card { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+        }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: underline;
+            text-decoration-color: #fbbf24;
+        }
+
+        .dsa-mode .flow-step { background-color: #ffffff; border-color: #000000; color: #000000; }
+
+        /* --- TTS BUTTON --- */
         .tts-button {
             cursor: pointer;
             display: inline-block;
-            margin-left: 8px;
+            margin-left: 10px;
             vertical-align: middle;
             color: #64748b;
             transition: color 0.2s;
         }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .dsa-mode .tts-button { color: #000000 !important; }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50">
 
-    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
             <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
             <div class="flex items-center space-x-4">
                 <ul class="hidden md:flex space-x-6">
-                    <li><a href="index.html#anamnesi" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
-                    <li><a href="index.html#ispezione" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
-                    <li><a href="index.html#palpazione" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
-                    <li><a href="index.html#percussione" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
-                    <li><a href="index.html#auscultazione" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
                 </ul>
-                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
-                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
         </nav>
     </header>
 
-    <div class="container mx-auto p-4 md:p-8">
-        
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-[#003f5c] mb-4" data-lang-key="pageTitle">L'Anamnesi: Il Primo Passo Fondamentale</h1>
-            <p class="text-lg text-gray-600 max-w-3xl mx-auto" data-lang-key="pageSubtitle">Un'indagine metodica che guida il veterinario verso la diagnosi corretta, prima ancora di toccare l'animale.</p>
-        </header>
-
-        <main class="space-y-12">
-            <section class="bg-white rounded-lg shadow-md p-6 md:p-8">
-                <div class="text-center">
-                    <p class="text-2xl font-semibold text-gray-700 leading-relaxed" data-lang-key="introText">Una buona anamnesi può orientare correttamente la diagnosi <span class="font-bold text-3xl text-[#ef5675]">nella grande maggioranza dei casi</span>, riducendo la necessità di ricorrere immediatamente a esami strumentali complessi e costosi. <span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></p>
-                </div>
-            </section>
-
-            <section>
-                <h2 class="text-3xl font-bold text-center mb-8 text-[#003f5c]" data-lang-key="pillarsTitle">I Tre Pilastri dell'Indagine Anamnestica</h2>
-                <p class="text-center text-gray-600 max-w-2xl mx-auto mb-8" data-lang-key="pillarsSubtitle">L'anamnesi si compone di tre fasi interconnesse, ciascuna fondamentale per costruire un quadro clinico completo.</p>
-                <div class="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-4 text-center">
-                    <div class="p-6 bg-white rounded-lg shadow-md border-t-4 border-[#003f5c] w-full md:w-1/3">
-                        <h3 class="text-xl font-bold mb-2" data-lang-key="pillar1Title">1. Anamnesi Remota</h3>
-                        <p data-lang-key="pillar1Desc">La "carta d'identità" e la storia passata dell'animale. Chi è e da dove viene?</p>
-                    </div>
-                    <div class="text-2xl font-bold text-[#003f5c] hidden md:flex items-center">→</div>
-                    <div class="text-2xl font-bold text-[#003f5c] md:hidden">↓</div>
-                    <div class="p-6 bg-white rounded-lg shadow-md border-t-4 border-[#7a5195] w-full md:w-1/3">
-                        <h3 class="text-xl font-bold mb-2" data-lang-key="pillar2Title">2. Anamnesi Recente</h3>
-                        <p data-lang-key="pillar2Desc">L'investigazione del problema attuale. Cosa è successo e come si è evoluto?</p>
-                    </div>
-                    <div class="text-2xl font-bold text-[#003f5c] hidden md:flex items-center">→</div>
-                    <div class="text-2xl font-bold text-[#003f5c] md:hidden">↓</div>
-                    <div class="p-6 bg-white rounded-lg shadow-md border-t-4 border-[#ff764a] w-full md:w-1/3">
-                        <h3 class="text-xl font-bold mb-2" data-lang-key="pillar3Title">3. Anamnesi Collettiva</h3>
-                        <p data-lang-key="pillar3Desc">Il contesto dell'allevamento. Il problema è individuale o riguarda il gruppo?</p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-2xl font-bold mb-4 text-[#003f5c]" data-lang-key="remoteKeysTitle">Anamnesi Remota: Punti Chiave</h3>
-                    <p class="mb-6 text-gray-600" data-lang-key="remoteKeysDesc">Non tutte le informazioni hanno lo stesso peso. Cambiamenti recenti nella gestione o nell'alimentazione sono spesso più indicativi di patologie acute rispetto a dati più statici, sebbene tutti siano importanti per il quadro generale.</p>
-                    <div class="chart-container h-80 md:h-96">
-                        <canvas id="remoteAnamnesisChart"></canvas>
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-2xl font-bold mb-4 text-[#7a5195]" data-lang-key="recentFlowTitle">Anamnesi Recente: Il Flusso Investigativo</h3>
-                    <p class="mb-6 text-gray-600" data-lang-key="recentFlowDesc">La raccolta dell'anamnesi recente segue un percorso logico per non tralasciare dettagli cruciali. Ogni domanda apre la strada a quella successiva, restringendo il campo delle possibili cause.</p>
-                    <div class="space-y-4">
-                        <div class="flow-step rounded-lg p-3 text-center font-semibold" data-lang-key="flow1">Qual è il sintomo principale?</div>
-                        <div class="flow-arrow text-center">↓</div>
-                        <div class="flow-step rounded-lg p-3 text-center font-semibold" data-lang-key="flow2">Quando è iniziato? (Acuta/Cronica)</div>
-                        <div class="flow-arrow text-center">↓</div>
-                        <div class="flow-step rounded-lg p-3 text-center font-semibold" data-lang-key="flow3">Come si è evoluto? (Peggiorato/Migliorato)</div>
-                        <div class="flow-arrow text-center">↓</div>
-                        <div class="flow-step rounded-lg p-3 text-center font-semibold" data-lang-key="flow4">Sono stati fatti trattamenti? Con quale esito?</div>
-                    </div>
-                </div>
-            </section>
-            
-            <section class="bg-white rounded-lg shadow-md p-6 md:p-8">
-                <h2 class="text-3xl font-bold text-center mb-2 text-[#ff764a]" data-lang-key="herdTitle">Anamnesi Collettiva: La Visione d'Insieme</h2>
-                <p class="text-center text-gray-600 max-w-2xl mx-auto mb-8" data-lang-key="herdDesc">In un allevamento, un singolo caso può essere la punta dell'iceberg. È fondamentale capire se il problema è diffuso e quali categorie di animali sono più colpite per identificare cause manageriali, ambientali o infettive.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <p class="text-lg font-semibold mb-4 text-gray-700" data-lang-key="herdChartTitle">Distribuzione tipica dei problemi per categoria:</p>
-                        <p class="text-gray-600" data-lang-key="herdChartDesc">Questo grafico illustra come, in molti scenari di patologie di gruppo, determinate categorie di animali, come i giovani o quelli in specifiche fasi produttive, siano colpite in modo sproporzionato. Identificare questo schema è vitale per una diagnosi di mandria.</p>
-                    </div>
-                    <div class="chart-container h-80">
-                        <canvas id="herdAnamnesisChart"></canvas>
-                    </div>
-                </div>
-            </section>
-        </main>
-        
-        <footer id="main-footer" class="bg-gray-800 text-white mt-12">
-             <div class="container mx-auto px-6 py-4 text-center">
-                <p data-lang-key="footerText">&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="index.html#anamnesi" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- Contenuto inserito da JS -->
+                </a>
             </div>
-        </footer>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">L'Arte dell'Anamnesi</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">Il primo passo fondamentale per orientare correttamente il percorso diagnostico.</p>
+        </div>
     </div>
 
-    <script>
-        const translations = {
-            siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
-            navAnamnesi: { it: 'Anamnesi', en: 'History' },
-            navIspezione: { it: 'Ispezione', en: 'Inspection' },
-            navPalpazione: { it: 'Palpazione', en: 'Palpation' },
-            navPercussione: { it: 'Percussione', en: 'Percussion' },
-            navAuscultazione: { it: 'Auscultazione', en: 'Auscultation' },
-            accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-            pageTitle: { it: "L'Anamnesi: Il Primo Passo Fondamentale", en: "History Taking: The Fundamental First Step" },
-            pageSubtitle: { it: "Un'indagine metodica che guida il veterinario verso la diagnosi corretta, prima ancora di toccare l'animale.", en: "A methodical investigation that guides the veterinarian to the correct diagnosis, even before touching the animal." },
-            introText: { it: "Una buona anamnesi può orientare correttamente la diagnosi nella grande maggioranza dei casi, riducendo la necessità di ricorrere immediatamente a esami strumentali complessi e costosi.", en: "A good history can correctly guide the diagnosis in the vast majority of cases, reducing the need for immediate, complex, and expensive instrumental tests." },
-            pillarsTitle: { it: "I Tre Pilastri dell'Indagine Anamnestica", en: "The Three Pillars of the Anamnestic Investigation" },
-            pillarsSubtitle: { it: "L'anamnesi si compone di tre fasi interconnesse, ciascuna fondamentale per costruire un quadro clinico completo.", en: "The history consists of three interconnected phases, each essential for building a complete clinical picture." },
-            pillar1Title: { it: "1. Anamnesi Remota", en: "1. Past History" },
-            pillar1Desc: { it: "La \"carta d'identità\" e la storia passata dell'animale. Chi è e da dove viene?", en: "The animal's \"ID card\" and past history. Who is it and where does it come from?" },
-            pillar2Title: { it: "2. Anamnesi Recente", en: "2. Recent History" },
-            pillar2Desc: { it: "L'investigazione del problema attuale. Cosa è successo e come si è evoluto?", en: "The investigation of the current problem. What happened and how has it evolved?" },
-            pillar3Title: { it: "3. Anamnesi Collettiva", en: "3. Collective History" },
-            pillar3Desc: { it: "Il contesto dell'allevamento. Il problema è individuale o riguarda il gruppo?", en: "The farm context. Is the problem individual or does it affect the group?" },
-            remoteKeysTitle: { it: "Anamnesi Remota: Punti Chiave", en: "Past History: Key Points" },
-            remoteKeysDesc: { it: "Non tutte le informazioni hanno lo stesso peso. Cambiamenti recenti nella gestione o nell'alimentazione sono spesso più indicativi di patologie acute rispetto a dati più statici, sebbene tutti siano importanti per il quadro generale.", en: "Not all information carries the same weight. Recent changes in management or diet are often more indicative of acute pathologies than static data, although all are important for the overall picture." },
-            recentFlowTitle: { it: "Anamnesi Recente: Il Flusso Investigativo", en: "Recent History: The Investigative Flow" },
-            recentFlowDesc: { it: "La raccolta dell'anamnesi recente segue un percorso logico per non tralasciare dettagli cruciali. Ogni domanda apre la strada a quella successiva, restringendo il campo delle possibili cause.", en: "The collection of recent history follows a logical path to avoid overlooking crucial details. Each question paves the way for the next, narrowing the field of possible causes." },
-            flow1: { it: "Qual è il sintomo principale?", en: "What is the main symptom?" },
-            flow2: { it: "Quando è iniziato? (Acuta/Cronica)", en: "When did it start? (Acute/Chronic)" },
-            flow3: { it: "Come si è evoluto? (Peggiorato/Migliorato)", en: "How has it evolved? (Worsened/Improved)" },
-            flow4: { it: "Sono stati fatti trattamenti? Con quale esito?", en: "Have any treatments been given? With what outcome?" },
-            herdTitle: { it: "Anamnesi Collettiva: La Visione d'Insieme", en: "Collective History: The Big Picture" },
-            herdDesc: { it: "In un allevamento, un singolo caso può essere la punta dell'iceberg. È fondamentale capire se il problema è diffuso e quali categorie di animali sono più colpite per identificare cause manageriali, ambientali o infettive.", en: "On a farm, a single case can be the tip of the iceberg. It is crucial to understand if the problem is widespread and which categories of animals are most affected to identify managerial, environmental, or infectious causes." },
-            herdChartTitle: { it: "Distribuzione tipica dei problemi per categoria:", en: "Typical distribution of problems by category:" },
-            herdChartDesc: { it: "Questo grafico illustra come, in molti scenari di patologie di gruppo, determinate categorie di animali, come i giovani o quelli in specifiche fasi produttive, siano colpite in modo sproporzionato. Identificare questo schema è vitale per una diagnosi di mandria.", en: "This chart illustrates how, in many group disease scenarios, certain categories of animals, such as the young or those in specific production phases, are disproportionately affected. Identifying this pattern is vital for a herd diagnosis." },
-            footerText: { it: '&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Clinical Methodologies. Created by Sara Busechian.' },
-            chart1Label: { it: 'Importanza Diagnostica (valore concettuale)', en: 'Diagnostic Importance (conceptual value)' },
-            chart1Labels: {
-                it: ['Cambio Alimentazione', 'Storia Sanitaria', 'Provenienza/Contatti', 'Tipo di Allevamento', 'Dati Segnaletici'],
-                en: ['Dietary Change', 'Health History', 'Origin/Contacts', 'Housing Type', 'Signalment Data']
-            },
-            chart2Label: { it: '% Animali Coinvolti', en: '% Animals Involved' },
-            chart2Labels: {
-                it: ['Vitelli / Animali Giovani', 'Vacche in Lattazione', 'Animali in Asciutta', 'Altri Gruppi'],
-                en: ['Calves / Young Animals', 'Lactating Cows', 'Dry Animals', 'Other Groups']
-            }
-        };
-
-        let currentLanguage = localStorage.getItem('language') || 'it';
-        const accessibilityToggle = document.getElementById('accessibility-toggle');
-        const langToggle = document.getElementById('lang-toggle');
-        const body = document.body;
-        const synth = window.speechSynthesis;
-        let currentUtterance = null;
-        let activeTTSButton = null;
-
-        function speak(text, button) {
-            if (synth.speaking && activeTTSButton === button) {
-                if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
-                else { synth.pause(); button.classList.remove('playing'); }
-            } else {
-                if (synth.speaking) { synth.cancel(); }
-                currentUtterance = new SpeechSynthesisUtterance(text);
-                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                currentUtterance.onend = () => {
-                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                    activeTTSButton = null;
-                };
-                synth.speak(currentUtterance);
-                if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                activeTTSButton = button;
-                button.classList.add('playing');
-            }
-        }
-
-        function setupTTSListeners() {
-             document.querySelectorAll('.tts-button').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const parent = e.currentTarget.parentNode;
-                    const clone = parent.cloneNode(true);
-                    clone.querySelector('.tts-button').remove();
-                    const textToRead = clone.textContent.trim().replace(/\s+/g, ' ');
-                    if (textToRead) speak(textToRead, e.currentTarget);
-                });
-            });
-        }
-
-        const wrapLabel = (label) => {
-            const maxLen = 16;
-            if (label.length <= maxLen) return label;
-            const words = label.split(' ');
-            const lines = [];
-            let currentLine = '';
-            words.forEach(word => {
-                if ((currentLine + ' ' + word).trim().length > maxLen && currentLine.length > 0) {
-                    lines.push(currentLine);
-                    currentLine = word;
-                } else {
-                    currentLine = (currentLine + ' ' + word).trim();
-                }
-            });
-            lines.push(currentLine);
-            return lines;
-        };
-
-        const tooltipTitleCallback = (tooltipItems) => {
-            const item = tooltipItems[0];
-            let label = item.chart.data.labels[item.dataIndex];
-            return Array.isArray(label) ? label.join(' ') : label;
-        };
-
-        const remoteAnamnesisCtx = document.getElementById('remoteAnamnesisChart').getContext('2d');
-        const remoteAnamnesisChart = new Chart(remoteAnamnesisCtx, {
-            type: 'bar',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: '',
-                    data: [90, 75, 70, 60, 50],
-                    backgroundColor: ['#ef5675', '#ff764a', '#ffa600', '#7a5195', '#374c80'],
-                    borderColor: '#ffffff',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false }, tooltip: { callbacks: { title: tooltipTitleCallback } } },
-                scales: {
-                    x: { grid: { display: false }, ticks: { display: false } },
-                    y: { grid: { display: false }, ticks: { color: '#003f5c', font: { weight: '600' } } }
-                }
-            }
-        });
-
-        const herdAnamnesisCtx = document.getElementById('herdAnamnesisChart').getContext('2d');
-        const herdAnamnesisChart = new Chart(herdAnamnesisCtx, {
-            type: 'doughnut',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: '',
-                    data: [55, 30, 10, 5],
-                    backgroundColor: ['#ffa600', '#ff764a', '#ef5675', '#bc5090'],
-                    borderColor: '#ffffff',
-                    borderWidth: 3,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'right', align: 'center', labels: { color: '#003f5c', font: { weight: '600', size: 14 }, boxWidth: 20, padding: 15 } },
-                    tooltip: { callbacks: { title: tooltipTitleCallback } }
-                },
-                cutout: '60%'
-            }
-        });
+    <main class="container mx-auto px-6 -mt-10 pb-12">
         
-        const updateLanguage = (lang) => {
-            document.documentElement.lang = lang;
-            langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-            document.querySelectorAll('[data-lang-key]').forEach(element => {
-                const key = element.dataset.langKey;
-                if (translations[key] && translations[key][lang]) {
-                    element.innerHTML = translations[key][lang];
+        <!-- INTRODUZIONE -->
+        <section class="mb-12 p-8 section-card">
+            <div class="text-center">
+                <p class="text-2xl font-semibold text-blue-900 leading-relaxed" data-lang-key="introText">
+                    Una buona anamnesi può orientare correttamente la diagnosi 
+                    <span class="text-blue-600 font-bold">nella maggioranza dei casi</span>, 
+                    ottimizzando tempi e costi della visita.
+                </p>
+            </div>
+        </section>
+
+        <!-- I TRE PILASTRI -->
+        <section class="mb-12">
+            <h3 class="text-2xl font-bold mb-8 text-blue-800 text-center flex justify-center items-center" data-lang-key="pillarsTitle">
+                I Tre Pilastri dell'Indagine
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 section-card border-t-4 border-blue-600 text-center">
+                    <h4 class="text-xl font-bold mb-2" data-lang-key="pillar1Title">1. Anamnesi Remota</h4>
+                    <p class="text-gray-700 text-sm" data-lang-key="pillar1Desc">Storia passata dell'animale: vaccinazioni, provenienza e precedenti clinici.</p>
+                </div>
+                <div class="p-6 section-card border-t-4 border-sky-500 text-center">
+                    <h4 class="text-xl font-bold mb-2" data-lang-key="pillar2Title">2. Anamnesi Recente</h4>
+                    <p class="text-gray-700 text-sm" data-lang-key="pillar2Desc">Indagine sul problema attuale: sintomi, durata ed eventuali trattamenti già eseguiti.</p>
+                </div>
+                <div class="p-6 section-card border-t-4 border-teal-500 text-center">
+                    <h4 class="text-xl font-bold mb-2" data-lang-key="pillar3Title">3. Anamnesi Collettiva</h4>
+                    <p class="text-gray-700 text-sm" data-lang-key="pillar3Desc">Contesto della mandria: il problema è isolato o riguarda un gruppo di animali?</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANALISI DETTAGLIATA E FLUSSO -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Grafico Remota -->
+            <section class="p-8 section-card">
+                <h3 class="text-2xl font-bold mb-4 text-blue-800 flex items-center" data-lang-key="remoteKeysTitle">
+                    Punti Chiave: Remota
+                </h3>
+                <p class="mb-6 text-gray-600 text-sm" data-lang-key="remoteKeysDesc">L'impatto dei cambiamenti gestionali o sanitari sulla diagnosi.</p>
+                <div class="chart-container">
+                    <canvas id="remoteAnamnesisChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Flusso Recente -->
+            <section class="p-8 section-card">
+                <h3 class="text-2xl font-bold mb-4 text-sky-800 flex items-center" data-lang-key="recentFlowTitle">
+                    Flusso Investigativo
+                </h3>
+                <p class="mb-6 text-gray-600 text-sm" data-lang-key="recentFlowDesc">Il percorso logico per restringere il campo delle cause possibili.</p>
+                <div class="space-y-4">
+                    <div class="flow-step rounded-xl p-4 text-center font-bold" data-lang-key="flow1">Sintomo principale?</div>
+                    <div class="flow-arrow text-center">↓</div>
+                    <div class="flow-step rounded-xl p-4 text-center font-bold" data-lang-key="flow2">Quando è iniziato?</div>
+                    <div class="flow-arrow text-center">↓</div>
+                    <div class="flow-step rounded-xl p-4 text-center font-bold" data-lang-key="flow3">Evoluzione nel tempo?</div>
+                    <div class="flow-arrow text-center">↓</div>
+                    <div class="flow-step rounded-xl p-4 text-center font-bold" data-lang-key="flow4">Trattamenti pregressi?</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VISIONE DI INSIEME -->
+        <section class="mt-8 p-8 section-card">
+            <h3 class="text-2xl font-bold mb-6 text-teal-800 text-center flex justify-center items-center" data-lang-key="herdTitle">
+                Visione di Insieme (Collettiva)
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <p class="text-gray-700" data-lang-key="herdDesc">Capire se il problema è diffuso permette di identificare cause manageriali, ambientali o infettive legate a specifiche fasi produttive.</p>
+                    <div class="p-4 bg-teal-50 rounded-xl border border-teal-100">
+                        <p class="text-sm font-semibold text-teal-900" data-lang-key="herdChartTitle">Distribuzione tipica per categoria:</p>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="herdAnamnesisChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const speakerIcon = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
+                backToHome: { 
+                    it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Torna all\'Indice', 
+                    en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'L\'Arte dell\'Anamnesi', en: 'The Art of History Taking' },
+                pageSubtitle: { it: 'Il primo passo fondamentale per orientare correttamente il percorso diagnostico.', en: 'The fundamental first step to correctly guide the diagnostic path.' },
+                introText: { it: 'Una buona anamnesi può orientare correttamente la diagnosi <span class="text-blue-600 font-bold">nella maggioranza dei casi</span>, ottimizzando tempi e costi della visita.' + speakerIcon, en: 'A good history can correctly guide the diagnosis in the <span class="text-blue-600 font-bold">majority of cases</span>, optimizing time and cost of the visit.' + speakerIcon },
+                pillarsTitle: { it: 'I Tre Pilastri dell\'Indagine' + speakerIcon, en: 'The Three Pillars of Investigation' + speakerIcon },
+                pillar1Title: { it: '1. Anamnesi Remota', en: '1. Past History' },
+                pillar1Desc: { it: 'Storia passata dell\'animale: vaccinazioni, provenienza e precedenti clinici.', en: 'The animal\'s past history: vaccinations, origin, and clinical records.' },
+                pillar2Title: { it: '2. Anamnesi Recente', en: '2. Recent History' },
+                pillar2Desc: { it: 'Indagine sul problema attuale: sintomi, durata ed eventuali trattamenti già eseguiti.', en: 'Investigation of the current problem: symptoms, duration, and any previous treatments.' },
+                pillar3Title: { it: '3. Anamnesi Collettiva', en: '3. Collective History' },
+                pillar3Desc: { it: 'Contesto della mandria: il problema è isolato o riguarda un gruppo di animali?', en: 'The herd context: is the problem isolated or does it affect a group of animals?' },
+                remoteKeysTitle: { it: 'Punti Chiave: Remota' + speakerIcon, en: 'Key Points: Past' + speakerIcon },
+                remoteKeysDesc: { it: 'L\'impatto dei cambiamenti gestionali o sanitari sulla diagnosi.', en: 'The impact of management or health changes on the diagnosis.' },
+                recentFlowTitle: { it: 'Flusso Investigativo' + speakerIcon, en: 'Investigative Flow' + speakerIcon },
+                recentFlowDesc: { it: 'Il percorso logico per restringere il campo delle cause possibili.', en: 'The logical path to narrow down possible causes.' },
+                flow1: { it: 'Sintomo principale?', en: 'Main symptom?' },
+                flow2: { it: 'Quando è iniziato?', en: 'When did it start?' },
+                flow3: { it: 'Evoluzione nel tempo?', en: 'Evolution over time?' },
+                flow4: { it: 'Trattamenti pregressi?', en: 'Previous treatments?' },
+                herdTitle: { it: 'Visione di Insieme (Collettiva)' + speakerIcon, en: 'Big Picture (Collective)' + speakerIcon },
+                herdDesc: { it: 'Capire se il problema è diffuso permette di identificare cause manageriali, ambientali o infettive legate a specifiche fasi produttive.', en: 'Understanding if the problem is widespread allows identifying managerial, environmental, or infectious causes.' },
+                herdChartTitle: { it: 'Distribuzione tipica per categoria:', en: 'Typical distribution by category:' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' },
+                // Chart Labels
+                chart1Labels: {
+                    it: ['Cambio Dieta', 'Cronistoria Sanitaria', 'Provenienza', 'Gestione Allev.', 'Dati Segnaletici'],
+                    en: ['Diet Change', 'Health History', 'Origin', 'Farm Management', 'Signalment Data']
+                },
+                chart2Labels: {
+                    it: ['Vitelli', 'In Lattazione', 'In Asciutta', 'Manze'],
+                    en: ['Calves', 'Lactating', 'Dry Cows', 'Heifers']
+                }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            // --- INIZIALIZZAZIONE GRAFICI ---
+            const remoteCtx = document.getElementById('remoteAnamnesisChart').getContext('2d');
+            const herdCtx = document.getElementById('herdAnamnesisChart').getContext('2d');
+            
+            let remoteChart = new Chart(remoteCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [95, 80, 70, 60, 40],
+                        backgroundColor: '#3B82F6',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { display: false }, y: { grid: { display: false } } }
                 }
             });
-            
-            remoteAnamnesisChart.data.datasets[0].label = translations.chart1Label[lang];
-            remoteAnamnesisChart.data.labels = translations.chart1Labels[lang].map(wrapLabel);
-            remoteAnamnesisChart.update();
 
-            herdAnamnesisChart.data.datasets[0].label = translations.chart2Label[lang];
-            herdAnamnesisChart.data.labels = translations.chart2Labels[lang].map(wrapLabel);
-            herdAnamnesisChart.update();
+            let herdChart = new Chart(herdCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [50, 30, 15, 5],
+                        backgroundColor: ['#1E3A8A', '#3B82F6', '#2DD4BF', '#FBBF24'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
 
-            setupTTSListeners();
-        };
+            // --- FUNZIONI CORE ---
+            function speak(text, button) {
+                if (synth.speaking && activeTTSButton === button) {
+                    synth.paused ? synth.resume() : synth.pause();
+                    button.classList.toggle('playing', !synth.paused);
+                } else {
+                    synth.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                    utterance.onend = () => { button.classList.remove('playing'); activeTTSButton = null; };
+                    synth.speak(utterance);
+                    if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                }
+            }
 
-        const setA11yMode = (enabled) => {
-            if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); } 
-            else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
-        };
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const section = e.currentTarget.closest('section');
+                        const clone = section.cloneNode(true);
+                        clone.querySelectorAll('.tts-button, canvas').forEach(el => el.remove());
+                        speak(clone.innerText.trim(), button);
+                    });
+                });
+            }
 
-        langToggle.addEventListener('click', () => {
-            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-            localStorage.setItem('language', currentLanguage);
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+
+                // Aggiorna Grafici
+                remoteChart.data.labels = translations.chart1Labels[lang];
+                remoteChart.update();
+                herdChart.data.labels = translations.chart2Labels[lang];
+                herdChart.update();
+
+                setupTTSListeners();
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                setA11yMode(!body.classList.contains('dsa-mode'));
+            });
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
             updateLanguage(currentLanguage);
         });
-
-        accessibilityToggle.addEventListener('click', () => {
-            const isEnabled = body.classList.contains('dsa-mode');
-            setA11yMode(!isEnabled);
-        });
-
-        if (localStorage.getItem('dsa-mode') === 'enabled') {
-            setA11yMode(true);
-        }
-        updateLanguage(currentLanguage);
-
     </script>
 </body>
 </html>
