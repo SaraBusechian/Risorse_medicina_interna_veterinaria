@@ -14,13 +14,20 @@
         }
         .card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
         }
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-
-        /* Stili per la modalità DSA / Accessibilità */
+        /* Classe specifica per le card che sono interamente link */
+        a.card {
+            text-decoration: none;
+        }
+        
         body.dsa-mode {
             font-family: Verdana, sans-serif;
             font-size: 1.1rem;
@@ -31,438 +38,316 @@
         }
         body.dsa-mode h1, body.dsa-mode h2 {
             letter-spacing: normal;
-            color: #082f49;
+            color: #0f172a;
         }
+        .tts-button { 
+            cursor: pointer; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-left: 8px; 
+            vertical-align: middle; 
+            opacity: 0.7;
+            transition: opacity 0.2s; 
+            position: relative;
+            z-index: 10;
+        }
+        .tts-button:hover, .tts-button.playing { opacity: 1; }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800">
+<body class="bg-slate-50 text-slate-800">
 
     <div class="container mx-auto px-4 py-8 md:py-16">
 
         <header class="text-center mb-12 md:mb-16 relative">
             <div class="absolute top-0 right-0 -mt-4 md:-mt-8 flex items-center gap-2">
-                 <button id="lang-toggle" class="bg-white text-sky-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-sky-100 transition duration-300 text-sm">EN</button>
-                <button id="dsa-toggle" class="bg-sky-100 text-sky-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-sky-200 transition duration-300 text-sm" data-lang-key="accessibility-btn-text">
+                 <button id="lang-toggle" class="bg-white text-slate-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-slate-100 transition duration-300 text-sm">EN</button>
+                <button id="dsa-toggle" class="bg-slate-100 text-slate-800 font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-slate-200 transition duration-300 text-sm" data-lang-key="accessibility-btn-text">
                     Accessibilità
                 </button>
             </div>
-            <h1 class="text-4xl md:text-5xl font-bold text-sky-800 mb-4" data-lang-key="main-title">Risorse Didattiche di Medicina Interna Veterinaria</h1>
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-4" data-lang-key="main-title">Risorse Didattiche di Medicina Interna Veterinaria</h1>
             <p class="text-lg text-slate-600 max-w-3xl mx-auto" data-lang-key="main-subtitle">Portale di accesso ai materiali di studio, approfondimenti e strumenti interattivi per il corso.</p>
         </header>
 
         <main>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 
-                <!-- 1. Metodologie Cliniche (BLU) -->
-                <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col border-t-4 border-blue-500">
-                    <div class="p-6 flex-grow">
-                        <div class="flex items-center justify-between mb-3">
-                            <h2 class="text-2xl font-bold text-blue-700" data-lang-key="card1-title">Metodologie Cliniche</h2>
-                            <button onclick="readCardContent(this)" title="Leggi ad alta voce" class="text-slate-500 hover:text-blue-600 transition-colors duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="text-slate-600 leading-relaxed" data-lang-key="card1-desc">
-                            Anamnesi, ispezione, palpazione, percussione e auscultazione. Sezione per Grandi Animali e Piccoli Animali (prossimamente).
-                        </p>
-                    </div>
-                    <div class="p-6 bg-blue-50">
-                        <div class="flex items-center gap-4">
-                            <a href="metodologie_cliniche/grandi_animali/index.html" class="flex-1 inline-block bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-300 text-center text-sm" data-lang-key="card-btn-large">
-                                Grandi Animali
-                            </a>
-                            <span class="flex-1 inline-block bg-slate-300 text-slate-500 font-bold py-3 px-4 rounded-lg text-center cursor-not-allowed text-sm" data-lang-key="card-btn-small">
-                                Piccoli Animali
-                            </span>
-                        </div>
+                <!-- 1. Metodologie Cliniche (BLU) - DIV con pulsanti -->
+                <div class="card bg-white rounded-lg shadow-lg overflow-hidden p-6 hover:ring-2 hover:ring-blue-500 group">
+                    <h2 class="text-2xl font-bold text-blue-700 mb-3" data-lang-key="card1-title">Metodologie Cliniche<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg></span></h2>
+                    <p class="text-slate-600 leading-relaxed mb-6" data-lang-key="card1-desc">
+                        Anamnesi, ispezione, palpazione, percussione e auscultazione.
+                    </p>
+                    <div class="mt-auto flex flex-col gap-2">
+                        <a href="metodologie_cliniche/grandi_animali/index.html" class="block w-full text-center py-2 px-4 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition" data-lang-key="btn-large-animals">Grandi Animali</a>
+                        <a href="#" class="block w-full text-center py-2 px-4 rounded-lg bg-blue-100 text-blue-800 font-bold hover:bg-blue-200 transition opacity-50 cursor-not-allowed" title="Prossimamente" data-lang-key="btn-small-animals">Piccoli Animali</a>
                     </div>
                 </div>
 
-                <!-- 2. Semeiotica clinica (BLU) -->
-                <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col border-t-4 border-blue-500">
-                    <div class="p-6 flex-grow">
-                        <div class="flex items-center justify-between mb-3">
-                            <h2 class="text-2xl font-bold text-blue-700" data-lang-key="card2-title">Semeiotica clinica</h2>
-                             <button onclick="readCardContent(this)" title="Leggi ad alta voce" class="text-slate-500 hover:text-blue-600 transition-colors duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="text-slate-600 leading-relaxed" data-lang-key="card2-desc">
-                            Schemi e checklist per EOG e EOP. Sezione per Grandi Animali e Piccoli Animali (prossimamente).
-                        </p>
-                    </div>
-                    <div class="p-6 bg-blue-50">
-                        <div class="flex items-center gap-4">
-                            <a href="esame_obiettivo/grandi_animali/index.html" class="flex-1 inline-block bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-300 text-center text-sm" data-lang-key="card-btn-large">
-                                Grandi Animali
-                            </a>
-                            <span class="flex-1 inline-block bg-slate-300 text-slate-500 font-bold py-3 px-4 rounded-lg text-center cursor-not-allowed text-sm" data-lang-key="card-btn-small">
-                                Piccoli Animali
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. Glossario Esami di Laboratorio (AMBRA/GIALLO) - SPOSTATO QUI -->
-                <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col border-t-4 border-amber-500">
-                    <div class="p-6 flex-grow">
-                        <div class="flex items-center justify-between mb-3">
-                            <h2 class="text-2xl font-bold text-amber-700" data-lang-key="card5-title">Glossario Esami Laboratorio</h2>
-                             <button onclick="readCardContent(this)" title="Leggi ad alta voce" class="text-slate-500 hover:text-amber-600 transition-colors duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="text-slate-600 leading-relaxed" data-lang-key="card5-desc">
-                            Una guida rapida ai principali esami di laboratorio, con valori di riferimento e interpretazioni.
-                        </p>
-                    </div>
-                    <div class="p-6 bg-amber-50">
-                        <a href="glossario/index.html" class="inline-block bg-amber-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-amber-700 transition duration-300 w-full text-center" data-lang-key="card5-btn">
-                            Consulta il Glossario
-                        </a>
+                <!-- 2. Semeiotica clinica (BLU) - DIV con pulsanti -->
+                <div class="card bg-white rounded-lg shadow-lg overflow-hidden p-6 hover:ring-2 hover:ring-blue-500 group">
+                    <h2 class="text-2xl font-bold text-blue-700 mb-3" data-lang-key="card2-title">Semeiotica clinica<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg></span></h2>
+                    <p class="text-slate-600 leading-relaxed mb-6" data-lang-key="card2-desc">
+                        Schemi e checklist per EOG e EOP.
+                    </p>
+                    <div class="mt-auto flex flex-col gap-2">
+                        <a href="esame_obiettivo/grandi_animali/index.html" class="block w-full text-center py-2 px-4 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition" data-lang-key="btn-large-animals">Grandi Animali</a>
+                        <a href="#" class="block w-full text-center py-2 px-4 rounded-lg bg-blue-100 text-blue-800 font-bold hover:bg-blue-200 transition opacity-50 cursor-not-allowed" title="Prossimamente" data-lang-key="btn-small-animals">Piccoli Animali</a>
                     </div>
                 </div>
                 
-                <!-- 4. Riassunti di Patologie (VERDE) -->
-                <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col border-t-4 border-green-500">
-                    <div class="p-6 flex-grow">
-                        <div class="flex items-center justify-between mb-3">
-                            <h2 class="text-2xl font-bold text-green-700" data-lang-key="card3-title">Riassunti di Patologie</h2>
-                             <button onclick="readCardContent(this)" title="Leggi ad alta voce" class="text-slate-500 hover:text-green-600 transition-colors duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="text-slate-600 leading-relaxed" data-lang-key="card3-desc">
-                            Una raccolta di riassunti e schemi sulle principali patologie, organizzati per apparato e specie.
-                        </p>
-                    </div>
-                    <div class="p-6 bg-green-50">
-                        <a href="Patologie/index.html" class="inline-block bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 w-full text-center" data-lang-key="card3-btn">
-                            Consulta i Riassunti
-                        </a>
-                    </div>
-                </div>
+                <!-- 3. Riassunti di Patologie (VERDE) -->
+                <a href="Patologie/index.html" class="card bg-white rounded-lg shadow-lg overflow-hidden p-6 hover:ring-2 hover:ring-green-500 group">
+                    <h2 class="text-2xl font-bold text-green-700 mb-3 group-hover:text-green-800 transition-colors" data-lang-key="card3-title">Riassunti di Patologie<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg></span></h2>
+                    <p class="text-slate-600 leading-relaxed" data-lang-key="card3-desc">
+                        Una raccolta di riassunti e schemi sulle principali patologie, organizzati per apparato e specie.
+                    </p>
+                </a>
 
-                <!-- 5. Appunti di Terapia (EMERALD) - SPOSTATO QUI -->
-                <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col border-t-4 border-emerald-500">
-                    <div class="p-6 flex-grow">
-                        <div class="flex items-center justify-between mb-3">
-                            <h2 class="text-2xl font-bold text-emerald-700" data-lang-key="card7-title">Appunti di Terapia</h2>
-                            <button onclick="readCardContent(this)" title="Leggi ad alta voce" class="text-slate-500 hover:text-emerald-600 transition-colors duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                                </svg>
-                            </button>
-                        </div>
-                         
-                        <p class="text-slate-600 leading-relaxed" data-lang-key="card7-desc">
-                            Schemi e riassunti sui principali protocolli terapeutici, per grandi e piccoli animali.
-                        </p>
-                    </div>
-                    <div class="p-6 bg-emerald-50">
-                        <a href="terapia/index.html" class="inline-block bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition duration-300 w-full text-center" data-lang-key="card7-btn">
-                            Consulta i Protocolli
-                        </a>
-                    </div>
-                </div>
+                <!-- 4. Glossario Esami di Laboratorio (AMBRA) -->
+                <a href="glossario/index.html" class="card bg-white rounded-lg shadow-lg overflow-hidden p-6 hover:ring-2 hover:ring-amber-500 group">
+                    <h2 class="text-2xl font-bold text-amber-700 mb-3 group-hover:text-amber-800 transition-colors" data-lang-key="card5-title">Glossario Esami Laboratorio<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 2a1 1 0 00-.707 1.707L7 4.414v3.758a1 1 0 01-.293.707l-4 4C.817 14.761 2.165 17.5 4.828 17.5h10.344c2.663 0 4.011-2.739 2.122-4.621l-4-4A1 1 0 0113 8.172V4.414l.707-.707A1 1 0 0013 2H7zm2 6.172V4h2v4.172a3 3 0 00.879 2.12l1.027 1.028a4 4 0 00-2.171.102l-.47.156a4 4 0 01-2.53 0l-.563-.187a1.993 1.993 0 00-.114-.035l1.063-1.063A3 3 0 009 8.172z" clip-rule="evenodd"/></svg></span></h2>
+                    <p class="text-slate-600 leading-relaxed" data-lang-key="card5-desc">
+                        Guida rapida ai principali esami di laboratorio, con valori di riferimento.
+                    </p>
+                </a>
+
+                <!-- 5. Appunti di Terapia (TEAL) -->
+                <a href="terapia/index.html" class="card bg-white rounded-lg shadow-lg overflow-hidden p-6 hover:ring-2 hover:ring-teal-500 group">
+                    <h2 class="text-2xl font-bold text-teal-700 mb-3 group-hover:text-teal-800 transition-colors" data-lang-key="card7-title">Appunti di Terapia<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 2a1 1 0 00-1 1v1.371C5.277 4.608 3.619 5.752 3.012 7.272a1.5 1.5 0 001.733 1.992c.677-.115 1.255.45 1.255 1.139v2.247c0 .618-.46 1.144-1.077 1.223a4.015 4.015 0 01-1.054-.036 1 1 0 00-1.217 1.266 7.009 7.009 0 0012.7 0 1 1 0 00-1.217-1.266 4.013 4.013 0 01-1.054.037c-.617-.08-1.077-.605-1.077-1.223V10.4c0-.685.584-1.248 1.26-1.132a1.5 1.5 0 001.727-1.99C16.381 5.751 14.723 4.608 14 4.37V3a1 1 0 00-1-1H7zm1.75 4.25a.75.75 0 100 1.5.75.75 0 000-1.5zM11 6a.75.75 0 100-1.5.75.75 0 000 1.5zm.75 2.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" clip-rule="evenodd"/></svg></span></h2>
+                    <p class="text-slate-600 leading-relaxed" data-lang-key="card7-desc">
+                        Schemi e riassunti sui principali protocolli terapeutici, per grandi e piccoli animali.
+                    </p>
+                </a>
 
                 <!-- 6. Appunti di Medicina Legale (SLATE) -->
-                <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col border-t-4 border-slate-500">
-                    <div class="p-6 flex-grow">
-                        <div class="flex items-center justify-between mb-3">
-                            <h2 class="text-2xl font-bold text-slate-700" data-lang-key="card6-title">Appunti di Medicina Legale</h2>
-                            <button onclick="readCardContent(this)" title="Leggi ad alta voce" class="text-slate-500 hover:text-slate-600 transition-colors duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="text-slate-600 leading-relaxed" data-lang-key="card6-desc">
-                            Principi, normative e casi studio relativi alla medicina veterinaria forense.
-                        </p>
-                    </div>
-                    <div class="p-6 bg-slate-100">
-                        <a href="medicina_legale/index.html" class="inline-block bg-slate-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-slate-700 transition duration-300 w-full text-center" data-lang-key="card6-btn">
-                            Consulta gli Appunti
-                        </a>
-                    </div>
-                </div>
+                <a href="medicina_legale/index.html" class="card bg-white rounded-lg shadow-lg overflow-hidden p-6 hover:ring-2 hover:ring-slate-500 group">
+                    <h2 class="text-2xl font-bold text-slate-700 mb-3 group-hover:text-slate-800 transition-colors" data-lang-key="card6-title">Medicina Legale<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.423-2.718-.917V18a1 1 0 11-2 0V6.612l-2.718.917 1.715 5.423a1 1 0 01-.285 1.05A3.989 3.989 0 017 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.617a1 1 0 01.894-1.788l1.599.799L11 4.323V3a1 1 0 011-1z" clip-rule="evenodd"/></svg></span></h2>
+                    <p class="text-slate-600 leading-relaxed" data-lang-key="card6-desc">
+                        Principi, normative, deontologia e casi studio relativi alla medicina veterinaria forense.
+                    </p>
+                </a>
 
-                <!-- 7. Casi Clinici Interattivi (VIOLA) - SPOSTATO QUI -->
-                <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col border-t-4 border-violet-500">
-                    <div class="p-6 flex-grow">
-                        <div class="flex items-center justify-between mb-3">
-                            <h2 class="text-2xl font-bold text-violet-700" data-lang-key="card4-title">Casi Clinici Interattivi</h2>
-                             <button onclick="readCardContent(this)" title="Leggi ad alta voce" class="text-slate-500 hover:text-violet-600 transition-colors duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="text-slate-600 leading-relaxed" data-lang-key="card4-desc">
-                            Mettiti alla prova con una serie di casi clinici interattivi per affinare il tuo ragionamento diagnostico.
-                        </p>
-                    </div>
-                    <div class="p-6 bg-violet-50">
-                        <a href="casi_clinici/index.html" class="inline-block bg-violet-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-violet-700 transition duration-300 w-full text-center" data-lang-key="card4-btn">
-                            Esplora i Casi
-                        </a>
-                    </div>
-                </div>
+                <!-- 7. Casi Clinici Interattivi (VIOLA) -->
+                <a href="casi_clinici/index.html" class="card bg-white rounded-lg shadow-lg overflow-hidden p-6 hover:ring-2 hover:ring-violet-500 group">
+                    <h2 class="text-2xl font-bold text-violet-700 mb-3 group-hover:text-violet-800 transition-colors" data-lang-key="card4-title">Casi Clinici Interattivi<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z"/></svg></span></h2>
+                    <p class="text-slate-600 leading-relaxed" data-lang-key="card4-desc">
+                        Mettiti alla prova con una serie di casi clinici interattivi per affinare il tuo ragionamento diagnostico.
+                    </p>
+                </a>
 
                 <!-- 8. Risorse Esterne Utili (INDACO) -->
-                <div class="card bg-white rounded-lg shadow-lg overflow-hidden flex flex-col border-t-4 border-indigo-500">
-                    <div class="p-6 flex-grow">
-                        <div class="flex items-center justify-between mb-3">
-                             <h2 class="text-2xl font-bold text-indigo-700" data-lang-key="card8-title">Risorse Esterne Utili</h2>
-                             <button onclick="readCardContent(this)" title="Leggi ad alta voce" class="text-slate-500 hover:text-indigo-600 transition-colors duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="text-slate-600 leading-relaxed" data-lang-key="card8-desc">
-                            Una raccolta di link a siti, canali e altre risorse per approfondire gli argomenti del corso.
-                        </p>
-                    </div>
-                    <div class="p-6 bg-indigo-50">
-                        <a href="risorse_esterne/index.html" class="inline-block bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300 w-full text-center" data-lang-key="card8-btn">
-                           Esplora le Risorse
-                        </a>
-                    </div>
-                </div>
+                <a href="risorse_esterne/index.html" class="card bg-white rounded-lg shadow-lg overflow-hidden p-6 hover:ring-2 hover:ring-indigo-500 group">
+                     <h2 class="text-2xl font-bold text-indigo-700 mb-3 group-hover:text-indigo-800 transition-colors" data-lang-key="card8-title">Risorse Esterne Utili<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"/></svg></span></h2>
+                    <p class="text-slate-600 leading-relaxed" data-lang-key="card8-desc">
+                        Una raccolta di link a siti, canali e altre risorse per approfondire gli argomenti del corso.
+                    </p>
+                </a>
 
             </div>
         </main>
         
         <footer class="text-center mt-16 pt-8 border-t border-slate-200">
             <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian</p>
-            <p class="text-sm text-slate-400 mt-1" data-lang-key="footer-year">Anno Accademico 2025/2026</p>
         </footer>
 
     </div>
 
     <script>
-        const translations = {
-            "main-title": {
-                "it": "Risorse Didattiche di Medicina Interna Veterinaria",
-                "en": "Educational Resources in Veterinary Internal Medicine"
-            },
-            "main-subtitle": {
-                "it": "Portale di accesso ai materiali di studio, approfondimenti e strumenti interattivi per il corso.",
-                "en": "Access portal to study materials, in-depth resources, and interactive tools for the course."
-            },
-            "card1-title": {
-                "it": "Metodologie Cliniche",
-                "en": "Clinical Methodologies"
-            },
-            "card1-desc": {
-                "it": "Anamnesi, ispezione, palpazione, percussione e auscultazione. Sezione per Grandi Animali e Piccoli Animali (prossimamente).",
-                "en": "History, inspection, palpation, percussion, and auscultation. Section for Large and Small Animals (coming soon)."
-            },
-            "card2-title": {
-                "it": "Semeiotica clinica",
-                "en": "Clinical Semeiotics"
-            },
-             "card2-desc": {
-                "it": "Schemi e checklist per EOG e EOP. Sezione per Grandi Animali e Piccoli Animali (prossimamente).",
-                "en": "Outlines and checklists for clinical examinations of the different body systems. Section for Large and Small Animals (coming soon)."
-            },
-            "card3-title": {
-                "it": "Riassunti di Patologie",
-                "en": "Summary of pathologies"
-            },
-            "card3-desc": {
-                "it": "Una raccolta di riassunti e schemi sulle principali patologie, organizzati per apparato e specie.",
-                "en": "A collection of summaries and diagrams on major pathologies, organized by system and species."
-            },
-            "card3-btn": {
-                "it": "Consulta i Riassunti",
-                "en": "Browse Summaries"
-            },
-            "card4-title": {
-                "it": "Casi Clinici Interattivi",
-                "en": "Interactive Clinical Cases"
-            },
-            "card4-desc": {
-                "it": "Mettiti alla prova con una serie di casi clinici interattivi per affinare il tuo ragionamento diagnostico.",
-                "en": "Test yourself with a series of interactive clinical cases to refine your diagnostic reasoning."
-            },
-             "card4-btn": {
-                "it": "Esplora i Casi",
-                "en": "Explore Cases"
-            },
-             "card5-title": {
-                "it": "Glossario Esami Laboratorio",
-                "en": "Lab Tests Glossary"
-            },
-            "card5-desc": {
-                "it": "Una guida rapida ai principali esami di laboratorio, con valori di riferimento e interpretazioni.",
-                "en": "A quick guide to the main laboratory tests, with reference values and interpretations."
-            },
-            "card5-btn": {
-                "it": "Consulta il Glossario",
-                "en": "Browse Glossary"
-            },
-             "card6-title": {
-                "it": "Appunti di Medicina Legale",
-                "en": "Forensic Medicine Notes"
-            },
-            "card6-desc": {
-                "it": "Principi, normative, deontologia e casi studio relativi alla medicina veterinaria forense.",
-                "en": "Principles, regulations, deontology, and case studies related to veterinary forensic medicine."
-            },
-            "card6-btn": {
-                "it": "Consulta gli Appunti",
-                "en": "Browse Notes"
-            },
-            "card7-title": {
-                "it": "Appunti di Terapia",
-                "en": "Therapy Notes"
-            },
-            "card7-desc": {
-                "it": "Schemi e riassunti sui principali protocolli terapeutici, per grandi e piccoli animali.",
-                "en": "Diagrams and summaries of the main therapeutic protocols for large and small animals."
-            },
-            "card7-btn": {
-                "it": "Consulta i Protocolli",
-                "en": "Browse Protocols"
-            },
-            "card8-title": {
-                "it": "Risorse Esterne Utili",
-                "en": "Useful External Resources"
-            },
-            "card8-desc": {
-                "it": "Una raccolta di link a siti, canali e altre risorse per approfondire gli argomenti del corso.",
-                "en": "A collection of links to websites, channels, and other resources to deepen the course topics."
-            },
-            "card8-btn": {
-                "it": "Esplora le Risorse",
-                "en": "Explore Resources"
-            },
-            "card-btn-large": {
-                "it": "Grandi Animali",
-                "en": "Large Animals"
-            },
-            "card-btn-small": {
-                "it": "Piccoli Animali",
-                "en": "Small Animals"
-            },
-            "coming-soon": {
-                "it": "Prossimamente",
-                "en": "Coming Soon"
-            },
-            "not-available": {
-                "it": "Non Disponibile",
-                "en": "Not Available"
-            },
-            "footer-credit": {
-                "it": "A cura della Prof.ssa Sara Busechian",
-                "en": "Curated by Prof. Sara Busechian"
-            },
-            "footer-year": {
-                "it": "Anno Accademico 2025/2026",
-                "en": "Academic Year 2025/2026"
-            },
-             "accessibility-btn-text": {
-                "it": "Accessibilità",
-                "en": "Accessibility"
-            }
-        };
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                "main-title": {
+                    "it": "Risorse Didattiche di Medicina Interna Veterinaria",
+                    "en": "Educational Resources in Veterinary Internal Medicine"
+                },
+                "main-subtitle": {
+                    "it": "Portale di accesso ai materiali di studio, approfondimenti e strumenti interattivi per il corso.",
+                    "en": "Access portal to study materials, in-depth resources, and interactive tools for the course."
+                },
+                "back-to-home-text": { it: "Torna alla Home", en: "Back to Home" },
+                "accessibility-btn-text": { it: "Accessibilità", en: "Accessibility" },
 
-        let currentLanguage = localStorage.getItem('language') || 'it';
-        
-        function updateLanguage(lang) {
-            document.documentElement.lang = lang;
-            document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                "card1-title": { it: "Metodologie Cliniche", en: "Clinical Methodologies" },
+                "card1-desc": {
+                    "it": "Anamnesi, ispezione, palpazione, percussione e auscultazione.",
+                    "en": "History, inspection, palpation, percussion, and auscultation."
+                },
+                "card2-title": { it: "Semeiotica clinica", en: "Clinical Semeiotics" },
+                "card2-desc": {
+                    "it": "Schemi e checklist per EOG e EOP.",
+                    "en": "Outlines and checklists for clinical examinations (GPE/PPE)."
+                },
+                "card3-title": { it: "Riassunti di Patologie", en: "Pathology Summaries" },
+                "card3-desc": {
+                    "it": "Una raccolta di riassunti e schemi sulle principali patologie, organizzati per apparato e specie.",
+                    "en": "A collection of summaries and diagrams on major pathologies, organized by system and species."
+                },
+                "card4-title": { it: "Casi Clinici Interattivi", en: "Interactive Clinical Cases" },
+                "card4-desc": {
+                    "it": "Mettiti alla prova con una serie di casi clinici interattivi per affinare il tuo ragionamento diagnostico.",
+                    "en": "Test yourself with a series of interactive clinical cases to refine your diagnostic reasoning."
+                },
+                "card5-title": { it: "Glossario Esami Laboratorio", en: "Lab Tests Glossary" },
+                "card5-desc": {
+                    "it": "Una guida rapida ai principali esami di laboratorio, con valori di riferimento e interpretazioni.",
+                    "en": "A quick guide to the main laboratory tests, with reference values and interpretations."
+                },
+                "card6-title": { it: "Appunti di Medicina Legale", en: "Forensic Medicine Notes" },
+                "card6-desc": {
+                    "it": "Principi, normative, deontologia e casi studio relativi alla medicina veterinaria forense.",
+                    "en": "Principles, regulations, deontology, and case studies related to veterinary forensic medicine."
+                },
+                "card7-title": { it: "Appunti di Terapia", en: "Therapy Notes" },
+                "card7-desc": {
+                    "it": "Schemi e riassunti sui principali protocolli terapeutici, per grandi e piccoli animali.",
+                    "en": "Diagrams and summaries of the main therapeutic protocols for large and small animals."
+                },
+                "card8-title": { it: "Risorse Esterne Utili", en: "Useful External Resources" },
+                "card8-desc": {
+                    "it": "Una raccolta di link a siti, canali e altre risorse per approfondire gli argomenti del corso.",
+                    "en": "A collection of links to websites, channels, and other resources to deepen the course topics."
+                },
+                "btn-large-animals": { it: "Grandi Animali", en: "Large Animals" },
+                "btn-small-animals": { it: "Piccoli Animali", en: "Small Animals" },
+                "footer-credit": { it: "A cura della Prof.ssa Sara Busechian", en: "Curated by Prof. Sara Busechian" }
+            };
 
-            document.querySelectorAll('[data-lang-key]').forEach(element => {
-                const key = element.dataset.langKey;
-                if (translations[key] && translations[key][lang]) {
-                    element.textContent = translations[key][lang];
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function stopSpeech() { if (synth.speaking || synth.paused) synth.cancel(); }
+
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); } 
+                    else if (synth.speaking) { synth.pause(); }
+                    return;
                 }
-            });
-            const dsaToggle = document.getElementById('dsa-toggle');
-             if (document.body.classList.contains('dsa-mode')) {
-                dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
-            } else {
-                dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                
+                stopSpeech();
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                
+                currentUtterance.onstart = () => {
+                    button.classList.add('playing');
+                    activeTTSButton = button;
+                };
+                currentUtterance.onpause = () => button.classList.remove('playing');
+                currentUtterance.onresume = () => button.classList.add('playing');
+                
+                const cleanup = () => {
+                    button.classList.remove('playing');
+                    if (activeTTSButton === button) {
+                        activeTTSButton = null;
+                        currentUtterance = null;
+                    }
+                };
+
+                currentUtterance.onend = cleanup;
+                currentUtterance.onerror = (event) => {
+                     // Ignora errori di interruzione
+                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                        console.error('TTS Error:', event.error);
+                    }
+                    cleanup();
+                };
+                
+                synth.speak(currentUtterance);
             }
-        }
-        
-        document.getElementById('lang-toggle').addEventListener('click', () => {
-            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-            localStorage.setItem('language', currentLanguage);
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        e.preventDefault(); // Fondamentale per evitare che il click sull'icona apra il link
+                        
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        
+                        if (parentElement) {
+                            const clone = parentElement.cloneNode(true);
+                            clone.querySelector('.tts-button')?.remove();
+                            textToRead = clone.textContent.trim();
+                            
+                            const card = newButton.closest('.card'); 
+                            if (card) {
+                                const desc = card.querySelector('[data-lang-key$="-desc"]'); 
+                                if (desc) { textToRead += ". " + desc.textContent.trim(); }
+                            }
+                        }
+                        
+                        if (textToRead) { 
+                            speak(textToRead, newButton); 
+                        }
+                    });
+                });
+            }
+
+            function updateLanguage(lang) {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        const ttsButton = element.querySelector('.tts-button');
+                        const text = translations[key][lang];
+                        
+                        if (ttsButton) {
+                            let textNode = null;
+                            for(let node of element.childNodes) {
+                                if(node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
+                                    textNode = node;
+                                    break;
+                                }
+                            }
+                            if (textNode) {
+                                textNode.textContent = text;
+                            } else {
+                                element.insertBefore(document.createTextNode(text), ttsButton);
+                            }
+                        } else {
+                            element.textContent = text;
+                        }
+                    }
+                });
+
+                const dsaToggle = document.getElementById('dsa-toggle');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                
+                setupTTSListeners();
+            }
+            
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                stopSpeech();
+                updateLanguage(currentLanguage);
+            });
+
+            const dsaToggle = document.getElementById('dsa-toggle');
+            const body = document.body;
+
+            dsaToggle.addEventListener('click', () => {
+                body.classList.toggle('dsa-mode');
+                updateLanguage(currentLanguage);
+            });
+
+            // Init language
             updateLanguage(currentLanguage);
         });
-
-        const dsaToggle = document.getElementById('dsa-toggle');
-        const body = document.body;
-
-        dsaToggle.addEventListener('click', () => {
-            body.classList.toggle('dsa-mode');
-            if (body.classList.contains('dsa-mode')) {
-                dsaToggle.textContent = currentLanguage === 'it' ? 'Vista Standard' : 'Standard View';
-            } else {
-                dsaToggle.textContent = currentLanguage === 'it' ? 'Accessibilità' : 'Accessibility';
-            }
-        });
-
-        // Funzionalità Text-to-Speech con Pausa/Riprendi
-        let currentUtterance = null; // Riferimento all'istanza della lettura attuale
-
-        function readCardContent(buttonElement) {
-            if (!('speechSynthesis' in window)) {
-                alert('Il tuo browser non supporta la funzione di lettura del testo.');
-                return;
-            }
-            
-            const cardBody = buttonElement.closest('.p-6');
-            const title = cardBody.querySelector('h2').innerText;
-            const description = cardBody.querySelector('p').innerText;
-            const textToRead = `${title}. ${description}`;
-
-            // Se stiamo cliccando sullo stesso pulsante della lettura in pausa, riprendi.
-            if (window.speechSynthesis.paused && currentUtterance && currentUtterance.text === textToRead) {
-                window.speechSynthesis.resume();
-                return;
-            }
-
-            // Se stiamo cliccando sullo stesso pulsante della lettura in corso, metti in pausa.
-            if (window.speechSynthesis.speaking && currentUtterance && currentUtterance.text === textToRead) {
-                window.speechSynthesis.pause();
-                return;
-            }
-
-            // Se c'è una lettura in corso (anche in pausa), fermala prima di iniziarne una nuova.
-            if (window.speechSynthesis.speaking) {
-                 window.speechSynthesis.cancel();
-            }
-
-            // Crea e avvia una nuova lettura.
-            currentUtterance = new SpeechSynthesisUtterance(textToRead);
-            currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-            currentUtterance.rate = 0.9;
-            
-            currentUtterance.onend = function() {
-                currentUtterance = null; // Resetta quando la lettura è finita
-            };
-            
-            window.speechSynthesis.speak(currentUtterance);
-        }
-        
-        // Init language
-        updateLanguage(currentLanguage);
-
     </script>
-
 </body>
 </html>
