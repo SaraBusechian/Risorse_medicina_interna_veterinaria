@@ -3,241 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Titolo specifico per questa pagina -->
     <title>Checklist: Esame Cardiocircolatorio - Semeiotica Vet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Stili Generali e dal Template */
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
-        .section-nav-link {
-            transition: background-color 0.3s, color 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            background-color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
-        }
-        .section-nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        .section-nav-link.active {
-             background-color: white;
-             color: #1E3A8A;
-             cursor: default;
-        }
-        .content-card {
-             background-color: white;
-             border-radius: 0.75rem;
-             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-             padding: 1.5rem;
-             margin-top: 2rem;
-             max-width: 56rem; /* max-w-2xl increased slightly for checklist */
-             margin-left: auto;
-             margin-right: auto;
-        }
-        @media (min-width: 768px) { /* md: */
-            .content-card { padding: 2.5rem; }
-        }
-        #page-header { position: static; }
-        .scrollable-nav {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .scrollable-nav::-webkit-scrollbar { display: none; }
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #93C5FD !important; }
 
-        /* Stili Specifici Checklist Cardiocircolatorio */
-         #main-content h1 {
-             font-family: 'Lexend', sans-serif;
-             color: #1e3a8a;
-             border-bottom: 3px solid #1e3a8a;
-             padding-bottom: 0.5rem;
-             font-size: 1.75rem; /* text-2xl */
-             text-align: center;
-             margin-bottom: 1.5rem; /* mb-6 */
+        .content-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: 2rem; max-width: 900px; margin: -2.5rem auto 3rem; position: relative; z-index: 10; }
+        
+        .field { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; gap: 1rem; }
+        .label-area { flex-basis: 55%; display: flex; flex-direction: column; }
+        .label-area label { font-weight: 600; color: #1f2937; font-size: 1rem; }
+        .sub-label { font-size: 0.875rem; color: #6b7280; font-style: italic; margin-top: 0.25rem; }
+        .input-area { flex-basis: 40%; display: flex; align-items: center; justify-content: flex-end; flex-grow: 1; }
+        
+        input[type="text"], input[type="number"], textarea { 
+            border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.6rem 0.75rem; 
+            background-color: #f9fafb; width: 100%; transition: all 0.2s;
         }
-         #main-content h2 {
-             font-family: 'Lexend', sans-serif;
-             color: #1e40af;
-             border-bottom: 2px solid #dbeafe;
-             padding-bottom: 0.5rem;
-             margin-top: 2rem;
-             font-size: 1.25rem; /* text-xl */
-             font-weight: 600; /* font-semibold */
-             margin-bottom: 1rem; /* mb-4 */
-        }
-         .field {
-             display: flex;
-             align-items: center;
-             justify-content: space-between;
-             padding: 0.75rem 0;
-             border-bottom: 1px solid #e5e7eb;
-             flex-wrap: wrap;
-        }
-         .label-area {
-             flex-basis: 60%;
-             display: flex;
-             flex-direction: column;
-             align-items: flex-start;
-             padding-right: 1rem;
-        }
-         .label-area label {
-             font-weight: 600;
-             color: #1f2937;
-             font-size: 1rem;
-        }
-         .label-area .sub-label {
-             font-size: 0.875rem; /* text-sm */
-             color: #6b7280; /* text-gray-500 */
-             font-style: italic;
-             margin-top: 2px;
-        }
-         .input-area {
-             flex-basis: 40%;
-             display: flex;
-             align-items: center;
-             justify-content: flex-end;
-        }
-         .field input[type="text"], .field input[type="number"] {
-             border: 1px solid #d1d5db;
-             border-radius: 0.375rem;
-             padding: 0.5rem 0.75rem;
-             width: 140px;
-             text-align: right;
-             transition: border-color 0.2s, box-shadow 0.2s;
-        }
-         .field input:focus {
-             border-color: #2563eb;
-             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
-             outline: none;
-        }
-         .field .unit {
-             margin-left: 0.5rem;
-             color: #4b5563;
-        }
-         textarea {
-             width: 100%;
-             border: 1px solid #d1d5db;
-             border-radius: 0.375rem;
-             padding: 0.5rem 0.75rem;
-             margin-top: 0.5rem;
-             min-height: 80px;
-             transition: border-color 0.2s, box-shadow 0.2s;
-        }
-         textarea:focus {
-             border-color: #2563eb;
-             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
-             outline: none;
-        }
-         #print-button { /* Cambiato da classe a ID per coerenza */
-             display: inline-flex; /* Changed from block to inline-flex */
-             align-items: center; /* Center icon and text */
-             /* width: auto; /* Removed width 100% */
-             text-align: center;
-             margin-top: 2rem;
-             background-color: #16a34a;
-             color: #ffffff;
-             font-weight: 600;
-             padding: 0.75rem 1.5rem; /* Increased padding */
-             border-radius: 0.375rem;
-             transition: background-color 0.2s;
-             cursor: pointer;
-        }
-         #print-button:hover { background-color: #15803d; }
+        input:focus, textarea:focus { border-color: #2563eb; outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); background-color: #fff; }
+        textarea { min-height: 100px; margin-top: 0.75rem; }
+        .unit { margin-left: 0.5rem; font-weight: 600; color: #4b5563; }
 
-        /* DSA Mode Styles */
-        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
-        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
-        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
-        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
-        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
-        .dsa-mode #main-content h1, .dsa-mode #main-content h2, .dsa-mode label, .dsa-mode textarea, .dsa-mode input, .dsa-mode .unit { color: #34495e !important; }
-         .dsa-mode input, .dsa-mode textarea { background-color: #fefcf7 !important; border-color: #aeaeae !important; }
-
-
-        /* Print Styles */
-        @media (max-width: 640px) {
-             .field { flex-direction: column; align-items: flex-start; }
-             .label-area { flex-basis: 100%; padding-bottom: 0.5rem; padding-right: 0; }
-             .input-area { flex-basis: 100%; justify-content: flex-start; width: 100%; }
-             .field input[type="text"], .field input[type="number"] { width: 100%; text-align: left; }
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
+            letter-spacing: 0.05em;
+            line-height: 2;
         }
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+        }
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
+        }
+
+        .dsa-mode .content-card { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+        }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode input, .dsa-mode textarea { background-color: #ffffff; border: 2px solid #000000; color: #000000; }
+
         @media print {
-            body { background-color: #ffffff; margin: 0; padding: 0; font-family: sans-serif; font-size: 10pt; color: #000; }
-            #page-header, #main-footer, #print-button { display: none; }
-            .container { max-width: 100%; padding: 1cm; box-shadow: none; border: none; margin: 0; }
-            .content-card { box-shadow: none; border: none; padding: 0; margin: 0; }
-            #main-content h1 { font-size: 16pt; text-align: center; border-color: #000; color: #000 !important; margin-bottom: 1.5rem; }
-            #main-content h2 { font-size: 12pt; border-color: #ccc; color: #000 !important; margin-top: 1.5rem; page-break-after: avoid; }
-            .field { border-color: #ccc; page-break-inside: avoid; }
-            .label-area label { color: #000 !important; font-size: 10pt; }
-            .label-area .sub-label { color: #555 !important; font-size: 8pt;}
-            .field input[type="text"], .field input[type="number"] {
-                border-bottom: 1px dotted #000;
-                border-top: 0; border-left: 0; border-right: 0;
-                border-radius: 0;
-                text-align: left; padding: 2px 0; font-size: 10pt;
-                color: #000 !important; background-color: transparent !important;
-            }
-            .field .unit { color: #000 !important; font-size: 10pt; }
-            textarea { border: 1px dotted #ccc; min-height: 60px; font-size: 10pt; color: #000 !important; background-color: transparent !important;}
-            section { page-break-inside: avoid; margin-bottom: 1rem;}
+            #main-header, #main-footer, #print-button, .back-button-container { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
+            .hero-bg { background: none !important; color: black !important; }
+            h1 { color: black !important; border-bottom: 2px solid #000 !important; }
+            input, textarea { border: none !important; border-bottom: 1px dotted #000 !important; background: none !important; padding-left: 0 !important; }
+            .field { border-bottom: 1px solid #eee !important; page-break-inside: avoid; }
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50">
 
-    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
-    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
-        <div class="container mx-auto px-6 py-3">
-            <!-- Riga Superiore: Torna all'indice + Controlli -->
-            <div class="flex justify-between items-center mb-4">
-                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
-                 </a>
-                 <div class="flex items-center space-x-2">
-                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
-                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
-                 </div>
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
-
-            <!-- Titolo della Sezione -->
-            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleCardio">2. Apparato Cardiocircolatorio</h1>
-
-            <!-- Navigazione Interna alla Sezione -->
-            <nav class="scrollable-nav">
-                 <div class="flex space-x-2 pb-2">
-                     <a href="riassunto_cardiocircolatorio.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
-                     <a href="infografica_cardiocircolatorio.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
-                     <a href="checklist_cardiocircolatorio.html" class="section-nav-link active" data-lang-key="navChecklist">Checklist</a>
-                     <a href="collaterali_cardiocircolatorio.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
-                     <a href="quiz_cardiocircolatorio.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
-                     <a href="riassunto_cardiocircolatorio.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
-                </div>
-            </nav>
-
-        </div>
+        </nav>
     </header>
-    <!-- === FINE HEADER === -->
 
-    <!-- Main Content Container -->
-    <main class="container mx-auto p-4 md:px-8 md:py-12">
-        <!-- Card Contenuto -->
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-24 text-center relative">
+            <div class="absolute top-4 left-6 back-button-container">
+                 <a href="index_semeiotica.html#cardiocircolatorio" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- Icona e testo inseriti da JS -->
+                </a>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">Checklist Esame Cardiocircolatorio</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">Protocollo operativo per la raccolta sistematica dei rilievi clinici.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-4">
         <div id="main-content" class="content-card">
+            
+            <h1 class="text-2xl font-bold mb-8 text-center" data-lang-key="checklistHeader">Dati dell'Esame Clinico</h1>
 
-            <!-- Contenuto Specifico Checklist -->
-            <h1 data-lang-key="pageTitle">Checklist Esame Cardiocircolatorio</h1>
-
-            <section>
-                <h2 data-lang-key="section1Title">Valutazione a Distanza e Ispezione</h2>
+            <!-- SEZIONE 1 -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4" data-lang-key="section1Title">Valutazione a Distanza e Ispezione</h2>
+                
                 <div class="field">
                     <div class="label-area">
                         <label for="edemi" data-lang-key="fldEdemaLabel">Presenza di Edemi Declivi</label>
@@ -245,6 +111,7 @@
                     </div>
                     <div class="input-area"> <input type="text" id="edemi"> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="giugulari" data-lang-key="fldJugularLabel">Turgore Vene Giugulari</label>
@@ -252,6 +119,7 @@
                     </div>
                     <div class="input-area"> <input type="text" id="giugulari"> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="itto_visibile" data-lang-key="fldApexLabel">Itto Cardiaco Visibile</label>
@@ -261,8 +129,10 @@
                 </div>
             </section>
 
-            <section>
-                <h2 data-lang-key="section2Title">Valutazione Polso Arterioso</h2>
+            <!-- SEZIONE 2 -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4" data-lang-key="section2Title">Valutazione Polso Arterioso</h2>
+                
                 <div class="field">
                     <div class="label-area">
                         <label for="polso_sede" data-lang-key="fldPulseSiteLabel">Sede di Rilevazione</label>
@@ -270,13 +140,15 @@
                     </div>
                     <div class="input-area"> <input type="text" id="polso_sede"> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="polso_freq" data-lang-key="fldPulseRateLabel">Frequenza</label>
                         <span class="sub-label" data-lang-key="fldPulseRateSub">Deve essere sincrono con la Frequenza Cardiaca</span>
                     </div>
-                    <div class="input-area"> <input type="number" id="polso_freq"> <span class="unit">bpm</span> </div>
+                    <div class="input-area"> <input type="number" id="polso_freq" class="!w-32 text-right"> <span class="unit">bpm</span> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="polso_ritmo" data-lang-key="fldPulseRhythmLabel">Ritmo</label>
@@ -284,6 +156,7 @@
                     </div>
                     <div class="input-area"> <input type="text" id="polso_ritmo"> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="polso_ampiezza" data-lang-key="fldPulseAmpLabel">Ampiezza</label>
@@ -291,6 +164,7 @@
                     </div>
                     <div class="input-area"> <input type="text" id="polso_ampiezza"> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="polso_durezza" data-lang-key="fldPulseHardLabel">Durezza</label>
@@ -298,6 +172,7 @@
                     </div>
                     <div class="input-area"> <input type="text" id="polso_durezza"> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="polso_celerita" data-lang-key="fldPulseCelLabel">Celerità</label>
@@ -307,15 +182,18 @@
                 </div>
             </section>
 
-            <section>
-                <h2 data-lang-key="section3Title">Auscultazione Cardiaca</h2>
+            <!-- SEZIONE 3 -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4" data-lang-key="section3Title">Auscultazione Cardiaca</h2>
+                
                 <div class="field">
                     <div class="label-area">
                         <label for="fc" data-lang-key="fldHrLabel">Frequenza Cardiaca (FC)</label>
                         <span class="sub-label" data-lang-key="fldHrSub">Battiti per minuto contati all'auscultazione</span>
                     </div>
-                    <div class="input-area"> <input type="number" id="fc"> <span class="unit">bpm</span> </div>
+                    <div class="input-area"> <input type="number" id="fc" class="!w-32 text-right"> <span class="unit">bpm</span> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="toni" data-lang-key="fldSoundsLabel">Toni Cardiaci (T1, T2)</label>
@@ -323,6 +201,7 @@
                     </div>
                     <div class="input-area"> <input type="text" id="toni"> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="pmi_sx" data-lang-key="fldPmiLeftLabel">PMI Sinistro</label>
@@ -330,6 +209,7 @@
                     </div>
                     <div class="input-area"> <input type="text" id="pmi_sx"> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="pmi_dx" data-lang-key="fldPmiRightLabel">PMI Destro</label>
@@ -337,6 +217,7 @@
                     </div>
                     <div class="input-area"> <input type="text" id="pmi_dx"> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="soffi" data-lang-key="fldMurmursLabel">Soffi Cardiaci</label>
@@ -344,6 +225,7 @@
                     </div>
                     <div class="input-area"> <input type="text" id="soffi"> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="aritmie" data-lang-key="fldArrhythmiasLabel">Aritmie</label>
@@ -351,6 +233,7 @@
                     </div>
                     <div class="input-area"> <input type="text" id="aritmie"> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="sfregamenti" data-lang-key="fldRubsLabel">Sfregamenti Pericardici</label>
@@ -360,8 +243,10 @@
                 </div>
             </section>
 
-            <section>
-                <h2 data-lang-key="section4Title">Valutazione Perfusione Periferica</h2>
+            <!-- SEZIONE 4 -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4" data-lang-key="section4Title">Valutazione Perfusione Periferica</h2>
+                
                 <div class="field">
                     <div class="label-area">
                         <label for="mucose_colore" data-lang-key="fldMucosaColorLabel">Colore Mucose</label>
@@ -369,13 +254,15 @@
                     </div>
                     <div class="input-area"> <input type="text" id="mucose_colore"> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="trc" data-lang-key="fldCrtLabel">Tempo Riempimento Capillare (TRC)</label>
                         <span class="sub-label" data-lang-key="fldCrtSub">Valore normale: &lt; 2 secondi</span>
                     </div>
-                    <div class="input-area"> <input type="number" id="trc"> <span class="unit">sec</span> </div>
+                    <div class="input-area"> <input type="number" id="trc" class="!w-32 text-right"> <span class="unit">sec</span> </div>
                 </div>
+
                 <div class="field">
                     <div class="label-area">
                         <label for="temp_estremita" data-lang-key="fldExtremTempLabel">Temperatura Estremità</label>
@@ -385,189 +272,115 @@
                 </div>
             </section>
 
-            <section>
-                <h2 data-lang-key="section5Title">Annotazioni Aggiuntive</h2>
-                <div>
-                    <textarea id="note" data-lang-key="fldNotesPlaceholder" placeholder="Inserisci qui eventuali osservazioni..."></textarea>
-                </div>
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4" data-lang-key="section5Title">Annotazioni Aggiuntive</h2>
+                <textarea id="note" data-lang-key="fldNotesPlaceholder" placeholder="Inserisci qui eventuali osservazioni..."></textarea>
             </section>
-            <!-- Fine Contenuto Specifico Checklist -->
 
-             <!-- Bottone Stampa -->
-            <div class="mt-8 text-center"> <!-- Aggiunto margine sopra -->
-                <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center" data-lang-key="btnPrint">
+            <div class="mt-8 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 transition inline-flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="btnPrintText">Stampa Checklist</span>
+                    <span data-lang-key="btnPrint">Stampa Checklist</span>
                 </button>
             </div>
 
-        </div> <!-- Fine content-card -->
+        </div>
     </main>
 
-    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
-        </div>
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            // === TRADUZIONI ===
+            const backIcon = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" fill-rule="evenodd" clip-rule="evenodd"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>`;
+            
             const translations = {
-                // --- Header ---
-                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
-                sectionTitleCardio: { it: '2. Apparato Cardiocircolatorio', en: '2. Cardiovascular System' },
-                navSummary: { it: 'Riassunto', en: 'Summary' },
-                navInfographic: { it: 'Infografica', en: 'Infographic' },
-                navChecklist: { it: 'Checklist', en: 'Checklist' },
-                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
-                navQuiz: { it: 'Quiz', en: 'Quiz' },
-                navAudio: { it: 'Audio', en: 'Audio' },
+                siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
+                backToHome: { it: backIcon + 'Torna all\'Indice', en: backIcon + 'Back to Index' },
                 accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                // --- Contenuto Checklist Cardiocircolatorio ---
-                 siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Veterinary Semeiotics L.A.' },
-                 navBack: { it: 'Indice Esami', en: 'Exams Index' },
-                 pageTitle: { it: 'Checklist Esame Cardiocircolatorio', en: 'Cardiovascular Examination Checklist' },
-                 section1Title: { it: 'Valutazione a Distanza e Ispezione', en: 'Distance Assessment and Inspection' },
-                 fldEdemaLabel: { it: 'Presenza di Edemi Declivi', en: 'Presence of Pitting Edema' },
-                 fldEdemaSub: { it: 'Sì/No, Localizzazione (es. petto, giogaia, arti)', en: 'Yes/No, Location (e.g., brisket, jaw, limbs)' },
-                 fldJugularLabel: { it: 'Turgore Vene Giugulari', en: 'Jugular Vein Distension' },
-                 fldJugularSub: { it: 'Sì/No, Pulsazioni visibili (polso venoso)', en: 'Yes/No, Visible pulsations (venous pulse)' },
-                 fldApexLabel: { it: 'Itto Cardiaco Visibile', en: 'Visible Apex Beat' },
-                 fldApexSub: { it: 'Sì/No (visibile in animali magri)', en: 'Yes/No (visible in thin animals)' },
-                 section2Title: { it: 'Valutazione Polso Arterioso', en: 'Arterial Pulse Assessment' },
-                 fldPulseSiteLabel: { it: 'Sede di Rilevazione', en: 'Assessment Site' },
-                 fldPulseSiteSub: { it: 'Es. Facciale, Metatarsale, Coccigea', en: 'e.g., Facial, Metatarsal, Coccygeal' },
-                 fldPulseRateLabel: { it: 'Frequenza', en: 'Rate' },
-                 fldPulseRateSub: { it: 'Deve essere sincrono con la Frequenza Cardiaca', en: 'Must be synchronous with Heart Rate' },
-                 fldPulseRhythmLabel: { it: 'Ritmo', en: 'Rhythm' },
-                 fldPulseRhythmSub: { it: 'Regolare / Irregolare', en: 'Regular / Irregular' },
-                 fldPulseAmpLabel: { it: 'Ampiezza', en: 'Amplitude' },
-                 fldPulseAmpSub: { it: 'Pieno / Filiforme / Piccolo', en: 'Full / Thready / Small' },
-                 fldPulseHardLabel: { it: 'Durezza', en: 'Hardness' },
-                 fldPulseHardSub: { it: 'Duro (ipertensione) / Molle (ipotensione)', en: 'Hard (hypertension) / Soft (hypotension)' },
-                 fldPulseCelLabel: { it: 'Celerità', en: 'Celerity' },
-                 fldPulseCelSub: { it: 'Celere (rapido) / Lento', en: 'Quick (rapid) / Slow' },
-                 section3Title: { it: 'Auscultazione Cardiaca', en: 'Cardiac Auscultation' },
-                 fldHrLabel: { it: 'Frequenza Cardiaca (FC)', en: 'Heart Rate (HR)' },
-                 fldHrSub: { it: 'Battiti per minuto contati all\'auscultazione', en: 'Beats per minute counted on auscultation' },
-                 fldSoundsLabel: { it: 'Toni Cardiaci (T1, T2)', en: 'Heart Sounds (S1, S2)' },
-                 fldSoundsSub: { it: 'Netti / Parafonici (attenuati) / Accentuati', en: 'Clear / Muffled (attenuated) / Accentuated' },
-                 fldPmiLeftLabel: { it: 'PMI Sinistro', en: 'Left PMI' },
-                 fldPmiLeftSub: { it: 'Polmonare (3°), Aortico (4°), Mitrale (5°)', en: 'Pulmonary (3rd), Aortic (4th), Mitral (5th)' },
-                 fldPmiRightLabel: { it: 'PMI Destro', en: 'Right PMI' },
-                 fldPmiRightSub: { it: 'Tricuspide (3°-4°)', en: 'Tricuspid (3rd-4th)' },
-                 fldMurmursLabel: { it: 'Soffi Cardiaci', en: 'Heart Murmurs' },
-                 fldMurmursSub: { it: 'Sì/No, Fase (Sistolico/Diastolico), Intensità (1-6)', en: 'Yes/No, Phase (Systolic/Diastolic), Intensity (1-6)' },
-                 fldArrhythmiasLabel: { it: 'Aritmie', en: 'Arrhythmias' },
-                 fldArrhythmiasSub: { it: 'Sì/No (es. Blocco AV, Fibrillazione Atriale)', en: 'Yes/No (e.g., AV Block, Atrial Fibrillation)' },
-                 fldRubsLabel: { it: 'Sfregamenti Pericardici', en: 'Pericardial Rubs' },
-                 fldRubsSub: { it: 'Sì/No (indicativi di pericardite)', en: 'Yes/No (indicative of pericarditis)' },
-                 section4Title: { it: 'Valutazione Perfusione Periferica', en: 'Peripheral Perfusion Assessment' },
-                 fldMucosaColorLabel: { it: 'Colore Mucose', en: 'Mucous Membrane Color' },
-                 fldMucosaColorSub: { it: 'Rosa, Pallide, Itteriche, Cianotiche, Congeste', en: 'Pink, Pale, Icteric, Cyanotic, Congested' },
-                 fldCrtLabel: { it: 'Tempo Riempimento Capillare (TRC)', en: 'Capillary Refill Time (CRT)' },
-                 fldCrtSub: { it: 'Valore normale: < 2 secondi', en: 'Normal value: < 2 seconds' },
-                 fldExtremTempLabel: { it: 'Temperatura Estremità', en: 'Extremity Temperature' },
-                 fldExtremTempSub: { it: 'Calde / Tiepide / Fredde (es. orecchie, arti)', en: 'Warm / Tepid / Cold (e.g., ears, limbs)' },
-                 section5Title: { it: 'Annotazioni Aggiuntive', en: 'Additional Notes' },
-                 fldNotesPlaceholder: { it: 'Inserisci qui eventuali osservazioni...', en: 'Enter any observations here...' },
-                 btnPrint: { it: 'Stampa Checklist', en: 'Print Checklist' }, // Chiave per bottone stampa
-                 btnPrintText: { it: 'Stampa Checklist', en: 'Print Checklist' }, // Testo dentro bottone stampa
-                // --- Footer ---
-                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+                pageTitle: { it: 'Checklist Cardiocircolatorio', en: 'Cardiovascular Checklist' },
+                pageSubtitle: { it: 'Protocollo operativo per la raccolta sistematica dei rilievi clinici.', en: 'Operating protocol for systematic collection of clinical findings.' },
+                checklistHeader: { it: 'Dati dell\'Esame Clinico', en: 'Clinical Examination Data' },
+                section1Title: { it: 'Valutazione a Distanza e Ispezione', en: 'Distance Assessment and Inspection' },
+                fldEdemaLabel: { it: 'Presenza di Edemi Declivi', en: 'Presence of Dependent Edema' },
+                fldEdemaSub: { it: 'Sì/No, Localizzazione (es. petto, giogaia, arti)', en: 'Yes/No, Location (e.g., brisket, dewlap, limbs)' },
+                fldJugularLabel: { it: 'Turgore Vene Giugulari', en: 'Jugular Vein Distension' },
+                fldJugularSub: { it: 'Sì/No, Pulsazioni visibili (polso venoso)', en: 'Yes/No, Visible pulsations (venous pulse)' },
+                fldApexLabel: { it: 'Itto Cardiaco Visibile', en: 'Visible Apex Beat' },
+                fldApexSub: { it: 'Sì/No (visibile in animali magri)', en: 'Yes/No (visible in thin animals)' },
+                section2Title: { it: 'Valutazione Polso Arterioso', en: 'Arterial Pulse Assessment' },
+                fldPulseSiteLabel: { it: 'Sede di Rilevazione', en: 'Assessment Site' },
+                fldPulseSiteSub: { it: 'Es. Facciale, Metatarsale, Coccigea', en: 'e.g., Facial, Metatarsal, Coccygeal' },
+                fldPulseRateLabel: { it: 'Frequenza', en: 'Rate' },
+                fldPulseRateSub: { it: 'Deve essere sincrono con la Frequenza Cardiaca', en: 'Must be synchronous with Heart Rate' },
+                fldPulseRhythmLabel: { it: 'Ritmo', en: 'Rhythm' },
+                fldPulseRhythmSub: { it: 'Regolare / Irregolare', en: 'Regular / Irregular' },
+                fldPulseAmpLabel: { it: 'Ampiezza', en: 'Amplitude' },
+                fldPulseAmpSub: { it: 'Pieno / Filiforme / Piccolo', en: 'Full / Thready / Small' },
+                fldPulseHardLabel: { it: 'Durezza', en: 'Hardness' },
+                fldPulseHardSub: { it: 'Duro (ipertensione) / Molle (ipotensione)', en: 'Hard (hypertension) / Soft (hypotension)' },
+                fldPulseCelLabel: { it: 'Celerità', en: 'Celerity' },
+                fldPulseCelSub: { it: 'Celere (rapido) / Lento', en: 'Quick (rapid) / Slow' },
+                section3Title: { it: 'Auscultazione Cardiaca', en: 'Cardiac Auscultation' },
+                fldHrLabel: { it: 'Frequenza Cardiaca (FC)', en: 'Heart Rate (HR)' },
+                fldHrSub: { it: 'Battiti per minuto contati all\'auscultazione', en: 'Beats per minute counted on auscultation' },
+                fldSoundsLabel: { it: 'Toni Cardiaci (T1, T2)', en: 'Heart Sounds (S1, S2)' },
+                fldSoundsSub: { it: 'Netti / Parafonici (attenuati) / Accentuati', en: 'Clear / Muffled (attenuated) / Accentuated' },
+                fldPmiLeftLabel: { it: 'PMI Sinistro', en: 'Left PMI' },
+                fldPmiLeftSub: { it: 'Polmonare (3°), Aortico (4°), Mitrale (5°)', en: 'Pulmonary (3rd), Aortic (4th), Mitral (5th)' },
+                fldPmiRightLabel: { it: 'PMI Destro', en: 'Right PMI' },
+                fldPmiRightSub: { it: 'Tricuspide (3°-4°)', en: 'Tricuspid (3rd-4th)' },
+                fldMurmursLabel: { it: 'Soffi Cardiaci', en: 'Heart Murmurs' },
+                fldMurmursSub: { it: 'Sì/No, Fase (Sistolico/Diastolico), Intensità (1-6)', en: 'Yes/No, Phase (Systolic/Diastolic), Intensity (1-6)' },
+                fldArrhythmiasLabel: { it: 'Aritmie', en: 'Arrhythmias' },
+                fldArrhythmiasSub: { it: 'Sì/No (es. Blocco AV, Fibrillazione Atriale)', en: 'Yes/No (e.g., AV Block, Atrial Fibrillation)' },
+                fldRubsLabel: { it: 'Sfregamenti Pericardici', en: 'Pericardial Rubs' },
+                fldRubsSub: { it: 'Sì/No (indicativi di pericardite)', en: 'Yes/No (indicative of pericarditis)' },
+                section4Title: { it: 'Valutazione Perfusione Periferica', en: 'Peripheral Perfusion Assessment' },
+                fldMucosaColorLabel: { it: 'Colore Mucose', en: 'Mucous Membrane Color' },
+                fldMucosaColorSub: { it: 'Rosa, Pallide, Itteriche, Cianotiche, Congeste', en: 'Pink, Pale, Icteric, Cyanotic, Congested' },
+                fldCrtLabel: { it: 'Tempo Riempimento Capillare (TRC)', en: 'Capillary Refill Time (CRT)' },
+                fldCrtSub: { it: 'Valore normale: < 2 secondi', en: 'Normal value: < 2 seconds' },
+                fldExtremTempLabel: { it: 'Temperatura Estremità', en: 'Extremity Temperature' },
+                fldExtremTempSub: { it: 'Calde / Tiepide / Fredde (es. orecchie, arti)', en: 'Warm / Tepid / Cold (e.g., ears, limbs)' },
+                section5Title: { it: 'Annotazioni Aggiuntive', en: 'Additional Notes' },
+                fldNotesPlaceholder: { it: 'Inserisci qui eventuali rilievi patologici o note aggiuntive...', en: 'Enter any pathological findings or additional notes here...' },
+                btnPrint: { it: 'Stampa Checklist', en: 'Print Checklist' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
             };
 
-             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
-             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
             let currentLanguage = localStorage.getItem('language') || 'it';
-            const accessibilityToggle = document.getElementById('accessibility-toggle');
-            const langToggle = document.getElementById('lang-toggle');
             const body = document.body;
-            // No TTS needed for checklist
 
-            // --- Funzione Aggiornamento Lingua ---
-            const updateLanguage = (lang, previousLang = null) => {
-                 document.documentElement.lang = lang;
-                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-
-                 document.querySelectorAll('[data-lang-key]').forEach(element => {
-                     const key = element.dataset.langKey;
-                     if (translations[key] && translations[key][lang]) {
-                         const translationText = translations[key][lang];
-
-                         // Gestione elementi HTML (footer, link indietro, bottoni)
-                         if (key === 'footerText' || key === 'backToIndex') {
-                              // Se l'elemento contiene un SVG, preservalo
-                              const svgIcon = element.querySelector('svg');
-                              element.innerHTML = translationText;
-                              if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
-                                   element.insertBefore(svgIcon, element.firstChild);
-                              }
-                         }
-                          // Gestione specifica bottone stampa (con SVG)
-                         else if (key === 'btnPrint') {
-                              const svgIcon = element.querySelector('svg');
-                              const textSpan = element.querySelector('span[data-lang-key="btnPrintText"]');
-                              if (textSpan) {
-                                   textSpan.textContent = translations['btnPrintText'][lang]; // Aggiorna solo testo
-                              } else { // Fallback se non c'è span
-                                  element.innerHTML = translationText;
-                                   if (svgIcon) element.insertBefore(svgIcon, element.firstChild);
-                              }
-                               element.setAttribute('aria-label', translationText); // Aggiorna aria-label
-                         }
-                         // Gestione link nav interna (solo testo)
-                         else if (element.classList.contains('section-nav-link')) {
-                             element.textContent = translationText;
-                         }
-                         // Gestione titolo H1 nell'header (solo testo)
-                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
-                              const sectionKey = currentSectionKey || key;
-                              element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
-                         }
-                         // Gestione placeholder textarea
-                         else if (key === 'fldNotesPlaceholder' && element.tagName === 'TEXTAREA') {
-                              element.placeholder = translationText;
-                         }
-                         // Gestione altri testi semplici (titoli H1/H2, labels, sub-labels)
-                         else {
-                             element.textContent = translationText;
-                         }
-                     }
-                 });
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                // Placeholder textarea
+                const noteField = document.getElementById('note');
+                if(noteField) noteField.placeholder = translations.fldNotesPlaceholder[lang];
             };
 
-            // --- Logica Modalità Accessibilità ---
             const setA11yMode = (enabled) => {
-                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
-                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
             };
 
-            // --- Event Listeners ---
-            if (langToggle) {
-                langToggle.addEventListener('click', () => {
-                    const previousLanguage = currentLanguage;
-                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-                    localStorage.setItem('language', currentLanguage);
-                     updateLanguage(currentLanguage, previousLanguage);
-                });
-            } else { console.error("Elemento langToggle non trovato!"); }
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
 
-            if (accessibilityToggle) {
-                 accessibilityToggle.addEventListener('click', () => {
-                    const isEnabled = body.classList.contains('dsa-mode');
-                    setA11yMode(!isEnabled);
-                });
-            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
 
-            // --- Inizializzazione ---
-            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
-            updateLanguage(currentLanguage); // Applica lingua iniziale e setup
-
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
         });
     </script>
-
 </body>
 </html>
