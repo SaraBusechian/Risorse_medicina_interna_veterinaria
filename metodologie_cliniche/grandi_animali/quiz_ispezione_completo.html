@@ -3,424 +3,389 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Interattivo: L'Ispezione Clinica</title>
+    <title>Quiz: L'Ispezione Clinica - Medicina Interna</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; }
-        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
-        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; }
-        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; }
-        .nav-link { transition: color 0.3s; }
-        .nav-link:hover { color: #93C5FD; }
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #93C5FD !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; }
+        .option-btn:hover:not(:disabled) { border-color: #3B82F6; background-color: #eff6ff; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d !important; font-weight: bold; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c !important; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
         .dsa-mode {
             font-family: 'Lexend', sans-serif;
-            background-color: #fdfaf5 !important;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
             letter-spacing: 0.05em;
-            line-height: 1.75;
+            line-height: 2;
         }
-        .dsa-mode #main-header, .dsa-mode #main-footer {
-            background-color: #000000 !important;
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
             background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+            box-shadow: none !important;
         }
-        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
-            color: #ffffff !important;
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
         }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
-        .dsa-mode #quiz-container, .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
-        .dsa-mode h2, .dsa-mode p { color: #34495e; }
+
+        .dsa-mode .section-card, .dsa-mode .option-btn { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+            color: #000000 !important;
+        }
+
+        .dsa-mode .correct { background-color: #dcfce7 !important; border-width: 4px !important; }
+        .dsa-mode .incorrect { background-color: #fee2e2 !important; border-width: 4px !important; }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: underline;
+            text-decoration-color: #fbbf24;
+        }
+
+        /* --- TTS BUTTON --- */
         .tts-button {
             cursor: pointer;
             display: inline-block;
-            margin-left: 8px;
+            margin-left: 10px;
             vertical-align: middle;
             color: #64748b;
             transition: color 0.2s;
         }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .dsa-mode .tts-button { color: #000000 !important; }
     </style>
 </head>
-<body class="bg-slate-50">
+<body class="bg-gray-50">
 
-    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
             <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
             <div class="flex items-center space-x-4">
-                <ul class="hidden md:flex space-x-6">
-                    <li><a href="index.html#anamnesi" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
-                    <li><a href="index.html#ispezione" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
-                    <li><a href="index.html#palpazione" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
-                    <li><a href="index.html#percussione" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
-                    <li><a href="index.html#auscultazione" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
+                <ul class="hidden md:flex space-x-6 text-white">
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
                 </ul>
-                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
-                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
         </nav>
     </header>
 
-    <main class="flex items-center justify-center min-h-[calc(100vh-150px)] p-4">
-        <div id="quiz-container" class="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6 md:p-8">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="index.html#ispezione" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- JS inserisce icona e testo -->
+                </a>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">Test di Valutazione</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">Metti alla prova le tue conoscenze sull'ispezione clinica dei grandi animali.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 -mt-10 pb-12 flex justify-center">
+        <div id="quiz-container" class="section-card w-full max-w-3xl p-8">
+            
+            <!-- AREA DOMANDA -->
             <div id="question-area">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: L'Ispezione Clinica</h2>
-                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-blue-800 font-bold uppercase tracking-wider text-sm" data-lang-key="quizLabel">Ispezione Clinica</h3>
+                    <span id="progress-text" class="text-slate-500 font-bold text-sm bg-slate-100 px-3 py-1 rounded-full"></span>
                 </div>
-                <div class="text-lg text-slate-700 mb-6 min-h-[6rem] flex items-center">
-                    <p id="question-text"></p>
-                    <span id="question-tts-button" class="tts-button">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    </span>
+
+                <div class="mb-8">
+                    <div class="flex items-start">
+                        <p id="question-text" class="text-xl md:text-2xl font-semibold text-slate-800 leading-snug flex-grow"></p>
+                        <button id="question-tts" class="tts-button flex-shrink-0 mt-1">
+                            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
                 </div>
-                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4">
+                    <!-- Opzioni via JS -->
+                </div>
             </div>
 
-            <div id="feedback-area" class="mt-6 hidden">
-                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
-                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
+            <!-- AREA FEEDBACK -->
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-slate-50 border-2 border-slate-200">
+                    <p id="rationale-text" class="text-slate-700 italic mb-6"></p>
+                    <button id="next-button" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-blue-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
             </div>
 
-            <div id="results-area" class="text-center hidden">
-                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
-                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
-                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
-                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            <!-- AREA RISULTATI -->
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🎓</div>
+                <h2 class="text-3xl font-bold text-blue-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <div class="inline-block bg-blue-50 border-2 border-blue-200 rounded-2xl px-10 py-6 mb-10 mt-6">
+                    <p class="text-slate-500 uppercase text-xs font-bold tracking-widest mb-1">Punteggio Finale</p>
+                    <p id="score-text" class="text-6xl font-black text-blue-600"></p>
+                </div>
+                <button id="restart-button" class="w-full border-2 border-blue-600 text-blue-600 font-bold py-4 px-6 rounded-xl hover:bg-blue-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
             </div>
+
         </div>
     </main>
-    
-    <footer id="main-footer" class="bg-gray-800 text-white">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
-        </div>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
-        const translations = {
-            siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
-            navAnamnesi: { it: 'Anamnesi', en: 'History' },
-            navIspezione: { it: 'Ispezione', en: 'Inspection' },
-            navPalpazione: { it: 'Palpazione', en: 'Palpation' },
-            navPercussione: { it: 'Percussione', en: 'Percussion' },
-            navAuscultazione: { it: 'Auscultazione', en: 'Auscultation' },
-            accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-            quizTitle: { it: "Quiz: L'Ispezione Clinica", en: 'Quiz: Clinical Inspection' },
-            progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
-            btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
-            btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
-            resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
-            resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
-            btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
-            footerText: { it: '&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Clinical Methodologies. Created by Sara Busechian.' },
-            q1: {
-                question: { it: "Qual è il primo passo corretto nell'eseguire un'ispezione clinica su un grande animale?", en: "What is the correct first step when performing a clinical inspection on a large animal?" },
-                options: [
-                    { text: { it: "Ispezione ambientale e dell'animale a distanza", en: "Environmental and distant animal inspection" }, rationale: { it: "Questo approccio permette di raccogliere dati contestuali e osservare l'animale senza alterarne il comportamento.", en: "This approach allows for the collection of contextual data and observation of the animal without altering its behavior." }, isCorrect: true },
-                    { text: { it: "Ispezione ravvicinata della testa", en: "Close-up inspection of the head" }, rationale: { it: "Avvicinarsi subito all'animale ne altererebbe il comportamento e farebbe perdere le informazioni ottenibili a distanza.", en: "Approaching the animal immediately would alter its behavior and cause the loss of information obtainable from a distance." }, isCorrect: false },
-                    { text: { it: "Valutazione delle mucose apparenti", en: "Assessment of visible mucous membranes" }, rationale: { it: "Questa è una parte importante dell'ispezione ravvicinata, che va eseguita dopo aver osservato l'animale a distanza.", en: "This is an important part of the close-up inspection, which should be performed after observing the animal from a distance." }, isCorrect: false },
-                    { text: { it: "Far deambulare l'animale", en: "Making the animal walk" }, rationale: { it: "La valutazione della deambulazione è corretta, ma va fatta nella fase a distanza, dopo aver osservato l'animale a riposo.", en: "Assessing gait is correct, but it should be done during the distant phase, after observing the animal at rest." }, isCorrect: false }
-                ]
-            },
-            q2: {
-                question: { it: "Durante l'ispezione ambientale, la presenza di alimento non consumato nella mangiatoia è un indizio primario di...", en: "During an environmental inspection, the presence of uneaten feed in the manger is a primary clue of..." },
-                options: [
-                    { text: { it: "Un potenziale problema di appetito o di qualità dell'alimento.", en: "A potential problem with appetite or feed quality." }, rationale: { it: "L'alimento avanzato suggerisce che l'animale potrebbe avere scarso appetito (iporessia) o che l'alimento non è appetibile (es. muffe).", en: "Leftover feed suggests that the animal may have a poor appetite (hyporexia) or that the feed is unpalatable (e.g., moldy)." }, isCorrect: true },
-                    { text: { it: "Una corretta gestione della stabulazione.", en: "Proper housing management." }, rationale: { it: "Al contrario, potrebbe indicare un problema gestionale o sanitario che influisce sull'assunzione di cibo.", en: "On the contrary, it could indicate a management or health problem affecting food intake." }, isCorrect: false },
-                    { text: { it: "Un'eccessiva disponibilità di acqua.", en: "An excessive availability of water." }, rationale: { it: "La disponibilità di acqua non è direttamente correlata al consumo di alimento solido in questo modo.", en: "The availability of water is not directly correlated with solid feed consumption in this way." }, isCorrect: false },
-                    { text: { it: "La dominanza di altri animali nel gruppo.", en: "Dominance by other animals in the group." }, rationale: { it: "La dominanza è una possibilità, ma un problema di appetito o di qualità del cibo è un'ipotesi più diretta.", en: "Dominance is a possibility, but a problem with appetite or feed quality is a more direct hypothesis." }, isCorrect: false }
-                ]
-            },
-            q3: {
-                question: { it: "Quale dei seguenti parametri NON fa parte dell'esame funzionale del respiro?", en: "Which of the following parameters is NOT part of the functional examination of breathing?" },
-                options: [
-                    { text: { it: "Presenza di suoni respiratori anomali.", en: "Presence of abnormal respiratory sounds." }, rationale: { it: "I suoni respiratori vengono valutati con l'auscultazione, non con l'ispezione.", en: "Respiratory sounds are evaluated by auscultation, not inspection." }, isCorrect: true },
-                    { text: { it: "Frequenza respiratoria.", en: "Respiratory rate." }, rationale: { it: "La frequenza è uno dei quattro pilastri dell'esame funzionale del respiro, valutabile visivamente.", en: "Rate is one of the four pillars of the functional examination of breathing, assessable visually." }, isCorrect: false },
-                    { text: { it: "Profondità del respiro.", en: "Depth of breathing." }, rationale: { it: "La profondità (respiro superficiale o profondo) si osserva visivamente e fa parte dell'esame.", en: "Depth (shallow or deep breathing) is observed visually and is part of the examination." }, isCorrect: false },
-                    { text: { it: "Tipo di respiro (es. addominale).", en: "Type of breathing (e.g., abdominal)." }, rationale: { it: "Il tipo di movimento respiratorio è un parametro chiave dell'ispezione del torace.", en: "The type of respiratory movement is a key parameter of the chest inspection." }, isCorrect: false }
-                ]
-            },
-            q4: {
-                question: { it: "Un colore giallastro (itterico) delle mucose apparenti è un forte indicatore di...", en: "A yellowish color (icteric) of the visible mucous membranes is a strong indicator of..." },
-                options: [
-                    { text: { it: "Problemi epatici o emolisi.", en: "Liver problems or hemolysis." }, rationale: { it: "L'ittero è causato da un accumulo di bilirubina, che può derivare da un danno al fegato o da una massiccia distruzione di globuli rossi.", en: "Icterus is caused by an accumulation of bilirubin, which can result from liver damage or massive destruction of red blood cells." }, isCorrect: true },
-                    { text: { it: "Grave deficit di ossigenazione.", en: "Severe oxygen deficiency." }, rationale: { it: "Un deficit di ossigenazione causa un colore bluastro (cianosi), non giallastro.", en: "An oxygen deficiency causes a bluish color (cyanosis), not yellowish." }, isCorrect: false },
-                    { text: { it: "Anemia o stato di shock.", en: "Anemia or shock." }, rationale: { it: "L'anemia e lo shock causano un colore pallido delle mucose.", en: "Anemia and shock cause pale mucous membranes." }, isCorrect: false },
-                    { text: { it: "Sepsi o infiammazione acuta.", en: "Sepsis or acute inflammation." }, rationale: { it: "La sepsi tipicamente causa mucose iperemiche (rosso intenso).", en: "Sepsis typically causes hyperemic (bright red) mucous membranes." }, isCorrect: false }
-                ]
-            },
-            q5: {
-                question: { it: "Durante l'ispezione a distanza, si valuta il BCS dell'animale. Cosa significa questa sigla?", en: "During a distant inspection, the animal's BCS is assessed. What does this acronym stand for?" },
-                options: [
-                    { text: { it: "Body Condition Score (Stato di Nutrizione)", en: "Body Condition Score" }, rationale: { it: "Il BCS è un metodo standardizzato per valutare oggettivamente lo stato di nutrizione di un animale.", en: "The BCS is a standardized method to objectively assess an animal's nutritional status." }, isCorrect: true },
-                    { text: { it: "Behavioral Control System (Sistema di Controllo Comportamentale)", en: "Behavioral Control System" }, rationale: { it: "Il comportamento si valuta, ma la sigla BCS non si riferisce a questo.", en: "Behavior is assessed, but the acronym BCS does not refer to this." }, isCorrect: false },
-                    { text: { it: "Blood Circulation Status (Stato della Circolazione Sanguigna)", en: "Blood Circulation Status" }, rationale: { it: "La circolazione si valuta con altri metodi, come l'ispezione delle mucose, non con il BCS.", en: "Circulation is assessed with other methods, such as inspection of mucous membranes, not with the BCS." }, isCorrect: false },
-                    { text: { it: "Bovine Conformation Standard (Standard di Conformazione Bovina)", en: "Bovine Conformation Standard" }, rationale: { it: "Il BCS valuta lo stato di ingrassamento, non la conformazione scheletrica.", en: "BCS assesses body fat, not skeletal conformation." }, isCorrect: false }
-                ]
-            },
-            q6: {
-                question: { it: "L'osservazione di un animale che mantiene il dorso incurvato (cifotico) rientra in quale parte dell'ispezione a distanza?", en: "Observing an animal that keeps its back hunched (kyphotic) falls into which part of the distant inspection?" },
-                options: [
-                    { text: { it: "Valutazione della Postura", en: "Posture Assessment" }, rationale: { it: "Una postura anomala, come il dorso cifotico, è un segno di dolore o disagio, valutato durante l'ispezione posturale.", en: "An abnormal posture, such as a kyphotic back, is a sign of pain or discomfort, assessed during the postural inspection." }, isCorrect: true },
-                    { text: { it: "Valutazione della Deambulazione", en: "Gait Assessment" }, rationale: { it: "La deambulazione riguarda il movimento, mentre il dorso incurvato è una posizione statica.", en: "Gait concerns movement, while a hunched back is a static position." }, isCorrect: false },
-                    { text: { it: "Valutazione del Comportamento", en: "Behavior Assessment" }, rationale: { it: "Anche se legato al benessere, è più specificamente un segno posturale che un comportamento attivo.", en: "Although related to well-being, it is more specifically a postural sign than an active behavior." }, isCorrect: false },
-                    { text: { it: "Valutazione dello Stato di Nutrizione", en: "Nutritional Status Assessment" }, rationale: { it: "Lo stato di nutrizione si valuta osservando le masse muscolari e adipose, non la curvatura della schiena.", en: "Nutritional status is assessed by observing muscle and fat masses, not the curvature of the back." }, isCorrect: false }
-                ]
-            },
-            q7: {
-                question: { it: "Cosa si intende per ispezione 'testa-coda'?", en: "What is meant by a 'head-to-tail' inspection?" },
-                options: [
-                    { text: { it: "Un esame sistematico che parte dalla testa e prosegue ordinatamente verso la coda.", en: "A systematic examination that starts from the head and proceeds orderly towards the tail." }, rationale: { it: "Questo metodo garantisce un esame completo e ordinato di tutte le regioni corporee durante l'ispezione ravvicinata.", en: "This method ensures a complete and orderly examination of all body regions during the close-up inspection." }, isCorrect: true },
-                    { text: { it: "Un metodo per valutare la lunghezza dell'animale.", en: "A method for assessing the animal's length." }, rationale: { it: "Non è una misurazione, ma una procedura di esame.", en: "It is not a measurement, but an examination procedure." }, isCorrect: false },
-                    { text: { it: "Un'ispezione che si concentra solo sulla testa e sulla coda.", en: "An inspection that focuses only on the head and tail." }, rationale: { it: "Al contrario, è un metodo per esaminare tutto il corpo in modo sequenziale.", en: "On the contrary, it is a method to examine the entire body sequentially." }, isCorrect: false },
-                    { text: { it: "Un test di reattività che stimola prima la testa e poi la coda.", en: "A reactivity test that stimulates the head first and then the tail." }, rationale: { it: "Non è un test di riflessi, ma un'osservazione sistematica delle varie parti del corpo.", en: "It is not a reflex test, but a systematic observation of the various parts of the body." }, isCorrect: false }
-                ]
-            },
-            q8: {
-                question: { it: "Il riscontro di diarrea nel box di un animale è un'informazione raccolta durante:", en: "Finding diarrhea in an animal's stall is information collected during:" },
-                options: [
-                    { text: { it: "L'ispezione ambientale", en: "The environmental inspection" }, rationale: { it: "L'osservazione delle deiezioni nell'ambiente è una parte cruciale dell'ispezione ambientale e fornisce indizi immediati sullo stato dell'apparato digerente.", en: "Observing droppings in the environment is a crucial part of the environmental inspection and provides immediate clues about the state of the digestive system." }, isCorrect: true },
-                    { text: { it: "L'ispezione ravvicinata dell'addome", en: "The close-up inspection of the abdomen" }, rationale: { it: "L'ispezione dell'addome valuta la sua forma, ma non le feci già emesse.", en: "The inspection of the abdomen assesses its shape, but not the feces already passed." }, isCorrect: false },
-                    { text: { it: "L'anamnesi remota", en: "The past history" }, rationale: { it: "L'anamnesi si basa su ciò che riferisce il proprietario, mentre l'ispezione si basa sull'osservazione diretta dei segni.", en: "The history is based on what the owner reports, while the inspection is based on direct observation of the signs." }, isCorrect: false },
-                    { text: { it: "L'ispezione della deambulazione", en: "The gait inspection" }, rationale: { it: "La deambulazione valuta il movimento, non le caratteristiche delle feci.", en: "Gait assesses movement, not the characteristics of the feces." }, isCorrect: false }
-                ]
-            },
-            q9: {
-                question: { it: "L'aumento simmetrico del volume dell'addome (addome a botte) è spesso indicativo di...", en: "A symmetrical increase in the volume of the abdomen (barrel-shaped abdomen) is often indicative of..." },
-                options: [
-                    { text: { it: "Meteorismo o accumulo di liquidi.", en: "Bloat or fluid accumulation." }, rationale: { it: "Un aumento generalizzato del volume addominale è tipicamente causato da gas (meteorismo) o liquido (ascite) distribuiti in tutta la cavità.", en: "A generalized increase in abdominal volume is typically caused by gas (bloat) or fluid (ascites) distributed throughout the cavity." }, isCorrect: true },
-                    { text: { it: "Una gravidanza avanzata.", en: "An advanced pregnancy." }, rationale: { it: "La gravidanza causa un aumento di volume, ma spesso è asimmetrico, specialmente nelle fasi finali.", en: "Pregnancy causes an increase in volume, but it is often asymmetrical, especially in the final stages." }, isCorrect: false },
-                    { text: { it: "Una massa tumorale localizzata.", en: "A localized tumor mass." }, rationale: { it: "Una massa tende a causare un aumento di volume asimmetrico e localizzato, non diffuso a tutto l'addome.", en: "A mass tends to cause an asymmetrical and localized increase in volume, not diffused throughout the abdomen." }, isCorrect: false },
-                    { text: { it: "Un buono stato di nutrizione.", en: "A good nutritional status." }, rationale: { it: "Un buono stato di nutrizione non causa una distensione anomala dell'addome a forma di botte.", en: "A good nutritional status does not cause an abnormal barrel-shaped distension of the abdomen." }, isCorrect: false }
-                ]
-            },
-            q10: {
-                question: { it: "L'osservazione di uno scolo nasale sieroso (trasparente e acquoso) è più probabilmente associata a:", en: "The observation of a serous (clear and watery) nasal discharge is most likely associated with:" },
-                options: [
-                    { text: { it: "Un'infezione batterica cronica.", en: "A chronic bacterial infection." }, rationale: { it: "Le infezioni batteriche croniche sono tipicamente associate a scoli più densi, mucopurulenti e colorati.", en: "Chronic bacterial infections are typically associated with thicker, mucopulent, and colored discharges." }, isCorrect: false },
-                    { text: { it: "Un'emorragia dalle vie aeree profonde.", en: "Hemorrhage from the deep airways." }, rationale: { it: "Un'emorragia causerebbe uno scolo ematico (sangue), non sieroso.", en: "A hemorrhage would cause a bloody discharge (epistaxis), not a serous one." }, isCorrect: false },
-                    { text: { it: "Una fase iniziale di irritazione o un'allergia.", en: "An initial phase of irritation or an allergy." }, rationale: { it: "Lo scolo sieroso è la prima risposta a un'irritazione (es. polvere) o a un'infiammazione di tipo allergico, prima di eventuali complicazioni batteriche.", en: "Serous discharge is the first response to irritation (e.g., dust) or allergic inflammation, before any bacterial complications." }, isCorrect: true },
-                    { text: { it: "La presenza di un corpo estraneo da lungo tempo.", en: "The long-term presence of a foreign body." }, rationale: { it: "Un corpo estraneo cronico di solito causa uno scolo purulento e maleodorante, spesso monolaterale.", en: "A chronic foreign body usually causes a purulent and foul-smelling discharge, often unilateral." }, isCorrect: false }
-                ]
-            }
-        };
-
-        const quizData = Object.keys(translations)
-            .filter(k => /^q\d+$/.test(k))
-            .map(k => translations[k]);
-
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let shuffledQuestions = [];
-        const synth = window.speechSynthesis;
-        let currentUtterance = null;
-        let activeTTSButton = null;
-
-        const quizContainer = document.getElementById('quiz-container');
-        const questionArea = document.getElementById('question-area');
-        const resultsArea = document.getElementById('results-area');
-        const questionText = document.getElementById('question-text');
-        const questionTTSButton = document.getElementById('question-tts-button');
-        const optionsContainer = document.getElementById('options-container');
-        const progressText = document.getElementById('progress-text');
-        const feedbackArea = document.getElementById('feedback-area');
-        const rationaleText = document.getElementById('rationale-text');
-        const nextButton = document.getElementById('next-button');
-        const scoreText = document.getElementById('score-text');
-        const restartButton = document.getElementById('restart-button');
-        
-        let currentLanguage = localStorage.getItem('language') || 'it';
-
-        const accessibilityToggle = document.getElementById('accessibility-toggle');
-        const langToggle = document.getElementById('lang-toggle');
-        const body = document.body;
-
-        function speak(text, button) {
-            if (synth.speaking) {
-                if (currentUtterance && synth.paused && activeTTSButton === button) {
-                    synth.resume();
-                    button.classList.add('playing');
-                } else if (currentUtterance && !synth.paused && activeTTSButton === button) {
-                    synth.pause();
-                    button.classList.remove('playing');
-                } else {
-                    synth.cancel();
-                    startSpeaking(text, button);
-                }
-            } else {
-                startSpeaking(text, button);
-            }
-        }
-        
-        function startSpeaking(text, button) {
-            currentUtterance = new SpeechSynthesisUtterance(text);
-            currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-            currentUtterance.onend = () => {
-                if(activeTTSButton) activeTTSButton.classList.remove('playing');
-                activeTTSButton = null;
-            };
-            synth.speak(currentUtterance);
-            if(activeTTSButton) activeTTSButton.classList.remove('playing');
-            activeTTSButton = button;
-            button.classList.add('playing');
-        }
-        
-        const updateLanguage = (lang) => {
-            document.documentElement.lang = lang;
-            langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-            document.querySelectorAll('[data-lang-key]').forEach(element => {
-                const key = element.dataset.langKey;
-                if (translations[key] && translations[key][lang]) {
-                    element.innerHTML = translations[key][lang];
-                }
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            const backIcon = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>`;
             
-            if (shuffledQuestions.length > 0 && questionArea.classList.contains('hidden') === false) {
-                 loadQuestion();
-            }
-        };
+            const translations = {
+                siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
+                backToHome: { 
+                    it: backIcon + 'Torna all\'Indice', 
+                    en: backIcon + 'Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'Test di Valutazione', en: 'Assessment Quiz' },
+                pageSubtitle: { it: 'Metti alla prova le tue conoscenze sull\'ispezione clinica.', en: 'Test your knowledge of clinical inspection.' },
+                quizLabel: { it: 'Ispezione Clinica', en: 'Clinical Inspection' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' },
+                progressText: { it: 'Domanda {current} di {total}', en: 'Question {current} of {total}' }
+            };
 
-        langToggle.addEventListener('click', () => {
-            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-            localStorage.setItem('language', currentLanguage);
+            const quizQuestions = [
+                {
+                    question: { it: "Qual è il primo passo corretto nell'eseguire un'ispezione clinica su un grande animale?", en: "What is the correct first step when performing a clinical inspection on a large animal?" },
+                    options: [
+                        { text: { it: "Ispezione ambientale e dell'animale a distanza", en: "Environmental and distant animal inspection" }, isCorrect: true, rationale: { it: "Esatto! Questo permette di osservare l'animale senza alterarne il comportamento naturale.", en: "Exact! This allows for observing the animal without altering its natural behavior." } },
+                        { text: { it: "Ispezione ravvicinata della testa", en: "Close-up inspection of the head" }, isCorrect: false, rationale: { it: "No, avvicinarsi subito altererebbe il comportamento e i parametri fisiologici.", en: "No, approaching immediately would alter behavior and physiological parameters." } },
+                        { text: { it: "Valutazione delle mucose apparenti", en: "Assessment of visible mucous membranes" }, isCorrect: false, rationale: { it: "Importante, ma fa parte dell'ispezione ravvicinata successiva.", en: "Important, but part of the subsequent close-up inspection." } },
+                        { text: { it: "Far deambulare l'animale", en: "Making the animal walk" }, isCorrect: false, rationale: { it: "Va fatto solo dopo aver osservato l'animale a riposo.", en: "Should only be done after observing the animal at rest." } }
+                    ]
+                },
+                {
+                    question: { it: "Durante l'ispezione ambientale, la presenza di alimento non consumato nella mangiatoia suggerisce:", en: "During environmental inspection, the presence of uneaten feed in the manger suggests:" },
+                    options: [
+                        { text: { it: "Un potenziale problema di appetito o di qualità dell'alimento.", en: "A potential problem with appetite or feed quality." }, isCorrect: true, rationale: { it: "Corretto. Indica iporessia o scarsa appetibilità della razione.", en: "Correct. It indicates hyporexia or poor ration palatability." } },
+                        { text: { it: "Una corretta gestione della stabulazione.", en: "Proper housing management." }, isCorrect: false, rationale: { it: "Al contrario, è un campanello d'allarme gestionale o sanitario.", en: "On the contrary, it is a management or health warning sign." } },
+                        { text: { it: "Un'eccessiva disponibilità di acqua.", en: "An excessive availability of water." }, isCorrect: false, rationale: { it: "Non vi è correlazione diretta tra eccesso d'acqua e cibo avanzato in questo senso.", en: "There is no direct correlation between excess water and leftover food in this sense." } },
+                        { text: { it: "La dominanza di altri animali nel gruppo.", en: "Dominance by other animals in the group." }, isCorrect: false, rationale: { it: "Possibile, ma il problema individuale dell'appetito è l'ipotesi primaria.", en: "Possible, but individual appetite problems are the primary hypothesis." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale dei seguenti parametri NON fa parte dell'esame funzionale del respiro rilevabile con l'ispezione?", en: "Which of the following parameters is NOT part of the functional breathing exam detectable by inspection?" },
+                    options: [
+                        { text: { it: "Presenza di suoni respiratori anomali.", en: "Presence of abnormal respiratory sounds." }, isCorrect: true, rationale: { it: "Giusto. I suoni si valutano con l'auscultazione, non visivamente.", en: "Right. Sounds are assessed via auscultation, not visually." } },
+                        { text: { it: "Frequenza respiratoria.", en: "Respiratory rate." }, isCorrect: false, rationale: { it: "Parametro fondamentale rilevabile visivamente.", en: "Fundamental parameter detectable visually." } },
+                        { text: { it: "Profondità del respiro.", en: "Depth of breathing." }, isCorrect: false, rationale: { it: "Si valuta osservando l'escursione costale e addominale.", en: "Assessed by observing costal and abdominal excursion." } },
+                        { text: { it: "Tipo di respiro (es. addominale).", en: "Type of breathing (e.g., abdominal)." }, isCorrect: false, rationale: { it: "Si rileva osservando i movimenti delle pareti corporee.", en: "Detected by observing body wall movements." } }
+                    ]
+                },
+                {
+                    question: { it: "Un colore giallastro (itterico) delle mucose apparenti indica tipicamente:", en: "A yellowish color (icteric) of the visible mucous membranes typically indicates:" },
+                    options: [
+                        { text: { it: "Problemi epatici o emolisi.", en: "Liver problems or hemolysis." }, isCorrect: true, rationale: { it: "Esatto. Deriva dall'accumulo di bilirubina nel sangue.", en: "Exact. It results from bilirubin accumulation in the blood." } },
+                        { text: { it: "Grave deficit di ossigenazione.", en: "Severe oxygen deficiency." }, isCorrect: false, rationale: { it: "Questo causerebbe cianosi (mucose bluastre).", en: "This would cause cyanosis (bluish membranes)." } },
+                        { text: { it: "Anemia o stato di shock.", en: "Anemia or shock." }, isCorrect: false, rationale: { it: "Queste condizioni causano pallore.", en: "These conditions cause paleness." } },
+                        { text: { it: "Sepsi o infiammazione acuta.", en: "Sepsis or acute inflammation." }, isCorrect: false, rationale: { it: "Causano tipicamente iperemia (rosso intenso).", en: "Typically cause hyperemia (bright red)." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa si valuta attraverso la sigla BCS durante l'ispezione?", en: "What is assessed using the BCS acronym during inspection?" },
+                    options: [
+                        { text: { it: "Body Condition Score (Stato di Nutrizione)", en: "Body Condition Score" }, isCorrect: true, rationale: { it: "Corretto. Serve a quantificare le riserve adipose e muscolari.", en: "Correct. It serves to quantify fat and muscle reserves." } },
+                        { text: { it: "Sistema di Controllo Comportamentale", en: "Behavioral Control System" }, isCorrect: false, rationale: { it: "No, riguarda lo stato nutrizionale, non comportamentale.", en: "No, it concerns nutritional status, not behavioral." } },
+                        { text: { it: "Stato della Circolazione Sanguigna", en: "Blood Circulation Status" }, isCorrect: false, rationale: { it: "La circolazione si valuta con TRC e colore mucose.", en: "Circulation is assessed with CRT and mucosal color." } },
+                        { text: { it: "Standard di Conformazione", en: "Conformation Standard" }, isCorrect: false, rationale: { it: "Il BCS valuta l'ingrassamento, non la struttura scheletrica.", en: "BCS assesses fatness, not skeletal structure." } }
+                    ]
+                },
+                {
+                    question: { it: "L'osservazione di un dorso incurvato (cifotico) rientra nella valutazione di:", en: "Observing a kyphotic back falls under the assessment of:" },
+                    options: [
+                        { text: { it: "Postura", en: "Posture" }, isCorrect: true, rationale: { it: "Vero. È una posizione statica indicativa di dolore spesso addominale.", en: "True. It is a static position indicative of pain, often abdominal." } },
+                        { text: { it: "Deambulazione", en: "Gait" }, isCorrect: false, rationale: { it: "Riguarda il movimento dinamico dell'animale.", en: "Concerns the dynamic movement of the animal." } },
+                        { text: { it: "Comportamento", en: "Behavior" }, isCorrect: false, rationale: { it: "Riguarda l'interazione con l'ambiente e l'uomo.", en: "Concerns interaction with environment and humans." } },
+                        { text: { it: "BCS", en: "BCS" }, isCorrect: false, rationale: { it: "Riguarda lo stato di nutrizione, non la forma del dorso.", en: "Concerns nutritional status, not back shape." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa caratterizza l'ispezione 'testa-coda'?", en: "What characterizes the 'head-to-tail' inspection?" },
+                    options: [
+                        { text: { it: "Un esame sistematico sequenziale di tutte le regioni corporee.", en: "A sequential systematic examination of all body regions." }, isCorrect: true, rationale: { it: "Esatto. Garantisce completezza e ordine nell'esame ravvicinato.", en: "Exact. Ensures completeness and order in the close-up exam." } },
+                        { text: { it: "La misurazione della lunghezza totale.", en: "Measuring total length." }, isCorrect: false, rationale: { it: "Non è una misura biometrica ma un metodo di visita.", en: "Not a biometric measure but a visit method." } },
+                        { text: { it: "Un'ispezione limitata solo alle estremità.", en: "An inspection limited only to the extremities." }, isCorrect: false, rationale: { it: "Al contrario, comprende tutto ciò che sta tra testa e coda.", en: "On the contrary, it includes everything between head and tail." } },
+                        { text: { it: "Un test dei riflessi nervosi.", en: "A nerve reflex test." }, isCorrect: false, rationale: { it: "È un'osservazione visiva, non un test neurologico.", en: "It is visual observation, not a neurological test." } }
+                    ]
+                },
+                {
+                    question: { it: "Il riscontro di feci diarroiche nel box appartiene a:", en: "Finding diarrheal feces in the stall belongs to:" },
+                    options: [
+                        { text: { it: "Ispezione ambientale", en: "Environmental inspection" }, isCorrect: true, rationale: { it: "Sì. Le deiezioni nell'ambiente forniscono dati sanitari vitali.", en: "Yes. Droppings in the environment provide vital health data." } },
+                        { text: { it: "Ispezione ravvicinata addome", en: "Close-up abdominal inspection" }, isCorrect: false, rationale: { it: "Questa valuta forma e movimenti della parete.", en: "This assesses shape and wall movements." } },
+                        { text: { it: "Anamnesi remota", en: "Past history" }, isCorrect: false, rationale: { it: "L'anamnesi è riferita, l'ispezione è osservazione diretta.", en: "History is reported, inspection is direct observation." } },
+                        { text: { it: "Valutazione deambulazione", en: "Gait assessment" }, isCorrect: false, rationale: { it: "Riguarda il cammino, non le deiezioni.", en: "Concerns walking, not droppings." } }
+                    ]
+                },
+                {
+                    question: { it: "Un addome a forma di 'botte' (aumento simmetrico) suggerisce:", en: "A barrel-shaped abdomen (symmetrical increase) suggests:" },
+                    options: [
+                        { text: { it: "Meteorismo o ascite.", en: "Bloat or ascites." }, isCorrect: true, rationale: { it: "Corretto. Indica accumulo diffuso di gas o liquidi.", en: "Correct. Indicates widespread gas or fluid accumulation." } },
+                        { text: { it: "Gravidanza avanzata.", en: "Advanced pregnancy." }, isCorrect: false, rationale: { it: "Causa solitamente una distensione asimmetrica ventrale.", en: "Usually causes ventral asymmetrical distension." } },
+                        { text: { it: "Tumore localizzato.", en: "Localized tumor." }, isCorrect: false, rationale: { it: "Causerebbe un aumento asimmetrico.", en: "Would cause asymmetrical increase." } },
+                        { text: { it: "Buono stato di nutrizione.", en: "Good nutritional status." }, isCorrect: false, rationale: { it: "Non causa distensione gassosa o liquida delle pareti.", en: "Does not cause gaseous or liquid wall distension." } }
+                    ]
+                },
+                {
+                    question: { it: "Uno scolo nasale sieroso (trasparente) è tipico di:", en: "A serous (transparent) nasal discharge is typical of:" },
+                    options: [
+                        { text: { it: "Irritazione iniziale o allergia.", en: "Initial irritation or allergy." }, isCorrect: true, rationale: { it: "Sì. È la risposta primaria a stimoli irritativi o allergici.", en: "Yes. It is the primary response to irritative or allergic stimuli." } },
+                        { text: { it: "Infezione batterica cronica.", en: "Chronic bacterial infection." }, isCorrect: false, rationale: { it: "Causerebbe scolo mucopurulento (denso e colorato).", en: "Would cause mucopurulent discharge (thick and colored)." } },
+                        { text: { it: "Emorragia polmonare.", en: "Pulmonary hemorrhage." }, isCorrect: false, rationale: { it: "Causerebbe scolo ematico (sangue).", en: "Would cause bloody discharge." } },
+                        { text: { it: "Corpo estraneo cronico.", en: "Chronic foreign body." }, isCorrect: false, rationale: { it: "Causerebbe scolo purulento, spesso monolaterale.", en: "Would cause purulent discharge, often unilateral." } }
+                    ]
+                }
+            ];
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            let currentIdx = 0;
+            let score = 0;
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTS = null;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                renderQuestion();
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking) {
+                    synth.cancel();
+                    if (activeTTS === button) { activeTTS.classList.remove('playing'); activeTTS = null; return; }
+                }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onend = () => { button.classList.remove('playing'); activeTTS = null; };
+                synth.speak(utterance);
+                if (activeTTS) activeTTS.classList.remove('playing');
+                activeTTS = button;
+                button.classList.add('playing');
+            };
+
+            const renderQuestion = () => {
+                const q = quizQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', quizQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                document.getElementById('question-tts').onclick = () => speak(q.question[currentLanguage], document.getElementById('question-tts'));
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                q.options.forEach((opt, i) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-3 w-full";
+                    
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn flex-grow text-left p-5 rounded-xl font-semibold text-slate-700";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn);
+                    
+                    const ttsBtn = document.createElement('button');
+                    ttsBtn.className = "tts-button p-2";
+                    ttsBtn.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    ttsBtn.onclick = () => speak(opt.text[currentLanguage], ttsBtn);
+
+                    div.appendChild(btn);
+                    div.appendChild(ttsBtn);
+                    container.appendChild(div);
+                });
+            };
+
+            const handleSelect = (opt, btn) => {
+                if (synth.speaking) synth.cancel();
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                
+                if (opt.isCorrect) {
+                    btn.classList.add('correct');
+                    score++;
+                } else {
+                    btn.classList.add('incorrect');
+                    const correctBtnIdx = quizQuestions[currentIdx].options.findIndex(o => o.isCorrect);
+                    btns[correctBtnIdx].classList.add('correct');
+                }
+
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                
+                const nextBtn = document.getElementById('next-button');
+                nextBtn.textContent = currentIdx === quizQuestions.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
+
+            document.getElementById('next-button').onclick = () => {
+                document.getElementById('feedback-area').classList.add('hidden');
+                if (currentIdx < quizQuestions.length - 1) {
+                    currentIdx++;
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            };
+
+            const showResults = () => {
+                document.getElementById('question-area').classList.add('hidden');
+                document.getElementById('results-area').classList.remove('hidden');
+                document.getElementById('score-text').textContent = `${score} / ${quizQuestions.length}`;
+            };
+
+            document.getElementById('restart-button').onclick = () => {
+                currentIdx = 0; score = 0;
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => {
+                body.classList.toggle('dsa-mode');
+                localStorage.setItem('dsa-mode', body.classList.contains('dsa-mode') ? 'enabled' : 'disabled');
+            };
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') body.classList.add('dsa-mode');
             updateLanguage(currentLanguage);
         });
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        function startQuiz() {
-            document.documentElement.scrollTop = 0; 
-            document.body.scrollTop = 0;
-
-            currentQuestionIndex = 0;
-            score = 0;
-            shuffledQuestions = shuffleArray([...quizData]);
-            resultsArea.classList.add('hidden');
-            questionArea.classList.remove('hidden');
-            feedbackArea.classList.add('hidden');
-            loadQuestion();
-        }
-        
-        function loadQuestion() {
-            if (synth.speaking) synth.cancel();
-            if (activeTTSButton) activeTTSButton.classList.remove('playing');
-            activeTTSButton = null;
-
-            feedbackArea.classList.add('hidden');
-            const currentQuestion = shuffledQuestions[currentQuestionIndex];
-            progressText.textContent = translations.progressText[currentLanguage]
-                .replace('{current}', currentQuestionIndex + 1)
-                .replace('{total}', shuffledQuestions.length);
-            
-            questionText.textContent = currentQuestion.question[currentLanguage];
-            questionTTSButton.onclick = () => speak(currentQuestion.question[currentLanguage], questionTTSButton);
-            optionsContainer.innerHTML = '';
-            
-            const shuffledOptions = shuffleArray([...currentQuestion.options]);
-
-            shuffledOptions.forEach(option => {
-                const buttonContainer = document.createElement('div');
-                buttonContainer.classList.add('flex', 'items-center', 'w-full');
-                
-                const button = document.createElement('button');
-                button.textContent = option.text[currentLanguage];
-                button.classList.add('option-btn', 'w-full', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
-                
-                const ttsButton = document.createElement('span');
-                ttsButton.classList.add('tts-button');
-                ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
-                ttsButton.onclick = (e) => {
-                    e.stopPropagation();
-                    speak(option.text[currentLanguage], ttsButton);
-                };
-                
-                button.onclick = () => selectAnswer(button, option, currentQuestion.options);
-
-                buttonContainer.appendChild(button);
-                buttonContainer.appendChild(ttsButton);
-                optionsContainer.appendChild(buttonContainer);
-            });
-        }
-
-        function selectAnswer(button, selectedOption, allOptions) {
-            if (synth.speaking) synth.cancel();
-            
-            const buttons = optionsContainer.querySelectorAll('button.option-btn');
-            
-            buttons.forEach(btn => {
-                btn.disabled = true;
-                const optionDataText = btn.textContent;
-                const originalOption = allOptions.find(opt => opt.text[currentLanguage] === optionDataText);
-                if (originalOption && originalOption.isCorrect) {
-                    btn.classList.add('correct');
-                }
-            });
-
-            if (!selectedOption.isCorrect) {
-                button.classList.add('incorrect');
-            }
-            
-            score += selectedOption.isCorrect ? 1 : 0;
-            
-            rationaleText.textContent = selectedOption.rationale[currentLanguage];
-            feedbackArea.classList.remove('hidden');
-
-            if (currentQuestionIndex === shuffledQuestions.length - 1) {
-                nextButton.textContent = translations.btnResults[currentLanguage];
-            } else {
-                 nextButton.textContent = translations.btnNext[currentLanguage];
-            }
-        }
-        
-        function showResults() {
-            questionArea.classList.add('hidden');
-            feedbackArea.classList.add('hidden');
-            resultsArea.classList.remove('hidden');
-            scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
-        }
-        
-        nextButton.addEventListener('click', () => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < shuffledQuestions.length) {
-                loadQuestion();
-            } else {
-                showResults();
-            }
-        });
-
-        restartButton.addEventListener('click', startQuiz);
-
-        const setA11yMode = (enabled) => {
-            if (enabled) {
-                body.classList.add('dsa-mode');
-                localStorage.setItem('dsa-mode', 'enabled');
-            } else {
-                body.classList.remove('dsa-mode');
-                localStorage.setItem('dsa-mode', 'disabled');
-            }
-        };
-
-        accessibilityToggle.addEventListener('click', () => {
-            const isEnabled = body.classList.contains('dsa-mode');
-            setA11yMode(!isEnabled);
-        });
-
-        if (localStorage.getItem('dsa-mode') === 'enabled') {
-            setA11yMode(true);
-        }
-
-        startQuiz();
-        updateLanguage(currentLanguage);
-
     </script>
 </body>
 </html>
