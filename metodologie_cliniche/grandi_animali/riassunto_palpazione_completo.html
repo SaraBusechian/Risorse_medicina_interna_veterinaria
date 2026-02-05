@@ -3,37 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riassunto: La Palpazione Clinica</title>
+    <title>Riassunto: La Palpazione Clinica - Medicina Interna</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; background-color: #f8fafc; }
-        h1, h2, h3 { color: #0d47a1; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 2em; }
-        h1 { text-align: center; font-size: 2.2em; border-bottom: 3px solid #0d47a1; }
-        ul { padding-left: 20px; list-style-type: disc; }
-        li { margin-bottom: 10px; }
-        strong { color: #1565c0; }
-        .section-block { background-color: #f9f9f9; border-left: 5px solid #1e88e5; padding: 15px 20px; margin: 20px 0; border-radius: 5px; }
-        .nav-link { transition: color 0.3s; }
-        .nav-link:hover { color: #93C5FD; }
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #93C5FD !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
         .dsa-mode {
             font-family: 'Lexend', sans-serif;
-            background-color: #fdfaf5 !important;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
             letter-spacing: 0.05em;
-            line-height: 1.75;
+            line-height: 2;
         }
-        .dsa-mode #main-header, .dsa-mode #main-footer {
-            background-color: #000000 !important;
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
             background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+            box-shadow: none !important;
         }
-        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
-            color: #ffffff !important;
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
         }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
-        .dsa-mode #main-content { background-color: #fffdfa; border: 1px solid #e0e0e0; }
-        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode li { color: #34495e; }
+
+        .dsa-mode .section-card { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+        }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: underline;
+            text-decoration-color: #fbbf24;
+        }
+
+        /* --- TTS BUTTON --- */
         .tts-button {
             cursor: pointer;
             display: inline-block;
@@ -42,268 +59,203 @@
             color: #64748b;
             transition: color 0.2s;
         }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .dsa-mode .tts-button { color: #000000 !important; }
+
         @media print {
-            #main-header, #main-footer, #print-button, .tts-button, video, img { display: none; }
-            body { margin: 0; padding: 0; }
-            .container { max-width: 100%; padding: 20px; box-shadow: none; border: none; }
+            #main-header, #main-footer, #print-button, .back-button-container, .tts-button, video { display: none !important; }
+            body { background-color: white !important; }
+            .section-card { box-shadow: none !important; border: 1px solid #eee !important; margin-bottom: 2rem !important; }
+            .hero-bg { background: none !important; color: black !important; }
         }
     </style>
 </head>
-<body class="bg-slate-50">
+<body class="bg-gray-50">
 
-    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
-            <h1 class="text-xl font-bold !text-white !border-none !m-0 !p-0 !text-left" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
             <div class="flex items-center space-x-4">
-                <ul class="hidden md:flex space-x-6">
-                    <li><a href="index.html#anamnesi" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
-                    <li><a href="index.html#ispezione" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
-                    <li><a href="index.html#palpazione" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
-                    <li><a href="index.html#percussione" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
-                    <li><a href="index.html#auscultazione" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
+                <ul class="hidden md:flex space-x-6 text-white">
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
                 </ul>
-                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
-                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
         </nav>
     </header>
 
-    <main class="container mx-auto p-4 md:p-10">
-        <div id="main-content" class="bg-white rounded-xl shadow-lg p-6 md:p-10">
-            <h1 data-lang-key="pageTitle">La Palpazione Clinica</h1>
-            <p class="section-block" data-lang-key="introText">
-                La palpazione è la terza fase del metodo clinico e consiste nell'esame fisico dell'animale attraverso l'uso del tatto. Permette di apprezzare caratteristiche delle strutture anatomiche superficiali e profonde che non sono valutabili con la sola ispezione. È una manualità fondamentale per confermare i sospetti diagnostici e localizzare con precisione il processo patologico.
-            </p>
-    
-            <div data-lang-key="section1">
-                <h2>1. Principi e Parametri della Palpazione<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
-                <p>La palpazione va eseguita con manualità esperta, applicando una pressione adeguata alla regione anatomica. I parametri da valutare sono:</p>
-                <ul>
-                    <li><strong>Dimensioni e Forma:</strong> Aumento o diminuzione di volume di un organo o di una struttura (es. linfonodi).</li>
-                    <li><strong>Consistenza:</strong> Può essere parenchimatosa (normale), dura, molle, fluttuante (presenza di liquido), crepitante (presenza di gas).</li>
-                    <li><strong>Temperatura:</strong> Aumento (calore) in caso di infiammazione acuta, o diminuzione (freddo) in caso di deficit circolatori.</li>
-                    <li><strong>Dolorabilità:</strong> Si valuta la reazione dell'animale alla pressione, che indica la presenza di dolore.</li>
-                    <li><strong>Mobilità:</strong> Si verifica se una struttura è adesa ai piani sottostanti o se è liberamente mobile.</li>
-                </ul>
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6 back-button-container">
+                 <a href="index.html#palpazione" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- JS inserisce icona e testo -->
+                </a>
             </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">Riassunto: Palpazione</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">L'esame fisico attraverso il tatto: localizzare e decifrare la patologia.</p>
+        </div>
+    </div>
 
-            <div data-lang-key="section2">
-                <h2>2. Palpazione Sistematica "Testa-Coda"<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
-                <p>Si segue un ordine preciso per non tralasciare alcuna regione.</p>
-                <ul>
-                    <li><strong>Testa e Collo:</strong> Si palpano i linfonodi (intermandibolari, solo nel cavallo), le ghiandole salivari, la laringe e la trachea. Il polso arterioso si valuta sull'<strong>arteria facciale</strong> (nel cavallo e nel bovino) dove si apprezzano tutti i caratteri (frequenza, ritmo, durezza e celerità), e sull'<strong>arteria coccigea</strong> nel bovino, più agevole per la sola valutazione della frequenza. Con una palpazione-trazione della laringe/trachea si può evocare il riflesso della tosse.
-                        <div class="my-4 p-4 border rounded-lg bg-gray-50">
-                            <p class="text-sm font-semibold text-gray-700 mb-2">Video Dimostrativo: Palpazione-Trazione</p>
-                            <video class="w-full rounded-lg shadow-md" controls><source src="video_palpazione_trachea.mp4" type="video/mp4">Your browser does not support the video tag.</video>
-                        </div>
-                    </li>
-                    <li><strong>Arti:</strong> Si esaminano le articolazioni (presenza di versamenti), i tendini e i legamenti. La palpazione del polso digitale <strong>nel cavallo</strong>, sull'arteria digitale palmare/plantare ai lati dei sesamoidi, è cruciale per diagnosticare processi infiammatori del piede (es. laminite).</li>
-                    <li><strong>Torace:</strong> Si valuta la dolorabilità alla pressione degli spazi intercostali per evocare pleurodinia, un segno di pleurite. È possibile percepire il fremito, una vibrazione patologica associata a soffi cardiaci di elevata intensità.
-                        <div class="my-4 p-4 border rounded-lg bg-gray-50">
-                            <p class="text-sm font-semibold text-gray-700 mb-2">Video Dimostrativo: Evocazione della Pleurodinia</p>
-                            <video class="w-full rounded-lg shadow-md" controls><source src="video_pleurodinia.mp4" type="video/mp4">Your browser does not support the video tag.</video>
-                        </div>
-                    </li>
-                    <li><strong>Addome:</strong> Si valuta la tensione della parete addominale (addome contratto per dolore) e si esegue il ballottamento/succussione per percepire la presenza di liquido libero. La manovra si esegue applicando colpi decisi e rapidi alla parete addominale con la mano a pugno, percependo l'onda di ritorno del liquido con il palmo della stessa mano appoggiato alla parete.
-                        <div class="my-4 p-4 border rounded-lg bg-gray-50">
-                            <p class="text-sm font-semibold text-gray-700 mb-2">Video Dimostrativo: Manovra di Ballottamento</p>
-                            <video class="w-full rounded-lg shadow-md" controls><source src="video_ballottamento.mp4" type="video/mp4">Your browser does not support the video tag.</video>
-                        </div>
-                    </li>
-                    <li><strong>Linfonodi Superficiali:</strong> Nel bovino, la palpazione dei linfonodi esplorabili (prescapolari, precrurali e soprammammari) è un momento fondamentale dell'esame.
-                        <div class="my-4 p-4 border rounded-lg bg-gray-50">
-                            <p class="text-sm font-semibold text-gray-700 mb-2">Foto: Localizzazione Linfonodi Superficiali</p>
-                            <img src="foto_linfonodi_bovino.jpg" alt="Mappa dei linfonodi superficiali palpabili nel bovino" class="w-full max-w-md mx-auto rounded-lg shadow-md">
-                            <p class="text-center text-xs text-gray-500 mt-1">Schema dei principali linfonodi esplorabili nel bovino.</p>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <div data-lang-key="section3">
-                <h2>3. Esplorazione Rettale<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2>
-                <p>È una manualità diagnostica fondamentale nei grandi animali, in particolare nel bovino e nel cavallo. Si esegue introducendo un braccio guantato e lubrificato nel retto per palpare gli organi della cavità addominale e pelvica.</p>
-                <ul>
-                    <li><strong>Apparato Digerente:</strong> Si valutano il rumine (sacco dorsale), il reticolo (nel bovino), le anse intestinali (tenue e crasso), i linfonodi meseraici.</li>
-                    <li><strong>Apparato Urinario:</strong> Si palpano il rene sinistro (nel bovino è mobile), la vescica (se piena) e gli ureteri.</li>
-                    <li><strong>Apparato Genitale:</strong> Nella femmina si esaminano utero, ovaie e cervice. Nel maschio si valutano le ghiandole sessuali accessorie e, nel cavallo, gli anelli inguinali.</li>
-                    <li><strong>Altre Strutture:</strong> Si apprezza l'aorta addominale e le strutture ossee del bacino.</li>
-                </ul>
-            </div>
-    
-            <div class="mt-12 text-center">
-                <button id="print-button" onclick="window.print()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition duration-300 inline-flex items-center" data-lang-key="btnPrint">
-                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
-                    Stampa
+    <main class="container mx-auto px-6 -mt-10 pb-12">
+        
+        <!-- INTRODUZIONE -->
+        <section class="mb-10 p-8 section-card">
+            <div class="flex items-start">
+                <div class="flex-grow">
+                    <h3 class="text-2xl font-bold text-blue-900 mb-4" data-lang-key="introTitle">La Palpazione Clinica</h3>
+                    <p class="text-gray-700 leading-relaxed" data-lang-key="introContent"></p>
+                </div>
+                <button class="tts-button section-tts" data-section="intro">
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"></path></svg>
                 </button>
             </div>
+        </section>
+
+        <!-- SEZIONE 1: PRINCIPI -->
+        <section class="mb-10 p-8 section-card">
+            <div class="flex items-start">
+                <div class="flex-grow">
+                    <h3 class="text-2xl font-bold text-blue-800 mb-4" data-lang-key="sec1Title">1. Principi e Parametri</h3>
+                    <div class="text-gray-700 space-y-4" data-lang-key="sec1Content"></div>
+                </div>
+                <button class="tts-button section-tts" data-section="sec1">
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"></path></svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- SEZIONE 2: TESTA-CODA -->
+        <section class="mb-10 p-8 section-card">
+            <div class="flex items-start">
+                <div class="flex-grow">
+                    <h3 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="sec2Title">2. Palpazione Sistematica</h3>
+                    <div class="text-gray-700 space-y-4" data-lang-key="sec2Content"></div>
+                </div>
+                <button class="tts-button section-tts" data-section="sec2">
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"></path></svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- SEZIONE 3: RETTALE -->
+        <section class="mb-10 p-8 section-card">
+            <div class="flex items-start">
+                <div class="flex-grow">
+                    <h3 class="text-2xl font-bold text-teal-800 mb-4" data-lang-key="sec3Title">3. Esplorazione Rettale</h3>
+                    <div class="text-gray-700 space-y-4" data-lang-key="sec3Content"></div>
+                </div>
+                <button class="tts-button section-tts" data-section="sec3">
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"></path></svg>
+                </button>
+            </div>
+        </section>
+
+        <div class="mt-12 text-center">
+            <button id="print-button" onclick="window.print()" class="bg-blue-600 text-white font-bold py-4 px-10 rounded-xl hover:bg-blue-700 transition shadow-lg flex items-center mx-auto" data-lang-key="btnPrint">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                Stampa Riassunto
+            </button>
         </div>
+
     </main>
-    
-   <footer id="main-footer" class="text-center mt-16 pt-8 border-t border-slate-200">
-        <div class="container mx-auto px-6 py-4">
-            <p class="text-slate-500" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
-        </div>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
-        const translations = {
-            siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
-            navAnamnesi: { it: 'Anamnesi', en: 'History' },
-            navIspezione: { it: 'Ispezione', en: 'Inspection' },
-            navPalpazione: { it: 'Palpazione', en: 'Palpation' },
-            navPercussione: { it: 'Percussione', en: 'Percussion' },
-            navAuscultazione: { it: 'Auscultazione', en: 'Auscultation' },
-            accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-            pageTitle: { it: `La Palpazione Clinica <span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`, en: `Clinical Palpation <span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>` },
-            introText: { it: `La palpazione è la terza fase del metodo clinico e consiste nell'esame fisico dell'animale attraverso l'uso del tatto. Permette di apprezzare caratteristiche delle strutture anatomiche superficiali e profonde che non sono valutabili con la sola ispezione. È una manualità fondamentale per confermare i sospetti diagnostici e localizzare con precisione il processo patologico. <span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`, en: `Palpation is the third phase of the clinical method and consists of the physical examination of the animal through the use of touch. It allows for the appreciation of characteristics of superficial and deep anatomical structures that cannot be assessed by inspection alone. It is a fundamental skill for confirming diagnostic suspicions and precisely locating the pathological process. <span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>` },
-            section1: { it: `<h2>1. Principi e Parametri della Palpazione<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2><p>La palpazione va eseguita con manualità esperta, applicando una pressione adeguata alla regione anatomica. I parametri da valutare sono:</p><ul><li><strong>Dimensioni e Forma:</strong> Aumento o diminuzione di volume di un organo o di una struttura (es. linfonodi).</li><li><strong>Consistenza:</strong> Può essere parenchimatosa (normale), dura, molle, fluttuante (presenza di liquido), crepitante (presenza di gas).</li><li><strong>Temperatura:</strong> Aumento (calore) in caso di infiammazione acuta, o diminuzione (freddo) in caso di deficit circolatori.</li><li><strong>Dolorabilità:</strong> Si valuta la reazione dell'animale alla pressione, che indica la presenza di dolore.</li><li><strong>Mobilità:</strong> Si verifica se una struttura è adesa ai piani sottostanti o se è liberamente mobile.</li></ul>`, en: `<h2>1. Principles and Parameters of Palpation<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2><p>Palpation must be performed with skilled hands, applying pressure appropriate to the anatomical region. The parameters to be evaluated are:</p><ul><li><strong>Size and Shape:</strong> Increase or decrease in the volume of an organ or structure (e.g., lymph nodes).</li><li><strong>Consistency:</strong> Can be parenchymatous (normal), hard, soft, fluctuant (presence of fluid), or crepitant (presence of gas).</li><li><strong>Temperature:</strong> Increased (heat) in case of acute inflammation, or decreased (cold) in case of circulatory deficits.</li><li><strong>Tenderness:</strong> The animal's reaction to pressure is assessed, which indicates the presence of pain.</li><li><strong>Mobility:</strong> It is checked whether a structure is adhered to the underlying tissues or if it is freely mobile.</li></ul>` },
-            section2: { it: `<h2>2. Palpazione Sistematica "Testa-Coda"<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2><p>Si segue un ordine preciso per non tralasciare alcuna regione.</p><ul>...</ul>`, en: `<h2>2. Systematic "Head-to-Tail" Palpation</h2><p>A precise order is followed to not overlook any region.</p><ul>...</ul>` },
-            section3: { it: `<h2>3. Esplorazione Rettale<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span></h2><p>È una manualità diagnostica fondamentale nei grandi animali, in particolare nel bovino e nel cavallo. Si esegue introducendo un braccio guantato e lubrificato nel retto per palpare gli organi della cavità addominale e pelvica.</p><ul><li><strong>Apparato Digerente:</strong> Si valutano il rumine (sacco dorsale), il reticolo (nel bovino), le anse intestinali (tenue e crasso), i linfonodi meseraici.</li><li><strong>Apparato Urinario:</strong> Si palpano il rene sinistro (nel bovino è mobile), la vescica (se piena) e gli ureteri.</li><li><strong>Apparato Genitale:</strong> Nella femmina si esaminano utero, ovaie e cervice. Nel maschio si valutano le ghiandole sessuali accessorie e, nel cavallo, gli anelli inguinali.</li><li><strong>Altre Strutture:</strong> Si apprezza l'aorta addominale e le strutture ossee del bacino.</li></ul>`, en: `<h2>3. Rectal Palpation</h2><p>It is a fundamental diagnostic skill in large animals, particularly in cattle and horses. It is performed by introducing a gloved and lubricated arm into the rectum to palpate the organs of the abdominal and pelvic cavity.</p><ul><li><strong>Digestive System:</strong> The rumen (dorsal sac), reticulum (in cattle), intestinal loops (small and large), and mesenteric lymph nodes are assessed.</li><li><strong>Urinary System:</strong> The left kidney (mobile in cattle), the bladder (if full), and the ureters are palpated.</li><li><strong>Genital System:</strong> In the female, the uterus, ovaries, and cervix are examined. In the male, the accessory sex glands and, in the horse, the inguinal rings are assessed.</li><li><strong>Other Structures:</strong> The abdominal aorta and the bony structures of the pelvis are appreciated.</li></ul>` },
-            btnPrint: { it: 'Stampa', en: 'Print' },
-            footerText: {it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings'} };
-
-        let currentLanguage = localStorage.getItem('language') || 'it';
-        
-        const accessibilityToggle = document.getElementById('accessibility-toggle');
-        const langToggle = document.getElementById('lang-toggle');
-        const body = document.body;
-        const synth = window.speechSynthesis;
-        let currentUtterance = null;
-        let activeTTSButton = null;
-        
-        function speak(text, button) {
-            if (synth.speaking) {
-                if (currentUtterance && synth.paused && activeTTSButton === button) {
-                    synth.resume();
-                    button.classList.add('playing');
-                } else if (currentUtterance && !synth.paused && activeTTSButton === button) {
-                    synth.pause();
-                    button.classList.remove('playing');
-                } else {
-                    synth.cancel();
-                    startSpeaking(text, button);
-                }
-            } else {
-                startSpeaking(text, button);
-            }
-        }
-        
-        function startSpeaking(text, button) {
-            currentUtterance = new SpeechSynthesisUtterance(text);
-            currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-            currentUtterance.onend = () => {
-                if(activeTTSButton) activeTTSButton.classList.remove('playing');
-                activeTTSButton = null;
-            };
-            synth.speak(currentUtterance);
-            if(activeTTSButton) activeTTSButton.classList.remove('playing');
-            activeTTSButton = button;
-            button.classList.add('playing');
-        }
-
-        function setupTTSListeners() {
-            document.querySelectorAll('.tts-button').forEach(button => {
-                if (button.dataset.ttsAttached) return;
-                button.dataset.ttsAttached = 'true';
-
-                button.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const parent = e.currentTarget.parentNode;
-                    let textToRead = '';
-
-                    if (parent.tagName === 'H1' || parent.classList.contains('section-block')) {
-                         const clone = parent.cloneNode(true);
-                         clone.querySelector('.tts-button').remove();
-                         textToRead = clone.textContent.trim();
-                    } else { 
-                        const sectionContainer = parent.closest('div[data-lang-key]');
-                        if (sectionContainer) {
-                            const clone = sectionContainer.cloneNode(true);
-                            clone.querySelectorAll('.my-4, .tts-button').forEach(el => el.remove());
-                            textToRead = clone.textContent.trim().replace(/\s+/g, ' ');
-                        }
-                    }
-                    if (textToRead) speak(textToRead, e.currentTarget);
-                });
-            });
-        }
-
-        const updateLanguage = (lang) => {
-            document.documentElement.lang = lang;
-            langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-            document.querySelectorAll('[data-lang-key]').forEach(element => {
-                const key = element.dataset.langKey;
-                if (translations[key] && translations[key][lang]) {
-                     if (key.startsWith('section')) {
-                         element.innerHTML = translations[key][lang];
-                    } else {
-                         // Preserve the TTS button if it exists as a direct child
-                        const ttsButton = element.querySelector(':scope > .tts-button');
-                        element.innerHTML = translations[key][lang];
-                        if (ttsButton) {
-                            element.appendChild(ttsButton);
-                        }
-                    }
-                }
-            });
-            
-            const section2Ul = document.querySelector('[data-lang-key="section2"] ul');
-            if (section2Ul) {
-                if(lang === 'en') {
-                    section2Ul.innerHTML = `
-                            <li><strong>Head and Neck:</strong> Intermandibular lymph nodes (only in horses), salivary glands, larynx, and trachea are palpated. The arterial pulse is assessed on the <strong>facial artery</strong> (in horses and cattle), where all its characteristics (frequency, rhythm, hardness, and celerity) can be evaluated, and on the <strong>coccygeal artery</strong> in cattle, which is easier for frequency assessment alone. Eliciting the cough reflex via palpation-traction of the larynx/trachea is useful.
-                                <div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Demonstration Video: Palpation-Traction</p><video class="w-full rounded-lg shadow-md" controls><source src="video_palpazione_trachea.mp4" type="video/mp4">Your browser does not support the video tag.</video></div></li>
-                            <li><strong>Limbs:</strong> Joints (for effusions), tendons, and ligaments are examined. Digital pulse palpation <strong>in horses</strong>, over the palmar/plantar digital artery on the sides of the sesamoid bones, is crucial for diagnosing inflammatory conditions of the foot (e.g., laminitis).</li>
-                            <li><strong>Thorax:</strong> Tenderness on pressure over the intercostal spaces is assessed to elicit pleurodynia, a sign of pleuritis. A thrill, a pathological vibration associated with high-intensity heart murmurs, can also be felt.
-                                <div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Demonstration Video: Eliciting Pleurodynia</p><video class="w-full rounded-lg shadow-md" controls><source src="video_pleurodinia.mp4" type="video/mp4">Your browser does not support the video tag.</video></div></li>
-                            <li><strong>Abdomen:</strong> The tension of the abdominal wall is evaluated. Ballottement/succussion is performed to detect free fluid.
-                                <div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Demonstration Video: Ballottement Maneuver</p><video class="w-full rounded-lg shadow-md" controls><source src="video_ballottamento.mp4" type="video/mp4">Your browser does not support the video tag.</video></div></li>
-                            <li><strong>Superficial Lymph Nodes:</strong> In cattle, palpation of the explorable lymph nodes (prescapular, precrural, and supramammary) is a key part of the examination.
-                                <div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Photo: Location of Superficial Lymph Nodes</p><img src="foto_linfonodi_bovino.jpg" alt="Map of palpable superficial lymph nodes in cattle" class="w-full max-w-md mx-auto rounded-lg shadow-md"><p class="text-center text-xs text-gray-500 mt-1">Diagram of the main explorable lymph nodes in cattle.</p></div></li>`;
-                } else {
-                    section2Ul.innerHTML = `
-                            <li><strong>Testa e Collo:</strong> Si palpano i linfonodi (intermandibolari, solo nel cavallo), le ghiandole salivari, la laringe e la trachea. Il polso arterioso si valuta sull'<strong>arteria facciale</strong> (nel cavallo e nel bovino) dove si apprezzano tutti i caratteri (frequenza, ritmo, durezza e celerità), e sull'<strong>arteria coccigea</strong> nel bovino, più agevole per la sola valutazione della frequenza. Con una palpazione-trazione della laringe/trachea si può evocare il riflesso della tosse.
-                                <div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Video Dimostrativo: Palpazione-Trazione</p><video class="w-full rounded-lg shadow-md" controls><source src="video_palpazione_trachea.mp4" type="video/mp4">Il tuo browser non supporta la riproduzione di video.</video></div></li>
-                            <li><strong>Arti:</strong> Si esaminano le articolazioni (presenza di versamenti), i tendini e i legamenti. La palpazione del polso digitale <strong>nel cavallo</strong>, sull'arteria digitale palmare/plantare ai lati dei sesamoidi, è cruciale per diagnosticare processi infiammatori del piede (es. laminite).</li>
-                            <li><strong>Torace:</strong> Si valuta la dolorabilità alla pressione degli spazi intercostali per evocare pleurodinia, un segno di pleurite. È possibile percepire il fremito, una vibrazione patologica associata a soffi cardiaci di elevata intensità.
-                                <div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Video Dimostrativo: Evocazione della Pleurodinia</p><video class="w-full rounded-lg shadow-md" controls><source src="video_pleurodinia.mp4" type="video/mp4">Il tuo browser non supporta la riproduzione di video.</video></div></li>
-                            <li><strong>Addome:</strong> Si valuta la tensione della parete addominale (addome contratto per dolore) e si esegue il ballottamento/succussione per percepire la presenza di liquido libero. La manovra si esegue applicando colpi decisi e rapidi alla parete addominale con la mano a pugno, percependo l'onda di ritorno del liquido con il palmo della stessa mano appoggiato alla parete.
-                                <div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Video Dimostrativo: Manovra di Ballottamento</p><video class="w-full rounded-lg shadow-md" controls><source src="video_ballottamento.mp4" type="video/mp4">Il tuo browser non supporta la riproduzione di video.</video></div></li>
-                            <li><strong>Linfonodi Superficiali:</strong> Nel bovino, la palpazione dei linfonodi esplorabili (prescapolari, precrurali e soprammammari) è un momento fondamentale dell'esame.
-                                <div class="my-4 p-4 border rounded-lg bg-gray-50"><p class="text-sm font-semibold text-gray-700 mb-2">Foto: Localizzazione Linfonodi Superficiali</p><img src="foto_linfonodi_bovino.jpg" alt="Mappa dei linfonodi superficiali palpabili nel bovino" class="w-full max-w-md mx-auto rounded-lg shadow-md"><p class="text-center text-xs text-gray-500 mt-1">Schema dei principali linfonodi esplorabili nel bovino.</p></div></li>`;
-                }
-            }
-            setupTTSListeners();
-        };
-
-        langToggle.addEventListener('click', () => {
-            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-            localStorage.setItem('language', currentLanguage);
-            updateLanguage(currentLanguage);
-        });
-
-        const setA11yMode = (enabled) => {
-            if (enabled) {
-                body.classList.add('dsa-mode');
-                localStorage.setItem('dsa-mode', 'enabled');
-            } else {
-                body.classList.remove('dsa-mode');
-                localStorage.setItem('dsa-mode', 'disabled');
-            }
-        };
-
-        accessibilityToggle.addEventListener('click', () => {
-            const isEnabled = body.classList.contains('dsa-mode');
-            setA11yMode(!isEnabled);
-        });
-
         document.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('dsa-mode') === 'enabled') {
-                setA11yMode(true);
-            }
+            const backIcon = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" fill-rule="evenodd" clip-rule="evenodd"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
+                backToHome: { it: backIcon + 'Torna all\'Indice', en: backIcon + 'Back to Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'Riassunto: Palpazione', en: 'Summary: Palpation' },
+                pageSubtitle: { it: 'L\'esame fisico attraverso il tatto: localizzare e decifrare la patologia.', en: 'Physical examination by touch: locating and deciphering pathology.' },
+                introTitle: { it: 'La Palpazione Clinica', en: 'Clinical Palpation' },
+                introContent: { 
+                    it: "La palpazione è la terza fase del metodo clinico e consiste nell'esame fisico dell'animale attraverso l'uso del tatto. Permette di apprezzare caratteristiche delle strutture anatomiche superficiali e profonde che non sono valutabili con la sola ispezione. È una manualità fondamentale per confermare i sospetti diagnostici e localizzare con precisione il processo patologico.", 
+                    en: "Palpation is the third phase of the clinical method and consists of the physical examination of the animal through the use of touch. It allows for the appreciation of characteristics of superficial and deep anatomical structures that cannot be assessed by inspection alone. It is a fundamental skill for confirming diagnostic suspicions and precisely locating the pathological process." 
+                },
+                sec1Title: { it: '1. Principi e Parametri', en: '1. Principles and Parameters' },
+                sec1Content: { 
+                    it: "<p>La palpazione richiede manualità esperta e pressione adeguata. I parametri principali sono:</p><ul class='list-disc pl-5 mt-2 space-y-2'><li><strong>Dimensioni e Forma:</strong> Volumetria di organi e linfonodi.</li><li><strong>Consistenza:</strong> Parenchimatosa, dura, molle, fluttuante (liquidi) o crepitante (gas).</li><li><strong>Temperatura:</strong> Calore (infiammazione) o freddo (deficit circolatorio).</li><li><strong>Dolorabilità:</strong> Reazione dell'animale alla pressione.</li><li><strong>Mobilità:</strong> Rapporto con i piani sottostanti.</li></ul>", 
+                    en: "<p>Palpation requires expert dexterity and adequate pressure. Key parameters include:</p><ul class='list-disc pl-5 mt-2 space-y-2'><li><strong>Size and Shape:</strong> Volume of organs and lymph nodes.</li><li><strong>Consistency:</strong> Parenchymatous, hard, soft, fluctuant (fluids), or crepitant (gas).</li><li><strong>Temperature:</strong> Heat (inflammation) or cold (circulatory deficit).</li><li><strong>Tenderness:</strong> Animal's reaction to pressure.</li><li><strong>Mobility:</strong> Relationship with underlying tissues.</li></ul>" 
+                },
+                sec2Title: { it: '2. Palpazione Sistematica', en: '2. Systematic Palpation' },
+                sec2Content: { 
+                    it: "<p>Percorso metodico per garantire completezza:</p><ul class='list-disc pl-5 mt-2 space-y-4'><li><strong>Testa e Collo:</strong> Linfonodi intermandibolari (solo cavallo), laringe e trachea. Polso arterioso (facciale nel cavallo/bovino, coccigea nel bovino). Riflesso della tosse via palpazione-trazione. <div class='my-4 p-4 border rounded-lg bg-gray-50'><p class='text-sm font-semibold mb-2'>Video: Palpazione-Trazione</p><video class='w-full rounded-lg' controls><source src='video_palpazione_trachea.mp4' type='video/mp4'></video></div></li><li><strong>Arti:</strong> Articolazioni, tendini e polso digitale (cruciale nel cavallo per la laminite).</li><li><strong>Torace:</strong> Pressione intercostale per la pleurodinia e ricerca del fremito cardiaco. <div class='my-4 p-4 border rounded-lg bg-gray-50'><p class='text-sm font-semibold mb-2'>Video: Evocazione Pleurodinia</p><video class='w-full rounded-lg' controls><source src='video_pleurodinia.mp4' type='video/mp4'></video></div></li><li><strong>Addome:</strong> Tensione della parete e manovra di ballottamento per liquidi liberi. <div class='my-4 p-4 border rounded-lg bg-gray-50'><p class='text-sm font-semibold mb-2'>Video: Ballottamento</p><video class='w-full rounded-lg' controls><source src='video_ballottamento.mp4' type='video/mp4'></video></div></li><li><strong>Linfonodi (Bovino):</strong> Prescapolari, precrurali e soprammammari. <div class='my-4 p-4 border rounded-lg bg-gray-50'><p class='text-sm font-semibold mb-2'>Foto: Linfonodi Bovini</p><img src='foto_linfonodi_bovino.jpg' alt='Linfonodi bovino' class='w-full max-w-md mx-auto rounded-lg'></div></li></ul>", 
+                    en: "<p>Methodical approach to ensure completeness:</p><ul class='list-disc pl-5 mt-2 space-y-4'><li><strong>Head and Neck:</strong> Intermandibular lymph nodes (horse only), larynx, and trachea. Arterial pulse (facial in horse/bovine, coccygeal in bovine). Cough reflex via palpation-traction. <div class='my-4 p-4 border rounded-lg bg-gray-50'><p class='text-sm font-semibold mb-2'>Video: Palpation-Traction</p><video class='w-full rounded-lg' controls><source src='video_palpazione_trachea.mp4' type='video/mp4'></video></div></li><li><strong>Limbs:</strong> Joints, tendons, and digital pulse (crucial in horses for laminitis).</li><li><strong>Thorax:</strong> Intercostal pressure for pleurodynia and detection of cardiac thrill. <div class='my-4 p-4 border rounded-lg bg-gray-50'><p class='text-sm font-semibold mb-2'>Video: Eliciting Pleurodynia</p><video class='w-full rounded-lg' controls><source src='video_pleurodinia.mp4' type='video/mp4'></video></div></li><li><strong>Abdomen:</strong> Wall tension and ballottement maneuver for free fluids. <div class='my-4 p-4 border rounded-lg bg-gray-50'><p class='text-sm font-semibold mb-2'>Video: Ballottement</p><video class='w-full rounded-lg' controls><source src='video_ballottamento.mp4' type='video/mp4'></video></div></li><li><strong>Lymph Nodes (Bovine):</strong> Prescapular, precrural, and supramammary. <div class='my-4 p-4 border rounded-lg bg-gray-50'><p class='text-sm font-semibold mb-2'>Photo: Bovine Lymph Nodes</p><img src='foto_linfonodi_bovino.jpg' alt='Bovine lymph nodes' class='w-full max-w-md mx-auto rounded-lg'></div></li></ul>" 
+                },
+                sec3Title: { it: '3. Esplorazione Rettale', en: '3. Rectal Palpation' },
+                sec3Content: { 
+                    it: "<p>Manovra fondamentale per bovino e cavallo per palpare organi interni:</p><ul class='list-disc pl-5 mt-2 space-y-2'><li><strong>Digerente:</strong> Rumine, reticolo (bovino), anse intestinali e linfonodi meseraici.</li><li><strong>Urinario:</strong> Rene sinistro, vescica e ureteri.</li><li><strong>Genitale:</strong> Utero, ovaie, cervice (femmina); ghiandole accessorie e anelli inguinali (maschio, cavallo).</li><li><strong>Altro:</strong> Aorta addominale e bacino.</li></ul>", 
+                    en: "<p>Fundamental maneuver for cattle and horses to palpate internal organs:</p><ul class='list-disc pl-5 mt-2 space-y-2'><li><strong>Digestive:</strong> Rumen, reticulum (bovine), intestinal loops, and mesenteric lymph nodes.</li><li><strong>Urinary:</strong> Left kidney, bladder, and ureters.</li><li><strong>Genital:</strong> Uterus, ovaries, cervix (female); accessory glands and inguinal rings (male, horse).</li><li><strong>Other:</strong> Abdominal aorta and pelvis.</li></ul>" 
+                },
+                btnPrint: { it: 'Stampa Riassunto', en: 'Print Summary' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTS = null;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking) {
+                    synth.cancel();
+                    if (activeTTS === button) { activeTTS.classList.remove('playing'); activeTTS = null; return; }
+                }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onend = () => { button.classList.remove('playing'); activeTTS = null; };
+                synth.speak(utterance);
+                if (activeTTS) activeTTS.classList.remove('playing');
+                activeTTS = button;
+                button.classList.add('playing');
+            };
+
+            document.querySelectorAll('.section-tts').forEach(btn => {
+                btn.onclick = () => {
+                    const sectionKey = btn.dataset.section;
+                    const temp = document.createElement('div');
+                    temp.innerHTML = translations[sectionKey + 'Content'][currentLanguage];
+                    // Rimuove i testi dei video/immagini dal parlato
+                    temp.querySelectorAll('.my-4').forEach(el => el.remove());
+                    const text = translations[sectionKey + 'Title'][currentLanguage] + ". " + temp.innerText;
+                    speak(text, btn);
+                };
+            });
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
             updateLanguage(currentLanguage);
         });
     </script>
