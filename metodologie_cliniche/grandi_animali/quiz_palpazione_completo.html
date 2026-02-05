@@ -3,433 +3,389 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Interattivo: La Palpazione Clinica</title>
+    <title>Quiz: La Palpazione Clinica - Medicina Interna</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; }
-        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
-        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; }
-        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; }
-        .nav-link { transition: color 0.3s; }
-        .nav-link:hover { color: #93C5FD; }
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #93C5FD !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; }
+        .option-btn:hover:not(:disabled) { border-color: #3B82F6; background-color: #eff6ff; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d !important; font-weight: bold; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c !important; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
         .dsa-mode {
             font-family: 'Lexend', sans-serif;
-            background-color: #fdfaf5 !important;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
             letter-spacing: 0.05em;
-            line-height: 1.75;
+            line-height: 2;
         }
-        .dsa-mode #main-header, .dsa-mode #main-footer {
-            background-color: #000000 !important;
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
             background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+            box-shadow: none !important;
         }
-        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
-            color: #ffffff !important;
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
         }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
-        .dsa-mode #quiz-container, .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
-        .dsa-mode h2, .dsa-mode p { color: #34495e; }
+
+        .dsa-mode .section-card, .dsa-mode .option-btn { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+            color: #000000 !important;
+        }
+
+        .dsa-mode .correct { background-color: #dcfce7 !important; border-width: 4px !important; }
+        .dsa-mode .incorrect { background-color: #fee2e2 !important; border-width: 4px !important; }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: underline;
+            text-decoration-color: #fbbf24;
+        }
+
+        /* --- TTS BUTTON --- */
         .tts-button {
             cursor: pointer;
             display: inline-block;
-            margin-left: 8px;
+            margin-left: 10px;
             vertical-align: middle;
             color: #64748b;
             transition: color 0.2s;
         }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .dsa-mode .tts-button { color: #000000 !important; }
     </style>
 </head>
-<body class="bg-slate-50">
+<body class="bg-gray-50">
 
-    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
             <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
             <div class="flex items-center space-x-4">
-                <ul class="hidden md:flex space-x-6">
-                    <li><a href="index.html#anamnesi" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
-                    <li><a href="index.html#ispezione" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
-                    <li><a href="index.html#palpazione" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
-                    <li><a href="index.html#percussione" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
-                    <li><a href="index.html#auscultazione" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
+                <ul class="hidden md:flex space-x-6 text-white">
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
                 </ul>
-                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
-                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
         </nav>
     </header>
 
-    <main class="flex items-center justify-center min-h-[calc(100vh-150px)] p-4">
-        <div id="quiz-container" class="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6 md:p-8">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="index.html#palpazione" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- JS inserisce icona e testo -->
+                </a>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">Test di Valutazione</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">Verifica le tue competenze sulla palpazione clinica veterinaria.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 -mt-10 pb-12 flex justify-center">
+        <div id="quiz-container" class="section-card w-full max-w-3xl p-8">
+            
+            <!-- AREA DOMANDA -->
             <div id="question-area">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: La Palpazione Clinica</h2>
-                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-blue-800 font-bold uppercase tracking-wider text-sm" data-lang-key="quizLabel">Palpazione Clinica</h3>
+                    <span id="progress-text" class="text-slate-500 font-bold text-sm bg-slate-100 px-3 py-1 rounded-full"></span>
                 </div>
-                <div class="text-lg text-slate-700 mb-6 min-h-[6rem] flex items-center">
-                    <p id="question-text"></p>
-                    <span id="question-tts-button" class="tts-button">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    </span>
+
+                <div class="mb-8">
+                    <div class="flex items-start">
+                        <p id="question-text" class="text-xl md:text-2xl font-semibold text-slate-800 leading-snug flex-grow"></p>
+                        <button id="question-tts" class="tts-button flex-shrink-0 mt-1">
+                            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
                 </div>
-                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4">
+                    <!-- Opzioni via JS -->
+                </div>
             </div>
 
-            <div id="feedback-area" class="mt-6 hidden">
-                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
-                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
+            <!-- AREA FEEDBACK -->
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-slate-50 border-2 border-slate-200">
+                    <p id="rationale-text" class="text-slate-700 italic mb-6"></p>
+                    <button id="next-button" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-blue-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
             </div>
 
-            <div id="results-area" class="text-center hidden">
-                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
-                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
-                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
-                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            <!-- AREA RISULTATI -->
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🎓</div>
+                <h2 class="text-3xl font-bold text-blue-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <div class="inline-block bg-blue-50 border-2 border-blue-200 rounded-2xl px-10 py-6 mb-10 mt-6">
+                    <p class="text-slate-500 uppercase text-xs font-bold tracking-widest mb-1">Punteggio Finale</p>
+                    <p id="score-text" class="text-6xl font-black text-blue-600"></p>
+                </div>
+                <button id="restart-button" class="w-full border-2 border-blue-600 text-blue-600 font-bold py-4 px-6 rounded-xl hover:bg-blue-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
             </div>
+
         </div>
     </main>
-    
-    <footer id="main-footer" class="bg-gray-800 text-white">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
-        </div>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
-        const translations = {
-            siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
-            navAnamnesi: { it: 'Anamnesi', en: 'History' },
-            navIspezione: { it: 'Ispezione', en: 'Inspection' },
-            navPalpazione: { it: 'Palpazione', en: 'Palpation' },
-            navPercussione: { it: 'Percussione', en: 'Percussion' },
-            navAuscultazione: { it: 'Auscultazione', en: 'Auscultation' },
-            accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-            quizTitle: { it: 'Quiz: La Palpazione Clinica', en: 'Quiz: Clinical Palpation' },
-            progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
-            btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
-            btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
-            resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
-            resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
-            btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
-            footerText: { it: '&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Clinical Methodologies. Created by Sara Busechian.' },
-            q1_question: { it: "Qual è lo scopo primario della manovra di palpazione-trazione eseguita su laringe e trachea?", en: "What is the primary purpose of the palpation-traction maneuver performed on the larynx and trachea?" },
-            q1_opt1: { it: "Valutare la temperatura delle vie aeree superiori.", en: "To assess the temperature of the upper airways." },
-            q1_rat1: { it: "La temperatura di una regione si apprezza con il semplice contatto, mentre la manovra di trazione ha uno scopo funzionale.", en: "The temperature of a region is assessed by simple contact, whereas the traction maneuver has a functional purpose." },
-            q1_opt2: { it: "Evocare il riflesso della tosse.", en: "To elicit the cough reflex." },
-            q1_rat2: { it: "Questa manovra stimola meccanicamente le vie aeree per testarne la reattività, un passaggio importante dell'esame clinico.", en: "This maneuver mechanically stimulates the airways to test their reactivity, an important step in the clinical examination." },
-            q1_opt3: { it: "Verificare la presenza di masse nell'esofago.", en: "To check for masses in the esophagus." },
-            q1_rat3: { it: "La palpazione dell'esofago si esegue lungo il suo decorso nel collo, ma la trazione della trachea è specifica per un altro riflesso.", en: "Palpation of the esophagus is performed along its course in the neck, but traction of the trachea is specific for another reflex." },
-            q1_opt4: { it: "Misurare la mobilità del collo.", en: "To measure neck mobility." },
-            q1_rat4: { it: "La mobilità del collo si valuta con movimenti più ampi, non con la palpazione localizzata e la trazione della trachea.", en: "Neck mobility is assessed with broader movements, not with localized palpation and traction of the trachea." },
-            q2_question: { it: "Nel cavallo, la percezione di un polso digitale forte e 'saltellante' è un segno altamente indicativo di:", en: "In a horse, the perception of a strong and 'bounding' digital pulse is a highly indicative sign of:" },
-            q2_opt1: { it: "Un problema neurologico all'arto.", en: "A neurological problem in the limb." },
-            q2_rat1: { it: "I problemi neurologici tipicamente influenzano la coordinazione e la sensibilità, non l'intensità del polso.", en: "Neurological problems typically affect coordination and sensitivity, not the intensity of the pulse." },
-            q2_opt2: { it: "Un processo infiammatorio acuto localizzato nel piede.", en: "An acute inflammatory process localized in the foot." },
-            q2_rat2: { it: "L'infiammazione causa una vasodilatazione significativa, che rende il polso delle arterie digitali molto più evidente, come nel caso classico della laminite.", en: "Inflammation causes significant vasodilation, which makes the digital artery pulse much more prominent, as in the classic case of laminitis." },
-            q2_opt3: { it: "Una normale condizione fisiologica a riposo.", en: "A normal physiological condition at rest." },
-            q2_rat3: { it: "In un cavallo sano e tranquillo, il polso digitale è normalmente debole e difficile da percepire.", en: "In a healthy and calm horse, the digital pulse is normally weak and difficult to feel." },
-            q2_opt4: { it: "Un versamento nell'articolazione del nodello.", en: "An effusion in the fetlock joint." },
-            q2_rat4: { it: "Un versamento articolare causa un gonfiore palpabile sull'articolazione, ma non è la causa diretta dell'aumento di intensità del polso più a valle.", en: "A joint effusion causes a palpable swelling over the joint, but it is not the direct cause of the increased pulse intensity downstream." },
-            q3_question: { it: "La manovra del ballottamento/succussione eseguita sulla parete addominale di un bovino è utilizzata specificamente per rilevare:", en: "The ballottement/succussion maneuver performed on the abdominal wall of a bovine is specifically used to detect:" },
-            q3_opt1: { it: "La presenza di gas in eccesso nel rumine.", en: "The presence of excess gas in the rumen." },
-            q3_rat1: { it: "La presenza di gas viene valutata più efficacemente con la percussione, che produce un timpanico suono, e con la palpazione della tensione della fossa del fianco.", en: "The presence of gas is more effectively assessed with percussion, which produces a tympanic sound, and with palpation of the flank fossa tension." },
-            q3_opt2: { it: "La consistenza e le dimensioni del fegato.", en: "The consistency and size of the liver." },
-            q3_rat2: { it: "Il fegato non è accessibile alla palpazione esterna o al ballottamento nei grandi animali a causa della sua posizione craniale.", en: "The liver is not accessible to external palpation or ballottement in large animals due to its cranial position." },
-            q3_opt3: { it: "La presenza di liquido libero in cavità addominale (ascite).", en: "The presence of free fluid in the abdominal cavity (ascites)." },
-            q3_rat3: { it: "Questa manovra si basa proprio sulla generazione di un'onda fluida che viene percepita dalla mano, indicando la presenza di una raccolta liquida anomala.", en: "This maneuver is based on generating a fluid wave that is perceived by the hand, indicating the presence of an abnormal fluid collection." },
-            q3_opt4: { it: "La dolorabilità della parete muscolare.", en: "The tenderness of the muscular wall." },
-            q3_rat4: { it: "La dolorabilità si valuta con una pressione digitale graduale e localizzata, non con i colpi decisi e rapidi del ballottamento.", en: "Tenderness is assessed with gradual and localized digital pressure, not with the sharp and rapid strikes of ballottement." },
-            q4_question: { it: "Una consistenza definita 'crepitante' alla palpazione di una tumefazione o di un'area sottocutanea suggerisce la presenza di:", en: "A 'crepitant' consistency on palpation of a swelling or subcutaneous area strongly suggests the presence of:" },
-            q4_opt1: { it: "Gas nei tessuti (enfisema).", en: "Gas in the tissues (emphysema)." },
-            q4_rat1: { it: "Il crepitio è la sensazione tattile, simile a quella della neve pestata, prodotta dalle bolle di gas che si muovono nei tessuti.", en: "Crepitus is the tactile sensation, similar to stepping on snow, produced by gas bubbles moving through the tissues." },
-            q4_opt2: { it: "Liquido denso, come il pus.", en: "Thick fluid, such as pus." },
-            q4_rat2: { it: "Una raccolta di pus o di un altro liquido denso darebbe una consistenza fluttuante, non crepitante.", en: "A collection of pus or other thick fluid would give a fluctuant consistency, not crepitant." },
-            q4_opt3: { it: "Tessuto cicatriziale fibroso.", en: "Fibrous scar tissue." },
-            q4_rat3: { it: "Il tessuto fibroso, essendo denso e compatto, ha tipicamente una consistenza dura, non crepitante.", en: "Fibrous tissue, being dense and compact, typically has a firm consistency, not crepitant." },
-            q4_opt4: { it: "Un edema infiammatorio.", en: "An inflammatory edema." },
-            q4_rat4: { it: "Un edema produce una sensazione pastosa e può lasciare un'impronta (fovea), ma non produce il suono o la sensazione del crepitio.", en: "An edema produces a doughy sensation and may leave a pit (pitting edema), but it does not produce the sound or sensation of crepitus." },
-            q5_question: { it: "Quale gruppo di linfonodi superficiali è localizzato nella piega della grassella (regione del ginocchio) ed è un punto di repere fondamentale nel bovino?", en: "Which group of superficial lymph nodes is located in the fold of the stifle (knee region) and is a fundamental landmark in cattle?" },
-            q5_opt1: { it: "Linfonodi prescapolari.", en: "Prescapular lymph nodes." },
-            q5_rat1: { it: "Questi linfonodi si trovano cranialmente all'articolazione della spalla, molto distanti dalla grassella.", en: "These lymph nodes are located cranial to the shoulder joint, very distant from the stifle." },
-            q5_opt2: { it: "Linfonodi precrurali.", en: "Precrural lymph nodes." },
-            q5_rat2: { it: "Si trovano esattamente nella plica della grassella e sono uno dei linfonodi sentinella più importanti da valutare nell'esame clinico del bovino.", en: "They are located exactly in the fold of the stifle and are one of the most important sentinel lymph nodes to assess in the clinical examination of cattle." },
-            q5_opt3: { it: "Linfonodi soprammammari.", en: "Supramammary lymph nodes." },
-            q5_rat3: { it: "Come suggerisce il nome, questi linfonodi si trovano in posizione caudale e dorsale rispetto alla ghiandola mammaria.", en: "As the name suggests, these lymph nodes are located caudal and dorsal to the mammary gland." },
-            q5_opt4: { it: "Linfonodi mandibolari.", en: "Mandibular lymph nodes." },
-            q5_rat4: { it: "Questi linfonodi si trovano sulla mandibola, nella regione della testa, e non sull'arto posteriore.", en: "These lymph nodes are located on the mandible, in the head region, and not on the hind limb." },
-            q6_question: { it: "L'evocazione della pleurodinia, un segno indicativo di pleurite, si ottiene tramite:", en: "Eliciting pleurodynia, a sign indicative of pleuritis, is achieved by:" },
-            q6_opt1: { it: "La percussione forte del torace.", en: "Strong percussion of the chest." },
-            q6_rat1: { it: "La percussione serve a valutare la sonorità del parenchima polmonare sottostante, non a evocare dolore pleurico in modo specifico.", en: "Percussion is used to assess the resonance of the underlying lung parenchyma, not to specifically elicit pleuritic pain." },
-            q6_opt2: { it: "L'auscultazione dell'area cardiaca.", en: "Auscultation of the cardiac area." },
-            q6_rat2: { it: "L'auscultazione è una tecnica di ascolto dei suoni interni e non prevede l'applicazione di una pressione tale da stimolare una reazione di dolore.", en: "Auscultation is a technique for listening to internal sounds and does not involve applying pressure sufficient to stimulate a pain reaction." },
-            q6_opt3: { it: "La pressione localizzata e decisa sugli spazi intercostali.", en: "Localized and firm pressure on the intercostal spaces." },
-            q6_rat3: { it: "Questa manovra mira a stimolare meccanicamente la pleura parietale; se questa è infiammata, l'animale reagirà con una manifestazione di dolore.", en: "This maneuver aims to mechanically stimulate the parietal pleura; if it is inflamed, the animal will react with a pain response." },
-            q6_opt4: { it: "La palpazione-trazione della trachea.", en: "Palpation-traction of the trachea." },
-            q6_rat4: { it: "Questa manovra è specifica per evocare il riflesso della tosse e testare la reattività delle vie aeree, non il dolore pleurico.", en: "This maneuver is specific for eliciting the cough reflex and testing airway reactivity, not pleuritic pain." },
-            q7_question: { it: "Durante l'esplorazione rettale di un cavallo maschio, la valutazione degli anelli inguinali interni è cruciale per la diagnosi di quale patologia acuta?", en: "During rectal palpation of a male horse, evaluation of the internal inguinal rings is crucial for the diagnosis of which acute pathology?" },
-            q7_opt1: { it: "Una colica da costipazione del grosso colon.", en: "Colic from large colon impaction." },
-            q7_rat1: { it: "La costipazione si diagnostica palpando direttamente il contenuto disidratato e duro all'interno del colon, non valutando gli anelli inguinali.", en: "Impaction is diagnosed by directly palpating the dehydrated and hard content within the colon, not by evaluating the inguinal rings." },
-            q7_opt2: { it: "Un'ernia inguinale strangolata.", en: "A strangulated inguinal hernia." },
-            q7_rat2: { it: "Un'ansa intestinale può scivolare attraverso un anello inguinale dilatato, causando un'ernia che, se strangolata, rappresenta un'emergenza chirurgica.", en: "A loop of intestine can slip through a dilated inguinal ring, causing a hernia that, if strangulated, represents a surgical emergency." },
-            q7_opt3: { it: "Una rottura della vescica.", en: "A ruptured bladder." },
-            q7_rat3: { it: "La vescica si palpa per valutarne l'integrità e il grado di riempimento, ma questo esame è distinto da quello degli anelli inguinali.", en: "The bladder is palpated to assess its integrity and degree of fullness, but this examination is distinct from that of the inguinal rings." },
-            q7_opt4: { it: "Una frattura dell'ileo.", en: "A fracture of the ilium." },
-            q7_rat4: { it: "Le ossa del bacino si palpano per la loro integrità, ma questo esame, pur importante, non è specifico per la valutazione degli anelli inguinali.", en: "The pelvic bones are palpated for their integrity, but this examination, while important, is not specific for the evaluation of the inguinal rings." },
-            q8_question: { it: "Una consistenza definita 'fluttuante' alla palpazione di una tumefazione suggerisce fortemente la presenza di:", en: "A 'fluctuant' consistency on palpation of a swelling strongly suggests the presence of:" },
-            q8_opt1: { it: "Gas sottocutaneo.", en: "Subcutaneous gas." },
-            q8_rat1: { it: "La presenza di gas produce una sensazione di crepitio alla palpazione, simile a quella della carta accartocciata, non di fluttuazione.", en: "The presence of gas produces a crepitant sensation on palpation, similar to crumpled paper, not fluctuation." },
-            q8_opt2: { it: "Tessuto solido e denso, come una cicatrice.", en: "Solid and dense tissue, like a scar." },
-            q8_rat2: { it: "Un tessuto di questo tipo darebbe una consistenza dura, compatta o parenchimatosa, ma non fluttuante.", en: "This type of tissue would give a firm, compact, or parenchymatous consistency, but not fluctuant." },
-            q8_opt3: { it: "Liquido raccolto all'interno di una cavità (es. ascesso, cisti).", en: "Fluid collected within a cavity (e.g., abscess, cyst)." },
-            q8_rat3: { it: "La fluttuazione è proprio la sensazione di un'onda liquida che si sposta sotto la pressione delle dita, tipica di una raccolta fluida.", en: "Fluctuation is precisely the sensation of a fluid wave moving under the pressure of the fingers, typical of a fluid collection." },
-            q8_opt4: { it: "Un frammento osseo.", en: "A bone fragment." },
-            q8_rat4: { it: "L'osso ha una consistenza dura e rigida, che è l'esatto opposto della sensazione di fluttuazione.", en: "Bone has a hard and rigid consistency, which is the exact opposite of the sensation of fluctuation." },
-            q9_question: { it: "Secondo il riassunto, in quale specie la palpazione dei linfonodi intermandibolari è una manovra di routine?", en: "According to the summary, in which species is palpation of the intermandibular lymph nodes a routine maneuver?" },
-            q9_opt1: { it: "Cavallo", en: "Horse" },
-            q9_rat1: { it: "Corretto. Il testo del riassunto specifica che la palpazione dei linfonodi intermandibolari viene eseguita 'solo nel cavallo'.", en: "Correct. The summary text specifies that palpation of the intermandibular lymph nodes is performed 'only in the horse'." },
-            q9_opt2: { it: "Bovino", en: "Cattle" },
-            q9_rat2: { it: "Errato. Il riassunto menziona questa palpazione specificamente per il cavallo, non per il bovino.", en: "Incorrect. The summary mentions this palpation specifically for the horse, not for cattle." },
-            q9_opt3: { it: "In entrambe le specie", en: "In both species" },
-            q9_rat3: { it: "Errato. Il testo è molto specifico e attribuisce questa manovra solo al cavallo.", en: "Incorrect. The text is very specific and attributes this maneuver only to the horse." },
-            q9_opt4: { it: "In nessuna delle due specie", en: "In neither species" },
-            q9_rat4: { it: "Errato. Il riassunto afferma esplicitamente che è una manovra eseguita nel cavallo.", en: "Incorrect. The summary explicitly states it is a maneuver performed in the horse." },
-            q10_question: { it: "Un 'fremito' percepito palpando la parete toracica in corrispondenza dell'area cardiaca può essere la manifestazione tattile di:", en: "A 'thrill' felt on palpating the chest wall over the cardiac area can be the tactile manifestation of:" },
-            q10_opt1: { it: "Una frattura costale.", en: "A rib fracture." },
-            q10_rat1: { it: "Una frattura costale può produrre crepitio osseo e una reazione di dolore, ma non la vibrazione ritmica e sincrona con il battito cardiaco di un fremito.", en: "A rib fracture can produce bony crepitus and a pain reaction, but not the rhythmic vibration synchronous with the heartbeat of a thrill." },
-            q10_opt2: { it: "Un grave versamento pleurico.", en: "A severe pleural effusion." },
-            q10_rat2: { it: "Un versamento pleurico tende ad attutire e smorzare i suoni e le vibrazioni provenienti dal cuore, rendendo più difficile, non più facile, la percezione di un fremito.", en: "A pleural effusion tends to muffle and dampen sounds and vibrations from the heart, making it harder, not easier, to perceive a thrill." },
-            q10_opt3: { it: "Un soffio cardiaco di particolare intensità.", en: "A particularly intense heart murmur." },
-            q10_rat3: { it: "Un flusso sanguigno estremamente turbolento all'interno del cuore può produrre una vibrazione così forte da essere trasmessa e percepita sulla parete toracica.", en: "Extremely turbulent blood flow within the heart can produce a vibration so strong that it is transmitted to and felt on the chest wall." },
-            q10_opt4: { it: "Un normale ritmo sinusale.", en: "A normal sinus rhythm." },
-            q10_rat4: { it: "Un ritmo cardiaco normale non produce vibrazioni palpabili sulla parete toracica; il fremito è sempre un segno patologico.", en: "A normal heart rhythm does not produce palpable vibrations on the chest wall; a thrill is always a pathological sign." }
-        };
-
-        const quizData = [
-            { questionKey: "q1_question", options: [{ textKey: "q1_opt1", rationaleKey: "q1_rat1", isCorrect: false }, { textKey: "q1_opt2", rationaleKey: "q1_rat2", isCorrect: true }, { textKey: "q1_opt3", rationaleKey: "q1_rat3", isCorrect: false }, { textKey: "q1_opt4", rationaleKey: "q1_rat4", isCorrect: false }] },
-            { questionKey: "q2_question", options: [{ textKey: "q2_opt1", rationaleKey: "q2_rat1", isCorrect: false }, { textKey: "q2_opt2", rationaleKey: "q2_rat2", isCorrect: true }, { textKey: "q2_opt3", rationaleKey: "q2_rat3", isCorrect: false }, { textKey: "q2_opt4", rationaleKey: "q2_rat4", isCorrect: false }] },
-            { questionKey: "q3_question", options: [{ textKey: "q3_opt1", rationaleKey: "q3_rat1", isCorrect: false }, { textKey: "q3_opt2", rationaleKey: "q3_rat2", isCorrect: false }, { textKey: "q3_opt3", rationaleKey: "q3_rat3", isCorrect: true }, { textKey: "q3_opt4", rationaleKey: "q3_rat4", isCorrect: false }] },
-            { questionKey: "q4_question", options: [{ textKey: "q4_opt1", rationaleKey: "q4_rat1", isCorrect: true }, { textKey: "q4_opt2", rationaleKey: "q4_rat2", isCorrect: false }, { textKey: "q4_opt3", rationaleKey: "q4_rat3", isCorrect: false }, { textKey: "q4_opt4", rationaleKey: "q4_rat4", isCorrect: false }] },
-            { questionKey: "q5_question", options: [{ textKey: "q5_opt1", rationaleKey: "q5_rat1", isCorrect: false }, { textKey: "q5_opt2", rationaleKey: "q5_rat2", isCorrect: true }, { textKey: "q5_opt3", rationaleKey: "q5_rat3", isCorrect: false }, { textKey: "q5_opt4", rationaleKey: "q5_rat4", isCorrect: false }] },
-            { questionKey: "q6_question", options: [{ textKey: "q6_opt1", rationaleKey: "q6_rat1", isCorrect: false }, { textKey: "q6_opt2", rationaleKey: "q6_rat2", isCorrect: false }, { textKey: "q6_opt3", rationaleKey: "q6_rat3", isCorrect: true }, { textKey: "q6_opt4", rationaleKey: "q6_rat4", isCorrect: false }] },
-            { questionKey: "q7_question", options: [{ textKey: "q7_opt1", rationaleKey: "q7_rat1", isCorrect: false }, { textKey: "q7_opt2", rationaleKey: "q7_rat2", isCorrect: true }, { textKey: "q7_opt3", rationaleKey: "q7_rat3", isCorrect: false }, { textKey: "q7_opt4", rationaleKey: "q7_rat4", isCorrect: false }] },
-            { questionKey: "q8_question", options: [{ textKey: "q8_opt1", rationaleKey: "q8_rat1", isCorrect: false }, { textKey: "q8_opt2", rationaleKey: "q8_rat2", isCorrect: false }, { textKey: "q8_opt3", rationaleKey: "q8_rat3", isCorrect: true }, { textKey: "q8_opt4", rationaleKey: "q8_rat4", isCorrect: false }] },
-            { questionKey: "q9_question", options: [{ textKey: "q9_opt1", rationaleKey: "q9_rat1", isCorrect: true }, { textKey: "q9_opt2", rationaleKey: "q9_rat2", isCorrect: false }, { textKey: "q9_opt3", rationaleKey: "q9_rat3", isCorrect: false }, { textKey: "q9_opt4", rationaleKey: "q9_rat4", isCorrect: false }] },
-            { questionKey: "q10_question", options: [{ textKey: "q10_opt1", rationaleKey: "q10_rat1", isCorrect: false }, { textKey: "q10_opt2", rationaleKey: "q10_rat2", isCorrect: false }, { textKey: "q10_opt3", rationaleKey: "q10_rat3", isCorrect: true }, { textKey: "q10_opt4", rationaleKey: "q10_rat4", isCorrect: false }] }
-        ];
-
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let shuffledQuestions = [];
-        const synth = window.speechSynthesis;
-        let currentUtterance = null;
-        let activeTTSButton = null;
-
-        const quizContainer = document.getElementById('quiz-container');
-        const questionArea = document.getElementById('question-area');
-        const resultsArea = document.getElementById('results-area');
-        const questionText = document.getElementById('question-text');
-        const questionTTSButton = document.getElementById('question-tts-button');
-        const optionsContainer = document.getElementById('options-container');
-        const progressText = document.getElementById('progress-text');
-        const feedbackArea = document.getElementById('feedback-area');
-        const rationaleText = document.getElementById('rationale-text');
-        const nextButton = document.getElementById('next-button');
-        const scoreText = document.getElementById('score-text');
-        const restartButton = document.getElementById('restart-button');
-        
-        let currentLanguage = localStorage.getItem('language') || 'it';
-
-        const accessibilityToggle = document.getElementById('accessibility-toggle');
-        const langToggle = document.getElementById('lang-toggle');
-        const body = document.body;
-
-        function speak(text, button) {
-            if (synth.speaking) {
-                if (currentUtterance && synth.paused && activeTTSButton === button) {
-                    synth.resume();
-                    button.classList.add('playing');
-                } else if (currentUtterance && !synth.paused && activeTTSButton === button) {
-                    synth.pause();
-                    button.classList.remove('playing');
-                } else {
-                    synth.cancel();
-                    startSpeaking(text, button);
-                }
-            } else {
-                startSpeaking(text, button);
-            }
-        }
-        
-        function startSpeaking(text, button) {
-            currentUtterance = new SpeechSynthesisUtterance(text);
-            currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-            currentUtterance.onend = () => {
-                if(activeTTSButton) activeTTSButton.classList.remove('playing');
-                activeTTSButton = null;
-            };
-            synth.speak(currentUtterance);
-            if(activeTTSButton) activeTTSButton.classList.remove('playing');
-            activeTTSButton = button;
-            button.classList.add('playing');
-        }
-        
-        const updateLanguage = (lang) => {
-            document.documentElement.lang = lang;
-            langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-            document.querySelectorAll('[data-lang-key]').forEach(element => {
-                const key = element.dataset.langKey;
-                if (translations[key] && translations[key][lang]) {
-                    element.innerHTML = translations[key][lang];
-                }
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            const backIcon = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>`;
             
-            if (shuffledQuestions.length > 0 && questionArea.classList.contains('hidden') === false) {
-                 loadQuestion();
-            }
-        };
+            const translations = {
+                siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
+                backToHome: { 
+                    it: backIcon + 'Torna all\'Indice', 
+                    en: backIcon + 'Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'Test di Valutazione', en: 'Assessment Quiz' },
+                pageSubtitle: { it: 'Metti alla prova le tue conoscenze sulla palpazione clinica veterinaria.', en: 'Test your knowledge on veterinary clinical palpation.' },
+                quizLabel: { it: 'Palpazione Clinica', en: 'Clinical Palpation' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' },
+                progressText: { it: 'Domanda {current} di {total}', en: 'Question {current} of {total}' }
+            };
 
-        langToggle.addEventListener('click', () => {
-            currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-            localStorage.setItem('language', currentLanguage);
+            const quizQuestions = [
+                {
+                    question: { it: "Qual è lo scopo primario della manovra di palpazione-trazione eseguita su laringe e trachea?", en: "What is the primary purpose of the palpation-traction maneuver performed on the larynx and trachea?" },
+                    options: [
+                        { text: { it: "Valutare la temperatura locale.", en: "To assess the local temperature." }, isCorrect: false, rationale: { it: "La temperatura si apprezza col semplice contatto, non con la trazione.", en: "Temperature is assessed by simple contact, not traction." } },
+                        { text: { it: "Evocare il riflesso della tosse.", en: "To elicit the cough reflex." }, isCorrect: true, rationale: { it: "Corretto! Questa manovra testa la reattività delle vie aeree superiori.", en: "Correct! This maneuver tests the reactivity of the upper airways." } },
+                        { text: { it: "Verificare masse nell'esofago.", en: "To check for esophageal masses." }, isCorrect: false, rationale: { it: "L'esofago decorre lateralmente, la trazione tracheale è specifica per la tosse.", en: "The esophagus runs laterally; tracheal traction is specific for coughing." } },
+                        { text: { it: "Misurare la mobilità del collo.", en: "To measure neck mobility." }, isCorrect: false, rationale: { it: "La mobilità si valuta con movimenti passivi del collo.", en: "Mobility is assessed with passive neck movements." } }
+                    ]
+                },
+                {
+                    question: { it: "Nel cavallo, la percezione di un polso digitale forte e 'saltellante' indica:", en: "In the horse, the perception of a strong and 'bounding' digital pulse indicates:" },
+                    options: [
+                        { text: { it: "Un problema neurologico.", en: "A neurological problem." }, isCorrect: false, rationale: { it: "I problemi neurologici influenzano coordinazione e forza, non il polso.", en: "Neurological problems affect coordination and strength, not the pulse." } },
+                        { text: { it: "Un processo infiammatorio nel piede (es. laminite).", en: "An inflammatory process in the foot (e.g., laminitis)." }, isCorrect: true, rationale: { it: "Esatto! La vasodilatazione infiammatoria rende il polso digitale molto evidente.", en: "Exact! Inflammatory vasodilation makes the digital pulse very evident." } },
+                        { text: { it: "Una condizione normale a riposo.", en: "A normal condition at rest." }, isCorrect: false, rationale: { it: "No, a riposo il polso digitale è quasi impercettibile.", en: "No, at rest the digital pulse is nearly imperceptible." } },
+                        { text: { it: "Un versamento nel nodello.", en: "An effusion in the fetlock." }, isCorrect: false, rationale: { it: "Il versamento causa gonfiore locale, non necessariamente un polso saltellante.", en: "Effusion causes local swelling, not necessarily a bounding pulse." } }
+                    ]
+                },
+                {
+                    question: { it: "La manovra del ballottamento addominale nel bovino serve a rilevare:", en: "The abdominal ballottement maneuver in cattle is used to detect:" },
+                    options: [
+                        { text: { it: "Gas nel rumine.", en: "Gas in the rumen." }, isCorrect: false, rationale: { it: "Il gas si valuta con la percussione (suono timpanico).", en: "Gas is assessed via percussion (tympanic sound)." } },
+                        { text: { it: "Le dimensioni del fegato.", en: "The size of the liver." }, isCorrect: false, rationale: { it: "Il fegato bovino è craniale e non ballottabile.", en: "The bovine liver is cranial and not ballottable." } },
+                        { text: { it: "Liquido libero in cavità (ascite).", en: "Free fluid in the cavity (ascites)." }, isCorrect: true, rationale: { it: "Corretto. La manovra genera un'onda liquida percepibile al tatto.", en: "Correct. The maneuver generates a liquid wave perceivable by touch." } },
+                        { text: { it: "Dolorabilità muscolare.", en: "Muscular tenderness." }, isCorrect: false, rationale: { it: "La dolorabilità richiede pressione digitale, non ballottamento.", en: "Tenderness requires digital pressure, not ballottement." } }
+                    ]
+                },
+                {
+                    question: { it: "Una consistenza 'crepitante' alla palpazione sottocutanea suggerisce:", en: "A 'crepitant' consistency on subcutaneous palpation suggests:" },
+                    options: [
+                        { text: { it: "Gas nei tessuti (enfisema).", en: "Gas in tissues (emphysema)." }, isCorrect: true, rationale: { it: "Sì! Sensazione simile a neve pestata, causata da bolle d'aria.", en: "Yes! Sensation like stepping on snow, caused by air bubbles." } },
+                        { text: { it: "Liquido denso (pus).", en: "Thick fluid (pus)." }, isCorrect: false, rationale: { it: "Il pus dà una sensazione di fluttuazione.", en: "Pus gives a feeling of fluctuation." } },
+                        { text: { it: "Tessuto fibroso duro.", en: "Hard fibrous tissue." }, isCorrect: false, rationale: { it: "La fibrosi è dura e compatta.", en: "Fibrosis is hard and compact." } },
+                        { text: { it: "Edema pastoso.", en: "Doughy edema." }, isCorrect: false, rationale: { it: "L'edema è pastoso e può lasciare la fovea.", en: "Edema is doughy and can leave a pit (fovea)." } }
+                    ]
+                },
+                {
+                    question: { it: "Quali linfonodi si trovano nella piega della grassella nel bovino?", en: "Which lymph nodes are located in the bovine stifle fold?" },
+                    options: [
+                        { text: { it: "Prescapolari", en: "Prescapular" }, isCorrect: false, rationale: { it: "Si trovano davanti alla spalla.", en: "Located in front of the shoulder." } },
+                        { text: { it: "Precrurali", en: "Precrural" }, isCorrect: true, rationale: { it: "Esatto, sono i linfonodi della plica della grassella.", en: "Correct, they are the nodes of the stifle fold." } },
+                        { text: { it: "Soprammammari", en: "Supramammary" }, isCorrect: false, rationale: { it: "Sono localizzati sopra la mammella.", en: "Located above the udder." } },
+                        { text: { it: "Mandibolari", en: "Mandibular" }, isCorrect: false, rationale: { it: "Si trovano sulla testa.", en: "Located on the head." } }
+                    ]
+                },
+                {
+                    question: { it: "La pleurodinia (dolore pleurico) si evoca tramite:", en: "Pleurodynia (pleuritic pain) is elicited via:" },
+                    options: [
+                        { text: { it: "Percussione forte.", en: "Strong percussion." }, isCorrect: false, rationale: { it: "Serve per la sonorità, non specificamente per il dolore.", en: "Used for resonance, not specifically for pain." } },
+                        { text: { it: "Auscultazione cardiaca.", en: "Cardiac auscultation." }, isCorrect: false, rationale: { it: "È una tecnica di ascolto, non di stimolazione dolorosa.", en: "It's a listening technique, not pain stimulation." } },
+                        { text: { it: "Pressione decisa negli spazi intercostali.", en: "Firm pressure in the intercostal spaces." }, isCorrect: true, rationale: { it: "Corretto. Stimola la pleura infiammata provocando dolore.", en: "Correct. It stimulates the inflamed pleura causing pain." } },
+                        { text: { it: "Trazione della coda.", en: "Tail traction." }, isCorrect: false, rationale: { it: "Serve per test neurologici o mobilità.", en: "Used for neurological tests or mobility." } }
+                    ]
+                },
+                {
+                    question: { it: "Nel cavallo maschio, gli anelli inguinali si valutano per diagnosticare:", en: "In the male horse, inguinal rings are assessed to diagnose:" },
+                    options: [
+                        { text: { it: "Costipazione del colon.", en: "Colon impaction." }, isCorrect: false, rationale: { it: "Si palpa il contenuto del colon, non gli anelli.", en: "The colon content is palpated, not the rings." } },
+                        { text: { it: "Ernia inguinale strangolata.", en: "Strangulated inguinal hernia." }, isCorrect: true, rationale: { it: "Sì, un'ansa intestinale può incastrarsi nell'anello.", en: "Yes, an intestinal loop can get stuck in the ring." } },
+                        { text: { it: "Rottura vescicale.", en: "Bladder rupture." }, isCorrect: false, rationale: { it: "Si valuta l'integrità della vescica.", en: "The integrity of the bladder is assessed." } },
+                        { text: { it: "Frattura dell'ileo.", en: "Iliac fracture." }, isCorrect: false, rationale: { it: "Si valutano le ossa del bacino.", en: "Pelvic bones are assessed." } }
+                    ]
+                },
+                {
+                    question: { it: "Una consistenza 'fluttuante' in una tumefazione indica:", en: "A 'fluctuant' consistency in a swelling indicates:" },
+                    options: [
+                        { text: { it: "Presenza di gas.", en: "Presence of gas." }, isCorrect: false, rationale: { it: "Il gas dà crepitio.", en: "Gas gives crepitus." } },
+                        { text: { it: "Tessuto solido (cicatrice).", en: "Solid tissue (scar)." }, isCorrect: false, rationale: { it: "La cicatrice è dura.", en: "A scar is hard." } },
+                        { text: { it: "Liquido in una cavità (ascesso).", en: "Fluid in a cavity (abscess)." }, isCorrect: true, rationale: { it: "Sì, la fluttuazione è il movimento del liquido sotto pressione.", en: "Yes, fluctuation is the movement of fluid under pressure." } },
+                        { text: { it: "Un frammento osseo.", en: "A bone fragment." }, isCorrect: false, rationale: { it: "L'osso è rigido.", en: "Bone is rigid." } }
+                    ]
+                },
+                {
+                    question: { it: "In quale specie la palpazione dei linfonodi intermandibolari è routine?", en: "In which species is intermandibular lymph node palpation routine?" },
+                    options: [
+                        { text: { it: "Cavallo", en: "Horse" }, isCorrect: true, rationale: { it: "Corretto, nel cavallo è una manovra standard.", en: "Correct, in the horse it is a standard maneuver." } },
+                        { text: { it: "Bovino", en: "Cattle" }, isCorrect: false, rationale: { it: "Nel bovino si valutano i mandibolari, meno gli intermandibolari.", en: "In cattle, mandibular nodes are assessed, less so intermandibular." } },
+                        { text: { it: "Pecora", en: "Sheep" }, isCorrect: false, rationale: { it: "Non è una manovra routinaria citata.", en: "Not a cited routine maneuver." } },
+                        { text: { it: "Maiale", en: "Pig" }, isCorrect: false, rationale: { it: "Non è la specie di riferimento del modulo.", en: "Not the reference species for the module." } }
+                    ]
+                },
+                {
+                    question: { it: "Un 'fremito' cardiaco palpabile sul torace indica:", en: "A palpable cardiac 'thrill' on the chest indicates:" },
+                    options: [
+                        { text: { it: "Frattura costale.", en: "Rib fracture." }, isCorrect: false, rationale: { it: "Dà crepitio osseo e dolore.", en: "Gives bone crepitus and pain." } },
+                        { text: { it: "Versamento pleurico.", en: "Pleural effusion." }, isCorrect: false, rationale: { it: "Attutisce i suoni e le vibrazioni.", en: "Muffles sounds and vibrations." } },
+                        { text: { it: "Soffio cardiaco intenso.", en: "Intense heart murmur." }, isCorrect: true, rationale: { it: "Esatto! La turbolenza è così forte da vibrare sulla parete.", en: "Exact! The turbulence is strong enough to vibrate the wall." } },
+                        { text: { it: "Ritmo sinusale normale.", en: "Normal sinus rhythm." }, isCorrect: false, rationale: { it: "Il ritmo normale non è mai palpabile come fremito.", en: "Normal rhythm is never palpable as a thrill." } }
+                    ]
+                }
+            ];
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            let currentIdx = 0;
+            let score = 0;
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTS = null;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                renderQuestion();
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking) {
+                    synth.cancel();
+                    if (activeTTS === button) { activeTTS.classList.remove('playing'); activeTTS = null; return; }
+                }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onend = () => { button.classList.remove('playing'); activeTTS = null; };
+                synth.speak(utterance);
+                if (activeTTS) activeTTS.classList.remove('playing');
+                activeTTS = button;
+                button.classList.add('playing');
+            };
+
+            const renderQuestion = () => {
+                const q = quizQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', quizQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                document.getElementById('question-tts').onclick = () => speak(q.question[currentLanguage], document.getElementById('question-tts'));
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                q.options.forEach((opt, i) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-3 w-full";
+                    
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn flex-grow text-left p-5 rounded-xl font-semibold text-slate-700";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn);
+                    
+                    const ttsBtn = document.createElement('button');
+                    ttsBtn.className = "tts-button p-2";
+                    ttsBtn.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    ttsBtn.onclick = () => speak(opt.text[currentLanguage], ttsBtn);
+
+                    div.appendChild(btn);
+                    div.appendChild(ttsBtn);
+                    container.appendChild(div);
+                });
+            };
+
+            const handleSelect = (opt, btn) => {
+                if (synth.speaking) synth.cancel();
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                
+                if (opt.isCorrect) {
+                    btn.classList.add('correct');
+                    score++;
+                } else {
+                    btn.classList.add('incorrect');
+                    const correctBtnIdx = quizQuestions[currentIdx].options.findIndex(o => o.isCorrect);
+                    btns[correctBtnIdx].classList.add('correct');
+                }
+
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                
+                const nextBtn = document.getElementById('next-button');
+                nextBtn.textContent = currentIdx === quizQuestions.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
+
+            document.getElementById('next-button').onclick = () => {
+                document.getElementById('feedback-area').classList.add('hidden');
+                if (currentIdx < quizQuestions.length - 1) {
+                    currentIdx++;
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            };
+
+            const showResults = () => {
+                document.getElementById('question-area').classList.add('hidden');
+                document.getElementById('results-area').classList.remove('hidden');
+                document.getElementById('score-text').textContent = `${score} / ${quizQuestions.length}`;
+            };
+
+            document.getElementById('restart-button').onclick = () => {
+                currentIdx = 0; score = 0;
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => {
+                body.classList.toggle('dsa-mode');
+                localStorage.setItem('dsa-mode', body.classList.contains('dsa-mode') ? 'enabled' : 'disabled');
+            };
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') body.classList.add('dsa-mode');
             updateLanguage(currentLanguage);
         });
-
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-
-        function startQuiz() {
-            document.documentElement.scrollTop = 0; 
-            document.body.scrollTop = 0;
-
-            currentQuestionIndex = 0;
-            score = 0;
-            shuffledQuestions = shuffleArray([...quizData]);
-            resultsArea.classList.add('hidden');
-            questionArea.classList.remove('hidden');
-            feedbackArea.classList.add('hidden');
-            loadQuestion();
-        }
-        
-        function loadQuestion() {
-            if (synth.speaking) synth.cancel();
-            if (activeTTSButton) activeTTSButton.classList.remove('playing');
-            activeTTSButton = null;
-
-            feedbackArea.classList.add('hidden');
-            const currentQuestion = shuffledQuestions[currentQuestionIndex];
-            progressText.textContent = translations.progressText[currentLanguage]
-                .replace('{current}', currentQuestionIndex + 1)
-                .replace('{total}', shuffledQuestions.length);
-            
-            questionText.textContent = translations[currentQuestion.questionKey][currentLanguage];
-            questionTTSButton.onclick = () => speak(translations[currentQuestion.questionKey][currentLanguage], questionTTSButton);
-            optionsContainer.innerHTML = '';
-            
-            const shuffledOptions = shuffleArray([...currentQuestion.options]);
-
-            shuffledOptions.forEach(option => {
-                const buttonContainer = document.createElement('div');
-                buttonContainer.classList.add('flex', 'items-center', 'w-full');
-                
-                const button = document.createElement('button');
-                button.textContent = translations[option.textKey][currentLanguage];
-                button.classList.add('option-btn', 'w-full', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
-                
-                const ttsButton = document.createElement('span');
-                ttsButton.classList.add('tts-button');
-                ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
-                ttsButton.onclick = (e) => {
-                    e.stopPropagation();
-                    speak(translations[option.textKey][currentLanguage], ttsButton);
-                };
-
-                button.onclick = () => selectAnswer(button, option, currentQuestion.options);
-
-                buttonContainer.appendChild(button);
-                buttonContainer.appendChild(ttsButton);
-                optionsContainer.appendChild(buttonContainer);
-            });
-        }
-
-        function selectAnswer(button, selectedOption, allOptions) {
-            if (synth.speaking) synth.cancel();
-            
-            const buttons = optionsContainer.querySelectorAll('button.option-btn');
-            
-            buttons.forEach(btn => {
-                btn.disabled = true;
-                const optionDataText = btn.textContent;
-                const originalOption = allOptions.find(opt => translations[opt.textKey][currentLanguage] === optionDataText);
-                if (originalOption && originalOption.isCorrect) {
-                    btn.classList.add('correct');
-                }
-            });
-
-            if (!selectedOption.isCorrect) {
-                button.classList.add('incorrect');
-            }
-            
-            score += selectedOption.isCorrect ? 1 : 0;
-            
-            rationaleText.textContent = translations[selectedOption.rationaleKey][currentLanguage];
-            feedbackArea.classList.remove('hidden');
-
-            if (currentQuestionIndex === shuffledQuestions.length - 1) {
-                nextButton.textContent = translations.btnResults[currentLanguage];
-            } else {
-                 nextButton.textContent = translations.btnNext[currentLanguage];
-            }
-        }
-        
-        function showResults() {
-            questionArea.classList.add('hidden');
-            feedbackArea.classList.add('hidden');
-            resultsArea.classList.remove('hidden');
-            scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
-        }
-        
-        nextButton.addEventListener('click', () => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < shuffledQuestions.length) {
-                loadQuestion();
-            } else {
-                showResults();
-            }
-        });
-
-        restartButton.addEventListener('click', startQuiz);
-
-        const setA11yMode = (enabled) => {
-            if (enabled) {
-                body.classList.add('dsa-mode');
-                localStorage.setItem('dsa-mode', 'enabled');
-            } else {
-                body.classList.remove('dsa-mode');
-                localStorage.setItem('dsa-mode', 'disabled');
-            }
-        };
-
-        accessibilityToggle.addEventListener('click', () => {
-            const isEnabled = body.classList.contains('dsa-mode');
-            setA11yMode(!isEnabled);
-        });
-
-        if (localStorage.getItem('dsa-mode') === 'enabled') {
-            setA11yMode(true);
-        }
-
-        startQuiz();
-        updateLanguage(currentLanguage);
-
     </script>
 </body>
 </html>
