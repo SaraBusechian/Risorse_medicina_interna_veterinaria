@@ -11,27 +11,76 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
-        .nav-link { transition: color 0.3s; }
-        .nav-link:hover { color: #93C5FD; }
+        
+        /* Fix Navigazione Standard (Bianco su Blu) */
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #93C5FD !important; }
+
         .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); transition: transform 0.3s, box-shadow 0.3s; }
         .section-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        
+        /* --- STILI ACCESSIBILITÀ (DSA) MIGLIORATI --- */
         .dsa-mode {
             font-family: 'Lexend', sans-serif;
-            background-color: #fdfaf5 !important;
+            background-color: #fffdf5 !important; /* Sfondo crema riposante */
+            color: #1a1a1a !important; /* Testo scuro, non nero assoluto */
             letter-spacing: 0.05em;
-            line-height: 1.75;
+            line-height: 2; /* Interlinea aumentata */
         }
-        .dsa-mode .hero-bg, .dsa-mode #main-footer, .dsa-mode #main-header {
-            background-color: #000000 !important;
+        
+        /* Header e Footer in DSA: Chiari con bordi netti */
+        .dsa-mode .hero-bg, 
+        .dsa-mode #main-footer, 
+        .dsa-mode #main-header {
+            background-color: #ffffff !important;
             background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+            box-shadow: none !important;
         }
-        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle,
-        .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p, .dsa-mode .back-button {
-            color: #ffffff !important;
+
+        /* Testi Header in DSA (Forzatura colore nero) */
+        .dsa-mode #main-header h1, 
+        .dsa-mode #main-header .nav-link, 
+        .dsa-mode #main-footer p,
+        .dsa-mode .hero-bg h2, 
+        .dsa-mode .hero-bg p {
+            color: #000000 !important;
         }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .back-button { border: 1px solid #ffffff; }
-        .dsa-mode .section-card { background-color: #fffdfa; border: 1px solid #e0e0e0; }
-        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode .nav-link { color: #34495e; }
+
+        /* Bottoni in DSA: Bordo spesso, sfondo chiaro */
+        .dsa-mode #accessibility-toggle, 
+        .dsa-mode #lang-toggle, 
+        .dsa-mode .back-button { 
+            border: 2px solid #000000 !important;
+            background-color: #f0f0f0 !important;
+            color: #000000 !important;
+            font-weight: 700;
+        }
+
+        /* Card in DSA: Sfondo bianco, bordo nero, niente ombre */
+        .dsa-mode .section-card { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+        }
+
+        /* Titoli in DSA */
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: underline; /* Sottolineatura per evidenziare la struttura */
+            text-decoration-thickness: 2px;
+            text-decoration-color: #fbbf24; /* Sottolineatura gialla per contrasto */
+        }
+
+        /* Icone in DSA */
+        .dsa-mode svg, .dsa-mode .section-title-icon {
+            fill: #000000 !important;
+            color: #000000 !important;
+        }
+
+        /* --- FINE STILI DSA --- */
+        
         .tts-button {
             cursor: pointer;
             display: inline-block;
@@ -42,6 +91,8 @@
         }
         .tts-button:hover { color: #0ea5e9; }
         .tts-button.playing { color: #0ea5e9; }
+        .dsa-mode .tts-button { color: #000000 !important; }
+        
         audio::-webkit-media-controls-panel { background-color: #f1f5f9; }
         audio::-webkit-media-controls-play-button,
         audio::-webkit-media-controls-mute-button { color: #0ea5e9; }
@@ -53,12 +104,13 @@
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
             <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
             <div class="flex items-center space-x-4">
-                <ul class="hidden md:flex space-x-6">
-                    <li><a href="#anamnesi" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
-                    <li><a href="#ispezione" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
-                    <li><a href="#palpazione" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
-                    <li><a href="#percussione" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
-                    <li><a href="#auscultazione" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
+                <!-- Aggiunta classe text-white esplicita -->
+                <ul class="hidden md:flex space-x-6 text-white">
+                    <li><a href="#anamnesi" class="nav-link font-semibold text-white" data-lang-key="navAnamnesi">Anamnesi</a></li>
+                    <li><a href="#ispezione" class="nav-link font-semibold text-white" data-lang-key="navIspezione">Ispezione</a></li>
+                    <li><a href="#palpazione" class="nav-link font-semibold text-white" data-lang-key="navPalpazione">Palpazione</a></li>
+                    <li><a href="#percussione" class="nav-link font-semibold text-white" data-lang-key="navPercussione">Percussione</a></li>
+                    <li><a href="#auscultazione" class="nav-link font-semibold text-white" data-lang-key="navAuscultazione">Auscultazione</a></li>
                 </ul>
                 <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
                 <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
@@ -187,9 +239,10 @@
 
     </main>
     
-    <footer id="main-footer" class="bg-gray-800 text-white">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
+    <!-- Footer standard chiaro -->
+    <footer id="main-footer" class="text-center mt-12 pt-8 border-t border-slate-200">
+        <div class="container mx-auto px-4 py-4">
+            <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
         </div>
     </footer>
 
@@ -198,7 +251,7 @@
             const speakerIcon = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
             const translations = {
                 siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
-                backToHome: { it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Torna alla Home', en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Back to Home' },
+                backToHome: { it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Torna all\'Indice', en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Back to Index' },
                 navAnamnesi: { it: 'Anamnesi', en: 'History' },
                 navIspezione: { it: 'Ispezione', en: 'Inspection' },
                 navPalpazione: { it: 'Palpazione', en: 'Palpation' },
