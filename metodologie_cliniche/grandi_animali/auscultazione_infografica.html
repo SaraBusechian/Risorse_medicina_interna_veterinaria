@@ -3,245 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infografica: L'Auscultazione Clinica</title>
+    <title>Infografica: L'Auscultazione Clinica - Medicina Interna</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; }
-        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 400px; max-height: 450px; }
-        .nav-link { transition: color 0.3s; }
-        .nav-link:hover { color: #93C5FD; }
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        /* Fix Navigazione Standard */
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #93C5FD !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
         .dsa-mode {
             font-family: 'Lexend', sans-serif;
-            background-color: #fdfaf5 !important;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
             letter-spacing: 0.05em;
-            line-height: 1.75;
+            line-height: 2;
         }
-        .dsa-mode #main-header, .dsa-mode #main-footer {
-            background-color: #000000 !important;
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
             background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
         }
-        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle {
-            color: #ffffff !important;
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
         }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle { border: 1px solid #ffffff; }
-        .dsa-mode .bg-white { background-color: #fffdfa; border: 1px solid #e0e0e0; }
-        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode div, .dsa-mode li, .dsa-mode span { color: #34495e; }
-        .dsa-mode .section-header { background-color: #34495e !important; color: #ffffff !important; }
+
+        .dsa-mode .section-card { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+        }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: underline;
+            text-decoration-color: #fbbf24;
+        }
+
+        /* --- TTS BUTTON --- */
         .tts-button {
             cursor: pointer;
             display: inline-block;
-            margin-left: 8px;
+            margin-left: 10px;
             vertical-align: middle;
             color: #64748b;
             transition: color 0.2s;
         }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
+        .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
+        .dsa-mode .tts-button { color: #000000 !important; }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50">
 
-    <header id="main-header" class="bg-[#1E3A8A] text-white shadow-md sticky top-0 z-50">
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
             <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna G.A.</h1>
             <div class="flex items-center space-x-4">
                 <ul class="hidden md:flex space-x-6">
-                    <li><a href="index.html#anamnesi" class="nav-link font-semibold" data-lang-key="navAnamnesi">Anamnesi</a></li>
-                    <li><a href="index.html#ispezione" class="nav-link font-semibold" data-lang-key="navIspezione">Ispezione</a></li>
-                    <li><a href="index.html#palpazione" class="nav-link font-semibold" data-lang-key="navPalpazione">Palpazione</a></li>
-                    <li><a href="index.html#percussione" class="nav-link font-semibold" data-lang-key="navPercussione">Percussione</a></li>
-                    <li><a href="index.html#auscultazione" class="nav-link font-semibold" data-lang-key="navAuscultazione">Auscultazione</a></li>
+                    <li><a href="index.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="index.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="index.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="index.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="index.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
                 </ul>
-                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
-                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
         </nav>
     </header>
 
-    <div class="container mx-auto p-4 md:p-8">
-        
-        <header class="mb-12 bg-white rounded-lg shadow-md overflow-hidden" data-lang-key="pageHeader">
-            <h1 class="text-4xl md:text-5xl font-bold text-center p-6 bg-[#0D47A1] text-white section-header">L'Arte dell'Ascolto Clinico: Guida all'Auscultazione</h1>
-            <p class="text-lg text-gray-600 max-w-3xl mx-auto text-center p-6">L'auscultazione è la chiave per interpretare il linguaggio degli organi interni, un passaggio essenziale per una diagnosi accurata.</p>
-        </header>
-
-        <main class="space-y-16">
-            <section class="bg-white rounded-lg shadow-md overflow-hidden" data-lang-key="sectionStethoscope">
-                <h2 class="text-3xl font-bold text-center p-4 bg-[#0D47A1] text-white section-header">Lo Strumento del Mestiere: Lo Stetoscopio</h2>
-                <div class="p-6 md:p-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4 text-center">
-                        <div>
-                            <div class="text-5xl mb-2">🩺</div>
-                            <h3 class="text-xl font-bold text-sky-700">Diaframma</h3>
-                            <p class="text-gray-600 mt-2">Ideale per i suoni ad **alta frequenza**, come i toni cardiaci e i suoni respiratori normali.</p>
-                        </div>
-                        <div>
-                            <div class="text-5xl mb-2">🔔</div>
-                            <h3 class="text-xl font-bold text-teal-700">Campana</h3>
-                            <p class="text-gray-600 mt-2">Più sensibile ai suoni a **bassa frequenza**, come alcuni soffi cardiaci o i borborigmi intestinali.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-white rounded-lg shadow-md overflow-hidden" data-lang-key="sectionRespiratory">
-                <h2 class="text-3xl font-bold text-center p-4 bg-[#0D47A1] text-white section-header">Auscultazione Respiratoria: Suoni Normali e Patologici</h2>
-                <div class="p-6 md:p-8">
-                    <p class="text-center text-gray-600 max-w-3xl mx-auto mb-8">Distinguere il normale murmure vescicolare dai suoni patologici aggiunti è fondamentale. Questa guida visualizza le caratteristiche acustiche dei principali reperti.</p>
-                    <div class="space-y-4">
-                        <div class="p-4 border rounded-lg">
-                            <h3 class="font-bold text-lg text-red-700">Rantoli (Crepitii)</h3>
-                            <p class="text-sm text-gray-600">Discontinui, simili a "pluriball". Indicano liquido/essudato.</p>
-                            <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2"><div class="bg-red-500 h-2.5 rounded-full" style="width: 25%"></div></div>
-                            <div class="text-xs flex justify-between mt-1"><span>Grave</span><span>Acuta</span></div>
-                        </div>
-                        <div class="p-4 border rounded-lg">
-                            <h3 class="font-bold text-lg text-amber-700">Sibili</h3>
-                            <p class="text-sm text-gray-600">Continui e musicali, simili a "fischi". Indicano vie aeree ristrette.</p>
-                            <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2"><div class="bg-amber-500 h-2.5 rounded-full" style="width: 90%"></div></div>
-                            <div class="text-xs flex justify-between mt-1"><span>Grave</span><span>Acuta</span></div>
-                        </div>
-                        <div class="p-4 border rounded-lg">
-                            <h3 class="font-bold text-lg text-cyan-700">Soffio Tubario</h3>
-                            <p class="text-sm text-gray-600">Suono aspro, simile al soffio tracheale, in area polmonare. Indica consolidamento.</p>
-                            <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2"><div class="bg-cyan-500 h-2.5 rounded-full" style="width: 60%"></div></div>
-                            <div class="text-xs flex justify-between mt-1"><span>Grave</span><span>Acuta</span></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <section class="bg-white rounded-lg shadow-md overflow-hidden" data-lang-key="sectionAbdominal">
-                <h2 class="text-3xl font-bold text-center p-4 bg-[#0D47A1] text-white section-header">Auscultazione Addominale: Bovino vs. Cavallo</h2>
-                <div class="p-6 md:p-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
-                        <div class="text-center p-4 border rounded-lg">
-                            <h3 class="text-xl font-bold text-purple-800 mb-4">Bovino: Fossa del Fianco Sinistra</h3>
-                            <div class="text-6xl mb-3">🐄</div>
-                            <p class="text-gray-600">Si auscultano i suoni del **rumine**: 1-2 contrazioni ogni 2 minuti, simili a una "cascata" con un crepitio di fermentazione di sottofondo.</p>
-                        </div>
-                        <div class="text-left p-4 border rounded-lg">
-                             <h3 class="text-xl font-bold text-green-800 mb-4 text-center">Cavallo: Mappa dei 4 Quadranti</h3>
-                             <ul class="list-disc pl-5 text-sm space-y-2">
-                                 <li><strong>Sup. Dx:</strong> Base del cieco (gorgoglii).</li>
-                                 <li><strong>Inf. Dx:</strong> Colon ventrale destro ("treno").</li>
-                                 <li><strong>Sup. Sx:</strong> Intestino tenue ("pentola di fagioli").</li>
-                                 <li><strong>Inf. Sx:</strong> Colon ventrale sinistro ("treno").</li>
-                             </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-        
-        <footer id="main-footer" class="bg-gray-800 text-white mt-12">
-             <div class="container mx-auto px-6 py-4 text-center">
-                <p data-lang-key="footerText">&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.</p>
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="index.html#auscultazione" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- JS inserisce icona e testo -->
+                </a>
             </div>
-        </footer>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">Guida all'Auscultazione</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">L'interpretazione dei suoni interni: stetoscopio, polmoni e apparato digerente.</p>
+        </div>
     </div>
+
+    <main class="container mx-auto px-6 -mt-10 pb-12">
+        
+        <!-- SEZIONE STETOSCOPIO -->
+        <section class="mb-12 p-8 section-card">
+            <h3 class="text-2xl font-bold mb-6 text-blue-800 flex items-center" data-lang-key="stethTitle">
+                Lo Strumento: Lo Stetoscopio
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+                <div class="p-6 bg-blue-50 rounded-xl border border-blue-100">
+                    <div class="text-5xl mb-4">🩺</div>
+                    <h4 class="text-xl font-bold text-blue-700" data-lang-key="diaphragmTitle">Diaframma</h4>
+                    <p class="text-gray-700 mt-2" data-lang-key="diaphragmDesc">Ideale per suoni ad <strong>alta frequenza</strong>, come i toni cardiaci e i suoni respiratori fisiologici.</p>
+                </div>
+                <div class="p-6 bg-teal-50 rounded-xl border border-teal-100">
+                    <div class="text-5xl mb-4">🔔</div>
+                    <h4 class="text-xl font-bold text-teal-700" data-lang-key="bellTitle">Campana</h4>
+                    <p class="text-gray-700 mt-2" data-lang-key="bellDesc">Sensibile ai suoni a <strong>bassa frequenza</strong>, come i borborigmi o i soffi cardiaci profondi.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE RESPIRATORIO -->
+        <section class="mb-12 p-8 section-card">
+            <h3 class="text-2xl font-bold mb-6 text-blue-800 flex items-center" data-lang-key="respTitle">
+                Reperti Respiratori
+            </h3>
+            <div class="space-y-6">
+                <div class="p-4 border-l-4 border-red-500 bg-red-50/50 rounded-r-lg">
+                    <h4 class="font-bold text-lg text-red-700" data-lang-key="cracklesTitle">Rantoli (Crepitii)</h4>
+                    <p class="text-gray-700" data-lang-key="cracklesDesc">Discontinui, simili a piccoli scoppi. Indicano presenza di liquido o essudato negli alveoli.</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-3 overflow-hidden">
+                        <div class="bg-red-500 h-full" style="width: 30%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs mt-1 text-gray-500"><span data-lang-key="pitchLow">Bassa Freq.</span><span data-lang-key="pitchHigh">Alta Freq.</span></div>
+                </div>
+
+                <div class="p-4 border-l-4 border-amber-500 bg-amber-50/50 rounded-r-lg">
+                    <h4 class="font-bold text-lg text-amber-700" data-lang-key="wheezesTitle">Sibili</h4>
+                    <p class="text-gray-700" data-lang-key="wheezesDesc">Continui e musicali. Causati dal restringimento delle vie aeree (broncospasmo o edema).</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-3 overflow-hidden">
+                        <div class="bg-amber-500 h-full" style="width: 85%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs mt-1 text-gray-500"><span data-lang-key="pitchLow">Bassa Freq.</span><span data-lang-key="pitchHigh">Alta Freq.</span></div>
+                </div>
+
+                <div class="p-4 border-l-4 border-cyan-500 bg-cyan-50/50 rounded-r-lg">
+                    <h4 class="font-bold text-lg text-cyan-700" data-lang-key="tubularTitle">Soffio Tubario</h4>
+                    <p class="text-gray-700" data-lang-key="tubularDesc">Suono aspro e soffio tracheale udibile sul polmone. Indica consolidamento parenchimale.</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-3 overflow-hidden">
+                        <div class="bg-cyan-500 h-full" style="width: 60%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs mt-1 text-gray-500"><span data-lang-key="pitchLow">Bassa Freq.</span><span data-lang-key="pitchHigh">Alta Freq.</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE ADDOMINALE -->
+        <section class="mb-12 p-8 section-card">
+            <h3 class="text-2xl font-bold mb-6 text-blue-800 flex items-center" data-lang-key="abdTitle">
+                Confronto Addominale
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="border rounded-xl p-6 hover:bg-slate-50 transition">
+                    <h4 class="text-xl font-bold text-purple-800 mb-4 flex items-center">
+                        <span class="mr-2">🐄</span> Bovino
+                    </h4>
+                    <p class="text-gray-700" data-lang-key="bovineDesc">Focus sulla fossa del fianco sinistra per il <strong>rumine</strong>: 1-2 cicli ogni 2 minuti. Suono di "cascata".</p>
+                </div>
+                <div class="border rounded-xl p-6 hover:bg-slate-50 transition">
+                    <h4 class="text-xl font-bold text-green-800 mb-4 flex items-center">
+                        <span class="mr-2">🐎</span> Cavallo
+                    </h4>
+                    <p class="text-gray-700 mb-2 font-semibold" data-lang-key="horseTitle">Mappa dei 4 quadranti:</p>
+                    <ul class="list-disc pl-5 text-sm text-gray-600 space-y-2" data-lang-key="horseList">
+                        <li><strong>Sup. Dx:</strong> Base del cieco (gorgoglii).</li>
+                        <li><strong>Inf. Dx:</strong> Colon ventrale destro ("treno").</li>
+                        <li><strong>Sup. Sx:</strong> Intestino tenue ("pentola di fagioli").</li>
+                        <li><strong>Inf. Sx:</strong> Colon ventrale sinistro ("treno").</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const speakerIcon = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
+                backToHome: { 
+                    it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Torna all\'Indice', 
+                    en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'Guida all\'Auscultazione', en: 'Auscultation Guide' },
+                pageSubtitle: { it: 'L\'interpretazione dei suoni interni: stetoscopio, polmoni e apparato digerente.', en: 'Interpretation of internal sounds: stethoscope, lungs, and digestive system.' },
+                stethTitle: { it: 'Lo Strumento: Lo Stetoscopio' + speakerIcon, en: 'The Tool: The Stethoscope' + speakerIcon },
+                diaphragmTitle: { it: 'Diaframma', en: 'Diaphragm' },
+                diaphragmDesc: { it: 'Ideale per suoni ad <strong>alta frequenza</strong>, come i toni cardiaci e i suoni respiratori fisiologici.', en: 'Ideal for <strong>high-frequency</strong> sounds, such as heart tones and physiological breath sounds.' },
+                bellTitle: { it: 'Campana', en: 'Bell' },
+                bellDesc: { it: 'Sensibile ai suoni a <strong>bassa frequenza</strong>, come i borborigmi o i soffi cardiaci profondi.', en: 'Sensitive to <strong>low-frequency</strong> sounds, such as borborygmi or deep heart murmurs.' },
+                respTitle: { it: 'Reperti Respiratori' + speakerIcon, en: 'Respiratory Findings' + speakerIcon },
+                cracklesTitle: { it: 'Rantoli (Crepitii)', en: 'Crackles' },
+                cracklesDesc: { it: 'Discontinui, simili a piccoli scoppi. Indicano presenza di liquido o essudato negli alveoli.', en: 'Discontinuous, popping sounds. Indicate fluid or exudate in the alveoli.' },
+                wheezesTitle: { it: 'Sibili', en: 'Wheezes' },
+                wheezesDesc: { it: 'Continui e musicali. Causati dal restringimento delle vie aeree (broncospasmo o edema).', en: 'Continuous and musical. Caused by airway narrowing (bronchospasm or edema).' },
+                tubularTitle: { it: 'Soffio Tubario', en: 'Tubular Breath Sound' },
+                tubularDesc: { it: 'Suono aspro e soffio tracheale udibile sul polmone. Indica consolidamento parenchimale.', en: 'Harsh sound and tracheal breath audible over the lung. Indicates parenchymal consolidation.' },
+                pitchLow: { it: 'Bassa Freq.', en: 'Low Pitch' },
+                pitchHigh: { it: 'Alta Freq.', en: 'High Pitch' },
+                abdTitle: { it: 'Confronto Addominale' + speakerIcon, en: 'Abdominal Comparison' + speakerIcon },
+                bovineDesc: { it: 'Focus sulla fossa del fianco sinistra per il <strong>rumine</strong>: 1-2 cicli ogni 2 minuti. Suono di "cascata".', en: 'Focus on the left flank for the <strong>rumen</strong>: 1-2 cycles every 2 minutes. "Waterfall" sound.' },
+                horseTitle: { it: 'Mappa dei 4 quadranti:', en: '4-Quadrant Map:' },
+                horseList: { 
+                    it: '<li><strong>Sup. Dx:</strong> Base del cieco (gorgoglii).</li><li><strong>Inf. Dx:</strong> Colon ventrale destro ("treno").</li><li><strong>Sup. Sx:</strong> Intestino tenue ("pentola di fagioli").</li><li><strong>Inf. Sx:</strong> Colon ventrale sinistro ("treno").</li>', 
+                    en: '<li><strong>Upper Right:</strong> Base of the cecum (gurgling).</li><li><strong>Lower Right:</strong> Right ventral colon ("train").</li><li><strong>Upper Left:</strong> Small intestine ("pot of boiling beans").</li><li><strong>Lower Left:</strong> Left ventral colon ("train").</li>' 
+                },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
+            };
+
             let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
             const synth = window.speechSynthesis;
             let activeTTSButton = null;
 
-            const translations = {
-                siteTitle: { it: 'Medicina Interna G.A.', en: 'Large Animal Internal Medicine' },
-                navAnamnesi: { it: 'Anamnesi', en: 'History' },
-                navIspezione: { it: 'Ispezione', en: 'Inspection' },
-                navPalpazione: { it: 'Palpazione', en: 'Palpation' },
-                navPercussione: { it: 'Percussione', en: 'Percussion' },
-                navAuscultazione: { it: 'Auscultazione', en: 'Auscultation' },
-                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                footerText: { it: '&copy; 2024 Metodologie Cliniche Veterinarie. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Clinical Methodologies. Created by Sara Busechian.' },
-                pageHeader: {
-                    it: `<h1 class="text-4xl md:text-5xl font-bold text-center p-6 bg-[#0D47A1] text-white section-header">L'Arte dell'Ascolto Clinico: Guida all'Auscultazione</h1><p class="text-lg text-gray-600 max-w-3xl mx-auto text-center p-6">L'auscultazione è la chiave per interpretare il linguaggio degli organi interni, un passaggio essenziale per una diagnosi accurata.</p>`,
-                    en: `<h1 class="text-4xl md:text-5xl font-bold text-center p-6 bg-[#0D47A1] text-white section-header">The Art of Clinical Listening: A Guide to Auscultation</h1><p class="text-lg text-gray-600 max-w-3xl mx-auto text-center p-6">Auscultation is the key to interpreting the language of internal organs, an essential step for an accurate diagnosis.</p>`
-                },
-                sectionStethoscope: {
-                    it: `<h2 class="text-3xl font-bold text-center p-4 bg-[#0D47A1] text-white section-header">Lo Strumento del Mestiere: Lo Stetoscopio</h2><div class="p-6 md:p-8"><div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4 text-center"><div><div class="text-5xl mb-2">🩺</div><h3 class="text-xl font-bold text-sky-700">Diaframma</h3><p class="text-gray-600 mt-2">Ideale per i suoni ad **alta frequenza**, come i toni cardiaci e i suoni respiratori normali.</p></div><div><div class="text-5xl mb-2">🔔</div><h3 class="text-xl font-bold text-teal-700">Campana</h3><p class="text-gray-600 mt-2">Più sensibile ai suoni a **bassa frequenza**, come alcuni soffi cardiaci o i borborigmi intestinali.</p></div></div></div>`,
-                    en: `<h2 class="text-3xl font-bold text-center p-4 bg-[#0D47A1] text-white section-header">The Tool of the Trade: The Stethoscope</h2><div class="p-6 md:p-8"><div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4 text-center"><div><div class="text-5xl mb-2">🩺</div><h3 class="text-xl font-bold text-sky-700">Diaphragm</h3><p class="text-gray-600 mt-2">Ideal for **high-frequency** sounds, such as heart tones and normal respiratory sounds.</p></div><div><div class="text-5xl mb-2">🔔</div><h3 class="text-xl font-bold text-teal-700">Bell</h3><p class="text-gray-600 mt-2">More sensitive to **low-frequency** sounds, such as some heart murmurs or intestinal borborygmi.</p></div></div></div>`
-                },
-                sectionRespiratory: {
-                    it: `<h2 class="text-3xl font-bold text-center p-4 bg-[#0D47A1] text-white section-header">Auscultazione Respiratoria: Suoni Normali e Patologici</h2><div class="p-6 md:p-8"><p class="text-center text-gray-600 max-w-3xl mx-auto mb-8">Distinguere il normale murmure vescicolare dai suoni patologici aggiunti è fondamentale. Questa guida visualizza le caratteristiche acustiche dei principali reperti.</p><div class="space-y-4"><div class="p-4 border rounded-lg"><h3 class="font-bold text-lg text-red-700">Rantoli (Crepitii)</h3><p class="text-sm text-gray-600">Discontinui, simili a "pluriball". Indicano liquido/essudato.</p><div class="w-full bg-gray-200 rounded-full h-2.5 mt-2"><div class="bg-red-500 h-2.5 rounded-full" style="width: 25%"></div></div><div class="text-xs flex justify-between mt-1"><span>Grave</span><span>Acuta</span></div></div><div class="p-4 border rounded-lg"><h3 class="font-bold text-lg text-amber-700">Sibili</h3><p class="text-sm text-gray-600">Continui e musicali, simili a "fischi". Indicano vie aeree ristrette.</p><div class="w-full bg-gray-200 rounded-full h-2.5 mt-2"><div class="bg-amber-500 h-2.5 rounded-full" style="width: 90%"></div></div><div class="text-xs flex justify-between mt-1"><span>Grave</span><span>Acuta</span></div></div><div class="p-4 border rounded-lg"><h3 class="font-bold text-lg text-cyan-700">Soffio Tubario</h3><p class="text-sm text-gray-600">Suono aspro, simile al soffio tracheale, in area polmonare. Indica consolidamento.</p><div class="w-full bg-gray-200 rounded-full h-2.5 mt-2"><div class="bg-cyan-500 h-2.5 rounded-full" style="width: 60%"></div></div><div class="text-xs flex justify-between mt-1"><span>Grave</span><span>Acuta</span></div></div></div></div>`,
-                    en: `<h2 class="text-3xl font-bold text-center p-4 bg-[#0D47A1] text-white section-header">Respiratory Auscultation: Normal and Pathological Sounds</h2><div class="p-6 md:p-8"><p class="text-center text-gray-600 max-w-3xl mx-auto mb-8">Distinguishing the normal vesicular murmur from added pathological sounds is fundamental. This guide visualizes the acoustic characteristics of the main findings.</p><div class="space-y-4"><div class="p-4 border rounded-lg"><h3 class="font-bold text-lg text-red-700">Crackles</h3><p class="text-sm text-gray-600">Discontinuous, "bubble wrap" sounds. Indicate fluid/exudate.</p><div class="w-full bg-gray-200 rounded-full h-2.5 mt-2"><div class="bg-red-500 h-2.5 rounded-full" style="width: 25%"></div></div><div class="text-xs flex justify-between mt-1"><span>Low Pitch</span><span>High Pitch</span></div></div><div class="p-4 border rounded-lg"><h3 class="font-bold text-lg text-amber-700">Wheezes</h3><p class="text-sm text-gray-600">Continuous and musical, "whistling" sounds. Indicate narrowed airways.</p><div class="w-full bg-gray-200 rounded-full h-2.5 mt-2"><div class="bg-amber-500 h-2.5 rounded-full" style="width: 90%"></div></div><div class="text-xs flex justify-between mt-1"><span>Low Pitch</span><span>High Pitch</span></div></div><div class="p-4 border rounded-lg"><h3 class="font-bold text-lg text-cyan-700">Tubular Breath Sound</h3><p class="text-sm text-gray-600">Harsh sound, similar to tracheal breathing, in lung area. Indicates consolidation.</p><div class="w-full bg-gray-200 rounded-full h-2.5 mt-2"><div class="bg-cyan-500 h-2.5 rounded-full" style="width: 60%"></div></div><div class="text-xs flex justify-between mt-1"><span>Low Pitch</span><span>High Pitch</span></div></div></div></div>`
-                },
-                sectionAbdominal: {
-                    it: `<h2 class="text-3xl font-bold text-center p-4 bg-[#0D47A1] text-white section-header">Auscultazione Addominale: Bovino vs. Cavallo</h2><div class="p-6 md:p-8"><div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4"><div class="text-center p-4 border rounded-lg"><h3 class="text-xl font-bold text-purple-800 mb-4">Bovino: Fossa del Fianco Sinistra</h3><div class="text-6xl mb-3">🐄</div><p class="text-gray-600">Si auscultano i suoni del **rumine**: 1-2 contrazioni ogni 2 minuti, simili a una "cascata" con un crepitio di fermentazione di sottofondo.</p></div><div class="text-left p-4 border rounded-lg"><h3 class="text-xl font-bold text-green-800 mb-4 text-center">Cavallo: Mappa dei 4 Quadranti</h3><ul class="list-disc pl-5 text-sm space-y-2"><li><strong>Sup. Dx:</strong> Base del cieco (gorgoglii).</li><li><strong>Inf. Dx:</strong> Colon ventrale destro ("treno").</li><li><strong>Sup. Sx:</strong> Intestino tenue ("pentola di fagioli").</li><li><strong>Inf. Sx:</strong> Colon ventrale sinistro ("treno").</li></ul></div></div></div>`,
-                    en: `<h2 class="text-3xl font-bold text-center p-4 bg-[#0D47A1] text-white section-header">Abdominal Auscultation: Bovine vs. Horse</h2><div class="p-6 md:p-8"><div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4"><div class="text-center p-4 border rounded-lg"><h3 class="text-xl font-bold text-purple-800 mb-4">Bovine: Left Flank</h3><div class="text-6xl mb-3">🐄</div><p class="text-gray-600">Auscultate for **rumen** sounds: 1-2 contractions every 2 minutes, similar to a "waterfall" with a background fermentation crackle.</p></div><div class="text-left p-4 border rounded-lg"><h3 class="text-xl font-bold text-green-800 mb-4 text-center">Horse: 4-Quadrant Map</h3><ul class="list-disc pl-5 text-sm space-y-2"><li><strong>Upper Right:</strong> Base of the cecum (gurgling sounds).</li><li><strong>Lower Right:</strong> Right ventral colon ("train" sounds).</li><li><strong>Upper Left:</strong> Small intestine ("pot of boiling beans").</li><li><strong>Lower Left:</strong> Left ventral colon ("train" sounds).</li></ul></div></div></div>`
-                }
-            };
-            
             function speak(text, button) {
                 if (synth.speaking && activeTTSButton === button) {
-                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
-                    else { synth.pause(); button.classList.remove('playing'); }
+                    synth.paused ? synth.resume() : synth.pause();
+                    button.classList.toggle('playing', !synth.paused);
                 } else {
-                    if (synth.speaking) synth.cancel();
+                    synth.cancel();
                     const utterance = new SpeechSynthesisUtterance(text);
                     utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                    utterance.onend = () => {
-                        if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                        activeTTSButton = null;
-                    };
+                    utterance.onend = () => { button.classList.remove('playing'); activeTTSButton = null; };
                     synth.speak(utterance);
-                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
+                    if(activeTTSButton) activeTTSButton.classList.remove('playing');
                     activeTTSButton = button;
                     button.classList.add('playing');
                 }
             }
 
             function setupTTSListeners() {
-                document.querySelectorAll('.translatable-section').forEach(section => {
-                    const target = section.querySelector('h1, h2');
-                    if (target) {
-                        const iconHtml = `<span class="tts-button"><svg class="${target.tagName === 'H1' ? 'w-8 h-8' : 'w-7 h-7'}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
-                        if (!target.querySelector('.tts-button')) {
-                            target.insertAdjacentHTML('beforeend', iconHtml);
-                        }
-                        const button = target.querySelector('.tts-button');
-                        button.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            const tempDiv = document.createElement('div');
-                            tempDiv.innerHTML = section.innerHTML;
-                            tempDiv.querySelectorAll('.tts-button').forEach(btn => btn.remove());
-                            const textToRead = tempDiv.textContent.trim().replace(/\s+/g, ' ');
-                            if (textToRead) speak(textToRead, button);
-                        });
-                    }
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const section = e.currentTarget.closest('section');
+                        const clone = section.cloneNode(true);
+                        clone.querySelectorAll('.tts-button').forEach(el => el.remove());
+                        
+                        // Pulizia testi extra per una lettura fluida
+                        const textToRead = clone.innerText.trim();
+                        speak(textToRead, button);
+                    });
                 });
             }
-            
+
             const updateLanguage = (lang) => {
                 document.documentElement.lang = lang;
                 document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
-
-                document.querySelectorAll('.translatable-section').forEach((section, index) => {
-                    if (lang === 'en') {
-                        section.innerHTML = translations.sections_en[index];
-                    } else {
-                        section.innerHTML = originalItalianTexts[index];
-                    }
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
                 });
-
-                document.querySelectorAll('[data-lang-key]').forEach(element => {
-                    const key = element.dataset.langKey;
-                    if (translations[key] && translations[key][lang]) {
-                        element.innerHTML = translations[key][lang];
-                    }
-                });
-                
                 setupTTSListeners();
             };
-            
+
             const setA11yMode = (enabled) => {
-                document.body.classList.toggle('dsa-mode', enabled);
+                body.classList.toggle('dsa-mode', enabled);
                 localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
             };
 
@@ -252,12 +278,10 @@
             });
 
             document.getElementById('accessibility-toggle').addEventListener('click', () => {
-                setA11yMode(!document.body.classList.contains('dsa-mode'));
+                setA11yMode(!body.classList.contains('dsa-mode'));
             });
-            
-            if (localStorage.getItem('dsa-mode') === 'enabled') {
-                setA11yMode(true);
-            }
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
             updateLanguage(currentLanguage);
         });
     </script>
