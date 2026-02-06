@@ -3,426 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Titolo specifico per questa pagina -->
     <title>Esami Collaterali: Sistema Endocrino - Semeiotica Vet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Stili Generali e dal Template */
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
-        .section-nav-link {
-            transition: background-color 0.3s, color 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            background-color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
-        }
-        .section-nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        .section-nav-link.active {
-             background-color: white;
-             color: #1E3A8A;
-             cursor: default;
-        }
-        .content-card {
-             background-color: white;
-             border-radius: 0.75rem;
-             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-             padding: 1.5rem;
-             margin-top: 2rem;
-        }
-        @media (min-width: 768px) { /* md: */
-            .content-card { padding: 2.5rem; }
-        }
-        #page-header { position: static; }
-        .scrollable-nav {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .scrollable-nav::-webkit-scrollbar { display: none; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
         
-        /* Stili Specifici del Riassunto */
-        #main-content h1, #main-content h2, #main-content h3 { color: #0d47a1; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 2em; }
-        #main-content h1 { text-align: center; font-size: 2.2em; border-bottom: 3px solid #0d47a1; }
-        #main-content h2 { font-size: 1.5rem; /* text-2xl */ }
-        #main-content h3 { font-size: 1.25rem; /* text-xl */ color: #1565c0; border-bottom: none; font-weight: 600; margin-bottom: 0.5rem; }
-        #main-content ul { padding-left: 20px; list-style-type: disc; margin-top: 1rem; margin-bottom: 1rem;}
-         #main-content ul ul { margin-top: 0.5rem; margin-bottom: 0.5rem;}
-        #main-content li { margin-bottom: 10px; }
-        #main-content strong { color: #1565c0; }
-        #main-content .section-block { background-color: #f0f9ff; /* sky-50 */ border-left: 5px solid #0ea5e9; /* sky-500 */ padding: 15px 20px; margin: 20px 0; border-radius: 5px; }
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
 
-        /* DSA Mode Styles */
-        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
-        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
-        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
-        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
-        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
-        .dsa-mode #main-content h1, .dsa-mode #main-content h2, .dsa-mode #main-content h3, .dsa-mode #main-content p, .dsa-mode #main-content li, .dsa-mode #main-content strong { color: #34495e !important; }
-        .dsa-mode #main-content .section-block { background-color: #fefcf7 !important; border-left-color: #5a738e; }
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f1f5f9; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #475569; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #1e293b; }
+        .quick-nav-item.active { background-color: #1E3A8A; color: #ffffff !important; border-color: #1E3A8A; }
 
-        /* TTS Button Styles */
-        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
-        .dsa-mode .tts-button { color: #5a738e !important; }
+        /* --- SECTION NAV --- */
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #1E3A8A; cursor: default; }
 
-        /* Print Styles */
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 900px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Testo Esami */
+        #main-content h2 { color: #1e40af; border-bottom: 2px solid #dbeafe; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.25rem; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between; }
+        #main-content h3 { color: #1e3a8a; font-size: 1.2rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        #main-content p { margin-bottom: 1rem; }
+        #main-content ul { padding-left: 1.5rem; list-style-type: disc; margin-bottom: 1.5rem; }
+        #main-content li { margin-bottom: 0.75rem; }
+        #main-content strong { color: #1e3a8a; font-weight: 700; }
+        .section-block { background-color: #f0f9ff; border-left: 5px solid #0ea5e9; padding: 1.25rem; margin: 1.5rem 0; border-radius: 0 0.5rem 0.5rem 0; }
+
+        /* TTS Button */
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #2563eb; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        /* FIX VISIBILITÀ PULSANTI DSA */
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .section-block { background-color: #fffdf5; border: 1px solid #000; border-left-width: 8px; }
+        .dsa-mode .tts-button { color: #000 !important; }
+
         @media print {
-            body { background-color: #fff; margin: 0; padding: 0; font-family: sans-serif; font-size: 11pt; color: #000; }
-            #page-header, #main-footer, #print-button, .tts-button { display: none; }
-            .container { max-width: 100%; padding: 1cm; box-shadow: none; border: none; margin: 0; }
-            .content-card { box-shadow: none; border: none; padding: 0; margin: 0; }
-            #main-content h1, #main-content h2, #main-content h3 { color: #000 !important; border-color: #ccc; margin-top: 1.5em; page-break-after: avoid; }
-            #main-content h1 { font-size: 18pt; text-align: left; }
-            #main-content h2 { font-size: 14pt; }
-            #main-content h3 { font-size: 12pt; border-bottom: none; padding-bottom: 0; margin-bottom: 0.5rem;}
-            #main-content ul { padding-left: 25px; }
-            #main-content li { margin-bottom: 5px; }
-            #main-content strong { color: #000 !important; font-weight: bold; }
-            #main-content .section-block { border: 1px solid #ccc; padding: 10px; margin: 10px 0; background-color: #f9f9f9 !important; page-break-inside: avoid; }
-            div[data-lang-key] { page-break-inside: avoid; margin-bottom: 1.5rem;}
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+            .tts-button { display: none !important; }
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50">
 
-    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
-    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
-        <div class="container mx-auto px-6 py-3">
-            <!-- Riga Superiore: Torna all'indice + Controlli -->
-            <div class="flex justify-between items-center mb-4">
-                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
-                 </a>
-                 <div class="flex items-center space-x-2">
-                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
-                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
-                 </div>
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
+        </nav>
+    </header>
 
-            <!-- Titolo della Sezione -->
-            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleEndo">8. Sistema Endocrino</h1>
-
-            <!-- Navigazione Interna alla Sezione -->
-            <nav class="scrollable-nav">
-                 <div class="flex space-x-2 pb-2">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index_semeiotica.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleEndo">8. Sistema Endocrino</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
                      <a href="riassunto_endocrino.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
                      <a href="infografica_endocrino.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
                      <a href="checklist_endocrino.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
                      <a href="collaterali_endocrino.html" class="section-nav-link active" data-lang-key="navAncillary">Esami Collaterali</a>
                      <a href="quiz_endocrino.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
-                     <a href="riassunto_endocrino.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
                 </div>
             </nav>
-
         </div>
-    </header>
-    <!-- === FINE HEADER === -->
+    </div>
 
-    <!-- Main Content Container -->
-    <main class="container mx-auto p-4 md:px-8 md:py-12">
-        <!-- Card Contenuto -->
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item active" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
         <div id="main-content" class="content-card">
+            
+            <div class="flex items-center justify-center mb-8">
+                <h1 class="text-2xl font-bold text-center !p-0 !m-0" data-lang-key="pageTitle">Esami Collaterali: Sistema Endocrino</h1>
+            </div>
 
-             <!-- Contenuto Specifico Esami Collaterali Endocrino -->
-            <h1 data-lang-key="pageTitle"></h1>
             <p class="section-block" data-lang-key="introText"></p>
 
+            <!-- SEZIONI ESAMI -->
             <div data-lang-key="sectionHormonal"></div>
             <div data-lang-key="sectionDynamic"></div>
             <div data-lang-key="sectionImaging"></div>
             <div data-lang-key="sectionSupport"></div>
-            <!-- Fine Contenuto Specifico -->
 
-            <!-- Bottone Stampa -->
             <div class="mt-12 text-center">
-                 <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center" data-lang-key="btnPrint">
-                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
-                     <span data-lang-key="btnPrintText">Stampa</span>
-                 </button>
-             </div>
-
-        </div> <!-- Fine content-card -->
+                <button id="print-button" onclick="window.print()" class="bg-green-600 text-white font-bold py-3 px-10 rounded-xl hover:bg-green-700 transition shadow-lg inline-flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="btnPrintText">Stampa Esami</span>
+                </button>
+            </div>
+        </div>
     </main>
 
-    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
-        </div>
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-             const speakerIconLarge = `<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
-             const speakerIconSmall = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
-             const speakerIconH2 = `<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
-
-            // === TRADUZIONI ===
+            const speakerIcon = `<span class="tts-button ml-2"><svg class="w-6 h-6 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
+            
             const translations = {
-                // --- Header ---
-                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
                 sectionTitleEndo: { it: '8. Sistema Endocrino', en: '8. Endocrine System' },
                 navSummary: { it: 'Riassunto', en: 'Summary' },
                 navInfographic: { it: 'Infografica', en: 'Infographic' },
                 navChecklist: { it: 'Checklist', en: 'Checklist' },
                 navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
                 navQuiz: { it: 'Quiz', en: 'Quiz' },
-                navAudio: { it: 'Audio', en: 'Audio' },
-                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                // --- Contenuto Pagina ---
-                 pageTitle: { it: `Esami Collaterali: Sistema Endocrino ${speakerIconLarge}`, en: `Ancillary Exams: Endocrine System ${speakerIconLarge}` },
-                 introText: { it: `La diagnosi delle endocrinopatie si basa quasi esclusivamente sugli esami collaterali. L'esame clinico (ispezione, palpazione) fornisce il sospetto, ma solo i test di laboratorio possono confermare una disfunzione ormonale. ${speakerIconSmall}`, en: `The diagnosis of endocrinopathies relies almost exclusively on ancillary tests. The clinical exam (inspection, palpation) provides suspicion, but only laboratory tests can confirm a hormonal dysfunction. ${speakerIconSmall}` },
-                 sectionHormonal: {
-                     it: `<h2>1. Dosaggi Ormonali Basali${speakerIconH2}</h2>
-                         <p>Misurano la concentrazione di un ormone nel sangue in un singolo momento. Sono utili per patologie dove la produzione ormonale è costantemente alterata.</p>
-                         <ul>
-                             <li><strong>ACTH Endogeno:</strong> Test di screening principale per <strong>PPID (Cushing Equino)</strong>. Valori elevati (specialmente in autunno) sono diagnostici.</li>
-                             <li><strong>Insulina e Glucosio:</strong> Valutati insieme per diagnosticare la <strong>Sindrome Metabolica Equina (EMS)</strong>. Un'insulina elevata (iperinsulinemia) a fronte di una glicemia normale o leggermente alta indica insulino-resistenza.</li>
-                             <li><strong>Ormoni Tiroidei (T4, T3, TSH):</strong> Utilizzati per diagnosticare l'<strong>ipotiroidismo</strong> (raro nei cavalli, più comune in altre specie) o l'<strong>ipertiroidismo</strong> (raro nei grandi animali). Spesso i livelli basali sono poco affidabili (es. <strong>Euthyroid Sick Syndrome</strong>).</li>
-                         </ul>`,
-                     en: `<h2>1. Baseline Hormonal Assays${speakerIconH2}</h2>
-                         <p>Measure the concentration of a hormone in the blood at a single point in time. Useful for diseases where hormone production is constantly altered.</p>
-                         <ul>
-                             <li><strong>Endogenous ACTH:</strong> Main screening test for <strong>PPID (Equine Cushing's)</strong>. Elevated values (especially in autumn) are diagnostic.</li>
-                             <li><strong>Insulin and Glucose:</strong> Evaluated together to diagnose <strong>Equine Metabolic Syndrome (EMS)</strong>. High insulin (hyperinsulinemia) with normal or slightly high glucose indicates insulin resistance.</li>
-                             <li><strong>Thyroid Hormones (T4, T3, TSH):</strong> Used to diagnose <strong>hypothyroidism</strong> (rare in horses, more common in other species) or <strong>hyperthyroidism</strong> (rare in large animals). Baseline levels are often unreliable (e.g., Euthyroid Sick Syndrome).</li>
-                         </ul>`
-                 },
-                 sectionDynamic: {
-                     it: `<h2>2. Test Dinamici (Stimolazione/Soppressione)${speakerIconH2}</h2>
-                         <p>Sono test più accurati che valutano la risposta di una ghiandola a uno stimolo o a un'inibizione farmacologica. Si usano quando i dosaggi basali non sono chiari.</p>
-                         <ul>
-                             <li><strong>Test di Soppressione con Desametasone (LDDST/HDDST):</strong> Storicamente usato per PPID. Si somministra desametasone e si misura il cortisolo; in un cavallo sano, il cortisolo viene soppresso, in un cavallo con PPID no.</li>
-                             <li><strong>Test di Stimolazione con TRH:</strong> Test di seconda linea per <strong>PPID</strong>. Si somministra TRH e si misura l'ACTH; i cavalli con PPID mostrano una risposta esagerata.</li>
-                             <li><strong>Oral Sugar Test (OST) / Oral Glucose Test (OGT):</strong> Test d'elezione per <strong>EMS</strong>. Si somministra glucosio o sciroppo di mais per via orale e si misura l'insulina post-somministrazione. Una risposta insulinica esagerata conferma l'insulino-resistenza.</li>
-                         </ul>`,
-                     en: `<h2>2. Dynamic Tests (Stimulation/Suppression)${speakerIconH2}</h2>
-                         <p>These are more accurate tests that assess a gland's response to a pharmacological stimulus or inhibition. Used when baseline assays are unclear.</p>
-                         <ul>
-                             <li><strong>Dexamethasone Suppression Test (LDDST/HDDST):</strong> Historically used for PPID. Dexamethasone is administered, and cortisol is measured; in a healthy horse, cortisol is suppressed, in a PPID horse, it is not.</li>
-                             <li><strong>TRH Stimulation Test:</strong> Second-line test for <strong>PPID</strong>. TRH is administered, and ACTH is measured; PPID horses show an exaggerated response.</li>
-                             <li><strong>Oral Sugar Test (OST) / Oral Glucose Test (OGT):</strong> Gold standard tests for <strong>EMS</strong>. Glucose or corn syrup is administered orally, and post-administration insulin is measured. An exaggerated insulin response confirms insulin resistance.</li>
-                         </ul>`
-                 },
-                 sectionImaging: {
-                     it: `<h2>3. Diagnostica per Immagini${speakerIconH2}</h2>
-                         <p>Utilizzata per valutare la morfologia delle ghiandole, sebbene sia difficile nei grandi animali.</p>
-                         <ul>
-                             <li><strong>Ecografia:</strong> Molto utile per valutare le <strong>ghiandole tiroidee</strong> (dimensioni, presenza di noduli o cisti) e le <strong>paratiroidi</strong> (difficili da vedere se non ingrandite). L'ecografia transrettale può (raramente) identificare grandi masse surrenaliche o pancreatiche.</li>
-                             <li><strong>TC/Risonanza Magnetica (RM):</strong> Tecniche avanzate, utilizzate principalmente in centri di referenza (specialmente per la testa) per visualizzare l'<strong>ipofisi</strong> (sospetto tumore in PPID).</li>
-                         </ul>`,
-                     en: `<h2>3. Diagnostic Imaging${speakerIconH2}</h2>
-                         <p>Used to assess gland morphology, although difficult in large animals.</p>
-                         <ul>
-                             <li><strong>Ultrasound:</strong> Very useful for evaluating the <strong>thyroid glands</strong> (size, presence of nodules or cysts) and the <strong>parathyroid glands</strong> (difficult to see unless enlarged). Transrectal ultrasound may (rarely) identify large adrenal or pancreatic masses.</li>
-                             <li><strong>CT/Magnetic Resonance Imaging (MRI):</strong> Advanced techniques, mainly used in referral centers (especially for the head) to visualize the <strong>pituitary gland</strong> (suspected tumor in PPID).</li>
-                         </ul>`
-                 },
-                 sectionSupport: {
-                     it: `<h2>4. Esami di Supporto${speakerIconH2}</h2>
-                         <p>Esami di base che supportano il sospetto di endocrinopatia.</p>
-                         <ul>
-                             <li><strong>Esame delle Urine:</strong> Fondamentale se si sospetta PU/PD. Valutare il <strong>Peso Specifico (PS)</strong>. Un PS costantemente basso (ipostenuria/isostenuria) in presenza di PU/PD è un reperto chiave (sospetto Diabete Insipido o PPID).</li>
-                             <li><strong>Profilo Biochimico:</strong> Ricerca di <strong>iperglicemia</strong> (Diabete Mellito, PPID, stress), ipercalcemia (iperparatiroidismo) o alterazioni elettrolitiche.</li>
-                         </ul>`,
-                     en: `<h2>4. Supportive Exams${speakerIconH2}</h2>
-                         <p>Basic tests that support the suspicion of an endocrinopathy.</p>
-                         <ul>
-                             <li><strong>Urinalysis:</strong> Fundamental if PU/PD is suspected. Evaluate <strong>Specific Gravity (SG)</strong>. A consistently low SG (hyposthenuria/isosthenuria) in the presence of PU/PD is a key finding (suspect Diabetes Insipidus or PPID).</li>
-                             <li><strong>Biochemical Profile:</strong> Look for <strong>hyperglycemia</strong> (Diabetes Mellitus, PPID, stress), hypercalcemia (hyperparathyroidism), or electrolyte abnormalities.</li>
-                         </ul>`
-                 },
-                 btnPrint: { it: 'Stampa', en: 'Print' },
-                 btnPrintText: { it: 'Stampa', en: 'Print' },
-                // --- Footer ---
-                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical Examination" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular System" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory System" },
+                navDig: { it: "Apparato Digerente", en: "Digestive System" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal System" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary System" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic System" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine System" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous System" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary System" },
+                pageTitle: { it: 'Esami Collaterali: Sistema Endocrino', en: 'Ancillary Exams: Endocrine System' },
+                introText: { it: "La diagnosi delle endocrinopatie si basa quasi esclusivamente sugli esami collaterali. L'esame clinico fornisce il sospetto, ma solo i test di laboratorio possono confermare una disfunzione ormonale.", en: "The diagnosis of endocrinopathies relies almost exclusively on ancillary tests. The clinical exam provides suspicion, but only laboratory tests can confirm a hormonal dysfunction." },
+                sectionHormonal: {
+                    it: `<h2>1. Dosaggi Ormonali Basali ${speakerIcon}</h2><p>Misurano la concentrazione di un ormone in un singolo momento.</p><ul><li><strong>ACTH Endogeno:</strong> Test principale per <strong>PPID</strong>. Valori elevati sono diagnostici.</li><li><strong>Insulina e Glucosio:</strong> Per diagnosticare la <strong>Sindrome Metabolica Equina (EMS)</strong>. L'iperinsulinemia indica insulino-resistenza.</li><li><strong>Ormoni Tiroidei (T4, TSH):</strong> Per l'ipotiroidismo, sebbene i livelli basali possano essere influenzati da altre malattie (Euthyroid Sick Syndrome).</li></ul>`,
+                    en: `<h2>1. Baseline Hormonal Assays ${speakerIcon}</h2><p>Measure the concentration of a hormone at a single point in time.</p><ul><li><strong>Endogenous ACTH:</strong> Main test for <strong>PPID</strong>. Elevated values are diagnostic.</li><li><strong>Insulin and Glucose:</strong> To diagnose <strong>Equine Metabolic Syndrome (EMS)</strong>. Hyperinsulinemia indicates insulin resistance.</li><li><strong>Thyroid Hormones (T4, TSH):</strong> For hypothyroidism, though baseline levels can be affected by other non-thyroidal illnesses.</li></ul>`
+                },
+                sectionDynamic: {
+                    it: `<h2>2. Test Dinamici ${speakerIcon}</h2><p>Valutano la risposta di una ghiandola a uno stimolo o a un'inibizione.</p><ul><li><strong>Test di Soppressione con Desametasone:</strong> Storicamente usato per PPID; inibisce il cortisolo nei soggetti sani.</li><li><strong>Test di Stimolazione con TRH:</strong> Test sensibile per <strong>PPID</strong>; i cavalli malati mostrano una risposta eccessiva di ACTH.</li><li><strong>Oral Sugar Test (OST):</strong> Test d'elezione per <strong>EMS</strong>; valuta la risposta insulinica a uno sciroppo di zucchero orale.</li></ul>`,
+                    en: `<h2>2. Dynamic Tests ${speakerIcon}</h2><p>Assess a gland's response to a stimulus or inhibition.</p><ul><li><strong>Dexamethasone Suppression Test:</strong> Historically used for PPID; suppresses cortisol in healthy subjects.</li><li><strong>TRH Stimulation Test:</strong> Sensitive test for <strong>PPID</strong>; affected horses show an excessive ACTH response.</li><li><strong>Oral Sugar Test (OST):</strong> Gold standard for <strong>EMS</strong>; evaluates insulin response to an oral sugar syrup.</li></ul>`
+                },
+                sectionImaging: {
+                    it: `<h2>3. Diagnostica per Immagini ${speakerIcon}</h2><ul><li><strong>Ecografia:</strong> Valutazione delle <strong>ghiandole tiroidee</strong> (noduli, cisti).</li><li><strong>TC/RM:</strong> Tecniche avanzate per visualizzare l'<strong>ipofisi</strong> in centri di referenza.</li></ul>`,
+                    en: `<h2>3. Diagnostic Imaging ${speakerIcon}</h2><ul><li><strong>Ultrasound:</strong> Evaluation of <strong>thyroid glands</strong> (nodules, cysts).</li><li><strong>CT/MRI:</strong> Advanced techniques to visualize the <strong>pituitary gland</strong> in referral centers.</li></ul>`
+                },
+                sectionSupport: {
+                    it: `<h2>4. Esami di Supporto ${speakerIcon}</h2><ul><li><strong>Esame Urine:</strong> Valutazione del <strong>Peso Specifico</strong> in caso di PU/PD (Sospetto Diabete Insipido o PPID).</li><li><strong>Profilo Biochimico:</strong> Ricerca di iperglicemia (Diabete Mellito) o ipercalcemia.</li></ul>`,
+                    en: `<h2>4. Supportive Exams ${speakerIcon}</h2><ul><li><strong>Urinalysis:</strong> Assessment of <strong>Specific Gravity</strong> in case of PU/PD (Suspected Diabetes Insipidus or PPID).</li><li><strong>Biochemical Profile:</strong> Detection of hyperglycemia (Diabetes Mellitus) or hypercalcemia.</li></ul>`
+                },
+                btnPrintText: { it: 'Stampa Esami', en: 'Print Exams' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
             };
 
-             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
-             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
             let currentLanguage = localStorage.getItem('language') || 'it';
-            const accessibilityToggle = document.getElementById('accessibility-toggle');
-            const langToggle = document.getElementById('lang-toggle');
             const body = document.body;
             const synth = window.speechSynthesis;
-            let currentUtterance = null;
             let activeTTSButton = null;
-            let voices = [];
 
-            // --- Logica TTS ---
-             function populateVoiceList() {
-                 if (typeof speechSynthesis !== 'undefined') {
-                     voices = synth.getVoices();
-                 }
-            }
-             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-                 speechSynthesis.onvoiceschanged = populateVoiceList;
-             }
-             populateVoiceList();
-
-             function speak(text, button) {
-                 const isSameButton = activeTTSButton === button;
-                 if (synth.speaking && isSameButton) {
-                     if (synth.paused) { synth.resume(); button.classList.add('playing'); }
-                     else { synth.pause(); button.classList.remove('playing'); }
-                 } else {
-                     if (synth.speaking) {
-                         if (currentUtterance) currentUtterance.onend = null;
-                         if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                         synth.cancel();
-                     }
-                     setTimeout(() => startSpeaking(text, button), 50);
-                 }
-             }
-             function startSpeaking(text, button) {
-                  if (!text || typeof text !== 'string' || !text.trim()) {
-                    console.error("Testo non valido per TTS:", text);
-                    return;
-                 }
-                 const tempDiv = document.createElement('div');
-                 tempDiv.innerHTML = text;
-                 const ttsIconToRemove = tempDiv.querySelector('.tts-button');
-                 if(ttsIconToRemove) ttsIconToRemove.remove();
-                 const cleanText = tempDiv.textContent || tempDiv.innerText || "";
-                 if (!cleanText.trim()) {
-                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                    activeTTSButton = null;
-                    return;
-                 }
-
-                 currentUtterance = new SpeechSynthesisUtterance(cleanText);
-                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                 currentUtterance.onend = () => { if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
-                 currentUtterance.onerror = (event) => { 
-                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
-                        console.error("Errore TTS:", event.error); 
-                    }
-                    if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } 
-                 };
-                 synth.speak(currentUtterance);
-                 if (activeTTSButton && activeTTSButton !== button) { activeTTSButton.classList.remove('playing'); }
-                 activeTTSButton = button;
-                 button.classList.add('playing');
-             }
-             function setupTTSListeners() {
-                 document.querySelectorAll('.tts-button').forEach(button => {
-                     const newButton = button.cloneNode(true);
-                     button.parentNode.replaceChild(newButton, button);
-                     newButton.addEventListener('click', (e) => {
-                         e.stopPropagation();
-                         const parentElement = newButton.parentNode;
-                         let textToRead = '';
-                         let key = parentElement.dataset.langKey; 
-
-                         if (parentElement.tagName === 'H1' || parentElement.tagName === 'P') {
-                             key = parentElement.dataset.langKey;
-                         } else if (parentElement.tagName === 'H2') {
-                             const container = parentElement.closest('[data-lang-key]');
-                             if(container) key = container.dataset.langKey;
-                         }
-
-                         if (key && translations[key] && translations[key][currentLanguage]) {
-                             textToRead = translations[key][currentLanguage];
-                             if (textToRead) {
-                                 speak(textToRead, newButton);
-                             } else { console.warn("Testo vuoto per TTS per la chiave:", key); }
-                         } else { console.warn("Nessuna traduzione trovata per TTS per il pulsante:", newButton, "Key:", key); }
-                     });
-                 });
-             }
-
-            // --- Funzione Aggiornamento Lingua ---
-            const updateLanguage = (lang, previousLang = null) => {
-                 document.documentElement.lang = lang;
-                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-
-                 document.querySelectorAll('[data-lang-key]').forEach(element => {
-                     const key = element.dataset.langKey;
-                     if (translations[key] && translations[key][lang]) {
-                         const translationText = translations[key][lang];
-
-                         if (key === 'footerText' || key === 'backToIndex' || key === 'btnDownloadAudio') {
-                              const svgIcon = element.querySelector('svg');
-                              element.innerHTML = translationText;
-                              if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
-                                   element.insertBefore(svgIcon, element.firstChild);
-                              }
-                         }
-                         else if (key === 'btnPrint') {
-                              const svgIcon = element.querySelector('svg');
-                              const textSpan = element.querySelector('span[data-lang-key="btnPrintText"]');
-                              if (textSpan) { textSpan.textContent = translations['btnPrintText'][lang]; }
-                              else {
-                                  element.innerHTML = translationText;
-                                   if (svgIcon) element.insertBefore(svgIcon, element.firstChild);
-                              }
-                               element.setAttribute('aria-label', translationText);
-                         }
-                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
-                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
-                             const sectionKey = currentSectionKey || key;
-                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
-                         }
-                         else if (element.id === 'main-content' || element.closest('#main-content')) { 
-                             element.innerHTML = translationText; 
-                         }
-                         else { element.textContent = translationText; }
-                     }
-                 });
-
-                 // Reset TTS
-                 if (synth.speaking || synth.pending) synth.cancel();
-                 if(activeTTSButton) activeTTSButton.classList.remove('playing');
-                 activeTTSButton = null;
-                 setTimeout(setupTTSListeners, 50);
+            const speak = (text, button) => {
+                if (synth.speaking && activeTTSButton === button) {
+                    synth.paused ? synth.resume() : synth.pause();
+                } else {
+                    synth.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                    utterance.onend = () => button.classList.remove('playing');
+                    synth.speak(utterance);
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                }
             };
 
-            // --- Logica Modalità Accessibilità ---
+            const setupTTS = () => {
+                document.querySelectorAll('.tts-button').forEach(btn => {
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        const container = btn.closest('div');
+                        const text = container.innerText.trim();
+                        speak(text, btn);
+                    };
+                });
+            };
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                setupTTS();
+            };
+
             const setA11yMode = (enabled) => {
-                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
-                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
             };
 
-            // --- Event Listeners ---
-            if (langToggle) {
-                langToggle.addEventListener('click', () => {
-                    const previousLanguage = currentLanguage;
-                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-                    localStorage.setItem('language', currentLanguage);
-                     if (synth.speaking || synth.pending) synth.cancel();
-                     updateLanguage(currentLanguage, previousLanguage);
-                });
-            } else { console.error("Elemento langToggle non trovato!"); }
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
 
-            if (accessibilityToggle) {
-                 accessibilityToggle.addEventListener('click', () => {
-                    const isEnabled = body.classList.contains('dsa-mode');
-                    setA11yMode(!isEnabled);
-                });
-            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
 
-            // --- Inizializzazione ---
-            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
-            populateVoiceList();
-             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-                 speechSynthesis.onvoiceschanged = populateVoiceList;
-             }
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
             updateLanguage(currentLanguage);
-
         });
     </script>
-
 </body>
 </html>
-
