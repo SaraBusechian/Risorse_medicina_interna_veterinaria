@@ -3,372 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Titolo specifico per questa pagina -->
     <title>Infografica: Apparato Muscolare - Semeiotica Vet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Stili Generali e dal Template */
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f1f5f9; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #475569; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #1e293b; }
+        .quick-nav-item.active { background-color: #1E3A8A; color: #ffffff !important; border-color: #1E3A8A; }
+
+        /* --- SECTION NAV --- */
         .section-nav-link {
-            transition: background-color 0.3s, color 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            background-color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
         }
-        .section-nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        .section-nav-link.active {
-             background-color: white;
-             color: #1E3A8A;
-             cursor: default;
-        }
-        .content-card {
-             background-color: white;
-             border-radius: 0.75rem;
-             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-             padding: 1.5rem;
-             margin-top: 2rem;
-        }
-        @media (min-width: 768px) { /* md: */
-            .content-card { padding: 2.5rem; }
-        }
-        #page-header { position: static; }
-        .scrollable-nav {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .scrollable-nav::-webkit-scrollbar { display: none; }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #1E3A8A; cursor: default; }
 
-        /* Stili Specifici Infografica */
-         #main-content header h1 {
-             font-size: 2.25rem; /* text-4xl */
-             font-weight: 700;
-             color: #003f5c;
-             margin-bottom: 1rem; /* mb-4 */
-             text-align: center;
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 1000px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
         }
-         @media (min-width: 768px) { /* md: */
-             #main-content header h1 { font-size: 3rem; /* md:text-5xl */ }
-         }
-         #main-content header p {
-             font-size: 1.125rem; /* text-lg */
-             color: #4b5563; /* text-gray-600 */
-             max-width: 48rem; /* max-w-3xl */
-             margin-left: auto;
-             margin-right: auto;
-             margin-bottom: 3rem; /* mb-12 */
-             text-align: center;
-         }
-         #main-content h2 {
-             font-size: 1.875rem; /* text-3xl */
-             font-weight: 700;
-             text-align: center;
-             margin-bottom: 2rem; /* mb-8 */
-             color: #003f5c;
-        }
-         #main-content h3 {
-             font-weight: 700;
-             font-size: 1.25rem; /* text-xl */
-             margin-bottom: 0.5rem; /* mb-2 */
-        }
-         #main-content h4 {
-             font-weight: 700;
-             font-size: 1.125rem; /* text-lg */
-             margin-bottom: 0.5rem; /* mb-2 */
-        }
-         .flow-step { 
-             transition: transform 0.3s, box-shadow 0.3s; 
-             border-top-width: 4px; 
-             border-radius: 0.5rem; 
-             padding: 1.5rem; 
-             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
-             background-color: white; 
-             height: 100%; /* Fai in modo che le card abbiano stessa altezza */
-         }
-         .flow-step:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-         
-         .icon-box {
-             background-color: #e0f2fe; /* light blue bg */
-             color: #0c4a6e; /* dark blue text */
-             border-radius: 0.5rem;
-             padding: 1.5rem;
-             height: 100%;
-         }
-         .icon-box svg {
-             width: 2.5rem; /* 40px */
-             height: 2.5rem; /* 40px */
-             margin-bottom: 1rem;
-         }
-         
-        /* DSA Mode Styles */
-        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
-        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
-        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
-        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
-        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
-        .dsa-mode #main-content h1, .dsa-mode #main-content h2, .dsa-mode #main-content h3, .dsa-mode #main-content h4, .dsa-mode #main-content p, .dsa-mode #main-content li, .dsa-mode #main-content strong, .dsa-mode #main-content div { color: #34495e !important; }
-        .dsa-mode .flow-step, .dsa-mode .bg-white, .dsa-mode .icon-box { background-color: #fffdfa !important; border-color: #e0e0e0 !important; }
 
-        /* Print Styles */
+        /* Stili Infografica */
+        h2 { font-family: 'Lexend', sans-serif; color: #1e40af; border-bottom: 2px solid #dbeafe; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700; text-align: center; }
+        .flow-step { border-top: 4px solid #1e3a8a; padding: 1.5rem; background-color: #f8fafc; border-radius: 0.5rem; height: 100%; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .flow-step:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .icon-box { background-color: #e0f2fe; color: #0c4a6e; border-radius: 0.5rem; padding: 1.5rem; height: 100%; border-left-width: 4px; }
+        .icon-box svg { width: 2.5rem; height: 2.5rem; margin-bottom: 1rem; stroke-width: 1.5; stroke: currentColor; fill: none; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .flow-step, .dsa-mode .icon-box, .dsa-mode .bg-blue-50, .dsa-mode .bg-white { background-color: #ffffff !important; border: 2px solid #000 !important; }
+
         @media print {
-            body { background-color: #ffffff; margin: 0; padding: 0; font-family: sans-serif; }
-            #page-header, #main-footer { display: none; }
-            .container { max-width: 100%; padding: 1cm; margin: 0; }
-            .content-card { box-shadow: none; border: none; padding: 0; margin: 0; }
-             #main-content header h1 { font-size: 18pt; text-align: center; color: #000 !important; }
-             #main-content header p { font-size: 11pt; color: #333 !important; }
-             #main-content h2 { font-size: 14pt; color: #000 !important; }
-             #main-content h3 { font-size: 12pt; color: #000 !important; }
-             #main-content h4 { font-size: 11pt; color: #000 !important; }
-             #main-content .flow-step, #main-content .icon-box { border: 1px solid #ccc; background-color: #f9f9f9 !important; padding: 0.75rem; page-break-inside: avoid; }
-             .grid { display: grid; grid-template-columns: repeat(2, 1fr) !important; gap: 1rem; } /* Stampa a 2 colonne */
-             section { margin-bottom: 1.5rem; page-break-inside: avoid; }
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50">
 
-    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
-    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
-        <div class="container mx-auto px-6 py-3">
-            <!-- Riga Superiore: Torna all'indice + Controlli -->
-            <div class="flex justify-between items-center mb-4">
-                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
-                 </a>
-                 <div class="flex items-center space-x-2">
-                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
-                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
-                 </div>
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
+        </nav>
+    </header>
 
-            <!-- Titolo della Sezione -->
-            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleMusc">5. Apparato Muscolare</h1>
-
-            <!-- Navigazione Interna alla Sezione -->
-            <nav class="scrollable-nav">
-                 <div class="flex space-x-2 pb-2">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index_semeiotica.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleMusc">5. Apparato Muscolare</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
                      <a href="riassunto_muscolare.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
                      <a href="infografica_muscolare.html" class="section-nav-link active" data-lang-key="navInfographic">Infografica</a>
                      <a href="checklist_muscolare.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
                      <a href="collaterali_muscolare.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
                      <a href="quiz_muscolare.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
-                     <a href="riassunto_muscolare.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
                 </div>
             </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item active" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <header class="text-center mb-12">
+                <h1 class="text-3xl font-bold mb-2" data-lang-key="pageTitle">Infografica: Apparato Muscolare</h1>
+                <p class="text-gray-600" data-lang-key="pageSubtitle">Guida visiva all'esame muscolare, dalla valutazione a distanza al movimento.</p>
+            </header>
+
+            <main class="space-y-16 mt-12">
+                <!-- PILASTRI -->
+                <section>
+                    <h2 data-lang-key="flowTitle">I 3 Pilastri dell'Esame</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center items-stretch">
+                        <div class="flow-step border-[#003f5c]">
+                            <h3 class="text-blue-900" data-lang-key="step1Title">1. Ispezione (Statica)</h3>
+                            <p class="text-sm text-gray-700" data-lang-key="step1Desc">Valutare simmetria, atrofia/ipertrofia, postura, appiombi e consumo degli unghioni/zoccoli.</p>
+                        </div>
+                        <div class="flow-step border-[#7a5195]">
+                            <h3 class="text-purple-900" data-lang-key="step2Title">2. Palpazione</h3>
+                            <p class="text-sm text-gray-700" data-lang-key="step2Desc">Ricerca di dolorabilità, calore, tumefazioni, tono muscolare (spastico/flaccido) e crepitii.</p>
+                        </div>
+                        <div class="flow-step border-[#ff764a]">
+                            <h3 class="text-orange-900" data-lang-key="step3Title">3. Esame Dinamico</h3>
+                            <p class="text-sm text-gray-700" data-lang-key="step3Desc">Valutazione dell'andatura (passo/trotto) per identificare zoppie, debolezza o atassia.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SEGNI CHIAVE -->
+                <section>
+                    <h2 data-lang-key="signsTitle">Cosa Cercare: Segni Chiave</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+                        <div class="icon-box border-l-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 12A8.25 8.25 0 0 1 12 20.25a8.25 8.25 0 0 1-8.25-8.25A8.25 8.25 0 0 1 12 3.75a8.25 8.25 0 0 1 8.25 8.25Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
+                            <h3 class="text-blue-900" data-lang-key="sign1Title">Atrofia Muscolare</h3>
+                            <p class="text-xs text-gray-700" data-lang-key="sign1Desc">Perdita di massa. Cause: neurologica (denervazione) o da disuso (zoppia cronica).</p>
+                        </div>
+                        <div class="icon-box border-l-red-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-3.867 8.21 8.21 0 0 0 3 2.48Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 3.75 3.75 0 0 0-1.993-1.293 3.75 3.75 0 0 0-3.243 5.307 3.75 3.75 0 0 0 .248 2.218" /></svg>
+                            <h3 class="text-red-900" data-lang-key="sign2Title">Dolorabilità (Mialgia)</h3>
+                            <p class="text-xs text-gray-700" data-lang-key="sign2Desc">Reazione alla palpazione. Indica infiammazione (miosite), trauma o rabdomiolisi.</p>
+                        </div>
+                        <div class="icon-box border-l-green-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                            <h3 class="text-green-900" data-lang-key="sign3Title">Tono Alterato</h3>
+                            <p class="text-xs text-gray-700" data-lang-key="sign3Desc"><strong>Ipertonia</strong> (rigidità, es. tetano) o <strong>Ipotonia</strong> (flaccidità, es. botulismo).</p>
+                        </div>
+                        <div class="icon-box border-l-orange-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                            <h3 class="text-orange-900" data-lang-key="sign4Title">Debolezza (Paresi)</h3>
+                            <p class="text-xs text-gray-700" data-lang-key="sign4Desc">Incapacità di sostenere peso, tremori, facile affaticamento. Spesso di origine neurologica o metabolica.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ZOPPIA -->
+                <section class="bg-blue-50/30 p-8 rounded-xl border border-blue-100 shadow-sm">
+                    <h2 class="!mt-0 !text-blue-800" data-lang-key="lamenessTitle">Valutazione Zoppia (Cavallo)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-blue-100">
+                            <h3 class="text-blue-900 mb-4" data-lang-key="lamenessAntTitle">Zoppia Anteriore</h3>
+                            <p class="text-sm text-gray-700" data-lang-key="lamenessAntDesc"><strong>"Batte sul sano":</strong> L'animale abbassa vistosamente la testa quando l'arto sano (non dolente) tocca terra, per alleggerire quello dolente.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-blue-100">
+                            <h3 class="text-blue-900 mb-4" data-lang-key="lamenessPostTitle">Zoppia Posteriore</h3>
+                            <p class="text-sm text-gray-700" data-lang-key="lamenessPostDesc"><strong>"Hip Hike":</strong> Si osserva la groppa. Il lato dolente avrà un'escursione verticale maggiore (si solleva di più) quando l'arto sano tocca terra.</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
 
         </div>
-    </header>
-    <!-- === FINE HEADER === -->
-
-    <!-- Main Content Container -->
-    <main class="container mx-auto p-4 md:px-8 md:py-12">
-        <!-- Card Contenuto -->
-        <div id="main-content" class="content-card">
-
-            <!-- Contenuto Specifico Infografica -->
-             <header class="text-center">
-                 <h1 data-lang-key="pageTitle">Infografica: Apparato Muscolare</h1>
-                 <p data-lang-key="pageSubtitle">Guida visiva all'esame muscolare, dalla valutazione a distanza al movimento.</p>
-             </header>
-
-             <main class="space-y-16 mt-12">
-                 <section>
-                     <h2 data-lang-key="flowTitle">I 3 Pilastri dell'Esame</h2>
-                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center items-stretch">
-                         <div class="flow-step border-[#003f5c]">
-                             <h3 data-lang-key="step1Title">1. Ispezione (Statica)</h3>
-                             <p class="text-sm" data-lang-key="step1Desc">Valutare simmetria, atrofia/ipertrofia, postura, appiombi e consumo degli unghioni/zoccoli.</p>
-                         </div>
-                         <div class="flow-step border-[#7a5195]">
-                             <h3 data-lang-key="step2Title">2. Palpazione</h3>
-                             <p class="text-sm" data-lang-key="step2Desc">Ricerca di dolorabilità, calore, tumefazioni, tono muscolare (spastico/flaccido) e crepitii.</p>
-                         </div>
-                         <div class="flow-step border-[#ff764a]">
-                             <h3 data-lang-key="step3Title">3. Esame Dinamico</h3>
-                             <p class="text-sm" data-lang-key="step3Desc">Valutazione dell'andatura (passo/trotto) per identificare zoppie, debolezza o atassia.</p>
-                         </div>
-                     </div>
-                 </section>
-
-                 <section>
-                     <h2 data-lang-key="signsTitle">Cosa Cercare: Segni Chiave</h2>
-                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-                         <div class="icon-box">
-                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 12A8.25 8.25 0 0 1 12 20.25a8.25 8.25 0 0 1-8.25-8.25A8.25 8.25 0 0 1 12 3.75a8.25 8.25 0 0 1 8.25 8.25Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" /></svg>
-                             <h3 data-lang-key="sign1Title">Atrofia Muscolare</h3>
-                             <p class="text-sm" data-lang-key="sign1Desc">Perdita di massa. Cause: neurologica (denervazione) o da disuso (zoppia cronica).</p>
-                         </div>
-                         <div class="icon-box">
-                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-3.867 8.21 8.21 0 0 0 3 2.48Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 3.75 3.75 0 0 0-1.993-1.293 3.75 3.75 0 0 0-3.243 5.307 3.75 3.75 0 0 0 .248 2.218" /></svg>
-                             <h3 data-lang-key="sign2Title">Dolorabilità (Mialgia)</h3>
-                             <p class="text-sm" data-lang-key="sign2Desc">Reazione alla palpazione. Indica infiammazione (miosite), trauma o rabdomiolisi.</p>
-                         </div>
-                         <div class="icon-box">
-                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-                             <h3 data-lang-key="sign3Title">Tono Alterato</h3>
-                             <p class="text-sm" data-lang-key="sign3Desc"><strong>Ipertonia</strong> (rigidità, es. tetano) o <strong>Ipotonia</strong> (flaccidità, es. botulismo).</p>
-                         </div>
-                          <div class="icon-box">
-                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-                             <h3 data-lang-key="sign4Title">Debolezza (Paresi)</h3>
-                             <p class="text-sm" data-lang-key="sign4Desc">Incapacità di sostenere peso, tremori, facile affaticamento. Spesso di origine neurologica o metabolica.</p>
-                         </div>
-                     </div>
-                 </section>
-
-                 <section class="bg-white rounded-lg shadow-md p-6 md:p-8">
-                     <h2 class="text-3xl font-bold text-center mb-8 text-[#1d4ed8]" data-lang-key="lamenessTitle">Valutazione Zoppia (Cavallo)</h2>
-                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                         <div class="p-4 bg-blue-50 rounded-lg">
-                             <h3 class="font-bold text-lg text-blue-800" data-lang-key="lamenessAntTitle">Zoppia Anteriore</h3>
-                             <p class="text-sm text-gray-700" data-lang-key="lamenessAntDesc"><strong>"Batte sul sano":</strong> L'animale abbassa vistosamente la testa quando l'arto sano (non dolente) tocca terra, per alleggerire quello dolente.</p>
-                         </div>
-                         <div class="p-4 bg-blue-50 rounded-lg">
-                             <h3 class="font-bold text-lg text-blue-800" data-lang-key="lamenessPostTitle">Zoppia Posteriore</h3>
-                             <p class="text-sm text-gray-700" data-lang-key="lamenessPostDesc"><strong>"Hip Hike":</strong> Si osserva la groppa. Il lato dolente avrà un'escursione verticale maggiore (si solleva di più) quando l'arto sano tocca terra.</p>
-                         </div>
-                     </div>
-                 </section>
-
-             </main>
-            <!-- Fine Contenuto Specifico Infografica -->
-
-        </div> <!-- Fine content-card -->
     </main>
 
-    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
-        </div>
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            // === TRADUZIONI ===
             const translations = {
-                 // --- Header ---
-                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
                 sectionTitleMusc: { it: '5. Apparato Muscolare', en: '5. Muscular System' },
                 navSummary: { it: 'Riassunto', en: 'Summary' },
                 navInfographic: { it: 'Infografica', en: 'Infographic' },
                 navChecklist: { it: 'Checklist', en: 'Checklist' },
                 navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
                 navQuiz: { it: 'Quiz', en: 'Quiz' },
-                navAudio: { it: 'Audio', en: 'Audio' },
-                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                 // --- Contenuto Infografica Muscolare ---
-                 pageTitle: { it: "Infografica: Apparato Muscolare", en: "Infographic: Muscular System" },
-                 pageSubtitle: { it: "Guida visiva all'esame muscolare, dalla valutazione a distanza al movimento.", en: "A visual guide to the muscular exam, from distance assessment to movement." },
-                 flowTitle: { it: "I 3 Pilastri dell'Esame", en: "The 3 Pillars of the Exam" },
-                 step1Title: { it: "1. Ispezione (Statica)", en: "1. Inspection (Static)" },
-                 step1Desc: { it: "Valutare simmetria, atrofia/ipertrofia, postura, appiombi e consumo degli unghioni/zoccoli.", en: "Assess symmetry, atrophy/hypertrophy, posture, stance, and hoof/claw wear." },
-                 step2Title: { it: "2. Palpazione", en: "2. Palpation" },
-                 step2Desc: { it: "Ricerca di dolorabilità, calore, tumefazioni, tono muscolare (spastico/flaccido) e crepitii.", en: "Check for pain, heat, swelling, muscle tone (spastic/flaccid), and crepitus." },
-                 step3Title: { it: "3. Esame Dinamico", en: "3. Dynamic Exam" },
-                 step3Desc: { it: "Valutazione dell'andatura (passo/trotto) per identificare zoppie, debolezza o atassia.", en: "Gait assessment (walk/trot) to identify lameness, weakness, or ataxia." },
-                 signsTitle: { it: "Cosa Cercare: Segni Chiave", en: "What to Look For: Key Signs" },
-                 sign1Title: { it: "Atrofia Muscolare", en: "Muscle Atrophy" },
-                 sign1Desc: { it: "Perdita di massa. Cause: neurologica (denervazione) o da disuso (zoppia cronica).", en: "Loss of mass. Causes: neurological (denervation) or disuse (chronic lameness)." },
-                 sign2Title: { it: "Dolorabilità (Mialgia)", en: "Pain (Myalgia)" },
-                 sign2Desc: { it: "Reazione alla palpazione. Indica infiammazione (miosite), trauma o rabdomiolisi.", en: "Reaction to palpation. Indicates inflammation (myositis), trauma, or rhabdomyolysis." },
-                 sign3Title: { it: "Tono Alterato", en: "Altered Tone" },
-                 sign3Desc: { it: "<strong>Ipertonia</strong> (rigidità, es. tetano) o <strong>Ipotonia</strong> (flaccidità, es. botulismo).", en: "<strong>Hypertonia</strong> (rigidity, e.g., tetanus) or <strong>Hypotonia</strong> (flaccidity, e.g., botulism)." },
-                 sign4Title: { it: "Debolezza (Paresi)", en: "Weakness (Paresis)" },
-                 sign4Desc: { it: "Incapacità di sostenere peso, tremori, facile affaticamento. Spesso di origine neurologica o metabolica.", en: "Inability to bear weight, tremors, easily fatigued. Often neurological or metabolic in origin." },
-                 lamenessTitle: { it: "Valutazione Zoppia (Cavallo)", en: "Lameness Assessment (Horse)" },
-                 lamenessAntTitle: { it: "Zoppia Anteriore", en: "Forelimb Lameness" },
-                 lamenessAntDesc: { it: "<strong>\"Batte sul sano\":</strong> L'animale abbassa vistosamente la testa quando l'arto sano (non dolente) tocca terra, per alleggerire quello dolente.", en: "<strong>\"Down on the sound\":</strong> The animal noticeably lowers its head when the sound (non-painful) limb hits the ground, to unload the painful one." },
-                 lamenessPostTitle: { it: "Zoppia Posteriore", en: "Hindlimb Lameness" },
-                 lamenessPostDesc: { it: "<strong>\"Hip Hike\":</strong> Si osserva la groppa. Il lato dolente avrà un'escursione verticale maggiore (si solleva di più) quando l'arto sano tocca terra.", en: "<strong>\"Hip Hike\":</strong> Observe the croup. The painful side will have a greater vertical excursion (lifts higher) as the sound limb bears weight." },
-                // --- Footer ---
-                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                pageTitle: { it: "Infografica: Apparato Muscolare", en: "Infographic: Muscular System" },
+                pageSubtitle: { it: "Guida visiva all'esame muscolare, dalla valutazione a distanza al movimento.", en: "A visual guide to the muscular exam, from distance assessment to movement." },
+                flowTitle: { it: "I 3 Pilastri dell'Esame", en: "The 3 Pillars of the Exam" },
+                step1Title: { it: "1. Ispezione (Statica)", en: "1. Inspection (Static)" },
+                step1Desc: { it: "Valutare simmetria, atrofia/ipertrofia, postura, appiombi e consumo degli unghioni/zoccoli.", en: "Assess symmetry, atrophy/hypertrophy, posture, stance, and hoof/claw wear." },
+                step2Title: { it: "2. Palpazione", en: "2. Palpation" },
+                step2Desc: { it: "Ricerca di dolorabilità, calore, tumefazioni, tono muscolare (spastico/flaccido) e crepitii.", en: "Check for pain, heat, swelling, muscle tone (spastic/flaccid), and crepitus." },
+                step3Title: { it: "3. Esame Dinamico", en: "3. Dynamic Exam" },
+                step3Desc: { it: "Valutazione dell'andatura (passo/trotto) per identificare zoppie, debolezza o atassia.", en: "Gait assessment (walk/trot) to identify lameness, weakness, or ataxia." },
+                signsTitle: { it: "Cosa Cercare: Segni Chiave", en: "What to Look For: Key Signs" },
+                sign1Title: { it: "Atrofia Muscolare", en: "Muscle Atrophy" },
+                sign1Desc: { it: "Perdita di massa. Cause: neurologica (denervazione) o da disuso (zoppia cronica).", en: "Loss of mass. Causes: neurological (denervation) or disuse (chronic lameness)." },
+                sign2Title: { it: "Dolorabilità (Mialgia)", en: "Pain (Myalgia)" },
+                sign2Desc: { it: "Reazione alla palpazione. Indica infiammazione (miosite), trauma o rabdomiolisi.", en: "Reaction to palpation. Indicates inflammation (myositis), trauma, or rhabdomyolysis." },
+                sign3Title: { it: "Tono Alterato", en: "Altered Tone" },
+                sign3Desc: { it: "<strong>Ipertonia</strong> (rigidità, es. tetano) o <strong>Ipotonia</strong> (flaccidità, es. botulismo).", en: "<strong>Hypertonia</strong> (rigidity, e.g., tetanus) or <strong>Hypotonia</strong> (flaccidity, e.g., botulism)." },
+                sign4Title: { it: "Debolezza (Paresi)", en: "Weakness (Paresis)" },
+                sign4Desc: { it: "Incapacità di sostenere peso, tremori, facile affaticamento. Spesso di origine neurologica o metabolica.", en: "Inability to bear weight, tremors, easily fatigued. Often neurological or metabolic in origin." },
+                lamenessTitle: { it: "Valutazione Zoppia (Cavallo)", en: "Lameness Assessment (Horse)" },
+                lamenessAntTitle: { it: "Zoppia Anteriore", en: "Forelimb Lameness" },
+                lamenessAntDesc: { it: "<strong>\"Batte sul sano\":</strong> L'animale abbassa vistosamente la testa quando l'arto sano (non dolente) tocca terra, per alleggerire quello dolente.", en: "<strong>\"Down on the sound\":</strong> The animal noticeably lowers its head when the sound (non-painful) limb hits the ground, to unload the painful one." },
+                lamenessPostTitle: { it: "Zoppia Posteriore", en: "Hindlimb Lameness" },
+                lamenessPostDesc: { it: "<strong>\"Hip Hike\":</strong> Si osserva la groppa. Il lato dolente avrà un'escursione verticale maggiore (si solleva di più) quando l'arto sano tocca terra.", en: "<strong>\"Hip Hike\":</strong> Observe the croup. The painful side will have a greater vertical excursion (lifts higher) as the sound limb bears weight." },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
             };
 
-             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
-             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
             let currentLanguage = localStorage.getItem('language') || 'it';
-            const accessibilityToggle = document.getElementById('accessibility-toggle');
-            const langToggle = document.getElementById('lang-toggle');
             const body = document.body;
-            // No TTS logic needed for this page
 
-            // --- Funzione Aggiornamento Lingua ---
-             const updateLanguage = (lang, previousLang = null) => {
-                 document.documentElement.lang = lang;
-                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-
-                 document.querySelectorAll('[data-lang-key]').forEach(element => {
-                     const key = element.dataset.langKey;
-                     if (translations[key] && translations[key][lang]) {
-                         const translationText = translations[key][lang];
-
-                         if (key === 'footerText' || key === 'backToIndex') {
-                              const svgIcon = element.querySelector('svg');
-                              element.innerHTML = translationText;
-                              if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) { element.insertBefore(svgIcon, element.firstChild); }
-                         }
-                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
-                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
-                             const sectionKey = currentSectionKey || key;
-                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
-                         }
-                         // Per infografica, la maggior parte del contenuto ha HTML (<strong>, <h4>, <ul>)
-                         else if (element.closest('#main-content')) {
-                             // Preserva SVG se è un icon-box
-                             const svgIcon = element.querySelector('svg');
-                             element.innerHTML = translationText;
-                             if (svgIcon && element.classList.contains('icon-box')) {
-                                 element.insertBefore(svgIcon, element.firstChild);
-                             }
-                         }
-                         else { element.textContent = translationText; }
-                     }
-                 });
-             };
-
-            // --- Logica Modalità Accessibilità ---
-            const setA11yMode = (enabled) => {
-                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
-                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
             };
 
-            // --- Event Listeners ---
-            if (langToggle) {
-                langToggle.addEventListener('click', () => {
-                    const previousLanguage = currentLanguage;
-                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-                    localStorage.setItem('language', currentLanguage);
-                     updateLanguage(currentLanguage, previousLanguage);
-                });
-            } else { console.error("Elemento langToggle non trovato!"); }
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
 
-            if (accessibilityToggle) {
-                 accessibilityToggle.addEventListener('click', () => {
-                    const isEnabled = body.classList.contains('dsa-mode');
-                    setA11yMode(!isEnabled);
-                });
-            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
 
-            // --- Inizializzazione ---
-            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
             updateLanguage(currentLanguage);
-
         });
     </script>
-
 </body>
 </html>
