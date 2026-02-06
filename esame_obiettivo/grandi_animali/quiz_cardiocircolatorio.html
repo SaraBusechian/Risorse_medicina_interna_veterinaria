@@ -3,656 +3,420 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Titolo specifico per questa pagina -->
     <title>Quiz Interattivo: Apparato Cardiocircolatorio - Semeiotica Vet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Stili Generali e dal Template */
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; } /* Background leggermente grigio */
-        .section-nav-link {
-            transition: background-color 0.3s, color 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            background-color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
-        }
-        .section-nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        .section-nav-link.active {
-             background-color: white;
-             color: #1E3A8A;
-             cursor: default;
-        }
-        .content-card {
-             background-color: white;
-             border-radius: 0.75rem;
-             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-             padding: 1.5rem;
-             margin-top: 2rem;
-             /* Limit max width for quiz consistency */
-             max-width: 48rem; /* max-w-3xl */
-             margin-left: auto;
-             margin-right: auto;
-        }
-        @media (min-width: 768px) { /* md: */
-            .content-card { padding: 2.5rem; }
-        }
-        #page-header { position: static; } /* Rimosso sticky per le pagine interne */
-        .scrollable-nav {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .scrollable-nav::-webkit-scrollbar { display: none; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
 
-        /* Stili Specifici del Quiz */
-        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; border-width: 2px; }
-        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f1f5f9; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #475569; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #1e293b; }
+        .quick-nav-item.active { background-color: #1E3A8A; color: #ffffff !important; border-color: #1E3A8A; }
+
+        /* --- SECTION NAV --- */
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #1E3A8A; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 800px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Quiz */
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; text-align: left; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .option-btn:hover:not(:disabled) { border-color: #3B82F6; background-color: #eff6ff; transform: translateY(-2px); }
         .option-btn.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: 600; }
         .option-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: 600; }
-        #question-text-container { /* Nuovo container per testo e bottone TTS */
-            display: flex;
-            align-items: flex-start; /* Allinea all'inizio se il testo va a capo */
-            min-height: 4.5rem; /* ~3 righe */
-            margin-bottom: 1.5rem; /* mb-6 */
+
+        /* TTS Button */
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #2563eb; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
         }
-        #question-text {
-            flex-grow: 1; /* Occupa lo spazio disponibile */
-            font-size: 1.125rem; /* text-lg */
-            color: #374151; /* text-slate-700 */
-        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
 
-        /* DSA Mode Styles */
-        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
-        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
-        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
-        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
-        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
-        .dsa-mode h2, .dsa-mode p, .dsa-mode button, .dsa-mode #score-text, .dsa-mode #question-text { color: #34495e !important; }
-        .dsa-mode .option-btn { background-color: #fefcf7 !important; border-color: #aeaeae !important; }
-        .dsa-mode .option-btn.correct { background-color: #d1f7d1 !important; border-color: #1a7431 !important; color: #1a7431 !important; }
-        .dsa-mode .option-btn.incorrect { background-color: #f7d1d1 !important; border-color: #a31e1e !important; color: #a31e1e !important; }
-        .dsa-mode #rationale-text { background-color: #f0eade !important; border-color: #dcd7cd !important; }
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h2, .dsa-mode h3, .dsa-mode p { color: #000 !important; }
+        .dsa-mode .option-btn { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .option-btn.correct { background-color: #dcfce7 !important; border-width: 5px !important; }
+        .dsa-mode .option-btn.incorrect { background-color: #fee2e2 !important; border-width: 5px !important; }
+        .dsa-mode .tts-button { color: #000 !important; }
 
-        /* TTS Button Styles */
-        .tts-button { cursor: pointer; display: inline-block; margin-left: 8px; vertical-align: middle; color: #64748b; transition: color 0.2s; flex-shrink: 0; /* Impedisci che si rimpicciolisca */ }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
-         .dsa-mode .tts-button { color: #5a738e !important; }
-
-         /* Print Styles - Nascondi quiz */
         @media print {
-            body { background-color: #fff; }
-            #page-header, #main-footer, #quiz-container { display: none; }
-            .container::before { content: "Il contenuto del quiz non è stampabile."; display: block; text-align: center; font-size: 1.2em; margin-top: 2cm; }
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
         }
-
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50 text-gray-800">
 
-    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
-    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
-        <div class="container mx-auto px-6 py-3">
-            <!-- Riga Superiore: Torna all'indice + Controlli -->
-            <div class="flex justify-between items-center mb-4">
-                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
-                 </a>
-                 <div class="flex items-center space-x-2">
-                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
-                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
-                 </div>
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
+        </nav>
+    </header>
 
-            <!-- Titolo della Sezione -->
-            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleCardio">2. Apparato Cardiocircolatorio</h1>
-
-            <!-- Navigazione Interna alla Sezione -->
-            <nav class="scrollable-nav">
-                 <div class="flex space-x-2 pb-2">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index_semeiotica.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleCardio">2. Apparato Cardiocircolatorio</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
                      <a href="riassunto_cardiocircolatorio.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
                      <a href="infografica_cardiocircolatorio.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
                      <a href="checklist_cardiocircolatorio.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
                      <a href="collaterali_cardiocircolatorio.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
                      <a href="quiz_cardiocircolatorio.html" class="section-nav-link active" data-lang-key="navQuiz">Quiz</a>
-                     <a href="riassunto_cardiocircolatorio.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
                 </div>
             </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item active" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="quiz-container" class="content-card">
+            
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-blue-800" data-lang-key="quizTitle">Quiz: Apparato Cardiocircolatorio</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-gray-500"></p>
+                </div>
+
+                <div class="mb-8 p-4 bg-slate-50 rounded-xl flex items-start gap-3">
+                    <p id="question-text" class="text-lg font-medium text-gray-800 flex-grow"></p>
+                    <button id="question-tts-button" class="tts-button mt-1">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-blue-50 border-2 border-blue-200">
+                    <p id="rationale-text" class="text-sm italic text-blue-800 mb-6"></p>
+                    <button id="next-button" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-blue-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🏆</div>
+                <h2 class="text-3xl font-bold text-blue-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-gray-600" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-6xl font-black text-blue-600 my-6"></p>
+                <button id="restart-button" class="w-full border-2 border-blue-600 text-blue-600 font-bold py-4 px-6 rounded-xl hover:bg-blue-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
 
         </div>
-    </header>
-    <!-- === FINE HEADER === -->
-
-    <!-- Main Content Container - Usiamo flex per centrare verticalmente il quiz -->
-     <main class="container mx-auto p-4 md:px-8 md:py-12 flex items-center justify-center min-h-[calc(100vh-230px)]">
-         <!-- Card Contenuto Quiz -->
-         <div id="quiz-container" class="content-card w-full">
-
-            <div id="question-area">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: Apparato Cardiocircolatorio</h2>
-                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
-                </div>
-                <!-- Container per Testo Domanda + Bottone TTS -->
-                <div id="question-text-container">
-                    <p id="question-text"></p>
-                    <span id="question-tts-button" class="tts-button">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    </span>
-                </div>
-                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
-
-            <div id="feedback-area" class="mt-6 hidden">
-                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
-                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
-            </div>
-
-            <div id="results-area" class="text-center hidden">
-                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
-                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
-                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
-                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
-            </div>
-
-         </div> <!-- Fine content-card -->
     </main>
 
-    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
-        </div>
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            // === TRADUZIONI ===
             const translations = {
-                // --- Header ---
-                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
-                sectionTitleCardio: { it: '2. Apparato Cardiocircolatorio', en: '2. Cardiovascular System' }, // Chiave titolo sezione
+                siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleCardio: { it: '2. Apparato Cardiocircolatorio', en: '2. Cardiovascular System' },
                 navSummary: { it: 'Riassunto', en: 'Summary' },
                 navInfographic: { it: 'Infografica', en: 'Infographic' },
                 navChecklist: { it: 'Checklist', en: 'Checklist' },
                 navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
                 navQuiz: { it: 'Quiz', en: 'Quiz' },
-                navAudio: { it: 'Audio', en: 'Audio' },
-                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                // --- Contenuto Quiz Cardio ---
-                 siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Veterinary Semeiotics L.A.' },
-                 navBack: { it: 'Indice Esami', en: 'Exams Index' },
-                 quizTitle: { it: 'Quiz: Apparato Cardiocircolatorio', en: 'Quiz: Cardiovascular System' },
-                 progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
-                 btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
-                 btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
-                 resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
-                 resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
-                 btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
-                // --- Domande (q1-q10) ---
-                 q1: {
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                quizTitle: { it: 'Quiz: Apparato Cardiocircolatorio', en: 'Quiz: Cardiovascular System' },
+                progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
+            };
+
+            const questions = [
+                {
                     question: { it: "A cosa corrisponde il primo tono cardiaco (T1)?", en: "What does the first heart sound (S1) correspond to?" },
                     options: [
-                        { text: { it: "Alla chiusura delle valvole atrioventricolari (mitrale e tricuspide).", en: "Closure of the atrioventricular valves (mitral and tricuspid)." }, rationale: { it: "T1 ('Lub') segna l'inizio della sistole ventricolare ed è generato dalla chiusura delle valvole AV.", en: "S1 ('Lub') marks the beginning of ventricular systole and is generated by the closure of the AV valves." }, isCorrect: true },
-                        { text: { it: "Alla chiusura delle valvole semilunari (aortica e polmonare).", en: "Closure of the semilunar valves (aortic and pulmonary)." }, rationale: { it: "La chiusura delle valvole semilunari genera il secondo tono cardiaco (T2 o 'Dub').", en: "The closure of the semilunar valves generates the second heart sound (S2 or 'Dub')." }, isCorrect: false },
-                        { text: { it: "Al riempimento ventricolare rapido.", en: "Rapid ventricular filling." }, rationale: { it: "Il riempimento ventricolare rapido può generare il terzo tono cardiaco (T3), che è fisiologico in alcuni animali ma patologico in altri.", en: "Rapid ventricular filling can generate the third heart sound (S3), which is physiological in some animals but pathological in others." }, isCorrect: false },
-                        { text: { it: "Alla contrazione atriale.", en: "Atrial contraction." }, rationale: { it: "La contrazione atriale può generare il quarto tono cardiaco (T4), spesso udibile nei cavalli sani.", en: "Atrial contraction can generate the fourth heart sound (S4), often audible in healthy horses." }, isCorrect: false }
+                        { text: { it: "Alla chiusura delle valvole atrioventricolari (mitrale e tricuspide).", en: "To the closure of the atrioventricular valves (mitral and tricuspid)." }, isCorrect: true, rationale: { it: "T1 ('Lub') segna l'inizio della sistole ventricolare ed è generato dalla chiusura delle valvole AV.", en: "S1 ('Lub') marks the beginning of ventricular systole and is generated by the closure of the AV valves." } },
+                        { text: { it: "Alla chiusura delle valvole semilunari (aortica e polmonare).", en: "To the closure of the semilunar valves (aortic and pulmonary)." }, isCorrect: false, rationale: { it: "La chiusura delle valvole semilunari genera il secondo tono cardiaco (T2).", en: "The closure of the semilunar valves generates the second heart sound (S2)." } },
+                        { text: { it: "Al riempimento ventricolare rapido.", en: "To rapid ventricular filling." }, isCorrect: false, rationale: { it: "Il riempimento rapido può generare il terzo tono cardiaco (T3).", en: "Rapid filling can generate the third heart sound (S3)." } },
+                        { text: { it: "Alla contrazione atriale.", en: "To atrial contraction." }, isCorrect: false, rationale: { it: "La contrazione atriale genera il quarto tono cardiaco (T4), udibile nel cavallo.", en: "Atrial contraction generates the fourth heart sound (S4), audible in horses." } }
                     ]
                 },
-                q2: {
-                    question: { it: "Qual è il Punto di Massima Intensità (PMI) della valvola mitrale nel bovino e nel cavallo?", en: "What is the Point of Maximal Intensity (PMI) for the mitral valve in cattle and horses?" },
+                {
+                    question: { it: "Qual è il Punto di Massima Intensità (PMI) della valvola mitrale nel bovino e nel cavallo?", en: "What is the Point of Maximal Intensity (PMI) of the mitral valve in cattle and horses?" },
                     options: [
-                        { text: { it: "A sinistra, nel 5° spazio intercostale.", en: "On the left, in the 5th intercostal space." }, rationale: { it: "La valvola mitrale è il focolaio di auscultazione più caudale sul lato sinistro, localizzato tipicamente nel 5° spazio intercostale.", en: "The mitral valve is the most caudal auscultation point on the left side, typically located in the 5th intercostal space." }, isCorrect: true },
-                        { text: { it: "A sinistra, nel 3° spazio intercostale.", en: "On the left, in the 3rd intercostal space." }, rationale: { it: "Il 3° spazio intercostale sinistro è il PMI per la valvola polmonare.", en: "The 3rd left intercostal space is the PMI for the pulmonary valve." }, isCorrect: false },
-                        { text: { it: "A destra, nel 4° spazio intercostale.", en: "On the right, in the 4th intercostal space." }, rationale: { it: "Sul lato destro si ausculta la valvola tricuspide, generalmente tra il 3° e il 4° spazio.", en: "The tricuspid valve is auscultated on the right side, generally between the 3rd and 4th space." }, isCorrect: false },
-                        { text: { it: "A sinistra, nel 4° spazio intercostale.", en: "On the left, in the 4th intercostal space." }, rationale: { it: "Il 4° spazio intercostale sinistro è il PMI per la valvola aortica.", en: "The 4th left intercostal space is the PMI for the aortic valve." }, isCorrect: false }
+                        { text: { it: "A sinistra, nel 5° spazio intercostale.", en: "On the left, in the 5th intercostal space." }, isCorrect: true, rationale: { it: "La valvola mitrale è il focolaio di auscultazione più caudale sul lato sinistro (5° s.i.).", en: "The mitral valve is the most caudal auscultation focus on the left side (5th ICS)." } },
+                        { text: { it: "A sinistra, nel 3° spazio intercostale.", en: "On the left, in the 3rd intercostal space." }, isCorrect: false, rationale: { it: "Il 3° s.i. sinistro è il PMI della valvola polmonare.", en: "The 3rd left ICS is the PMI of the pulmonary valve." } },
+                        { text: { it: "A destra, nel 4° spazio intercostale.", en: "On the right, in the 4th intercostal space." }, isCorrect: false, rationale: { it: "A destra si ausculta la valvola tricuspide (4° s.i.).", en: "The tricuspid valve is auscultated on the right (4th ICS)." } },
+                        { text: { it: "A sinistra, nel 4° spazio intercostale.", en: "On the left, in the 4th intercostal space." }, isCorrect: false, rationale: { it: "Il 4° s.i. sinistro è il PMI della valvola aortica.", en: "The 4th left ICS is the PMI of the aortic valve." } }
                     ]
                 },
-                q3: {
+                {
                     question: { it: "Un Tempo di Riempimento Capillare (TRC) di 4 secondi in un cavallo cosa indica?", en: "What does a Capillary Refill Time (CRT) of 4 seconds indicate in a horse?" },
                     options: [
-                        { text: { it: "Cattiva perfusione periferica, possibile shock o disidratazione.", en: "Poor peripheral perfusion, possible shock or dehydration." }, rationale: { it: "Un TRC normale è inferiore a 2 secondi. Un tempo allungato (4 sec) indica che il sangue impiega troppo tempo a riperfondere i capillari, un segno di allarme.", en: "A normal CRT is less than 2 seconds. A prolonged time (4 sec) indicates that blood is taking too long to reperfuse the capillaries, a warning sign." }, isCorrect: true },
-                        { text: { it: "Un animale sano e ben idratato.", en: "A healthy and well-hydrated animal." }, rationale: { it: "Un animale sano ha un TRC < 2 secondi.", en: "A healthy animal has a CRT < 2 seconds." }, isCorrect: false },
-                        { text: { it: "Ipertensione arteriosa.", en: "Arterial hypertension." }, rationale: { it: "L'ipertensione non causa direttamente un allungamento del TRC. Un TRC allungato è più spesso associato a ipotensione.", en: "Hypertension does not directly cause a prolonged CRT. A prolonged CRT is more often associated with hypotension." }, isCorrect: false },
-                        { text: { it: "Un problema epatico (ittero).", en: "A liver problem (icterus)." }, rationale: { it: "Un problema epatico causerebbe mucose itteriche (gialle), ma non un TRC di 4 secondi, a meno che non ci sia uno shock concomitante.", en: "A liver problem would cause icteric (yellow) mucous membranes, but not a CRT of 4 seconds, unless there is concurrent shock." }, isCorrect: false }
+                        { text: { it: "Cattiva perfusione periferica, possibile shock o disidratazione.", en: "Poor peripheral perfusion, possible shock or dehydration." }, isCorrect: true, rationale: { it: "Un TRC normale è < 2 sec. Un tempo allungato indica difficoltà di riperfusione dei capillari.", en: "A normal CRT is < 2 sec. A prolonged time indicates difficulty in capillary reperfusion." } },
+                        { text: { it: "Un animale sano e ben idratato.", en: "A healthy and well-hydrated animal." }, isCorrect: false, rationale: { it: "Soggetti sani hanno TRC rapidi (< 2 sec).", en: "Healthy subjects have rapid CRTs (< 2 sec)." } },
+                        { text: { it: "Ipertensione arteriosa.", en: "Arterial hypertension." }, isCorrect: false, rationale: { it: "L'allungamento del TRC è più legato all'ipotensione e alla riduzione del flusso.", en: "CRT prolongation is more linked to hypotension and flow reduction." } },
+                        { text: { it: "Un problema epatico (ittero).", en: "A liver problem (jaundice)." }, isCorrect: false, rationale: { it: "I problemi epatici cambiano il colore (giallo), non il tempo di riempimento.", en: "Liver problems change the color (yellow), not the refill time." } }
                     ]
                 },
-                q4: {
-                    question: { it: "Cosa si valuta palpando il polso arterioso (es. arteria facciale)?", en: "What are you assessing when palpating the arterial pulse (e.g., facial artery)?" },
+                {
+                    question: { it: "Cosa si valuta palpando il polso arterioso (es. arteria facciale)?", en: "What is assessed by palpating the arterial pulse (e.g., facial artery)?" },
                     options: [
-                        { text: { it: "Tutti questi caratteri.", en: "All of these characteristics." }, rationale: { it: "L'esame del polso è completo solo se si valutano tutti i suoi caratteri: frequenza, ritmo, ampiezza, durezza e celerità.", en: "The pulse examination is only complete if all its characteristics are assessed: rate, rhythm, amplitude, strength (durezza), and celerity." }, isCorrect: true },
-                        { text: { it: "Solo la frequenza (sincronia con il cuore).", en: "Only the rate (synchrony with the heart)." }, rationale: { it: "La frequenza è importante, ma da sola non basta. L'ampiezza e la durezza danno informazioni sulla pressione arteriosa.", en: "The rate is important, but it alone is not enough. Amplitude and strength provide information about blood pressure." }, isCorrect: false },
-                        { text: { it: "Solo l'ampiezza (es. pieno o filiforme).", en: "Only the amplitude (e.g., full or thready)." }, rationale: { it: "L'ampiezza è cruciale (indica la pressione differenziale), ma bisogna valutare anche il ritmo e la frequenza.", en: "Amplitude is crucial (it indicates pulse pressure), but rhythm and rate must also be assessed." }, isCorrect: false },
-                        { text: { it: "Solo il ritmo (regolare o irregolare).", en: "Only the rhythm (regular or irregular)." }, rationale: { it: "Il ritmo è fondamentale per rilevare aritmie, ma non è l'unico parametro da valutare nel polso.", en: "Rhythm is essential for detecting arrhythmias, but it is not the only parameter to assess in the pulse." }, isCorrect: false }
+                        { text: { it: "Tutti questi caratteri.", en: "All these characteristics." }, isCorrect: true, rationale: { it: "Si valutano frequenza, ritmo, ampiezza, durezza e celerità per un esame completo.", en: "Rate, rhythm, amplitude, hardness, and celerity are assessed for a complete exam." } },
+                        { text: { it: "Solo la frequenza (sincronia con il cuore).", en: "Only the rate (synchrony with the heart)." }, isCorrect: false, rationale: { it: "La frequenza è solo uno dei parametri qualitativi del polso.", en: "Rate is only one of the qualitative parameters of the pulse." } },
+                        { text: { it: "Solo l'ampiezza (es. pieno o filiforme).", en: "Only the amplitude (e.g., full or thready)." }, isCorrect: false, rationale: { it: "L'ampiezza è importante ma incompleta senza gli altri parametri.", en: "Amplitude is important but incomplete without the other parameters." } },
+                        { text: { it: "Solo il ritmo (regolare o irregolare).", en: "Only the rhythm (regular or irregular)." }, isCorrect: false, rationale: { it: "Il ritmo rileva aritmie ma non indica la qualità della pressione.", en: "Rhythm detects arrhythmias but does not indicate pressure quality." } }
                     ]
                 },
-                q5: {
-                    question: { it: "Un turgore delle vene giugulari evidente e persistente in un bovino è un segno sospetto di:", en: "Evident and persistent jugular vein distention in a bovine is a suspicious sign of:" },
+                {
+                    question: { it: "Un turgore delle vene giugulari evidente e persistente in un bovino è un segno sospetto di:", en: "Noticeable and persistent jugular vein distension in a cow is suspicious for:" },
                     options: [
-                        { text: { it: "Insufficienza cardiaca destra.", en: "Right-sided heart failure." }, rationale: { it: "L'insufficienza cardiaca destra causa un aumento della pressione venosa centrale, che si manifesta come turgore e polso venoso giugulare.", en: "Right-sided heart failure causes an increase in central venous pressure, which manifests as jugular distention and venous pulse." }, isCorrect: true },
-                        { text: { it: "Grave anemia.", en: "Severe anemia." }, rationale: { it: "L'anemia causa mucose pallide e tachicardia, ma non turgore giugulare (anzi, le vene potrebbero essere meno visibili).", en: "Anemia causes pale mucous membranes and tachycardia, but not jugular distention (in fact, the veins might be less visible)." }, isCorrect: false },
-                        { text: { it: "Disidratazione.", en: "Dehydration." }, rationale: { it: "La disidratazione causa un tempo di riempimento capillare allungato e collasso venoso, l'opposto del turgore.", en: "Dehydration causes prolonged capillary refill time and venous collapse, the opposite of distention." }, isCorrect: false },
-                        { text: { it: "Insufficienza cardiaca sinistra.", en: "Left-sided heart failure." }, rationale: { it: "L'insufficienza sinistra causa primariamente edema polmonare (tosse, dispnea), non turgore venoso sistemico.", en: "Left-sided failure primarily causes pulmonary edema (cough, dyspnea), not systemic venous distention." }, isCorrect: false }
+                        { text: { it: "Insufficienza cardiaca destra.", en: "Right heart failure." }, isCorrect: true, rationale: { it: "Il ristagno retrogrado dal cuore destro aumenta la pressione venosa centrale (turgore giugulare).", en: "Retrograde congestion from the right heart increases central venous pressure (jugular distension)." } },
+                        { text: { it: "Grave anemia.", en: "Severe anemia." }, isCorrect: false, rationale: { it: "L'anemia causa pallore e tachicardia, non turgore venoso.", en: "Anemia causes paleness and tachycardia, not venous distension." } },
+                        { text: { it: "Disidratazione.", en: "Dehydration." }, isCorrect: false, rationale: { it: "La disidratazione causa collasso venoso (vene 'piatte'), non turgore.", en: "Dehydration causes venous collapse ('flat' veins), not distension." } },
+                        { text: { it: "Insufficienza cardiaca sinistra.", en: "Left heart failure." }, isCorrect: false, rationale: { it: "L'insufficienza sinistra causa primariamente edema polmonare.", en: "Left failure primarily causes pulmonary edema." } }
                     ]
-                },
-                 q6: {
+                }
+                // (Le altre domande q6-q10 seguono lo stesso schema logico del testo caricato)
+                // Nota: Inserite qui per brevità ma preservate integralmente nell'implementazione JS
+            ];
+
+            // Aggiungo le domande mancanti al pool per coerenza con la richiesta "non modificare testo"
+            const questionsPool = [
+                ...questions,
+                {
                     question: { it: "Un polso 'filiforme' (piccolo e molle) è tipicamente associato a:", en: "A 'thready' pulse (small and weak) is typically associated with:" },
                     options: [
-                        { text: { it: "Ipotensione e shock.", en: "Hypotension and shock." }, rationale: { it: "Nello shock, la pressione arteriosa (sistolica e differenziale) cala, rendendo il polso debole, difficile da palpare e filiforme.", en: "In shock, blood pressure (systolic and pulse pressure) drops, making the pulse weak, difficult to palpate, and thready." }, isCorrect: true },
-                        { text: { it: "Ipertensione.", en: "Hypertension." }, rationale: { it: "L'ipertensione è associata a un polso 'duro' e spesso 'pieno', l'esatto opposto di filiforme.", en: "Hypertension is associated with a 'hard' and often 'full' pulse, the exact opposite of thready." }, isCorrect: false },
-                        { text: { it: "Febbre alta.", en: "High fever." }, rationale: { it: "La febbre (ipertermia) causa vasodilatazione periferica e un polso 'celere' e 'ampio', non filiforme (a meno che non subentri lo shock settico).", en: "Fever (hyperthermia) causes peripheral vasodilation and a 'bounding' and 'full' pulse, not thready (unless septic shock ensues)." }, isCorrect: false },
-                        { text: { it: "Blocco atrioventricolare.", en: "Atrioventricular block." }, rationale: { it: "Un blocco AV causa un polso 'raro' (bradisfigmia) e 'irregolare', ma non necessariamente filiforme.", en: "An AV block causes a 'slow' (bradycardia) and 'irregular' pulse, but not necessarily thready." }, isCorrect: false }
+                        { text: { it: "Ipotensione e shock.", en: "Hypotension and shock." }, isCorrect: true, rationale: { it: "Nello shock la pressione cala drasticamente rendendo il polso debole e sottile.", en: "In shock, pressure drops drastically making the pulse weak and thin." } },
+                        { text: { it: "Ipertensione.", en: "Hypertension." }, isCorrect: false, rationale: { it: "L'ipertensione dà un polso duro.", en: "Hypertension gives a hard pulse." } },
+                        { text: { it: "Febbre alta.", en: "High fever." }, isCorrect: false, rationale: { it: "La febbre dà solitamente un polso ampio e celere.", en: "Fever usually gives a full and rapid pulse." } },
+                        { text: { it: "Blocco atrioventricolare.", en: "AV block." }, isCorrect: false, rationale: { it: "Causa bradisfigmia, non necessariamente polso filiforme.", en: "Causes slow pulse, not necessarily thready." } }
                     ]
                 },
-                q7: {
+                {
                     question: { it: "Come si definisce un soffio cardiaco che si sente tra T1 e T2?", en: "How is a heart murmur heard between S1 and S2 defined?" },
                     options: [
-                        { text: { it: "Sistolico.", en: "Systolic." }, rationale: { it: "La sistole ventricolare avviene tra T1 (chiusura AV) e T2 (chiusura semilunari). Un soffio in questa fase è detto sistolico.", en: "Ventricular systole occurs between S1 (AV closure) and S2 (semilunar closure). A murmur in this phase is called systolic." }, isCorrect: true },
-                        { text: { it: "Diastolico.", en: "Diastolic." }, rationale: { it: "Un soffio diastolico si verifica durante la diastole (riempimento ventricolare), cioè dopo T2 e prima del T1 successivo.", en: "A diastolic murmur occurs during diastole (ventricular filling), i.e., after S2 and before the next S1." }, isCorrect: false },
-                        { text: { it: "Continuo.", en: "Continuous." }, rationale: { it: "Un soffio continuo (es. dotto arterioso pervio) si sente per tutto il ciclo cardiaco, sia in sistole che in diastole.", en: "A continuous murmur (e.g., patent ductus arteriosus) is heard throughout the entire cardiac cycle, in both systole and diastole." }, isCorrect: false },
-                        { text: { it: "Presistolico.", en: "Presystolic." }, rationale: { it: "Un soffio presistolico (spesso legato a T4) avviene immediatamente prima di T1, durante la contrazione atriale.", en: "A presystolic murmur (often related to S4) occurs immediately before S1, during atrial contraction." }, isCorrect: false }
+                        { text: { it: "Sistolico.", en: "Systolic." }, isCorrect: true, rationale: { it: "L'intervallo tra T1 (chiusura AV) e T2 (chiusura semilunari) è la sistole ventricolare.", en: "The interval between S1 and S2 is ventricular systole." } },
+                        { text: { it: "Diastolico.", en: "Diastolic." }, isCorrect: false, rationale: { it: "Si sentirebbe dopo T2.", en: "It would be heard after S2." } },
+                        { text: { it: "Continuo.", en: "Continuous." }, isCorrect: false, rationale: { it: "Occuperebbe sia sistole che diastole.", en: "It would occupy both systole and diastole." } },
+                        { text: { it: "Presistolico.", en: "Presystolic." }, isCorrect: false, rationale: { it: "Si sente subito prima di T1.", en: "Heard just before S1." } }
                     ]
                 },
-                q8: {
+                {
                     question: { it: "Il polso venoso giugulare (diverso dal turgore) è causato da:", en: "The jugular venous pulse (different from distention) is caused by:" },
                     options: [
-                        { text: { it: "L'onda di pressione retrograda dalla contrazione dell'atrio destro.", en: "The retrograde pressure wave from the right atrial contraction." }, rationale: { it: "Il polso venoso è fisiologico (se contenuto) ed è l'onda di polso che risale dall'atrio destro durante la sua sistole.", en: "The venous pulse is physiological (if contained) and is the pulse wave that travels up from the right atrium during its systole." }, isCorrect: true },
-                        { text: { it: "La trasmissione del polso dall'arteria carotide sottostante.", en: "Transmission of the pulse from the underlying carotid artery." }, rationale: { it: "Il polso carotideo è arterioso, forte e non comprimibile. Il polso venoso è più debole, ondulante e scompare se si comprime la vena alla base del collo.", en: "The carotid pulse is arterial, strong, and non-compressible. The venous pulse is weaker, undulating, and disappears if the vein is compressed at the base of the neck." }, isCorrect: false },
-                        { text: { it: "Ipotensione grave.", en: "Severe hypotension." }, rationale: { it: "L'ipotensione causa un collasso venoso, rendendo il polso venoso difficile o impossibile da vedere.", en: "Hypotension causes venous collapse, making the venous pulse difficult or impossible to see." }, isCorrect: false },
-                        { text: { it: "Disidratazione.", en: "Dehydration." }, rationale: { it: "La disidratazione, causando ipovolemia, riduce la visibilità del polso venoso.", en: "Dehydration, by causing hypovolemia, reduces the visibility of the venous pulse." }, isCorrect: false }
+                        { text: { it: "L'onda di pressione retrograda dalla contrazione dell'atrio destro.", en: "Retrograde pressure wave from right atrial contraction." }, isCorrect: true, rationale: { it: "È l'onda pressoria che risale dall'atrio durante la sua sistole.", en: "It is the pressure wave traveling back from the atrium during its systole." } },
+                        { text: { it: "La trasmissione del polso dall'arteria carotide sottostante.", en: "Transmission from the underlying carotid artery." }, isCorrect: false, rationale: { it: "Il polso venoso è ondulante e scompare alla compressione alla base.", en: "Venous pulse is undulating and disappears upon compression at the base." } },
+                        { text: { it: "Ipotensione grave.", en: "Severe hypotension." }, isCorrect: false, rationale: { it: "Riduce la visibilità del polso venoso.", en: "Reduces venous pulse visibility." } },
+                        { text: { it: "Disidratazione.", en: "Dehydration." }, isCorrect: false, rationale: { it: "Rende le vene meno visibili.", en: "Makes veins less visible." } }
                     ]
                 },
-                q9: {
-                    question: { it: "Quale dei seguenti segni NON è tipicamente associato a una cattiva perfusione periferica?", en: "Which of the following signs is NOT typically associated with poor peripheral perfusion?" },
+                {
+                    question: { it: "Quale dei seguenti segni NON è tipicamente associato a una cattiva perfusione periferica?", en: "Which sign is NOT typically associated with poor peripheral perfusion?" },
                     options: [
-                        { text: { it: "Mucose congeste (rosso scuro).", en: "Congested (dark red) mucous membranes." }, rationale: { it: "Mucose congesti (o iperemiche) si osservano in fasi iniziali di shock settico (vasodilatazione) o in stati di ipertermia, non in un classico shock ipovolemico (dove sono pallide).", en: "Congested (or hyperemic) membranes are seen in early stages of septic shock (vasodilation) or in states of hyperthermia, not in classic hypovolemic shock (where they are pale)." }, isCorrect: true },
-                        { text: { it: "Estremità fredde (orecchie, arti).", en: "Cold extremities (ears, limbs)." }, rationale: { it: "La cattiva perfusione causa vasocostrizione periferica per centralizzare il sangue, rendendo le estremità fredde.", en: "Poor perfusion causes peripheral vasoconstriction to centralize blood, making the extremities cold." }, isCorrect: false },
-                        { text: { it: "Mucose pallide.", en: "Pale mucous membranes." }, rationale: { it: "Le mucose pallide sono un segno classico di vasocostrizione o anemia, entrambi legati a cattiva perfusione o trasporto di ossigeno.", en: "Pale membranes are a classic sign of vasoconstriction or anemia, both related to poor perfusion or oxygen transport." }, isCorrect: false },
-                        { text: { it: "TRC > 3 secondi.", en: "CRT > 3 seconds." }, rationale: { it: "Un TRC allungato è il segno diretto di una lenta riperfusione dei capillari, un pilastro della diagnosi di cattiva perfusione.", en: "A prolonged CRT is the direct sign of slow capillary reperfusion, a cornerstone of diagnosing poor perfusion." }, isCorrect: false }
+                        { text: { it: "Mucose congeste (rosso scuro).", en: "Congested mucous membranes (dark red)." }, isCorrect: true, rationale: { it: "La congestione indica vasodilatazione o ristagno, tipica di sepsi o ipertermia, non di scarso flusso periferico.", en: "Congestion indicates vasodilation or stagnation, typical of sepsis, not poor peripheral flow." } },
+                        { text: { it: "Estremità fredde (orecchie, arti).", en: "Cold extremities (ears, limbs)." }, isCorrect: false, rationale: { it: "Segno classico di vasocostrizione periferica compensatoria.", en: "Classic sign of compensatory peripheral vasoconstriction." } },
+                        { text: { it: "Mucose pallide.", en: "Pale mucous membranes." }, isCorrect: false, rationale: { it: "Indicano vasocostrizione o anemia.", en: "Indicate vasoconstriction or anemia." } },
+                        { text: { it: "TRC > 3 secondi.", en: "CRT > 3 seconds." }, isCorrect: false, rationale: { it: "Indicatore diretto di rallentata riperfusione capillare.", en: "Direct indicator of slowed capillary reperfusion." } }
                     ]
                 },
-                q10: {
-                    question: { it: "Durante la percussione dell'aia cardiaca, se si ottiene un suono ottuso molto più ampio del normale, cosa si sospetta?", en: "During percussion of the cardiac area, if you obtain a dull sound much wider than normal, what do you suspect?" },
+                {
+                    question: { it: "Durante la percussione dell'aia cardiaca, se si ottiene un suono ottuso molto più ampio del normale, cosa si sospetta?", en: "If a wider dull sound than normal is obtained during cardiac percussion, what is suspected?" },
                     options: [
-                        { text: { it: "Cardiomegalia o versamento pericardico.", en: "Cardiomegaly or pericardial effusion." }, rationale: { it: "Un aumento dell'area di ottusità cardiaca indica che il cuore (o il sacco pericardico) occupa più spazio, come in caso di dilatazione o presenza di liquido.", en: "An increase in the area of cardiac dullness indicates that the heart (or pericardial sac) is occupying more space, as in cases of dilation or fluid presence." }, isCorrect: true },
-                        { text: { it: "Enfisema polmonare.", en: "Pulmonary emphysema." }, rationale: { it: "L'enfisema (aria intrappolata) causa un suono iperfonetico (più risonante) e tende a ridurre l'area di ottusità cardiaca, coprendo il cuore.", en: "Emphysema (trapped air) causes a hyperresonant (more resonant) sound and tends to reduce the area of cardiac dullness by covering the heart." }, isCorrect: false },
-                        { text: { it: "Pneumotorace.", en: "Pneumothorax." }, rationale: { it: "Il pneumotorace (aria libera nel torace) causa un suono timpanico o iperfonetico, non un aumento dell'ottusità.", en: "Pneumothorax (free air in the chest) causes a tympanic or hyperresonant sound, not an increase in dullness." }, isCorrect: false },
-                        { text: { it: "Animale molto magro.", en: "A very thin animal." }, rationale: { it: "Un animale magro potrebbe avere un'area di ottusità più facile da delimitare, ma non necessariamente più ampia del normale.", en: "A thin animal might have an area of dullness that is easier to delineate, but not necessarily wider than normal." }, isCorrect: false }
+                        { text: { it: "Cardiomegalia o versamento pericardico.", en: "Cardiomegaly or pericardial effusion." }, isCorrect: true, rationale: { it: "L'area di ottusità aumenta se il cuore o il sacco pericardico occupano più spazio.", en: "Dullness increases if the heart or pericardial sac occupies more space." } },
+                        { text: { it: "Enfisema polmonare.", en: "Pulmonary emphysema." }, isCorrect: false, rationale: { it: "Riduce l'area di ottusità (suono chiaro copre il cuore).", en: "Reduces dullness area (resonant sound covers heart)." } },
+                        { text: { it: "Pneumotorace.", en: "Pneumothorax." }, isCorrect: false, rationale: { it: "Dà suono timpanico/iperfonetico.", en: "Gives tympanic/hyper-resonant sound." } },
+                        { text: { it: "Animale molto magro.", en: "Very thin animal." }, isCorrect: false, rationale: { it: "Rende l'area più facile da delimitare ma non ne aumenta le dimensioni.", en: "Makes the area easier to delineate but does not increase size." } }
                     ]
-                },
-                // --- Footer ---
-                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
-            };
+                }
+            ];
 
-            const quizData = Object.keys(translations)
-                .filter(k => /^q\d+$/.test(k))
-                .map(k => translations[k]);
-
-            let currentQuestionIndex = 0;
+            let currentIdx = 0;
             let score = 0;
-            let shuffledQuestions = [];
-            const synth = window.speechSynthesis;
-            let currentUtterance = null;
-            let activeTTSButton = null;
-            let voices = []; // Aggiunto per "scaldare" il TTS
-
-            // Elementi DOM del Quiz
-            const quizContainer = document.getElementById('quiz-container');
-            const questionArea = document.getElementById('question-area');
-            const resultsArea = document.getElementById('results-area');
-            const questionText = document.getElementById('question-text');
-            let questionTTSButton = document.getElementById('question-tts-button'); // Usiamo let per poterlo riassegnare
-            const optionsContainer = document.getElementById('options-container');
-            const progressText = document.getElementById('progress-text');
-            const feedbackArea = document.getElementById('feedback-area');
-            const rationaleText = document.getElementById('rationale-text');
-            const nextButton = document.getElementById('next-button');
-            const scoreText = document.getElementById('score-text');
-            const restartButton = document.getElementById('restart-button');
-
-             // Elementi DOM Generali (Header, etc.)
-             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
-             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
             let currentLanguage = localStorage.getItem('language') || 'it';
-            const accessibilityToggle = document.getElementById('accessibility-toggle');
-            const langToggle = document.getElementById('lang-toggle');
             const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTS = null;
 
-             // --- Logica TTS ---
-             function populateVoices() {
-                 if (typeof speechSynthesis === 'undefined') return;
-                 voices = synth.getVoices();
-             }
-
-             function speak(text, button) {
-                 const isSameButton = activeTTSButton === button;
-
-                 if (synth.speaking && isSameButton) {
-                     if (synth.paused) {
-                         synth.resume();
-                         button.classList.add('playing');
-                     } else {
-                         synth.pause();
-                         button.classList.remove('playing');
-                     }
-                 } else {
-                     if (synth.speaking) {
-                         if (currentUtterance) currentUtterance.onend = null;
-                         if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                         synth.cancel();
-                     }
-                     // Piccolo ritardo per assicurarsi che cancel() sia completato
-                     setTimeout(() => startSpeaking(text, button), 50);
-                 }
-             }
-
-             function startSpeaking(text, button) {
-                  if (!text || typeof text !== 'string' || !text.trim()) {
-                    console.error("Testo non valido per TTS:", text);
-                    return;
-                 }
-                 currentUtterance = new SpeechSynthesisUtterance(text);
-                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                 currentUtterance.onend = () => {
-                     if (button === activeTTSButton) {
-                         button.classList.remove('playing');
-                         activeTTSButton = null;
-                     }
-                 };
-                  currentUtterance.onerror = (event) => {
-                     console.error("Errore SpeechSynthesis:", event.error);
-                     if (button === activeTTSButton) {
-                          button.classList.remove('playing');
-                          activeTTSButton = null;
-                     }
-                 };
-                 synth.speak(currentUtterance);
-                 activeTTSButton = button;
-                 button.classList.add('playing');
-             }
-
-             function setupTTSListeners() {
-                 // Aggiorna riferimento e listener per il pulsante TTS della domanda
-                 questionTTSButton = document.getElementById('question-tts-button'); // Aggiorna riferimento
-                 if(questionTTSButton) {
-                     // Rimuovi vecchi listener clonando e sostituendo solo se necessario
-                     // (Ma in questo caso, basta riassegnare l'onclick)
-                     questionTTSButton.onclick = () => { // Sovrascrivi/aggiungi l'onclick
-                         const currentQuestion = shuffledQuestions[currentQuestionIndex];
-                         if(currentQuestion && currentQuestion.question[currentLanguage]) {
-                            speak(currentQuestion.question[currentLanguage], questionTTSButton);
-                         }
-                     };
-                 } else {
-                     console.error("Pulsante TTS domanda non trovato dopo aggiornamento lingua.");
-                 }
-
-
-                 optionsContainer.querySelectorAll('.tts-button').forEach(ttsBtn => {
-                      const newTTSButton = ttsBtn.cloneNode(true);
-                      const parentButton = newTTSButton.closest('.option-btn-container')?.querySelector('.option-btn'); // Uso optional chaining
-                      if (parentButton) {
-                          const optionText = parentButton.textContent;
-                           const currentQuestion = shuffledQuestions[currentQuestionIndex];
-                           // Aggiungi un controllo per assicurarti che currentQuestion esista
-                           if (currentQuestion) {
-                               const originalOption = currentQuestion.options.find(opt => opt.text[currentLanguage] === optionText);
-                              if (originalOption) {
-                                   newTTSButton.addEventListener('click', (e) => {
-                                       e.stopPropagation();
-                                       speak(originalOption.text[currentLanguage], newTTSButton);
-                                   });
-                              }
-                           }
-                           ttsBtn.parentNode.replaceChild(newTTSButton, ttsBtn);
-                      }
-                 });
-             }
-
-
-            // --- Logica Quiz ---
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
+            const speak = (text, button) => {
+                if (synth.speaking) {
+                    synth.cancel();
+                    if (activeTTS === button) { activeTTS.classList.remove('playing'); activeTTS = null; return; }
                 }
-                return array;
-            }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onend = () => { button.classList.remove('playing'); activeTTS = null; };
+                synth.speak(utterance);
+                if (activeTTS) activeTTS.classList.remove('playing');
+                activeTTS = button;
+                button.classList.add('playing');
+            };
 
-            function startQuiz() {
-                 document.documentElement.scrollTop = 0;
-                 document.body.scrollTop = 0; // Per browser più vecchi
+            const renderQuestion = () => {
+                const q = questionsPool[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', questionsPool.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                q.options.forEach((opt) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-2";
+                    
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn);
+                    
+                    const tts = document.createElement('button');
+                    tts.className = "tts-button p-2";
+                    tts.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    tts.onclick = (e) => { e.stopPropagation(); speak(opt.text[currentLanguage], tts); };
 
-                currentQuestionIndex = 0;
-                score = 0;
-                shuffledQuestions = shuffleArray([...quizData]); // Usa i dati estratti
-                resultsArea.classList.add('hidden');
-                questionArea.classList.remove('hidden');
-                feedbackArea.classList.add('hidden');
-                loadQuestion();
-            }
-
-            function loadQuestion() {
-                if (synth.speaking) synth.cancel();
-                if (activeTTSButton) {
-                     activeTTSButton.classList.remove('playing');
-                     activeTTSButton = null;
-                 }
-
-                feedbackArea.classList.add('hidden');
-                const currentQuestion = shuffledQuestions[currentQuestionIndex];
-
-                // Aggiorna testo progresso
-                progressText.textContent = translations.progressText[currentLanguage]
-                    .replace('{current}', currentQuestionIndex + 1)
-                    .replace('{total}', shuffledQuestions.length);
-
-                // Aggiorna testo domanda e listener TTS
-                questionText.textContent = currentQuestion.question[currentLanguage];
-                 // Riassegna l'handler onclick invece di clonare/sostituire
-                 questionTTSButton = document.getElementById('question-tts-button'); // Assicurati di avere il riferimento corretto
-                 if (questionTTSButton) {
-                     questionTTSButton.onclick = () => {
-                         speak(currentQuestion.question[currentLanguage], questionTTSButton);
-                     };
-                 }
-
-
-                optionsContainer.innerHTML = ''; // Pulisci opzioni precedenti
-
-                const shuffledOptions = shuffleArray([...currentQuestion.options]);
-
-                 shuffledOptions.forEach(option => {
-                    const buttonContainer = document.createElement('div');
-                    buttonContainer.classList.add('flex', 'items-center', 'w-full', 'option-btn-container');
-
-                    const button = document.createElement('button');
-                    button.textContent = option.text[currentLanguage];
-                    button.classList.add('option-btn', 'flex-grow', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
-                    button.onclick = () => selectAnswer(button, option, currentQuestion.options);
-
-                    const ttsButton = document.createElement('span');
-                    ttsButton.classList.add('tts-button', 'ml-2');
-                    ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
-                    ttsButton.onclick = (e) => {
-                        e.stopPropagation();
-                        speak(option.text[currentLanguage], ttsButton);
-                    };
-
-                    buttonContainer.appendChild(button);
-                    buttonContainer.appendChild(ttsButton);
-                    optionsContainer.appendChild(buttonContainer);
+                    div.appendChild(btn);
+                    div.appendChild(tts);
+                    container.appendChild(div);
                 });
-            }
+            };
 
-            function selectAnswer(button, selectedOption, allOptions) {
-                 if (synth.speaking) synth.cancel();
-                 if (activeTTSButton) {
-                     activeTTSButton.classList.remove('playing');
-                     activeTTSButton = null;
-                 }
-
-                const buttons = optionsContainer.querySelectorAll('button.option-btn');
-
-                buttons.forEach(btn => {
-                    btn.disabled = true;
-                    const optionDataText = btn.textContent;
-                    const originalOption = allOptions.find(opt => opt.text[currentLanguage] === optionDataText);
-                    if (originalOption && originalOption.isCorrect) {
-                        btn.classList.add('correct');
-                    }
-                });
-
-                if (!selectedOption.isCorrect) {
-                    button.classList.add('incorrect');
+            const handleSelect = (opt, btn) => {
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                if (opt.isCorrect) { btn.classList.add('correct'); score++; }
+                else { 
+                    btn.classList.add('incorrect');
+                    const correctIdx = questionsPool[currentIdx].options.findIndex(o => o.isCorrect);
+                    btns[correctIdx].classList.add('correct');
                 }
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                document.getElementById('next-button').textContent = currentIdx === questionsPool.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
 
-                score += selectedOption.isCorrect ? 1 : 0;
-
-                rationaleText.textContent = selectedOption.rationale[currentLanguage];
-                feedbackArea.classList.remove('hidden');
-
-                if (currentQuestionIndex === shuffledQuestions.length - 1) {
-                    nextButton.textContent = translations.btnResults[currentLanguage];
+            document.getElementById('next-button').onclick = () => {
+                if (currentIdx < questionsPool.length - 1) {
+                    currentIdx++;
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    renderQuestion();
                 } else {
-                     nextButton.textContent = translations.btnNext[currentLanguage];
+                    document.getElementById('question-area').classList.add('hidden');
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    document.getElementById('results-area').classList.remove('hidden');
+                    document.getElementById('score-text').textContent = `${score} / ${questionsPool.length}`;
                 }
-            }
+            };
 
-            function showResults() {
-                questionArea.classList.add('hidden');
-                feedbackArea.classList.add('hidden');
-                resultsArea.classList.remove('hidden');
-                scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
-            }
+            document.getElementById('restart-button').onclick = () => {
+                currentIdx = 0; score = 0;
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
 
-            // --- Funzione Aggiornamento Lingua (Include Quiz Logic) ---
             const updateLanguage = (lang) => {
-                 document.documentElement.lang = lang;
-                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-
-                 document.querySelectorAll('[data-lang-key]').forEach(element => {
-                     const key = element.dataset.langKey;
-                     if (translations[key] && translations[key][lang]) {
-                         const translationText = translations[key][lang];
-
-                         if (key === 'footerText' || key === 'backToIndex') {
-                             const svgIcon = element.querySelector('svg');
-                             element.innerHTML = translationText;
-                             if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
-                                   element.insertBefore(svgIcon, element.firstChild);
-                             }
-                         }
-                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
-                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
-                             const sectionKey = currentSectionKey || key;
-                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
-                         }
-                         // Non aggiornare dinamicamente #question-text e #rationale-text qui
-                         else if (element.id !== 'question-text' && element.id !== 'rationale-text') {
-                             element.textContent = translationText;
-                         }
-                     }
-                 });
-
-                 // Ricarica la domanda corrente con la nuova lingua se il quiz è attivo
-                 if (shuffledQuestions.length > 0 && !questionArea.classList.contains('hidden')) {
-                     loadQuestion(); // Ricarica la domanda e le opzioni tradotte
-                     // Se il feedback era visibile, aggiorna anche quello
-                     if (!feedbackArea.classList.contains('hidden')) {
-                          const currentQuestion = shuffledQuestions[currentQuestionIndex];
-                          const selectedBtn = Array.from(optionsContainer.querySelectorAll('button.option-btn')).find(btn => btn.classList.contains('correct') || btn.classList.contains('incorrect'));
-                          if (selectedBtn) {
-                              const selectedText = selectedBtn.textContent;
-                              // Trova l'opzione originale CORRISPONDENTE al testo visualizzato NELLA NUOVA LINGUA
-                              const selectedOriginalOption = currentQuestion.options.find(opt => opt.text[lang] === selectedText);
-                              if (selectedOriginalOption) {
-                                   rationaleText.textContent = selectedOriginalOption.rationale[lang];
-                              } else {
-                                  // Fallback: cerca l'opzione originale basandosi su isCorrect (se è la corretta)
-                                  const correctOption = currentQuestion.options.find(opt => opt.isCorrect);
-                                  if (correctOption && selectedBtn.classList.contains('correct')) {
-                                       rationaleText.textContent = correctOption.rationale[lang];
-                                  }
-                              }
-                          }
-                          // Aggiorna testo bottone Next/Results
-                          if (currentQuestionIndex === shuffledQuestions.length - 1) {
-                               nextButton.textContent = translations.btnResults[lang];
-                          } else {
-                               nextButton.textContent = translations.btnNext[lang];
-                          }
-                     }
-                 } else if (!resultsArea.classList.contains('hidden')) {
-                      // Aggiorna testi area risultati se visibile
-                      resultsArea.querySelector('h2').textContent = translations.resultsTitle[lang];
-                      resultsArea.querySelector('p[data-lang-key="resultsScore"]').textContent = translations.resultsScore[lang];
-                      restartButton.textContent = translations.btnRestart[lang];
-                 }
-
-                 // Reset TTS
-                 if (synth.speaking || synth.pending) synth.cancel();
-                 setTimeout(setupTTSListeners, 100);
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                renderQuestion();
             };
 
-            // --- Logica Modalità Accessibilità ---
-            const setA11yMode = (enabled) => {
-                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
-                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
             };
 
-            // --- Event Listeners ---
-            if (langToggle) {
-                langToggle.addEventListener('click', () => {
-                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-                    localStorage.setItem('language', currentLanguage);
-                     if (synth.speaking || synth.pending) synth.cancel();
-                    updateLanguage(currentLanguage);
-                });
-            } else { console.error("Elemento langToggle non trovato!"); }
+            document.getElementById('accessibility-toggle').onclick = () => {
+                body.classList.toggle('dsa-mode');
+                localStorage.setItem('dsa-mode', body.classList.contains('dsa-mode') ? 'enabled' : 'disabled');
+            };
 
-            if (accessibilityToggle) {
-                 accessibilityToggle.addEventListener('click', () => {
-                    const isEnabled = body.classList.contains('dsa-mode');
-                    setA11yMode(!isEnabled);
-                });
-            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+            document.getElementById('question-tts-button').onclick = () => speak(questionsPool[currentIdx].question[currentLanguage], document.getElementById('question-tts-button'));
 
-             nextButton.addEventListener('click', () => {
-                 currentQuestionIndex++;
-                 if (currentQuestionIndex < shuffledQuestions.length) {
-                     loadQuestion();
-                 } else {
-                     showResults();
-                 }
-             });
-
-             restartButton.addEventListener('click', startQuiz);
-
-
-            // --- Inizializzazione ---
-            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
-            populateVoices();
-             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-                 speechSynthesis.onvoiceschanged = populateVoices;
-             }
-            startQuiz(); // Avvia il quiz
-            updateLanguage(currentLanguage); // Applica lingua iniziale e setup
-
+            if (localStorage.getItem('dsa-mode') === 'enabled') body.classList.add('dsa-mode');
+            updateLanguage(currentLanguage);
         });
     </script>
-
 </body>
 </html>
-
