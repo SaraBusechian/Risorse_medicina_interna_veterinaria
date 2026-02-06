@@ -3,379 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Titolo specifico per questa pagina -->
     <title>Infografica: Sistema Endocrino - Semeiotica Vet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Stili Generali e dal Template */
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f1f5f9; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #475569; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #1e293b; }
+        .quick-nav-item.active { background-color: #1E3A8A; color: #ffffff !important; border-color: #1E3A8A; }
+
         .section-nav-link {
-            transition: background-color 0.3s, color 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            background-color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
         }
-        .section-nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        .section-nav-link.active {
-             background-color: white;
-             color: #1E3A8A;
-             cursor: default;
-        }
-        .content-card {
-             background-color: white;
-             border-radius: 0.75rem;
-             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-             padding: 1.5rem;
-             margin-top: 2rem;
-        }
-        @media (min-width: 768px) { /* md: */
-            .content-card { padding: 2.5rem; }
-        }
-        #page-header { position: static; }
-        .scrollable-nav {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .scrollable-nav::-webkit-scrollbar { display: none; }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #1E3A8A; cursor: default; }
 
-        /* Stili Specifici Infografica */
-         #main-content header h1 {
-             font-size: 2.25rem; /* text-4xl */
-             font-weight: 700;
-             color: #003f5c;
-             margin-bottom: 1rem; /* mb-4 */
-             text-align: center;
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 1000px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
         }
-         @media (min-width: 768px) { /* md: */
-             #main-content header h1 { font-size: 3rem; /* md:text-5xl */ }
-         }
-         #main-content header p {
-             font-size: 1.125rem; /* text-lg */
-             color: #4b5563; /* text-gray-600 */
-             max-width: 48rem; /* max-w-3xl */
-             margin-left: auto;
-             margin-right: auto;
-             margin-bottom: 3rem; /* mb-12 */
-             text-align: center;
-         }
-         #main-content h2 {
-             font-size: 1.875rem; /* text-3xl */
-             font-weight: 700;
-             text-align: center;
-             margin-bottom: 2rem; /* mb-8 */
-             color: #003f5c;
-        }
-         #main-content h3 {
-             font-weight: 700;
-             font-size: 1.25rem; /* text-xl */
-             margin-bottom: 0.5rem; /* mb-2 */
-        }
-         #main-content h4 {
-             font-weight: 700;
-             font-size: 1.125rem; /* text-lg */
-             margin-bottom: 0.5rem; /* mb-2 */
-        }
-         .flow-step { 
-             transition: transform 0.3s, box-shadow 0.3s; 
-             border-top-width: 4px; 
-             border-radius: 0.5rem; 
-             padding: 1.5rem; 
-             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
-             background-color: white; 
-             height: 100%; /* Fai in modo che le card abbiano stessa altezza */
-         }
-         .flow-step:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-         
-         .icon-box {
-             background-color: #f0f9ff; /* light blue bg */
-             color: #1e3a8a; /* dark blue text */
-             border-radius: 0.5rem;
-             padding: 1.5rem;
-             height: 100%;
-             border-left-width: 4px;
-         }
-         .icon-box svg {
-             width: 2.5rem; /* 40px */
-             height: 2.5rem; /* 40px */
-             margin-bottom: 1rem;
-             stroke-width: 1.5;
-             stroke: currentColor;
-             fill: none;
-         }
-         
-        /* DSA Mode Styles */
-        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
-        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
-        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
-        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
-        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
-        .dsa-mode #main-content h1, .dsa-mode #main-content h2, .dsa-mode #main-content h3, .dsa-mode #main-content h4, .dsa-mode #main-content p, .dsa-mode #main-content li, .dsa-mode #main-content strong, .dsa-mode #main-content div { color: #34495e !important; }
-        .dsa-mode .flow-step, .dsa-mode .bg-white, .dsa-mode .icon-box { background-color: #fffdfa !important; border-color: #e0e0e0 !important; }
-         .dsa-mode .bg-blue-50, .dsa-mode .bg-red-50, .dsa-mode .bg-yellow-50, .dsa-mode .bg-gray-50 { background-color: #fefcf7 !important; }
 
-        /* Print Styles */
+        /* Stili Infografica */
+        h2 { font-family: 'Lexend', sans-serif; color: #1e40af; border-bottom: 2px solid #dbeafe; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700; text-align: center; }
+        .flow-step { border-top: 4px solid #1e3a8a; padding: 1.5rem; background-color: #f8fafc; border-radius: 0.5rem; height: 100%; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .flow-step:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .icon-box { background-color: #f0f9ff; color: #1e3a8a; border-radius: 0.5rem; padding: 1.5rem; height: 100%; border-left-width: 4px; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .flow-step, .dsa-mode .icon-box, .dsa-mode .bg-blue-50, .dsa-mode .bg-white { background-color: #ffffff !important; border: 2px solid #000 !important; }
+
         @media print {
-            body { background-color: #ffffff; margin: 0; padding: 0; font-family: sans-serif; }
-            #page-header, #main-footer { display: none; }
-            .container { max-width: 100%; padding: 1cm; margin: 0; }
-            .content-card { box-shadow: none; border: none; padding: 0; margin: 0; }
-             #main-content header h1 { font-size: 18pt; text-align: center; color: #000 !important; }
-             #main-content header p { font-size: 11pt; color: #333 !important; }
-             #main-content h2 { font-size: 14pt; color: #000 !important; }
-             #main-content h3 { font-size: 12pt; color: #000 !important; }
-             #main-content h4 { font-size: 11pt; color: #000 !important; }
-             #main-content .flow-step, #main-content .icon-box, #main-content .bg-gray-50 { border: 1px solid #ccc; background-color: #f9f9f9 !important; padding: 0.75rem; page-break-inside: avoid; }
-             .grid { display: grid; grid-template-columns: repeat(2, 1fr) !important; gap: 1rem; }
-             section { margin-bottom: 1.5rem; page-break-inside: avoid; }
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50">
 
-    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
-    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
-        <div class="container mx-auto px-6 py-3">
-            <!-- Riga Superiore: Torna all'indice + Controlli -->
-            <div class="flex justify-between items-center mb-4">
-                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
-                 </a>
-                 <div class="flex items-center space-x-2">
-                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
-                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
-                 </div>
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
+        </nav>
+    </header>
 
-            <!-- Titolo della Sezione -->
-            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleEndo">8. Sistema Endocrino</h1>
-
-            <!-- Navigazione Interna alla Sezione -->
-            <nav class="scrollable-nav">
-                 <div class="flex space-x-2 pb-2">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index_semeiotica.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleEndo">8. Sistema Endocrino</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
                      <a href="riassunto_endocrino.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
                      <a href="infografica_endocrino.html" class="section-nav-link active" data-lang-key="navInfographic">Infografica</a>
                      <a href="checklist_endocrino.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
                      <a href="collaterali_endocrino.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
                      <a href="quiz_endocrino.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
-                     <a href="riassunto_endocrino.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
                 </div>
             </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item active" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <header class="text-center">
+                <h1 class="text-3xl font-bold mb-2" data-lang-key="pageTitle">Infografica: Sistema Endocrino</h1>
+                <p class="text-gray-600" data-lang-key="pageSubtitle">L'esame clinico si basa sul riconoscimento di pattern e sindromi.</p>
+            </header>
+
+            <main class="space-y-16 mt-12">
+                
+                <section>
+                    <h2 data-lang-key="flowTitle">Principali Sindromi Cliniche (Cavallo)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                        
+                        <!-- PPID -->
+                        <div class="flow-step border-[#6366f1]">
+                            <h3 class="text-[#4338ca]" data-lang-key="synd1Title">PPID (Cushing Equino)</h3>
+                            <p class="text-sm font-semibold text-gray-600 mb-4" data-lang-key="synd1Subtitle">Disfunzione Ipofisaria (tipica dell'anziano)</p>
+                            <ul class="list-disc list-inside text-sm space-y-2 text-left text-gray-700">
+                                <li data-lang-key="synd1Li1"><strong>Irsutismo:</strong> Pelo lungo, riccio, che non muta.</li>
+                                <li data-lang-key="synd1Li2"><strong>PU/PD:</strong> L'animale beve e urina eccessivamente.</li>
+                                <li data-lang-key="synd1Li3"><strong>Laminite Cronica:</strong> Spesso il motivo della visita.</li>
+                                <li data-lang-key="synd1Li4"><strong>Atrofia Muscolare:</strong> Soprattutto sulla linea dorsale.</li>
+                                <li data-lang-key="synd1Li5">Sudorazione anomala, letargia, infezioni ricorrenti.</li>
+                            </ul>
+                        </div>
+
+                        <!-- EMS -->
+                        <div class="flow-step border-[#f59e0b]">
+                            <h3 class="text-[#b45309]" data-lang-key="synd2Title">Sindrome Metabolica Equina (EMS)</h3>
+                            <p class="text-sm font-semibold text-gray-600 mb-4" data-lang-key="synd2Subtitle">Resistenza all'Insulina (spesso in soggetti più giovani)</p>
+                            <ul class="list-disc list-inside text-sm space-y-2 text-left text-gray-700">
+                                <li data-lang-key="synd2Li1"><strong>Obesità:</strong> Soggetto sovrappeso con difficoltà a dimagrire.</li>
+                                <li data-lang-key="synd2Li2"><strong>Depositi Adiposi:</strong> "Cresty neck", spalla e base coda.</li>
+                                <li data-lang-key="synd2Li3"><strong>Laminite:</strong> Elevato rischio di episodi acuti o cronici.</li>
+                                <li data-lang-key="synd2Li4">Pelo normale (assenza di irsutismo).</li>
+                                <li data-lang-key="synd2Li5">PU/PD possibile se presente iperglicemia.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <!-- Palpazione Tiroide -->
+                    <div class="bg-white rounded-lg shadow-md p-6 h-full border border-gray-100">
+                        <h3 class="text-xl font-bold mb-4 text-[#0d47a1] text-center" data-lang-key="palpTitle">Palpazione della Tiroide</h3>
+                        <p class="text-center text-sm text-gray-600 mb-6" data-lang-key="palpDesc">L'unica ghiandola endocrina accessibile alla palpazione di routine.</p>
+                        <div class="p-4 bg-blue-50 rounded-lg border border-blue-100">
+                            <h4 class="font-bold text-blue-800 mb-1" data-lang-key="palpGoiterTitle">Gozzo (Aumento di Volume)</h4>
+                            <p class="text-xs text-gray-700" data-lang-key="palpGoiterDesc">Valutare dimensioni, simmetria e consistenza. Comune nei puledri o bovini per carenza di Iodio.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Esami Collaterali -->
+                    <div class="bg-white rounded-lg shadow-md p-6 h-full border border-gray-100">
+                        <h3 class="text-xl font-bold mb-4 text-[#047857] text-center" data-lang-key="testsTitle">Diagnosi: Esami Collaterali</h3>
+                        <p class="text-center text-sm text-gray-600 mb-6" data-lang-key="testsDesc">Il sospetto clinico deve essere confermato dai test ormonali.</p>
+                        <ul class="list-disc list-inside text-sm space-y-2 text-left text-gray-700">
+                            <li data-lang-key="testsLi1"><strong>PPID:</strong> ACTH basale o Test stimolazione TRH.</li>
+                            <li data-lang-key="testsLi2"><strong>EMS:</strong> Insulina basale o Oral Sugar Test (OST).</li>
+                            <li data-lang-key="testsLi3"><strong>Tiroide:</strong> Dosaggio T4, T3 (interpretazione complessa).</li>
+                            <li data-lang-key="testsLi4"><strong>Urine:</strong> Valutazione Peso Specifico per PU/PD.</li>
+                        </ul>
+                    </div>
+                </section>
+
+            </main>
 
         </div>
-    </header>
-    <!-- === FINE HEADER === -->
-
-    <!-- Main Content Container -->
-    <main class="container mx-auto p-4 md:px-8 md:py-12">
-        <!-- Card Contenuto -->
-        <div id="main-content" class="content-card">
-
-            <!-- Contenuto Specifico Infografica -->
-             <header class="text-center">
-                 <h1 data-lang-key="pageTitle">Infografica: Sistema Endocrino</h1>
-                 <p data-lang-key="pageSubtitle">L'esame clinico si basa sul riconoscimento di pattern e sindromi.</p>
-             </header>
-
-             <main class="space-y-16 mt-12">
-                 
-                 <section>
-                     <h2 data-lang-key="flowTitle">Principali Sindromi Cliniche (Cavallo)</h2>
-                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-                         
-                         <!-- PPID -->
-                         <div class="flow-step border-[#6366f1]"> <!-- Indigo -->
-                             <h3 class="text-[#4338ca]" data-lang-key="synd1Title">PPID (Cushing Equino)</h3>
-                             <p class="text-sm font-semibold text-gray-600" data-lang-key="synd1Subtitle">Disfunzione Ipofisaria (tipica dell'anziano)</p>
-                             <ul class="list-disc list-inside text-sm mt-4 space-y-2 text-left">
-                                <li data-lang-key="synd1Li1"><strong>Irsutismo:</strong> Pelo lungo, riccio, che non muta. (Segno patognomonico)</li>
-                                <li data-lang-key="synd1Li2"><strong>Poliuria/Polidipsia (PU/PD):</strong> Beve e urina molto.</li>
-                                <li data-lang-key="synd1Li3"><strong>Laminite Cronica:</strong> Frequente e spesso refrattaria.</li>
-                                <li data-lang-key="synd1Li4"><strong>Perdita di Massa Muscolare:</strong> Soprattutto sulla linea dorsale.</li>
-                                <li data-lang-key="synd1Li5">Sudorazione anomala, letargia, infezioni ricorrenti.</li>
-                             </ul>
-                         </div>
-
-                         <!-- EMS -->
-                         <div class="flow-step border-[#f59e0b]"> <!-- Amber -->
-                             <h3 class="text-[#b45309]" data-lang-key="synd2Title">Sindrome Metabolica Equina (EMS)</h3>
-                             <p class="text-sm font-semibold text-gray-600" data-lang-key="synd2Subtitle">Resistenza all'Insulina (spesso in soggetti più giovani)</p>
-                             <ul class="list-disc list-inside text-sm mt-4 space-y-2 text-left">
-                                <li data-lang-key="synd2Li1"><strong>Obesità o Sovrappeso:</strong> Difficoltà a perdere peso.</li>
-                                <li data-lang-key="synd2Li2"><strong>Depositi di Grasso Anomali:</strong> "Cresty neck" (collo ingrossato), grasso su spalla e base della coda.</li>
-                                <li data-lang-key="synd2Li3"><strong>Laminite Cronica:</strong> Rischio molto elevato, spesso è il motivo della visita.</li>
-                                <li data-lang-key="synd2Li4">Pelo normale (assenza di irsutismo).</li>
-                                <li data-lang-key="synd2Li5">Può avere PU/PD se c'è iperglicemia.</li>
-                             </ul>
-                         </div>
-                     </div>
-                 </section>
-
-                 <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                     <!-- Palpazione Tiroide -->
-                     <div class="bg-white rounded-lg shadow-md p-6 h-full">
-                         <h3 class="text-2xl font-bold mb-4 text-[#0d47a1] text-center" data-lang-key="palpTitle">Palpazione della Tiroide</h3>
-                         <p class="text-center text-gray-600 mb-6" data-lang-key="palpDesc">È l'unica ghiandola endocrina accessibile alla palpazione di routine nei grandi animali.</p>
-                         <div class="p-4 bg-blue-50 rounded-lg" data-lang-key="palpGoiter">
-                             <h4 class="font-bold text-lg text-blue-800">Gozzo (Aumento di Volume)</h4>
-                             <p class="text-sm text-gray-700">Valutare dimensioni, simmetria e consistenza. Comune nei puledri o bovini per squilibri di Iodio.</p>
-                         </div>
-                     </div>
-                     
-                     <!-- Esami Collaterali -->
-                     <div class="bg-white rounded-lg shadow-md p-6 h-full">
-                         <h3 class="text-2xl font-bold mb-4 text-[#047857] text-center" data-lang-key="testsTitle">Diagnosi: Esami Collaterali</h3>
-                         <p class="text-center text-gray-600 mb-6" data-lang-key="testsDesc">L'esame clinico da solo non basta. La diagnosi richiede test ormonali specifici.</p>
-                         <ul class="list-disc list-inside text-sm mt-2 space-y-2 text-left">
-                            <li data-lang-key="testsLi1"><strong>PPID:</strong> Dosaggio ACTH basale, Test di soppressione con Desametasone.</li>
-                            <li data-lang-key="testsLi2"><strong>EMS:</strong> Dosaggio basale di Insulina e Glucosio.</li>
-                            <li data-lang-key="testsLi3"><strong>Tiroide:</strong> Dosaggio T3, T4, TSH (spesso poco affidabile nel cavallo).</li>
-                         </ul>
-                     </div>
-                 </section>
-
-             </main>
-            <!-- Fine Contenuto Specifico Infografica -->
-
-        </div> <!-- Fine content-card -->
     </main>
 
-    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
-        </div>
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            // === TRADUZIONI ===
             const translations = {
-                 // --- Header ---
-                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
                 sectionTitleEndo: { it: '8. Sistema Endocrino', en: '8. Endocrine System' },
                 navSummary: { it: 'Riassunto', en: 'Summary' },
                 navInfographic: { it: 'Infografica', en: 'Infographic' },
                 navChecklist: { it: 'Checklist', en: 'Checklist' },
                 navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
                 navQuiz: { it: 'Quiz', en: 'Quiz' },
-                navAudio: { it: 'Audio', en: 'Audio' },
-                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                 // --- Contenuto Infografica Endocrino ---
-                 pageTitle: { it: "Infografica: Sistema Endocrino", en: "Infographic: Endocrine System" },
-                 pageSubtitle: { it: "L'esame clinico si basa sul riconoscimento di pattern e sindromi.", en: "The clinical exam is based on recognizing patterns and syndromes." },
-                 flowTitle: { it: "Principali Sindromi Cliniche (Cavallo)", en: "Main Clinical Syndromes (Horse)" },
-                 synd1Title: { it: "PPID (Cushing Equino)", en: "PPID (Equine Cushing's)" },
-                 synd1Subtitle: { it: "Disfunzione Ipofisaria (tipica dell'anziano)", en: "Pituitary Dysfunction (typical in older horses)" },
-                 synd1Li1: { it: "<strong>Irsutismo:</strong> Pelo lungo, riccio, che non muta. (Segno patognomonico)", en: "<strong>Hirsutism:</strong> Long, curly coat that fails to shed. (Pathognomonic sign)" },
-                 synd1Li2: { it: "<strong>Poliuria/Polidipsia (PU/PD):</strong> Beve e urina molto.", en: "<strong>Polyuria/Polydipsia (PU/PD):</strong> Drinks and urinates a lot." },
-                 synd1Li3: { it: "<strong>Laminite Cronica:</strong> Frequente e spesso refrattaria.", en: "<strong>Chronic Laminitis:</strong> Frequent and often refractory." },
-                 synd1Li4: { it: "<strong>Perdita di Massa Muscolare:</strong> Soprattutto sulla linea dorsale.", en: "<strong>Muscle Wasting:</strong> Especially over the topline." },
-                 synd1Li5: { it: "Sudorazione anomala, letargia, infezioni ricorrenti.", en: "Abnormal sweating, lethargy, recurrent infections." },
-                 
-                 synd2Title: { it: "Sindrome Metabolica Equina (EMS)", en: "Equine Metabolic Syndrome (EMS)" },
-                 synd2Subtitle: { it: "Resistenza all'Insulina (spesso in soggetti più giovani)", en: "Insulin Resistance (often in younger subjects)" },
-                 synd2Li1: { it: "<strong>Obesità o Sovrappeso:</strong> Difficoltà a perdere peso.", en: "<strong>Obesity or Overweight:</strong> Difficulty losing weight." },
-                 synd2Li2: { it: "<strong>Depositi di Grasso Anomali:</strong> \"Cresty neck\" (collo ingrossato), grasso su spalla e base della coda.", en: "<strong>Abnormal Fat Deposits:</strong> \"Cresty neck\", fat pads on shoulders and tailhead." },
-                 synd2Li3: { it: "<strong>Laminite Cronica:</strong> Rischio molto elevato, spesso è il motivo della visita.", en: "<strong>Chronic Laminitis:</strong> Very high risk, often the presenting complaint." },
-                 synd2Li4: { it: "Pelo normale (assenza di irsutismo).", en: "Normal coat (no hirsutism)." },
-                 synd2Li5: { it: "Può avere PU/PD se c'è iperglicemia.", en: "May have PU/PD if hyperglycemic." },
-
-                 palpTitle: { it: "Palpazione della Tiroide", en: "Thyroid Palpation" },
-                 palpDesc: { it: "È l'unica ghiandola endocrina accessibile alla palpazione di routine nei grandi animali.", en: "It is the only endocrine gland accessible to routine palpation in large animals." },
-                 palpGoiter: { it: "<h4 class=\"font-bold text-lg text-blue-800\">Gozzo (Aumento di Volume)</h4><p class=\"text-sm text-gray-700\">Valutare dimensioni, simmetria e consistenza. Comune nei puledri o bovini per squilibri di Iodio.</p>", en: "<h4 class=\"font-bold text-lg text-blue-800\">Goiter (Enlargement)</h4><p class=\"text-sm text-gray-700\">Assess size, symmetry, and consistency. Common in foals or cattle due to Iodine imbalances.</p>" },
-
-                 testsTitle: { it: "Diagnosi: Esami Collaterali", en: "Diagnosis: Ancillary Tests" },
-                 testsDesc: { it: "L'esame clinico da solo non basta. La diagnosi richiede test ormonali specifici.", en: "The clinical exam alone is not enough. Diagnosis requires specific hormonal tests." },
-                 testsLi1: { it: "<strong>PPID:</strong> Dosaggio ACTH basale, Test di soppressione con Desametasone.", en: "<strong>PPID:</strong> Baseline ACTH assay, Dexamethasone Suppression Test." },
-                 testsLi2: { it: "<strong>EMS:</strong> Dosaggio basale di Insulina e Glucosio.", en: "<strong>EMS:</strong> Baseline Insulin and Glucose assay." },
-                 testsLi3: { it: "<strong>Tiroide:</strong> Dosaggio T3, T4, TSH (spesso poco affidabile nel cavallo).", en: "<strong>Thyroid:</strong> T3, T4, TSH assay (often unreliable in horses)." },
-
-                // --- Footer ---
-                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical Examination" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular System" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory System" },
+                navDig: { it: "Apparato Digerente", en: "Digestive System" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal System" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary System" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic System" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine System" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous System" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary System" },
+                pageTitle: { it: "Infografica: Sistema Endocrino", en: "Infographic: Endocrine System" },
+                pageSubtitle: { it: "L'esame clinico si basa sul riconoscimento di pattern e sindromi.", en: "The clinical exam is based on recognizing patterns and syndromes." },
+                flowTitle: { it: "Principali Sindromi Cliniche (Cavallo)", en: "Major Clinical Syndromes (Horse)" },
+                synd1Title: { it: "PPID (Cushing Equino)", en: "PPID (Equine Cushing's)" },
+                synd1Subtitle: { it: "Disfunzione Ipofisaria (tipica dell'anziano)", en: "Pituitary Dysfunction (typical in aged horses)" },
+                synd1Li1: { it: "<strong>Irsutismo:</strong> Pelo lungo, riccio, che non muta.", en: "<strong>Hirsutism:</strong> Long, curly coat that fails to shed." },
+                synd1Li2: { it: "<strong>PU/PD:</strong> L'animale beve e urina eccessivamente.", en: "<strong>PU/PD:</strong> Excessive drinking and urination." },
+                synd1Li3: { it: "<strong>Laminite Cronica:</strong> Spesso il motivo della visita.", en: "<strong>Chronic Laminitis:</strong> Often the presenting complaint." },
+                synd1Li4: { it: "<strong>Atrofia Muscolare:</strong> Soprattutto sulla linea dorsale.", en: "<strong>Muscle Wasting:</strong> Especially along the topline." },
+                synd1Li5: { it: "Sudorazione anomala, letargia, infezioni ricorrenti.", en: "Abnormal sweating, lethargy, recurrent infections." },
+                synd2Title: { it: "Sindrome Metabolica Equina (EMS)", en: "Equine Metabolic Syndrome (EMS)" },
+                synd2Subtitle: { it: "Resistenza all'Insulina (spesso in soggetti più giovani)", en: "Insulin Resistance (often in younger subjects)" },
+                synd2Li1: { it: "<strong>Obesità:</strong> Soggetto sovrappeso con difficoltà a dimagrire.", en: "<strong>Obesity:</strong> Overweight subject with difficulty losing weight." },
+                synd2Li2: { it: "<strong>Depositi Adiposi:</strong> \"Cresty neck\", spalla e base coda.", en: "<strong>Fat Deposits:</strong> \"Cresty neck\", shoulders and tail base." },
+                synd2Li3: { it: "<strong>Laminite:</strong> Elevato rischio di episodi acuti o cronici.", en: "<strong>Laminitis:</strong> High risk of acute or chronic episodes." },
+                synd2Li4: { it: "Pelo normale (assenza di irsutismo).", en: "Normal coat (no hirsutism)." },
+                synd2Li5: { it: "PU/PD possibile se presente iperglicemia.", en: "PU/PD possible if hyperglycemia is present." },
+                palpTitle: { it: "Palpazione della Tiroide", en: "Thyroid Palpation" },
+                palpDesc: { it: "L'unica ghiandola endocrina accessibile alla palpazione di routine.", en: "The only endocrine gland accessible for routine palpation." },
+                palpGoiterTitle: { it: "Gozzo (Aumento di Volume)", en: "Goiter (Enlargement)" },
+                palpGoiterDesc: { it: "Valutare dimensioni, simmetria e consistenza. Comune nei puledri o bovini per carenza di Iodio.", en: "Assess size, symmetry, and consistency. Common in foals or cattle due to Iodine deficiency." },
+                testsTitle: { it: "Diagnosi: Esami Collaterali", en: "Diagnosis: Ancillary Tests" },
+                testsDesc: { it: "Il sospetto clinico deve essere confermato dai test ormonali.", en: "Clinical suspicion must be confirmed by hormonal tests." },
+                testsLi1: { it: "<strong>PPID:</strong> ACTH basale o Test stimolazione TRH.", en: "<strong>PPID:</strong> Baseline ACTH or TRH stimulation test." },
+                testsLi2: { it: "<strong>EMS:</strong> Insulina basale o Oral Sugar Test (OST).", en: "<strong>EMS:</strong> Baseline insulin or Oral Sugar Test (OST)." },
+                testsLi3: { it: "<strong>Tiroide:</strong> Dosaggio T4, T3 (interpretazione complessa).", en: "<strong>Thyroid:</strong> T4, T3 assays (complex interpretation)." },
+                testsLi4: { it: "<strong>Urine:</strong> Valutazione Peso Specifico per PU/PD.", en: "<strong>Urinalysis:</strong> SG assessment for PU/PD." },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
             };
 
-             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
-             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
             let currentLanguage = localStorage.getItem('language') || 'it';
-            const accessibilityToggle = document.getElementById('accessibility-toggle');
-            const langToggle = document.getElementById('lang-toggle');
             const body = document.body;
-            // No TTS logic needed
 
-            // --- Funzione Aggiornamento Lingua ---
-             const updateLanguage = (lang, previousLang = null) => {
-                 document.documentElement.lang = lang;
-                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-
-                 document.querySelectorAll('[data-lang-key]').forEach(element => {
-                     const key = element.dataset.langKey;
-                     if (translations[key] && translations[key][lang]) {
-                         const translationText = translations[key][lang];
-
-                         if (key === 'footerText' || key === 'backToIndex') {
-                              const svgIcon = element.querySelector('svg');
-                              element.innerHTML = translationText;
-                              if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) { element.insertBefore(svgIcon, element.firstChild); }
-                         }
-                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
-                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
-                             const sectionKey = currentSectionKey || key;
-                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
-                         }
-                         else if (element.closest('#main-content')) {
-                             const svgIcon = element.querySelector('svg');
-                             element.innerHTML = translationText;
-                             if (svgIcon && (element.classList.contains('icon-box') || element.querySelector('h4'))) {
-                                 element.insertBefore(svgIcon, element.firstChild);
-                             }
-                         }
-                         else { element.textContent = translationText; }
-                     }
-                 });
-             };
-
-            // --- Logica Modalità Accessibilità ---
-            const setA11yMode = (enabled) => {
-                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
-                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
             };
 
-            // --- Event Listeners ---
-            if (langToggle) {
-                langToggle.addEventListener('click', () => {
-                    const previousLanguage = currentLanguage;
-                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-                    localStorage.setItem('language', currentLanguage);
-                     updateLanguage(currentLanguage, previousLanguage);
-                });
-            } else { console.error("Elemento langToggle non trovato!"); }
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
 
-            if (accessibilityToggle) {
-                 accessibilityToggle.addEventListener('click', () => {
-                    const isEnabled = body.classList.contains('dsa-mode');
-                    setA11yMode(!isEnabled);
-                });
-            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
 
-            // --- Inizializzazione ---
-            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
             updateLanguage(currentLanguage);
-
         });
     </script>
-
 </body>
 </html>
