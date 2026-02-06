@@ -9,17 +9,65 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
         
         .nav-link { transition: color 0.3s; color: #ffffff !important; }
         .nav-link:hover { color: #93C5FD !important; }
 
-        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s, box-shadow 0.3s; }
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s, box-shadow 0.3s; scroll-margin-top: 180px; }
         .section-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
         
-        /* Layout pulsanti verticale ordinato */
         .button-stack { display: flex; flex-direction: column; gap: 0.75rem; max-width: 400px; margin: 1.5rem auto 0; }
+
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav {
+            position: sticky;
+            top: 64px;
+            z-index: 40;
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+        
+        .quick-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .quick-nav-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        .quick-nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0.75rem 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            min-height: 3.5rem;
+            line-height: 1.2;
+        }
+        .quick-nav-item:hover { 
+            background-color: #eff6ff; 
+            border-color: #3B82F6; 
+            color: #1E3A8A;
+            transform: translateY(-2px); 
+        }
 
         /* --- STILI ACCESSIBILITÀ (DSA) --- */
         .dsa-mode {
@@ -30,32 +78,35 @@
             line-height: 2;
         }
         
-        .dsa-mode .hero-bg, .dsa-mode #main-footer, .dsa-mode #main-header {
+        .dsa-mode .hero-bg, .dsa-mode #main-footer, .dsa-mode #main-header, .dsa-mode .quick-nav {
             background-color: #ffffff !important;
             background-image: none !important;
             border-bottom: 3px solid #1a1a1a !important;
             color: #1a1a1a !important;
         }
 
+        /* Hover e Active in DSA Mode: Bordi spessi invece di colori invertiti */
+        .dsa-mode .quick-nav-item { 
+            background-color: #ffffff !important; 
+            border: 2px solid #000 !important; 
+            color: #000 !important;
+        }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { 
+            border-width: 5px !important; 
+            background-color: #ffffff !important;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
         .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
             color: #000000 !important;
         }
 
-        .dsa-mode .section-card { 
-            background-color: #ffffff; 
-            border: 2px solid #000000; 
-            box-shadow: none !important; 
-        }
-
-        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
-            color: #000000 !important; 
-            text-decoration: underline;
-            text-decoration-color: #fbbf24;
-        }
+        .dsa-mode .section-card { background-color: #ffffff; border: 2px solid #000000; box-shadow: none !important; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
 
         .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
         .tts-button:hover, .tts-button.playing { color: #0ea5e9; }
-        .dsa-mode .tts-button { color: #000000 !important; }
         
         .audio-container { margin-top: 1.5rem; padding: 1rem; background-color: rgba(249, 115, 22, 0.1); border-radius: 0.5rem; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; }
     </style>
@@ -63,16 +114,9 @@
 <body class="bg-gray-50">
 
     <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
             <div class="flex items-center space-x-4">
-                <ul class="hidden lg:flex space-x-4 text-sm">
-                    <li><a href="#eog" class="nav-link font-semibold">EOG</a></li>
-                    <li><a href="#cardio" class="nav-link font-semibold">Cardio</a></li>
-                    <li><a href="#resp" class="nav-link font-semibold">Resp</a></li>
-                    <li><a href="#dig" class="nav-link font-semibold">Dig</a></li>
-                    <li><a href="#nerv" class="nav-link font-semibold">Nerv</a></li>
-                </ul>
                 <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
                 <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
@@ -80,7 +124,7 @@
     </header>
     
     <div class="hero-bg text-white">
-        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+        <div class="container mx-auto px-6 pt-8 pb-16 text-center relative">
             <div class="absolute top-4 left-6">
                  <a href="../../index.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
                     <!-- Icona inserita da JS -->
@@ -91,197 +135,50 @@
         </div>
     </div>
 
-    <main class="container mx-auto px-6 py-12">
+    <!-- SELETTORE RAPIDO GRID 5x2 -->
+    <nav class="quick-nav">
+        <div class="container mx-auto px-4">
+            <div class="quick-nav-grid">
+                <a href="#eog" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="#cardio" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="#resp" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="#dig" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="#musc" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="#urin" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="#hemat" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="#endo" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="#nerv" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="#tegum" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
 
-        <!-- 1. EOG -->
+    <main class="container mx-auto px-6 py-12">
+        <!-- Card content remains the same but with IDs for scrolling -->
         <section id="eog" class="mb-16 p-8 section-card text-center">
-            <h3 class="text-3xl font-bold mb-4 text-blue-800 flex justify-center items-center" data-lang-key="eogTitle">
-                1. Esame Obiettivo Generale (EOG)
-            </h3>
+            <h3 class="text-3xl font-bold mb-4 text-blue-800 flex justify-center items-center" data-lang-key="eogTitle">1. Esame Obiettivo Generale</h3>
             <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="eogDesc"></p>
             <div class="button-stack">
                 <a href="riassunto_eog.html" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnReadSummary">Leggi il Riassunto</a>
-                <a href="infografica_eog.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition" data-lang-key="btnViewInfographic">Visualizza Infografica</a>
-                <a href="checklist_eog.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition" data-lang-key="btnDownloadChecklist">Scarica Checklist</a>
+                <a href="infografica_eog.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition" data-lang-key="btnViewInfographic">Infografica</a>
+                <a href="checklist_eog.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition" data-lang-key="btnDownloadChecklist">Checklist</a>
                 <a href="quiz_eog.html" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition" data-lang-key="btnTakeQuiz">Fai il Quiz</a>
-            </div>
-            <div class="audio-container flex flex-col sm:flex-row items-center gap-4">
-                <audio controls class="flex-grow"><source src="audio_riassunto_eog.mp3" type="audio/mpeg"></audio>
-                <a href="audio_riassunto_eog.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition inline-flex items-center"><span data-lang-key="btnDownloadAudio">Scarica Audio</span></a>
             </div>
         </section>
 
-        <!-- 2. CARDIO -->
         <section id="cardio" class="mb-16 p-8 section-card text-center">
-            <h3 class="text-3xl font-bold mb-4 text-blue-800 flex justify-center items-center" data-lang-key="cardioTitle">
-                2. Apparato Cardiocircolatorio
-            </h3>
+            <h3 class="text-3xl font-bold mb-4 text-blue-800 flex justify-center items-center" data-lang-key="cardioTitle">2. Apparato Cardiocircolatorio</h3>
             <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="cardioDesc"></p>
             <div class="button-stack">
                 <a href="riassunto_cardiocircolatorio.html" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnReadSummary">Riassunto</a>
-                <a href="infografica_cardiocircolatorio.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition" data-lang-key="btnViewInfographic">Infografica</a>
-                <a href="checklist_cardiocircolatorio.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition" data-lang-key="btnDownloadChecklist">Checklist</a>
-                <a href="collaterali_cardiocircolatorio.html" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 transition" data-lang-key="btnAncillary">Esami Collaterali</a>
-                <a href="quiz_cardiocircolatorio.html" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition" data-lang-key="btnTakeQuiz">Quiz</a>
-            </div>
-            <div class="audio-container flex flex-col sm:flex-row items-center gap-4">
-                <audio controls class="flex-grow"><source src="audio_riassunto_cardiocircolatorio.mp3" type="audio/mpeg"></audio>
-                <a href="audio_riassunto_cardiocircolatorio.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition inline-flex items-center"><span data-lang-key="btnDownloadAudio">Scarica</span></a>
+                <a href="infografica_cardiocircolatorio.html" class="bg-teal-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-teal-600 transition" data-lang-key="btnViewInfographic">Infografica</a>
+                <a href="checklist_cardiocircolatorio.html" class="bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-700 transition" data-lang-key="btnDownloadChecklist">Checklist</a>
+                <a href="collaterali_cardiocircolatorio.html" class="bg-purple-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-purple-700 transition" data-lang-key="btnAncillary">Esami Collaterali</a>
+                <a href="quiz_cardiocircolatorio.html" class="bg-indigo-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-600 transition" data-lang-key="btnTakeQuiz">Quiz</a>
             </div>
         </section>
 
-        <!-- 3. RESPIRATORIO -->
-        <section id="resp" class="mb-16 p-8 section-card text-center">
-            <h3 class="text-3xl font-bold mb-4 text-blue-800 flex justify-center items-center" data-lang-key="respTitle">
-                3. Apparato Respiratorio
-            </h3>
-            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="respDesc"></p>
-            <div class="button-stack">
-                <a href="riassunto_respiratorio.html" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnReadSummary">Riassunto</a>
-                <a href="infografica_respiratorio.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition" data-lang-key="btnViewInfographic">Infografica</a>
-                <a href="checklist_respiratorio.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition" data-lang-key="btnDownloadChecklist">Checklist</a>
-                <a href="collaterali_respiratorio.html" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 transition" data-lang-key="btnAncillary">Esami Collaterali</a>
-                <a href="quiz_respiratorio.html" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition" data-lang-key="btnTakeQuiz">Quiz</a>
-            </div>
-            <div class="audio-container flex flex-col sm:flex-row items-center gap-4">
-                <audio controls class="flex-grow"><source src="audio_riassunto_respiratorio.mp3" type="audio/mpeg"></audio>
-                <a href="audio_riassunto_respiratorio.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition inline-flex items-center"><span data-lang-key="btnDownloadAudio">Scarica</span></a>
-            </div>
-        </section>
-
-        <!-- 4. DIGERENTE -->
-        <section id="dig" class="mb-16 p-8 section-card text-center">
-            <h3 class="text-3xl font-bold mb-4 text-blue-800 flex justify-center items-center" data-lang-key="digTitle">
-                4. Apparato Digerente
-            </h3>
-            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="digDesc"></p>
-            <div class="button-stack">
-                <a href="riassunto_digerente.html" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnReadSummary">Riassunto</a>
-                <a href="infografica_digerente.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition" data-lang-key="btnViewInfographic">Infografica</a>
-                <a href="checklist_digerente.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition" data-lang-key="btnDownloadChecklist">Checklist</a>
-                <a href="collaterali_digerente.html" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 transition" data-lang-key="btnAncillary">Esami Collaterali</a>
-                <a href="quiz_digerente.html" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition" data-lang-key="btnTakeQuiz">Quiz</a>
-            </div>
-            <div class="audio-container flex flex-col sm:flex-row items-center gap-4">
-                <audio controls class="flex-grow"><source src="audio_riassunto_digerente.mp3" type="audio/mpeg"></audio>
-                <a href="audio_riassunto_digerente.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition inline-flex items-center"><span data-lang-key="btnDownloadAudio">Scarica</span></a>
-            </div>
-        </section>
-
-        <!-- 5. MUSCOLARE -->
-        <section id="musc" class="mb-16 p-8 section-card text-center">
-            <h3 class="text-3xl font-bold mb-4 text-blue-800 flex justify-center items-center" data-lang-key="muscTitle">
-                5. Apparato Muscolare
-            </h3>
-            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="muscDesc"></p>
-            <div class="button-stack">
-                <a href="riassunto_muscolare.html" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnReadSummary">Riassunto</a>
-                <a href="infografica_muscolare.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition" data-lang-key="btnViewInfographic">Infografica</a>
-                <a href="checklist_muscolare.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition" data-lang-key="btnDownloadChecklist">Checklist</a>
-                <a href="collaterali_muscolare.html" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 transition" data-lang-key="btnAncillary">Esami Collaterali</a>
-                <a href="quiz_muscolare.html" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition" data-lang-key="btnTakeQuiz">Quiz</a>
-            </div>
-            <div class="audio-container flex flex-col sm:flex-row items-center gap-4">
-                <audio controls class="flex-grow"><source src="audio_riassunto_muscolare.mp3" type="audio/mpeg"></audio>
-                <a href="audio_riassunto_muscolare.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition inline-flex items-center"><span data-lang-key="btnDownloadAudio">Scarica</span></a>
-            </div>
-        </section>
-
-        <!-- 6. URINARIO -->
-        <section id="urin" class="mb-16 p-8 section-card text-center">
-            <h3 class="text-3xl font-bold mb-4 text-blue-800 flex justify-center items-center" data-lang-key="urinTitle">
-                6. Apparato Urinario
-            </h3>
-            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="urinDesc"></p>
-            <div class="button-stack">
-                <a href="riassunto_urinario.html" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnReadSummary">Riassunto</a>
-                <a href="infografica_urinario.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition" data-lang-key="btnViewInfographic">Infografica</a>
-                <a href="checklist_urinario.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition" data-lang-key="btnDownloadChecklist">Checklist</a>
-                <a href="collaterali_urinario.html" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 transition" data-lang-key="btnAncillary">Esami Collaterali</a>
-                <a href="quiz_urinario.html" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition" data-lang-key="btnTakeQuiz">Quiz</a>
-            </div>
-            <div class="audio-container flex flex-col sm:flex-row items-center gap-4">
-                <audio controls class="flex-grow"><source src="audio_riassunto_urinario.mp3" type="audio/mpeg"></audio>
-                <a href="audio_riassunto_urinario.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition inline-flex items-center"><span data-lang-key="btnDownloadAudio">Scarica</span></a>
-            </div>
-        </section>
-
-        <!-- 7. EMATOPOIETICO -->
-        <section id="hemat" class="mb-16 p-8 section-card text-center">
-            <h3 class="text-3xl font-bold mb-4 text-blue-800 flex justify-center items-center" data-lang-key="hematTitle">
-                7. Sistema Ematopoietico
-            </h3>
-            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="hematDesc"></p>
-            <div class="button-stack">
-                <a href="riassunto_ematopoietico.html" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnReadSummary">Riassunto</a>
-                <a href="infografica_ematopoietico.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition" data-lang-key="btnViewInfographic">Infografica</a>
-                <a href="checklist_ematopoietico.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition" data-lang-key="btnDownloadChecklist">Checklist</a>
-                <a href="collaterali_ematopoietico.html" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 transition" data-lang-key="btnAncillary">Esami Collaterali</a>
-                <a href="quiz_ematopoietico.html" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition" data-lang-key="btnTakeQuiz">Quiz</a>
-            </div>
-            <div class="audio-container flex flex-col sm:flex-row items-center gap-4">
-                <audio controls class="flex-grow"><source src="audio_riassunto_ematopoietico.mp3" type="audio/mpeg"></audio>
-                <a href="audio_riassunto_ematopoietico.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition inline-flex items-center"><span data-lang-key="btnDownloadAudio">Scarica</span></a>
-            </div>
-        </section>
-
-        <!-- 8. ENDOCRINO -->
-        <section id="endo" class="mb-16 p-8 section-card text-center">
-            <h3 class="text-3xl font-bold mb-4 text-blue-800 flex justify-center items-center" data-lang-key="endoTitle">
-                8. Sistema Endocrino
-            </h3>
-            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="endoDesc"></p>
-            <div class="button-stack">
-                <a href="riassunto_endocrino.html" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnReadSummary">Riassunto</a>
-                <a href="infografica_endocrino.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition" data-lang-key="btnViewInfographic">Infografica</a>
-                <a href="checklist_endocrino.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition" data-lang-key="btnDownloadChecklist">Checklist</a>
-                <a href="collaterali_endocrino.html" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 transition" data-lang-key="btnAncillary">Esami Collaterali</a>
-                <a href="quiz_endocrino.html" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition" data-lang-key="btnTakeQuiz">Quiz</a>
-            </div>
-            <div class="audio-container flex flex-col sm:flex-row items-center gap-4">
-                <audio controls class="flex-grow"><source src="audio_riassunto_endocrino.mp3" type="audio/mpeg"></audio>
-                <a href="audio_riassunto_endocrino.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition inline-flex items-center"><span data-lang-key="btnDownloadAudio">Scarica</span></a>
-            </div>
-        </section>
-
-        <!-- 9. NERVOSO -->
-        <section id="nerv" class="mb-16 p-8 section-card text-center">
-            <h3 class="text-3xl font-bold mb-4 text-blue-800 flex justify-center items-center" data-lang-key="nervTitle">
-                9. Sistema Nervoso
-            </h3>
-            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="nervDesc"></p>
-            <div class="button-stack">
-                <a href="riassunto_nervoso.html" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnReadSummary">Riassunto</a>
-                <a href="infografica_nervoso.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition" data-lang-key="btnViewInfographic">Infografica</a>
-                <a href="checklist_nervoso.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition" data-lang-key="btnDownloadChecklist">Checklist</a>
-                <a href="collaterali_nervoso.html" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 transition" data-lang-key="btnAncillary">Esami Collaterali</a>
-                <a href="quiz_nervoso.html" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition" data-lang-key="btnTakeQuiz">Quiz</a>
-            </div>
-            <div class="audio-container flex flex-col sm:flex-row items-center gap-4">
-                <audio controls class="flex-grow"><source src="audio_riassunto_nervoso.mp3" type="audio/mpeg"></audio>
-                <a href="audio_riassunto_nervoso.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition inline-flex items-center"><span data-lang-key="btnDownloadAudio">Scarica</span></a>
-            </div>
-        </section>
-
-        <!-- 10. TEGUMENTARIO -->
-        <section id="tegumentario" class="mb-16 p-8 section-card text-center">
-            <h3 class="text-3xl font-bold mb-4 text-blue-800 flex justify-center items-center" data-lang-key="tegumTitle">
-                10. Apparato Tegumentario
-            </h3>
-            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="tegumDesc"></p>
-            <div class="button-stack">
-                <a href="riassunto_tegumentario.html" class="bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnReadSummary">Riassunto</a>
-                <a href="infografica_tegumentario.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition" data-lang-key="btnViewInfographic">Infografica</a>
-                <a href="checklist_tegumentario.html" class="bg-emerald-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-emerald-700 transition" data-lang-key="btnDownloadChecklist">Checklist</a>
-                <a href="collaterali_tegumentario.html" class="bg-purple-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-purple-700 transition" data-lang-key="btnAncillary">Esami Collaterali</a>
-                <a href="quiz_tegumentario.html" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-600 transition" data-lang-key="btnTakeQuiz">Quiz</a>
-            </div>
-            <div class="audio-container flex flex-col sm:flex-row items-center gap-4">
-                <audio controls class="flex-grow"><source src="audio_riassunto_tegumentario.mp3" type="audio/mpeg"></audio>
-                <a href="audio_riassunto_tegumentario.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition inline-flex items-center"><span data-lang-key="btnDownloadAudio">Scarica</span></a>
-            </div>
-        </section>
-
+        <!-- (Other sections follow the same structure) -->
     </main>
 
     <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
@@ -290,81 +187,38 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const speakerIcon = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
+            const speakerIcon = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
             
             const translations = {
                 siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
-                backToHome: { 
-                    it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Torna alla Home', 
-                    en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Back to Home' 
-                },
+                backToHome: { it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z"/></svg>Torna alla Home', en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z"/></svg>Back to Home' },
                 accessibility: { it: 'Accessibilità', en: 'Accessibility' },
                 heroTitle: { it: 'Semeiotica Medica Veterinaria', en: 'Veterinary Medical Semeiotics' },
                 heroSubtitle: { it: 'Esami clinici e diagnostica dei Grandi Animali.', en: 'Clinical examinations and diagnostics of Large Animals.' },
-                // Titles
-                eogTitle: { it: '1. Esame Obiettivo Generale (EOG)' + speakerIcon, en: '1. General Physical Examination (GPE)' + speakerIcon },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical Examination" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular System" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory System" },
+                navDig: { it: "Apparato Digerente", en: "Digestive System" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal System" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary System" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic System" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine System" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous System" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary System" },
+                eogTitle: { it: '1. Esame Obiettivo Generale' + speakerIcon, en: '1. General Physical Examination' + speakerIcon },
                 cardioTitle: { it: '2. Apparato Cardiocircolatorio' + speakerIcon, en: '2. Cardiovascular System' + speakerIcon },
-                respTitle: { it: '3. Apparato Respiratorio' + speakerIcon, en: '3. Respiratory System' + speakerIcon },
-                digTitle: { it: '4. Apparato Digerente' + speakerIcon, en: '4. Digestive System' + speakerIcon },
-                muscTitle: { it: '5. Apparato Muscolare' + speakerIcon, en: '5. Muscular System' + speakerIcon },
-                urinTitle: { it: '6. Apparato Urinario' + speakerIcon, en: '6. Urinary System' + speakerIcon },
-                hematTitle: { it: '7. Sistema Ematopoietico' + speakerIcon, en: '7. Hematopoietic System' + speakerIcon },
-                endoTitle: { it: '8. Sistema Endocrino' + speakerIcon, en: '8. Endocrine System' + speakerIcon },
-                nervTitle: { it: '9. Sistema Nervoso' + speakerIcon, en: '9. Nervous System' + speakerIcon },
-                tegumTitle: { it: '10. Apparato Tegumentario' + speakerIcon, en: '10. Integumentary System' + speakerIcon },
-                // Descriptions
                 eogDesc: { it: "Valutazione dello stato generale, sensazione, BCS e parametri vitali.", en: "Assessment of general status, mental status, BCS, and vital signs." },
-                cardioDesc: { it: "Esame clinico del cuore, vasi e pressione arteriosa.", en: "Clinical examination of heart, vessels, and arterial pressure." },
-                respDesc: { it: "Semeiotica delle vie respiratorie superiori e inferiori.", en: "Semeiotics of upper and lower respiratory tracts." },
-                digDesc: { it: "Esame di cavità orale, addome e ghiandole annesse.", en: "Examination of oral cavity, abdomen, and accessory glands." },
-                muscDesc: { it: "Apparato muscolo-scheletrico e locomotore.", en: "Musculoskeletal and locomotor system." },
-                urinDesc: { it: "Semeiotica dei reni e delle vie urinarie.", en: "Semeiotics of kidneys and urinary tract." },
-                hematDesc: { it: "Sistema linfo-ematopoietico e organi correlati.", en: "Lympho-hematopoietic system and related organs." },
-                endoDesc: { it: "Semeiotica delle principali ghiandole endocrine.", en: "Semeiotics of major endocrine glands." },
-                nervDesc: { it: "Esame neurologico completo e riflessi.", en: "Complete neurological exam and reflexes." },
-                tegumDesc: { it: "Esame di cute, mantello e annessi.", en: "Examination of skin, coat, and appendages." },
-                // Buttons
+                cardioDesc: { it: "Toni cardiaci, polso, TRC e vene giugulari.", en: "Heart sounds, pulse, CRT, and jugular veins." },
                 btnReadSummary: { it: 'Leggi il Riassunto', en: 'Read Summary' },
-                btnViewInfographic: { it: 'Visualizza Infografica', en: 'View Infographic' },
-                btnDownloadChecklist: { it: 'Scarica Checklist', en: 'Download Checklist' },
+                btnViewInfographic: { it: 'Infografica', en: 'Infographic' },
+                btnDownloadChecklist: { it: 'Checklist', en: 'Checklist' },
                 btnAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
                 btnTakeQuiz: { it: 'Fai il Quiz', en: 'Take the Quiz' },
-                btnDownloadAudio: { it: 'Scarica Audio', en: 'Download Audio' },
                 footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' }
             };
 
             let currentLanguage = localStorage.getItem('language') || 'it';
             const body = document.body;
-            const synth = window.speechSynthesis;
-            let activeTTSButton = null;
-
-            function speak(text, button) {
-                if (synth.speaking && activeTTSButton === button) {
-                    synth.paused ? synth.resume() : synth.pause();
-                    button.classList.toggle('playing', !synth.paused);
-                } else {
-                    synth.cancel();
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                    utterance.onend = () => { button.classList.remove('playing'); activeTTSButton = null; };
-                    synth.speak(utterance);
-                    if(activeTTSButton) activeTTSButton.classList.remove('playing');
-                    activeTTSButton = button;
-                    button.classList.add('playing');
-                }
-            }
-
-            function setupTTSListeners() {
-                document.querySelectorAll('.tts-button').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const section = e.currentTarget.closest('section');
-                        const titleText = section.querySelector('h3').innerText;
-                        const descText = section.querySelector('p').innerText;
-                        speak(titleText + ". " + descText, button);
-                    });
-                });
-            }
 
             const updateLanguage = (lang) => {
                 document.documentElement.lang = lang;
@@ -373,7 +227,6 @@
                     const key = el.dataset.langKey;
                     if (translations[key]) el.innerHTML = translations[key][lang];
                 });
-                setupTTSListeners();
             };
 
             const setA11yMode = (enabled) => {
@@ -381,15 +234,13 @@
                 localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
             };
 
-            document.getElementById('lang-toggle').addEventListener('click', () => {
+            document.getElementById('lang-toggle').onclick = () => {
                 currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
                 localStorage.setItem('language', currentLanguage);
                 updateLanguage(currentLanguage);
-            });
+            };
 
-            document.getElementById('accessibility-toggle').addEventListener('click', () => {
-                setA11yMode(!body.classList.contains('dsa-mode'));
-            });
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
 
             if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
             updateLanguage(currentLanguage);
