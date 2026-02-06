@@ -3,688 +3,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Titolo specifico per questa pagina -->
     <title>Quiz Interattivo: Apparato Tegumentario - Semeiotica Vet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Stili Generali e dal Template */
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; } /* Background leggermente grigio */
-        .section-nav-link {
-            transition: background-color 0.3s, color 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            background-color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
-        }
-        .section-nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        .section-nav-link.active {
-             background-color: white;
-             color: #1E3A8A;
-             cursor: default;
-        }
-        .content-card {
-             background-color: white;
-             border-radius: 0.75rem;
-             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-             padding: 1.5rem;
-             margin-top: 2rem;
-             /* Limit max width for quiz consistency */
-             max-width: 48rem; /* max-w-3xl */
-             margin-left: auto;
-             margin-right: auto;
-        }
-        @media (min-width: 768px) { /* md: */
-            .content-card { padding: 2.5rem; }
-        }
-        #page-header { position: static; } /* Rimosso sticky per le pagine interne */
-        .scrollable-nav {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .scrollable-nav::-webkit-scrollbar { display: none; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
 
-        /* Stili Specifici del Quiz */
-        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; border-width: 2px; }
-        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f1f5f9; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #475569; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #1e293b; }
+        .quick-nav-item.active { background-color: #1E3A8A; color: #ffffff !important; border-color: #1E3A8A; }
+
+        /* --- SECTION NAV --- */
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #1E3A8A; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 800px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Quiz */
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; text-align: left; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .option-btn:hover:not(:disabled) { border-color: #3B82F6; background-color: #eff6ff; transform: translateY(-2px); }
         .option-btn.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: 600; }
         .option-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: 600; }
-         #question-text-container { /* Nuovo container per testo e bottone TTS */
-            display: flex;
-            align-items: flex-start; /* Allinea all'inizio se il testo va a capo */
-            min-height: 4.5rem; /* ~3 righe */
-            margin-bottom: 1.5rem; /* mb-6 */
+
+        /* TTS Button */
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #2563eb; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
         }
-        #question-text {
-            flex-grow: 1; /* Occupa lo spazio disponibile */
-            font-size: 1.125rem; /* text-lg */
-            color: #374151; /* text-slate-700 */
-        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
 
-        /* DSA Mode Styles */
-        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
-        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
-        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
-        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
-        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
-        .dsa-mode h2, .dsa-mode p, .dsa-mode button, .dsa-mode #score-text, .dsa-mode #question-text { color: #34495e !important; }
-        .dsa-mode .option-btn { background-color: #fefcf7 !important; border-color: #aeaeae !important; }
-        .dsa-mode .option-btn.correct { background-color: #d1f7d1 !important; border-color: #1a7431 !important; color: #1a7431 !important; }
-        .dsa-mode .option-btn.incorrect { background-color: #f7d1d1 !important; border-color: #a31e1e !important; color: #a31e1e !important; }
-        .dsa-mode #rationale-text { background-color: #f0eade !important; border-color: #dcd7cd !important; }
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h2, .dsa-mode h3, .dsa-mode p { color: #000 !important; }
+        .dsa-mode .option-btn { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .option-btn.correct { background-color: #dcfce7 !important; border-width: 5px !important; }
+        .dsa-mode .option-btn.incorrect { background-color: #fee2e2 !important; border-width: 5px !important; }
+        .dsa-mode .tts-button { color: #000 !important; }
 
-        /* TTS Button Styles */
-        .tts-button { cursor: pointer; display: inline-block; margin-left: 8px; vertical-align: middle; color: #64748b; transition: color 0.2s; flex-shrink: 0; /* Impedisci che si rimpicciolisca */ }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
-         .dsa-mode .tts-button { color: #5a738e !important; }
-
-         /* Print Styles - Nascondi quiz */
         @media print {
-            body { background-color: #fff; }
-            #page-header, #main-footer, #quiz-container { display: none; }
-            .container::before { content: "Il contenuto del quiz non è stampabile."; display: block; text-align: center; font-size: 1.2em; margin-top: 2cm; }
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
         }
-
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50 text-gray-800">
 
-    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
-    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
-        <div class="container mx-auto px-6 py-3">
-            <!-- Riga Superiore: Torna all'indice + Controlli -->
-            <div class="flex justify-between items-center mb-4">
-                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
-                 </a>
-                 <div class="flex items-center space-x-2">
-                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
-                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
-                 </div>
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
+        </nav>
+    </header>
 
-            <!-- Titolo della Sezione -->
-            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleTegu">10. Apparato Tegumentario</h1>
-
-            <!-- Navigazione Interna alla Sezione -->
-            <nav class="scrollable-nav">
-                 <div class="flex space-x-2 pb-2">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index_semeiotica.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleTegu">10. Apparato Tegumentario</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
                      <a href="riassunto_tegumentario.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
                      <a href="infografica_tegumentario.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
                      <a href="checklist_tegumentario.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
                      <a href="collaterali_tegumentario.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
                      <a href="quiz_tegumentario.html" class="section-nav-link active" data-lang-key="navQuiz">Quiz</a>
-                     <a href="riassunto_tegumentario.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
                 </div>
             </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item active" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="quiz-container" class="content-card">
+            
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-blue-800" data-lang-key="quizTitle">Quiz: Apparato Tegumentario</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-gray-500"></p>
+                </div>
+
+                <div class="mb-8 p-4 bg-slate-50 rounded-xl flex items-start gap-3">
+                    <p id="question-text" class="text-lg font-medium text-gray-800 flex-grow"></p>
+                    <button id="question-tts-button" class="tts-button mt-1">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-blue-50 border-2 border-blue-200">
+                    <p id="rationale-text" class="text-sm italic text-blue-800 mb-6"></p>
+                    <button id="next-button" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-blue-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🧴</div>
+                <h2 class="text-3xl font-bold text-blue-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-gray-600" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-6xl font-black text-blue-600 my-6"></p>
+                <button id="restart-button" class="w-full border-2 border-blue-600 text-blue-600 font-bold py-4 px-6 rounded-xl hover:bg-blue-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
 
         </div>
-    </header>
-    <!-- === FINE HEADER === -->
-
-    <!-- Main Content Container - Usiamo flex per centrare verticalmente il quiz -->
-     <main class="container mx-auto p-4 md:px-8 md:py-12 flex items-center justify-center min-h-[calc(100vh-230px)]">
-         <!-- Card Contenuto Quiz -->
-         <div id="quiz-container" class="content-card w-full">
-
-            <div id="question-area">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: Apparato Tegumentario</h2>
-                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
-                </div>
-                <!-- Container per Testo Domanda + Bottone TTS -->
-                <div id="question-text-container">
-                    <p id="question-text"></p>
-                    <span id="question-tts-button" class="tts-button">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    </span>
-                </div>
-                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
-
-            <div id="feedback-area" class="mt-6 hidden">
-                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
-                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
-            </div>
-
-            <div id="results-area" class="text-center hidden">
-                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
-                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
-                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
-                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
-            </div>
-
-         </div> <!-- Fine content-card -->
     </main>
 
-    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
-        </div>
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            // === TRADUZIONI ===
             const translations = {
-                // --- Header ---
-                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
                 sectionTitleTegu: { it: '10. Apparato Tegumentario', en: '10. Integumentary System' },
                 navSummary: { it: 'Riassunto', en: 'Summary' },
                 navInfographic: { it: 'Infografica', en: 'Infographic' },
                 navChecklist: { it: 'Checklist', en: 'Checklist' },
                 navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
                 navQuiz: { it: 'Quiz', en: 'Quiz' },
-                navAudio: { it: 'Audio', en: 'Audio' },
-                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                // --- Contenuto Quiz ---
-                 quizTitle: { it: "Quiz: Apparato Tegumentario", en: 'Quiz: Integumentary System' },
-                 progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
-                 btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
-                 btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
-                 resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
-                 resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
-                 btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
-                // --- Domande (q1-q10) ---
-                q1: {
-                    question: { it: "Qual è considerata la domanda più importante in un'anamnesi dermatologica?", en: "What is considered the most important question in a dermatological history?" },
-                    options: [
-                        { text: { it: "L'animale è vaccinato?", en: "Is the animal vaccinated?" }, rationale: { it: "Importante, ma non è la domanda chiave per un problema dermatologico.", en: "Important, but not the key question for a dermatological problem." }, isCorrect: false },
-                        { text: { it: "Cosa mangia l'animale?", en: "What does the animal eat?" }, rationale: { it: "Molto importante per sospettare allergie alimentari, ma il prurito viene prima.", en: "Very important for suspecting food allergies, but pruritus comes first." }, isCorrect: false },
-                        { text: { it: "L'animale ha prurito?", en: "Is the animal pruritic (itchy)?" }, rationale: { it: "Corretto. Sapere se la malattia è pruriginosa o non pruriginosa è la prima e fondamentale divisione diagnostica.", en: "Correct. Knowing if the disease is pruritic or non-pruritic is the first and most fundamental diagnostic division." }, isCorrect: true },
-                        { text: { it: "Ci sono altri animali in casa?", en: "Are there other animals in the house?" }, rationale: { it: "Importante per valutare la contagiosità, ma la presenza o assenza di prurito è più fondamentale.", en: "Important for assessing contagiousness, but the presence or absence of pruritus is more fundamental." }, isCorrect: false }
-                    ]
-                },
-                q2: {
-                    question: { it: "Una pustola è una lesione primaria definita come:", en: "A pustule is a primary lesion defined as:" },
-                    options: [
-                        { text: { it: "Una neoformazione piena di siero.", en: "A neoformation filled with serum." }, rationale: { it: "Questa è la definizione di una vescicola (se piccola) o bolla (se grande).", en: "This is the definition of a vesicle (if small) or bulla (if large)." }, isCorrect: false },
-                        { text: { it: "Un piccolo rilievo solido della pelle.", en: "A small, solid elevation of the skin." }, rationale: { it: "Questa è la definizione di una papula.", en: "This is the definition of a papule." }, isCorrect: false },
-                        { text: { it: "Un accumulo di cellule morte (cheratina).", en: "An accumulation of dead cells (keratin)." }, rationale: { it: "Questa è una scaglia (forfora), una lesione secondaria.", en: "This is a scale (dandruff), a secondary lesion." }, isCorrect: false },
-                        { text: { it: "Una neoformazione piena di pus.", en: "A neoformation filled with pus." }, rationale: { it: "Corretto. Una pustola è un rilievo cutaneo contenente pus, tipico di un'infezione batterica (piodermite).", en: "Correct. A pustule is a skin elevation containing pus, typical of a bacterial infection (pyoderma)." }, isCorrect: true }
-                    ]
-                },
-                 q3: {
-                    question: { it: "Quale delle seguenti è considerata una lesione secondaria, risultato di un trauma cronico (come il grattamento)?", en: "Which of the following is considered a secondary lesion, resulting from chronic trauma (like scratching)?" },
-                    options: [
-                        { text: { it: "Papula", en: "Papule" }, rationale: { it: "La papula è una lesione primaria, un piccolo rilievo solido.", en: "A papule is a primary lesion, a small solid elevation." }, isCorrect: false },
-                        { text: { it: "Pomfo", en: "Wheal" }, rationale: { it: "Il pomfo è una lesione primaria, tipica dell'orticaria, che scompare rapidamente.", en: "A wheal is a primary lesion, typical of urticaria, which disappears quickly." }, isCorrect: false },
-                        { text: { it: "Lichenificazione", en: "Lichenification" }, rationale: { it: "Corretto. La lichenificazione ('pelle di elefante') è un ispessimento e indurimento della pelle causato da uno sfregamento cronico.", en: "Correct. Lichenification ('elephant skin') is a thickening and hardening of the skin caused by chronic rubbing." }, isCorrect: true },
-                        { text: { it: "Vescicola", en: "Vesicle" }, rationale: { it: "La vescicola è una lesione primaria piena di siero.", en: "A vesicle is a primary lesion filled with serum." }, isCorrect: false }
-                    ]
-                },
-                q4: {
-                    question: { it: "Quale test semeiotico è più indicato per la ricerca di acari come 'Chorioptes'?", en: "Which semeiotic test is most indicated for finding mites like 'Chorioptes'?" },
-                    options: [
-                        { text: { it: "Raschiato Cutaneo", en: "Skin Scrape" }, rationale: { it: "Corretto. Per Chorioptes, che vive in superficie, è sufficiente un raschiato superficiale nelle aree colpite (spesso gli arti).", en: "Correct. For Chorioptes, which lives on the surface, a superficial scrape in the affected areas (often the limbs) is sufficient." }, isCorrect: true },
-                        { text: { it: "Esame Citologico", en: "Cytology Exam" }, rationale: { it: "La citologia è ottima per batteri e lieviti, ma è improbabile catturare acari.", en: "Cytology is excellent for bacteria and yeast, but unlikely to capture mites." }, isCorrect: false },
-                        { text: { it: "Lampada di Wood", en: "Wood's Lamp" }, rationale: { it: "La lampada di Wood serve per alcuni funghi (dermatofiti), non per gli acari.", en: "The Wood's Lamp is for some fungi (dermatophytes), not for mites." }, isCorrect: false },
-                        { text: { it: "Biopsia Cutanea", en: "Skin Biopsy" }, rationale: { it: "La biopsia è eccessiva per la diagnosi di Chorioptes e potrebbe non catturare l'acaro. È usata per malattie autoimmuni o tumori.", en: "A biopsy is excessive for diagnosing Chorioptes and might miss the mite. It's used for autoimmune diseases or tumors." }, isCorrect: false }
-                    ]
-                },
-                q5: {
-                    question: { it: "L'esame del pelo al microscopio (esame tricoscopico) è utile per diagnosticare:", en: "Examining hair under a microscope (trichoscopy) is useful for diagnosing:" },
-                    options: [
-                        { text: { it: "Malattie autoimmuni", en: "Autoimmune diseases" }, rationale: { it: "Le malattie autoimmuni richiedono una biopsia cutanea (istopatologia) per la diagnosi.", en: "Autoimmune diseases require a skin biopsy (histopathology) for diagnosis." }, isCorrect: false },
-                        { text: { it: "Dermatofitosi (Tigna)", en: "Dermatophytosis (Ringworm)" }, rationale: { it: "Corretto. L'esame del pelo permette di visualizzare le spore fungine che circondano o invadono il fusto del pelo.", en: "Correct. Hair examination allows visualization of fungal spores surrounding or invading the hair shaft." }, isCorrect: true },
-                        { text: { it: "Acari della rogna Sarcoptica", en: "Sarcoptic mange mites" }, rationale: { it: "Questi acari vivono scavando nell'epidermide e si trovano con un raschiato cutaneo profondo, non sul pelo.", en: "These mites live by burrowing in the epidermis and are found with a deep skin scrape, not on the hair." }, isCorrect: false },
-                        { text: { it: "Lieviti (Malassezia)", en: "Yeast (Malassezia)" }, rationale: { it: "La Malassezia si trova sulla superficie della pelle e si identifica meglio con la citologia (scotch test o impronta).", en: "Malassezia is found on the skin surface and is best identified with cytology (tape prep or impression smear)." }, isCorrect: false }
-                    ]
-                },
-                 q6: { // DOMANDA SOSTITUITA
-                    question: { it: "Un esame citologico per apposizione (impronta) da una lesione umida è più utile per identificare:", en: "A cytology exam (impression smear) from a moist lesion is most useful for identifying:" },
-                    options: [
-                        { text: { it: "Acari della rogna (es. Sarcoptes).", en: "Mange mites (e.g., Sarcoptes)." }, rationale: { it: "Gli acari che scavano, come Sarcoptes, richiedono un raschiato cutaneo profondo per essere trovati, non una citologia superficiale.", en: "Burrowing mites like Sarcoptes require a deep skin scrape to be found, not a superficial cytology." }, isCorrect: false },
-                        { text: { it: "Batteri, lieviti (es. Malassezia) e cellule infiammatorie.", en: "Bacteria, yeast (e.g., Malassezia), and inflammatory cells." }, rationale: { it: "Corretto. La citologia permette di visualizzare rapidamente microrganismi sulla superficie (batteri, lieviti) e il tipo di infiammazione (neutrofili, eosinofili).", en: "Correct. Cytology allows for rapid visualization of microorganisms on the surface (bacteria, yeast) and the type of inflammation (neutrophils, eosinophils)." }, isCorrect: true },
-                        { text: { it: "Spore fungine (Dermatofitosi).", en: "Fungal spores (Dermatophytosis)." }, rationale: { it: "Le spore fungine si trovano sui fusti dei peli e si cercano con l'esame tricoscopico (pelo) o la lampada di Wood.", en: "Fungal spores are found on hair shafts and are looked for with trichoscopy (hair pluck) or a Wood's lamp." }, isCorrect: false },
-                        { text: { it: "Una malattia autoimmune (Pemfigo).", en: "An autoimmune disease (Pemphigus)." }, rationale: { it: "Sebbene la citologia possa *sospettare* il Pemfigo (trovando cellule acantolitiche), la diagnosi definitiva richiede una biopsia (istopatologia).", en: "Although cytology can *suspect* Pemphigus (by finding acantholytic cells), the definitive diagnosis requires a biopsy (histopathology)." }, isCorrect: false }
-                    ]
-                },
-                q7: {
-                    question: { it: "Quale esame collaterale è considerato il 'gold standard' per la diagnosi di una malattia autoimmune come il Pemfigo foliaceo?", en: "Which ancillary exam is considered the 'gold standard' for diagnosing an autoimmune disease like Pemphigus foliaceus?" },
-                    options: [
-                        { text: { it: "Esame citologico", en: "Cytology exam" }, rationale: { it: "La citologia può mostrare cellule infiammatorie (neutrofili, eosinofili) e acantolitiche, suggerendo il pemfigo, ma non è la diagnosi definitiva.", en: "Cytology can show inflammatory cells (neutrophils, eosinophils) and acantholytic cells, suggesting pemphigus, but it is not the definitive diagnosis." }, isCorrect: false },
-                        { text: { it: "Biopsia Cutanea (Istopatologia)", en: "Skin Biopsy (Histopathology)" }, rationale: { it: "Corretto. L'istopatologia è l'unica che può mostrare la posizione esatta della 'divisione' (splitting) nell'epidermide, confermando la malattia autoimmune.", en: "Correct. Histopathology is the only method that can show the exact location of the 'split' in the epidermis, confirming the autoimmune disease." }, isCorrect: true },
-                        { text: { it: "Test sierologici per allergie", en: "Allergy serum testing" }, rationale: { it: "Questi test cercano anticorpi IgE contro allergeni ambientali o alimentari, non anticorpi autoimmuni contro la pelle.", en: "These tests look for IgE antibodies against environmental or food allergens, not autoimmune antibodies against the skin." }, isCorrect: false },
-                        { text: { it: "Esame del sangue (CBC)", en: "Blood test (CBC)" }, rationale: { it: "L'emocromo può mostrare eosinofilia se la malattia è pruriginosa, ma non è diagnostico per il pemfigo.", en: "The CBC may show eosinophilia if the disease is itchy, but it is not diagnostic for pemphigus." }, isCorrect: false }
-                    ]
-                },
-                q8: { // DOMANDA SOSTITUITA
-                    question: { it: "Quale parassita equino causa tipicamente prurito intenso alla base della coda (prurito anale)?", en: "Which equine parasite typically causes intense itching at the tail base (anal pruritus)?" },
-                    options: [
-                        { text: { it: "Acaro della rogna Sarcoptica", en: "Sarcoptic mange mite" }, rationale: { it: "La rogna Sarcoptica colpisce tipicamente la testa, le orecchie e il collo, non primariamente la base della coda.", en: "Sarcoptic mange typically affects the head, ears, and neck, not primarily the tail base." }, isCorrect: false },
-                        { text: { it: "Acaro Chorioptes", en: "Chorioptes mite" }, rationale: { it: "La rogna Corioptica colpisce tipicamente gli arti distali (pastorali), specialmente nei cavalli con molto pelo.", en: "Chorioptic mange typically affects the distal limbs (pasterns), especially in feathered horses." }, isCorrect: false },
-                        { text: { it: "Oxyuris equi (Ossiuri)", en: "Oxyuris equi (Pinworms)" }, rationale: { it: "Corretto. Le femmine adulte migrano all'ano per depositare le uova, causando un prurito perianale molto intenso.", en: "Correct. The adult females migrate to the anus to lay eggs, causing very intense perianal itching." }, isCorrect: true },
-                        { text: { it: "Pidocchi (Mallophaga)", en: "Lice (Mallophaga)" }, rationale: { it: "I pidocchi causano prurito generalizzato, spesso più intenso sulla linea dorsale, sul collo e sulla criniera.", en: "Lice cause generalized itching, often most intense on the dorsum, neck, and mane." }, isCorrect: false }
-                    ]
-                },
-                q9: {
-                    question: { it: "Qual è l'unico metodo affidabile per diagnosticare un'allergia alimentare in un cavallo?", en: "What is the only reliable method for diagnosing a food allergy in a horse?" },
-                    options: [
-                        { text: { it: "Dosaggio delle IgE sieriche", en: "Serum IgE assay" }, rationale: { it: "Questi test sono disponibili ma hanno un'affidabilità molto bassa per le allergie alimentari.", en: "These tests are available but have very low reliability for food allergies." }, isCorrect: false },
-                        { text: { it: "Intradermoreazione (Skin Prick Test)", en: "Intradermal Skin Testing" }, rationale: { it: "Questo test è usato per le allergie ambientali (atopia), non per quelle alimentari.", en: "This test is used for environmental allergies (atopy), not food allergies." }, isCorrect: false },
-                        { text: { it: "Biopsia cutanea", en: "Skin biopsy" }, rationale: { it: "La biopsia può mostrare un'infiammazione allergica (es. eosinofili), ma non può distinguere tra allergia alimentare, atopica o da insetti.", en: "A biopsy can show allergic inflammation (e.g., eosinophils), but it cannot distinguish between food, atopic, or insect allergies." }, isCorrect: false },
-                        { text: { it: "Dieta ad eliminazione", en: "Elimination diet" }, rationale: { it: "Corretto. Si fornisce una dieta ipoallergenica o con nuove proteine/carboidrati e si osserva la remissione dei sintomi, seguita da una reintroduzione per conferma.", en: "Correct. A hypoallergenic or novel protein/carbohydrate diet is fed to observe remission of signs, followed by re-challenge for confirmation." }, isCorrect: true }
-                    ]
-                },
-                q10: {
-                    question: { it: "L'irsutismo nel cavallo (pelo lungo che non muta) è un segno clinico fortemente suggestivo di:", en: "Hirsutism in the horse (long coat that fails to shed) is a clinical sign strongly suggestive of:" },
-                    options: [
-                        { text: { it: "Malnutrizione grave", en: "Severe malnutrition" }, rationale: { it: "La malnutrizione causa un mantello brutto e opaco, ma non l'irsutismo (crescita eccessiva).", en: "Malnutrition causes a poor, dull coat, but not hirsutism (excessive growth)." }, isCorrect: false },
-                        { text: { it: "Dermatofitosi (Tigna)", en: "Dermatophytosis (Ringworm)" }, rationale: { it: "La tigna causa tipicamente aree di alopecia, croste e scaglie, non irsutismo.", en: "Ringworm typically causes areas of alopecia, crusts, and scales, not hirsutism." }, isCorrect: false },
-                        { text: { it: "Disfunzione Ipofisaria (PPID / Cushing Equino)", en: "Pituitary Pars Intermedia Dysfunction (PPID / Equine Cushing's)" }, rationale: { it: "Corretto. L'eccesso di ormoni prodotti dall'ipofisi disfunzionale interferisce con il normale ciclo di muta del pelo.", en: "Correct. The excess hormones produced by the dysfunctional pituitary interfere with the normal shedding cycle of the coat." }, isCorrect: true },
-                        { text: { it: "Ipersensibilità agli insetti", en: "Insect hypersensitivity" }, rationale: { it: "L'ipersensibilità agli insetti causa prurito intenso e lesioni da grattamento (es. alla criniera e alla coda), ma non irsutismo.", en: "Insect hypersensitivity causes intense itching and scratching lesions (e.g., at the mane and tail), but not hirsutism." }, isCorrect: false }
-                    ]
-                },
-                // --- Footer ---
-                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                quizTitle: { it: "Quiz: Apparato Tegumentario", en: 'Quiz: Integumentary System' },
+                progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
             };
 
-            const quizData = Object.keys(translations)
-                .filter(k => /^q\d+$/.test(k))
-                .map(k => translations[k]);
+            const questionsPool = [
+                {
+                    question: { it: "Qual è considerata la domanda più importante in un'anamnesi dermatologica?", en: "What is considered the most important question in a dermatological history?" },
+                    options: [
+                        { text: { it: "L'animale ha prurito?", en: "Is the animal itchy?" }, isCorrect: true, rationale: { it: "Corretto. Sapere se la malattia è pruriginosa o meno è la prima fondamentale divisione diagnostica.", en: "Correct. Knowing if the disease is pruritic or not is the first fundamental diagnostic division." } },
+                        { text: { it: "L'animale è vaccinato?", en: "Is the animal vaccinated?" }, isCorrect: false, rationale: { it: "Importante, ma non è la domanda chiave per il problema dermatologico.", en: "Important, but not the key question for the dermatological problem." } },
+                        { text: { it: "Cosa mangia l'animale?", en: "What does the animal eat?" }, isCorrect: false, rationale: { it: "Rilevante per le allergie, ma il prurito viene prima.", en: "Relevant for allergies, but pruritus comes first." } },
+                        { text: { it: "Ci sono altri animali colpiti?", en: "Are other animals affected?" }, isCorrect: false, rationale: { it: "Aiuta a valutare la contagiosità, ma non è il dato anamnestico primario.", en: "Helps assess contagiousness, but it is not the primary history data." } }
+                    ]
+                },
+                {
+                    question: { it: "Una pustola è una lesione primaria definita come:", en: "A pustule is a primary lesion defined as:" },
+                    options: [
+                        { text: { it: "Una neoformazione piena di pus.", en: "A pus-filled formation." }, isCorrect: true, rationale: { it: "Corretto. Un rilievo cutaneo contenente pus, tipico della piodermite.", en: "Correct. A skin elevation containing pus, typical of pyoderma." } },
+                        { text: { it: "Una neoformazione piena di siero.", en: "A serum-filled formation." }, isCorrect: false, rationale: { it: "Questa è una vescicola o bolla.", en: "This is a vesicle or bulla." } },
+                        { text: { it: "Un piccolo rilievo solido.", en: "A small solid elevation." }, isCorrect: false, rationale: { it: "Questa è una papula.", en: "This is a papule." } },
+                        { text: { it: "Un accumulo di cellule morte.", en: "An accumulation of dead cells." }, isCorrect: false, rationale: { it: "Questa è una scaglia.", en: "This is a scale." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale delle seguenti è una lesione secondaria causata da trauma cronico (grattamento)?", en: "Which of the following is a secondary lesion caused by chronic trauma (scratching)?" },
+                    options: [
+                        { text: { it: "Lichenificazione", en: "Lichenification" }, isCorrect: true, rationale: { it: "Corretto. L'ispessimento della pelle ('pelle di elefante') è causato dal grattamento cronico.", en: "Correct. Skin thickening ('elephant skin') is caused by chronic scratching." } },
+                        { text: { it: "Papula", en: "Papule" }, isCorrect: false, rationale: { it: "La papula è una lesione primaria.", en: "A papule is a primary lesion." } },
+                        { text: { it: "Pomfo", en: "Wheal" }, isCorrect: false, rationale: { it: "Il pomfo è tipico dell'orticaria (primaria).", en: "A wheal is typical of urticaria (primary)." } },
+                        { text: { it: "Vescicola", en: "Vesicle" }, isCorrect: false, rationale: { it: "La vescicola è una lesione primaria.", en: "A vesicle is a primary lesion." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale test semeiotico è più indicato per la ricerca di acari superficiali come Chorioptes?", en: "Which semeiotic test is most indicated for superficial mites like Chorioptes?" },
+                    options: [
+                        { text: { it: "Raschiato Cutaneo", en: "Skin Scrape" }, isCorrect: true, rationale: { it: "Corretto. Per acari che vivono in superficie o nei detriti si usa il raschiato.", en: "Correct. Scrapes are used for mites living on the surface or in debris." } },
+                        { text: { it: "Citologia", en: "Cytology" }, isCorrect: false, rationale: { it: "Ottima per batteri e lieviti, non per gli acari.", en: "Great for bacteria and yeast, not for mites." } },
+                        { text: { it: "Lampada di Wood", en: "Wood's Lamp" }, isCorrect: false, rationale: { it: "Serve per lo screening di alcuni funghi.", en: "Used for screening some fungi." } },
+                        { text: { it: "Biopsia", en: "Biopsy" }, isCorrect: false, rationale: { it: "Eccessiva per gli acari; si usa per malattie autoimmuni o tumori.", en: "Excessive for mites; used for autoimmune diseases or tumors." } }
+                    ]
+                },
+                {
+                    question: { it: "L'esame tricoscopico (del pelo) è utile per diagnosticare:", en: "Trichoscopy (hair exam) is useful for diagnosing:" },
+                    options: [
+                        { text: { it: "Dermatofitosi (Tigna)", en: "Dermatophytosis (Ringworm)" }, isCorrect: true, rationale: { it: "Corretto. Permette di vedere le spore fungine sul fusto del pelo.", en: "Correct. It allows seeing fungal spores on the hair shaft." } },
+                        { text: { it: "Malattie autoimmuni", en: "Autoimmune diseases" }, isCorrect: false, rationale: { it: "Richiedono la biopsia per la diagnosi.", en: "Require biopsy for diagnosis." } },
+                        { text: { it: "Acari Sarcoptes", en: "Sarcoptes mites" }, isCorrect: false, rationale: { it: "Vivono scavando gallerie, serve raschiato profondo.", en: "They burrow; a deep scrape is needed." } },
+                        { text: { it: "Lieviti Malassezia", en: "Malassezia yeast" }, isCorrect: false, rationale: { it: "Si identificano meglio con la citologia.", en: "Best identified with cytology." } }
+                    ]
+                },
+                {
+                    question: { it: "Un esame citologico per apposizione (impronta) è più utile per identificare:", en: "An impression smear cytology is most useful for identifying:" },
+                    options: [
+                        { text: { it: "Batteri, lieviti e cellule infiammatorie.", en: "Bacteria, yeast, and inflammatory cells." }, isCorrect: true, rationale: { it: "Corretto. Permette di visualizzare rapidamente i microrganismi sulla superficie lesa.", en: "Correct. Allows rapid visualization of microorganisms on the lesion surface." } },
+                        { text: { it: "Acari della rogna.", en: "Mange mites." }, isCorrect: false, rationale: { it: "Richiedono un raschiato, non una citologia superficiale.", en: "Require a scrape, not superficial cytology." } },
+                        { text: { it: "Spore fungine profonde.", en: "Deep fungal spores." }, isCorrect: false, rationale: { it: "Si cercano sul pelo o con cultura.", en: "Looked for on hair or via culture." } },
+                        { text: { it: "La profondità di un tumore.", en: "Tumor depth." }, isCorrect: false, rationale: { it: "La citologia valuta solo le cellule superficiali; serve biopsia.", en: "Cytology only assesses superficial cells; biopsy needed." } }
+                    ]
+                },
+                {
+                    question: { it: "Qual è il 'gold standard' per diagnosticare il Pemfigo foliaceo?", en: "What is the 'gold standard' for diagnosing Pemphigus foliaceus?" },
+                    options: [
+                        { text: { it: "Biopsia Cutanea (Istopatologia)", en: "Skin Biopsy (Histopathology)" }, isCorrect: true, rationale: { it: "Corretto. Solo l'istologia può mostrare la tipica fessurazione dell'epidermide.", en: "Correct. Only histology can show the typical epidermal splitting." } },
+                        { text: { it: "Esame citologico", en: "Cytology" }, isCorrect: false, rationale: { it: "Suggerisce il Pemfigo (cellule acantolitiche) ma non è definitivo.", en: "Suggests Pemphigus (acantholytic cells) but isn't definitive." } },
+                        { text: { it: "Test allergologici", en: "Allergy tests" }, isCorrect: false, rationale: { it: "Non servono per le malattie autoimmuni.", en: "Not used for autoimmune diseases." } },
+                        { text: { it: "Emocromo", en: "CBC" }, isCorrect: false, rationale: { it: "Può mostrare eosinofilia, ma non è diagnostico.", en: "May show eosinophilia, but isn't diagnostic." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale parassita equino causa tipicamente prurito anale?", en: "Which equine parasite typically causes anal pruritus?" },
+                    options: [
+                        { text: { it: "Oxyuris equi (Ossiuri)", en: "Oxyuris equi (Pinworms)" }, isCorrect: true, rationale: { it: "Corretto. La deposizione delle uova all'ano causa forte irritazione.", en: "Correct. Egg laying at the anus causes strong irritation." } },
+                        { text: { it: "Rogna Sarcoptica", en: "Sarcoptic mange" }, isCorrect: false, rationale: { it: "Colpisce solitamente la testa e il collo.", en: "Usually affects the head and neck." } },
+                        { text: { it: "Rogna Corioptica", en: "Chorioptic mange" }, isCorrect: false, rationale: { it: "Colpisce tipicamente gli arti.", en: "Typically affects the limbs." } },
+                        { text: { it: "Pidocchi", en: "Lice" }, isCorrect: false, rationale: { it: "Danno prurito generalizzato o dorsale.", en: "Cause generalized or dorsal itching." } }
+                    ]
+                },
+                {
+                    question: { it: "Metodo più affidabile per diagnosticare l'allergia alimentare nel cavallo:", en: "Most reliable method for diagnosing food allergy in horses:" },
+                    options: [
+                        { text: { it: "Dieta ad eliminazione", en: "Elimination diet" }, isCorrect: true, rationale: { it: "Corretto. È l'unica prova definitiva; i test sierologici sono poco affidabili.", en: "Correct. It is the only definitive test; serological tests are unreliable." } },
+                        { text: { it: "Dosaggio IgE sieriche", en: "Serum IgE assay" }, isCorrect: false, rationale: { it: "Bassa affidabilità diagnostica per le allergie alimentari.", en: "Low diagnostic reliability for food allergies." } },
+                        { text: { it: "Intradermoreazione", en: "Intradermal test" }, isCorrect: false, rationale: { it: "Usata per l'atopia ambientale.", en: "Used for environmental atopy." } },
+                        { text: { it: "Biopsia cutanea", en: "Skin biopsy" }, isCorrect: false, rationale: { it: "Mostra l'infiammazione ma non l'allergene.", en: "Shows inflammation but not the allergen." } }
+                    ]
+                },
+                {
+                    question: { it: "L'irsutismo nel cavallo è un segno suggestivo di:", en: "Hirsutism in horses is suggestive of:" },
+                    options: [
+                        { text: { it: "Disfunzione Ipofisaria (PPID / Cushing)", en: "Pituitary Dysfunction (PPID / Cushing's)" }, isCorrect: true, rationale: { it: "Corretto. L'eccesso ormonale impedisce la normale muta del pelo.", en: "Correct. Hormonal excess prevents normal coat shedding." } },
+                        { text: { it: "Malnutrizione", en: "Malnutrition" }, isCorrect: false, rationale: { it: "Dà un pelo opaco, non irsutismo.", en: "Causes a dull coat, not hirsutism." } },
+                        { text: { it: "Tigna", en: "Ringworm" }, isCorrect: false, rationale: { it: "Causa alopecia e croste.", en: "Causes alopecia and crusts." } },
+                        { text: { it: "Allergia agli insetti", en: "Insect allergy" }, isCorrect: false, rationale: { it: "Causa grattamento e alopecia, non irsutismo.", en: "Causes scratching and alopecia, not hirsutism." } }
+                    ]
+                }
+            ];
 
-            let currentQuestionIndex = 0;
+            let currentIdx = 0;
             let score = 0;
             let shuffledQuestions = [];
-            const synth = window.speechSynthesis;
-            let currentUtterance = null;
-            let activeTTSButton = null;
-            let voices = [];
-
-            // Elementi DOM del Quiz
-            const quizContainer = document.getElementById('quiz-container');
-            const questionArea = document.getElementById('question-area');
-            const resultsArea = document.getElementById('results-area');
-            const questionText = document.getElementById('question-text');
-            let questionTTSButton = document.getElementById('question-tts-button');
-            const optionsContainer = document.getElementById('options-container');
-            const progressText = document.getElementById('progress-text');
-            const feedbackArea = document.getElementById('feedback-area');
-            const rationaleText = document.getElementById('rationale-text');
-            const nextButton = document.getElementById('next-button');
-            const scoreText = document.getElementById('score-text');
-            const restartButton = document.getElementById('restart-button');
-            
-            // Elementi DOM Generali (Header, etc.)
-            const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
-            const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
             let currentLanguage = localStorage.getItem('language') || 'it';
-            const accessibilityToggle = document.getElementById('accessibility-toggle');
-            const langToggle = document.getElementById('lang-toggle');
             const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTS = null;
 
-            // --- Logica TTS ---
-            function populateVoices() {
-                if (typeof speechSynthesis === 'undefined') return;
-                voices = speechSynthesis.getVoices();
-            }
-
-            function speak(text, button) {
-                const isSameButton = activeTTSButton === button;
-                if (synth.speaking && isSameButton) {
-                    if (synth.paused) { synth.resume(); button.classList.add('playing'); }
-                    else { synth.pause(); button.classList.remove('playing'); }
-                } else {
-                    if (synth.speaking) {
-                        if (currentUtterance) currentUtterance.onend = null;
-                        if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                        synth.cancel();
-                    }
-                    setTimeout(() => startSpeaking(text, button), 50);
-                }
-            }
-
-            function startSpeaking(text, button) {
-                 if (!text || typeof text !== 'string' || !text.trim()) {
-                   console.error("Testo non valido per TTS:", text);
-                   return;
-                }
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = text;
-                const ttsIconToRemove = tempDiv.querySelector('.tts-button');
-                if(ttsIconToRemove) ttsIconToRemove.remove();
-                const cleanText = tempDiv.textContent || tempDiv.innerText || "";
-                if (!cleanText.trim()) {
-                   if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                   activeTTSButton = null;
-                   return;
-                }
-
-                currentUtterance = new SpeechSynthesisUtterance(cleanText);
-                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                currentUtterance.onend = () => { if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
-                currentUtterance.onerror = (event) => { 
-                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
-                        console.error("Errore TTS:", event.error); 
-                    }
-                    if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } 
-                };
-                synth.speak(currentUtterance);
-                if (activeTTSButton && activeTTSButton !== button) { activeTTSButton.classList.remove('playing'); }
-                activeTTSButton = button;
-                button.classList.add('playing');
-            }
-
-            function setupTTSListeners() {
-                const oldQuestionTTSButton = document.getElementById('question-tts-button');
-                if (oldQuestionTTSButton) {
-                    const newQuestionTTSButton = oldQuestionTTSButton.cloneNode(true);
-                    if (oldQuestionTTSButton.parentNode) {
-                        oldQuestionTTSButton.parentNode.replaceChild(newQuestionTTSButton, oldQuestionTTSButton);
-                    }
-                    questionTTSButton = newQuestionTTSButton; 
-                    
-                    questionTTSButton.onclick = () => {
-                        const currentQuestion = shuffledQuestions[currentQuestionIndex];
-                        if (currentQuestion && currentQuestion.question[currentLanguage]) {
-                           speak(currentQuestion.question[currentLanguage], questionTTSButton);
-                        }
-                    };
-                } else {
-                    console.error("Pulsante TTS domanda non trovato durante setupTTSListeners.");
-                }
-
-                optionsContainer.querySelectorAll('.tts-button').forEach(ttsBtn => {
-                     const newTTSButton = ttsBtn.cloneNode(true);
-                     const parentButton = newTTSButton.closest('.option-btn-container')?.querySelector('.option-btn');
-                     if (parentButton) {
-                         const optionText = parentButton.textContent;
-                          const currentQuestion = shuffledQuestions[currentQuestionIndex];
-                          if (currentQuestion) {
-                              const originalOption = currentQuestion.options.find(opt => opt.text[currentLanguage] === optionText);
-                             if (originalOption) {
-                                  newTTSButton.addEventListener('click', (e) => {
-                                      e.stopPropagation();
-                                      speak(originalOption.text[currentLanguage], newTTSButton);
-                                  });
-                             }
-                          }
-                          if (ttsBtn.parentNode) {
-                            ttsBtn.parentNode.replaceChild(newTTSButton, ttsBtn);
-                          }
-                     }
-                });
-            }
-
-
-            // --- Logica Quiz ---
-            function shuffleArray(array) {
+            const shuffleArray = (array) => {
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [array[i], array[j]] = [array[j], array[i]];
                 }
                 return array;
-            }
+            };
 
-            function startQuiz() {
-                document.documentElement.scrollTop = 0;
-                document.body.scrollTop = 0;
-
-                currentQuestionIndex = 0;
-                score = 0;
-                shuffledQuestions = shuffleArray([...quizData]);
-                resultsArea.classList.add('hidden');
-                questionArea.classList.remove('hidden');
-                feedbackArea.classList.add('hidden');
-                loadQuestion();
-            }
-            
-            function loadQuestion(isLangChange = false) {
-                if (synth.speaking) synth.cancel();
-                if (activeTTSButton) {
-                    activeTTSButton.classList.remove('playing');
-                    activeTTSButton = null;
+            const speak = (text, button) => {
+                if (synth.speaking) {
+                    synth.cancel();
+                    if (activeTTS === button) { activeTTS.classList.remove('playing'); activeTTS = null; return; }
                 }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onend = () => { button.classList.remove('playing'); activeTTS = null; };
+                synth.speak(utterance);
+                if (activeTTS) activeTTS.classList.remove('playing');
+                activeTTS = button;
+                button.classList.add('playing');
+            };
 
-                if (!isLangChange) {
-                    feedbackArea.classList.add('hidden');
-                }
+            const renderQuestion = () => {
+                const q = shuffledQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', shuffledQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
                 
-                if (currentQuestionIndex < 0 || currentQuestionIndex >= shuffledQuestions.length) {
-                    console.error("Indice domanda non valido:", currentQuestionIndex);
-                    return; 
-                }
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
                 
-                const currentQuestion = shuffledQuestions[currentQuestionIndex];
+                const shuffledOptions = shuffleArray([...q.options]);
 
-                progressText.textContent = translations.progressText[currentLanguage]
-                    .replace('{current}', currentQuestionIndex + 1)
-                    .replace('{total}', shuffledQuestions.length);
-                
-                questionText.textContent = currentQuestion.question[currentLanguage];
-                
-                questionTTSButton = document.getElementById('question-tts-button');
-                if (questionTTSButton) {
-                    questionTTSButton.onclick = () => {
-                        speak(currentQuestion.question[currentLanguage], questionTTSButton);
-                    };
-                }
-
-                optionsContainer.innerHTML = ''; 
-
-                const optionsToShow = isLangChange ? [...currentQuestion.options] : shuffleArray([...currentQuestion.options]);
-
-                optionsToShow.forEach(option => {
-                    const buttonContainer = document.createElement('div');
-                    buttonContainer.classList.add('flex', 'items-center', 'w-full', 'option-btn-container');
-
-                    const button = document.createElement('button');
-                    button.textContent = option.text[currentLanguage];
-                    button.classList.add('option-btn', 'flex-grow', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
-                    button.onclick = () => selectAnswer(button, option, currentQuestion.options);
-
-                    const ttsButton = document.createElement('span');
-                    ttsButton.classList.add('tts-button', 'ml-2');
-                    ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
-                    ttsButton.onclick = (e) => {
-                        e.stopPropagation();
-                        speak(option.text[currentLanguage], ttsButton);
-                    };
-
-                    buttonContainer.appendChild(button);
-                    buttonContainer.appendChild(ttsButton);
-                    optionsContainer.appendChild(buttonContainer);
-                });
-
-                if (isLangChange && !feedbackArea.classList.contains('hidden')) {
-                    const rationaleTextContent = rationaleText.textContent; 
-                    const originalOption = currentQuestion.options.find(opt => opt.rationale[currentLanguage] === rationaleTextContent);
+                shuffledOptions.forEach((opt) => {
+                    const div = document.createElement('div');
+                    div.className = "w-full option-btn-container flex items-center gap-2";
                     
-                    const buttons = optionsContainer.querySelectorAll('button.option-btn');
-                    buttons.forEach(btn => {
-                        btn.disabled = true;
-                        const optionDataText = btn.textContent;
-                        const currentQuestionOptions = shuffledQuestions[currentQuestionIndex]?.options || [];
-                        const currentOptionData = currentQuestionOptions.find(opt => opt.text[lang] === optionDataText);
-                        
-                        if (currentOptionData) {
-                            if (currentOptionData.isCorrect) {
-                                btn.classList.add('correct');
-                            }
-                            if (originalOption && originalOption.text[currentLanguage] === optionDataText && !originalOption.isCorrect) {
-                                btn.classList.add('incorrect');
-                            }
-                        }
-                    });
-                }
-            }
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn);
+                    
+                    const tts = document.createElement('button');
+                    tts.className = "tts-button p-2";
+                    tts.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    tts.onclick = (e) => { e.stopPropagation(); speak(opt.text[currentLanguage], tts); };
 
-            function selectAnswer(button, selectedOption, allOptions) {
-                if (synth.speaking) synth.cancel();
-                if (activeTTSButton) { activeTTSButton.classList.remove('playing'); activeTTSButton = null; }
-
-                const buttons = optionsContainer.querySelectorAll('button.option-btn');
-                buttons.forEach(btn => {
-                    btn.disabled = true;
-                    const optionDataText = btn.textContent;
-                    const originalOption = allOptions.find(opt => opt.text[currentLanguage] === optionDataText);
-                    if (originalOption && originalOption.isCorrect) {
-                        btn.classList.add('correct');
-                    }
+                    div.appendChild(btn);
+                    div.appendChild(tts);
+                    container.appendChild(div);
                 });
+            };
 
-                if (!selectedOption.isCorrect) {
-                    button.classList.add('incorrect');
+            const handleSelect = (opt, btn) => {
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                if (opt.isCorrect) { btn.classList.add('correct'); score++; }
+                else { 
+                    btn.classList.add('incorrect');
+                    const correctIdx = shuffledQuestions[currentIdx].options.findIndex(o => o.isCorrect);
+                    const correctText = shuffledQuestions[currentIdx].options[correctIdx].text[currentLanguage];
+                    btns.forEach(b => { if(b.textContent === correctText) b.classList.add('correct'); });
                 }
-                
-                score += selectedOption.isCorrect ? 1 : 0;
-                
-                rationaleText.textContent = selectedOption.rationale[currentLanguage];
-                feedbackArea.classList.remove('hidden');
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                document.getElementById('next-button').textContent = currentIdx === questionsPool.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
 
-                if (currentQuestionIndex === shuffledQuestions.length - 1) {
-                    nextButton.textContent = translations.btnResults[currentLanguage];
+            const startQuiz = () => {
+                currentIdx = 0; score = 0;
+                shuffledQuestions = shuffleArray([...questionsPool]);
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
+
+            document.getElementById('next-button').onclick = () => {
+                if (currentIdx < shuffledQuestions.length - 1) {
+                    currentIdx++;
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    renderQuestion();
                 } else {
-                    nextButton.textContent = translations.btnNext[currentLanguage];
+                    document.getElementById('question-area').classList.add('hidden');
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    document.getElementById('results-area').classList.remove('hidden');
+                    document.getElementById('score-text').textContent = `${score} / ${shuffledQuestions.length}`;
                 }
-            }
-
-            function showResults() {
-                questionArea.classList.add('hidden');
-                feedbackArea.classList.add('hidden');
-                resultsArea.classList.remove('hidden');
-                scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
-            }
-
-            // --- Funzione Aggiornamento Lingua (Include Quiz Logic) ---
-            const updateLanguage = (lang, previousLang = null) => {
-                 document.documentElement.lang = lang;
-                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-
-                 document.querySelectorAll('[data-lang-key]').forEach(element => {
-                     const key = element.dataset.langKey;
-                     if (translations[key] && translations[key][lang]) {
-                         const translationText = translations[key][lang];
-
-                         if (key === 'footerText' || key === 'backToIndex') {
-                             const svgIcon = element.querySelector('svg');
-                             element.innerHTML = translationText;
-                             if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
-                                   element.insertBefore(svgIcon, element.firstChild);
-                             }
-                         }
-                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
-                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
-                             const sectionKey = currentSectionKey || key;
-                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
-                         }
-                         else if (element.id !== 'question-text' && element.id !== 'rationale-text') {
-                             element.textContent = translationText;
-                         }
-                     }
-                 });
-
-                 if (shuffledQuestions.length > 0 && currentQuestionIndex < shuffledQuestions.length && !questionArea.classList.contains('hidden')) {
-                     const feedbackWasVisible = !feedbackArea.classList.contains('hidden');
-                     let originalSelectedOption = null;
-
-                     if (feedbackWasVisible) {
-                        const rationaleTextContent = rationaleText.textContent;
-                        const currentQuestion = shuffledQuestions[currentQuestionIndex];
-                        // Cerca il rationale nella lingua precedente
-                        originalSelectedOption = currentQuestion.options.find(opt => opt.rationale[previousLang] === rationaleTextContent);
-                     }
-
-                     loadQuestion(true);
-                     
-                     if (feedbackWasVisible && originalSelectedOption) {
-                         const buttons = optionsContainer.querySelectorAll('button.option-btn');
-                         buttons.forEach(btn => {
-                            btn.disabled = true;
-                            const optionDataText = btn.textContent;
-                            // Cerca l'opzione nel DOM in base al testo nella *nuova* lingua
-                            const currentOptionData = shuffledQuestions[currentQuestionIndex].options.find(opt => opt.text[lang] === optionDataText);
-                            if (currentOptionData) {
-                                if (currentOptionData.isCorrect) {
-                                    btn.classList.add('correct');
-                                }
-                                // Confronta l'opzione trovata nel DOM con quella salvata (originalSelectedOption)
-                                if (currentOptionData.text[lang] === originalSelectedOption.text[lang] && !originalSelectedOption.isCorrect) {
-                                    btn.classList.add('incorrect');
-                                }
-                            }
-                         });
-                         
-                         rationaleText.textContent = originalSelectedOption.rationale[lang];
-                         feedbackArea.classList.remove('hidden');
-
-                         if (currentQuestionIndex === shuffledQuestions.length - 1) {
-                              nextButton.textContent = translations.btnResults[lang];
-                         } else {
-                              nextButton.textContent = translations.btnNext[lang];
-                         }
-                     }
-                 } else if (!resultsArea.classList.contains('hidden')) {
-                      resultsArea.querySelector('h2').textContent = translations.resultsTitle[lang];
-                      resultsArea.querySelector('p[data-lang-key="resultsScore"]').textContent = translations.resultsScore[lang];
-                      restartButton.textContent = translations.btnRestart[lang];
-                 }
-
-                 if (synth.speaking || synth.pending) synth.cancel();
-                 setTimeout(setupTTSListeners, 100);
             };
 
-            // --- Logica Modalità Accessibilità ---
-            const setA11yMode = (enabled) => {
-                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
-                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            document.getElementById('restart-button').onclick = startQuiz;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                renderQuestion();
             };
 
-            // --- Event Listeners ---
-            if (langToggle) {
-                langToggle.addEventListener('click', () => {
-                    const previousLanguage = currentLanguage;
-                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-                    localStorage.setItem('language', currentLanguage);
-                     if (synth.speaking || synth.pending) synth.cancel();
-                    updateLanguage(currentLanguage, previousLanguage);
-                });
-            } else { console.error("Elemento langToggle non trovato!"); }
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
 
-            if (accessibilityToggle) {
-                 accessibilityToggle.addEventListener('click', () => {
-                    const isEnabled = body.classList.contains('dsa-mode');
-                    setA11yMode(!isEnabled);
-                });
-            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+            document.getElementById('accessibility-toggle').onclick = () => {
+                body.classList.toggle('dsa-mode');
+                localStorage.setItem('dsa-mode', body.classList.contains('dsa-mode') ? 'enabled' : 'disabled');
+            };
 
-             nextButton.addEventListener('click', () => {
-                 currentQuestionIndex++;
-                 if (currentQuestionIndex < shuffledQuestions.length) {
-                     loadQuestion();
-                 } else {
-                     showResults();
-                 }
-             });
+            document.getElementById('question-tts-button').onclick = () => speak(shuffledQuestions[currentIdx].question[currentLanguage], document.getElementById('question-tts-button'));
 
-             restartButton.addEventListener('click', startQuiz);
-
-            // --- Inizializzazione ---
-            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
-            populateVoices();
-             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-                 speechSynthesis.onvoiceschanged = populateVoices;
-             }
-            startQuiz(); // Avvia il quiz
-            updateLanguage(currentLanguage); // Applica lingua iniziale e setup
-
+            if (localStorage.getItem('dsa-mode') === 'enabled') body.classList.add('dsa-mode');
+            startQuiz();
+            updateLanguage(currentLanguage);
         });
     </script>
-
 </body>
 </html>
-
