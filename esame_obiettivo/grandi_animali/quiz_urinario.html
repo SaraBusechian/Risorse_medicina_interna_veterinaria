@@ -3,679 +3,436 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Titolo specifico per questa pagina -->
     <title>Quiz Interattivo: Apparato Urinario - Semeiotica Vet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Stili Generali e dal Template */
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; } /* Background leggermente grigio */
-        .section-nav-link {
-            transition: background-color 0.3s, color 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            background-color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
-        }
-        .section-nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        .section-nav-link.active {
-             background-color: white;
-             color: #1E3A8A;
-             cursor: default;
-        }
-        .content-card {
-             background-color: white;
-             border-radius: 0.75rem;
-             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-             padding: 1.5rem;
-             margin-top: 2rem;
-             /* Limit max width for quiz consistency */
-             max-width: 48rem; /* max-w-3xl */
-             margin-left: auto;
-             margin-right: auto;
-        }
-        @media (min-width: 768px) { /* md: */
-            .content-card { padding: 2.5rem; }
-        }
-        #page-header { position: static; } /* Rimosso sticky per le pagine interne */
-        .scrollable-nav {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .scrollable-nav::-webkit-scrollbar { display: none; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
 
-        /* Stili Specifici del Quiz */
-        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; border-width: 2px; }
-        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f1f5f9; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #475569; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #1e293b; }
+        .quick-nav-item.active { background-color: #1E3A8A; color: #ffffff !important; border-color: #1E3A8A; }
+
+        /* --- SECTION NAV --- */
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #1E3A8A; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 800px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Quiz */
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; text-align: left; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .option-btn:hover:not(:disabled) { border-color: #3B82F6; background-color: #eff6ff; transform: translateY(-2px); }
         .option-btn.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: 600; }
         .option-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: 600; }
-         #question-text-container { /* Nuovo container per testo e bottone TTS */
-            display: flex;
-            align-items: flex-start; /* Allinea all'inizio se il testo va a capo */
-            min-height: 4.5rem; /* ~3 righe */
-            margin-bottom: 1.5rem; /* mb-6 */
+
+        /* TTS Button */
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #2563eb; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
         }
-        #question-text {
-            flex-grow: 1; /* Occupa lo spazio disponibile */
-            font-size: 1.125rem; /* text-lg */
-            color: #374151; /* text-slate-700 */
-        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
 
-        /* DSA Mode Styles */
-        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
-        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
-        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
-        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
-        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
-        .dsa-mode h2, .dsa-mode p, .dsa-mode button, .dsa-mode #score-text, .dsa-mode #question-text { color: #34495e !important; }
-        .dsa-mode .option-btn { background-color: #fefcf7 !important; border-color: #aeaeae !important; }
-        .dsa-mode .option-btn.correct { background-color: #d1f7d1 !important; border-color: #1a7431 !important; color: #1a7431 !important; }
-        .dsa-mode .option-btn.incorrect { background-color: #f7d1d1 !important; border-color: #a31e1e !important; color: #a31e1e !important; }
-        .dsa-mode #rationale-text { background-color: #f0eade !important; border-color: #dcd7cd !important; }
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h2, .dsa-mode h3, .dsa-mode p { color: #000 !important; }
+        .dsa-mode .option-btn { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .option-btn.correct { background-color: #dcfce7 !important; border-width: 5px !important; }
+        .dsa-mode .option-btn.incorrect { background-color: #fee2e2 !important; border-width: 5px !important; }
+        .dsa-mode .tts-button { color: #000 !important; }
 
-        /* TTS Button Styles */
-        .tts-button { cursor: pointer; display: inline-block; margin-left: 8px; vertical-align: middle; color: #64748b; transition: color 0.2s; flex-shrink: 0; /* Impedisci che si rimpicciolisca */ }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
-         .dsa-mode .tts-button { color: #5a738e !important; }
-
-         /* Print Styles - Nascondi quiz */
         @media print {
-            body { background-color: #fff; }
-            #page-header, #main-footer, #quiz-container { display: none; }
-            .container::before { content: "Il contenuto del quiz non è stampabile."; display: block; text-align: center; font-size: 1.2em; margin-top: 2cm; }
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
         }
-
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50 text-gray-800">
 
-    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
-    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
-        <div class="container mx-auto px-6 py-3">
-            <!-- Riga Superiore: Torna all'indice + Controlli -->
-            <div class="flex justify-between items-center mb-4">
-                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
-                 </a>
-                 <div class="flex items-center space-x-2">
-                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
-                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
-                 </div>
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
+        </nav>
+    </header>
 
-            <!-- Titolo della Sezione -->
-            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleUrin">6. Apparato Urinario</h1>
-
-            <!-- Navigazione Interna alla Sezione -->
-            <nav class="scrollable-nav">
-                 <div class="flex space-x-2 pb-2">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index_semeiotica.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleUrin">6. Apparato Urinario</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
                      <a href="riassunto_urinario.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
                      <a href="infografica_urinario.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
                      <a href="checklist_urinario.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
                      <a href="collaterali_urinario.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
                      <a href="quiz_urinario.html" class="section-nav-link active" data-lang-key="navQuiz">Quiz</a>
-                     <a href="riassunto_urinario.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
                 </div>
             </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item active" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="quiz-container" class="content-card">
+            
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-blue-800" data-lang-key="quizTitle">Quiz: Apparato Urinario</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-gray-500"></p>
+                </div>
+
+                <div class="mb-8 p-4 bg-slate-50 rounded-xl flex items-start gap-3">
+                    <p id="question-text" class="text-lg font-medium text-gray-800 flex-grow"></p>
+                    <button id="question-tts-button" class="tts-button mt-1">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-blue-50 border-2 border-blue-200">
+                    <p id="rationale-text" class="text-sm italic text-blue-800 mb-6"></p>
+                    <button id="next-button" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-blue-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">💧</div>
+                <h2 class="text-3xl font-bold text-blue-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-gray-600" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-6xl font-black text-blue-600 my-6"></p>
+                <button id="restart-button" class="w-full border-2 border-blue-600 text-blue-600 font-bold py-4 px-6 rounded-xl hover:bg-blue-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
 
         </div>
-    </header>
-    <!-- === FINE HEADER === -->
-
-    <!-- Main Content Container - Usiamo flex per centrare verticalmente il quiz -->
-     <main class="container mx-auto p-4 md:px-8 md:py-12 flex items-center justify-center min-h-[calc(100vh-230px)]">
-         <!-- Card Contenuto Quiz -->
-         <div id="quiz-container" class="content-card w-full">
-
-            <div id="question-area">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: Apparato Urinario</h2>
-                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
-                </div>
-                <!-- Container per Testo Domanda + Bottone TTS -->
-                <div id="question-text-container">
-                    <p id="question-text"></p>
-                    <span id="question-tts-button" class="tts-button">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    </span>
-                </div>
-                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
-
-            <div id="feedback-area" class="mt-6 hidden">
-                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
-                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
-            </div>
-
-            <div id="results-area" class="text-center hidden">
-                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
-                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
-                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
-                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
-            </div>
-
-         </div> <!-- Fine content-card -->
     </main>
 
-    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
-        </div>
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            // === TRADUZIONI ===
             const translations = {
-                // --- Header ---
-                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
                 sectionTitleUrin: { it: '6. Apparato Urinario', en: '6. Urinary System' },
                 navSummary: { it: 'Riassunto', en: 'Summary' },
                 navInfographic: { it: 'Infografica', en: 'Infographic' },
                 navChecklist: { it: 'Checklist', en: 'Checklist' },
                 navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
                 navQuiz: { it: 'Quiz', en: 'Quiz' },
-                navAudio: { it: 'Audio', en: 'Audio' },
-                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                // --- Contenuto Quiz Urinario ---
-                 quizTitle: { it: "Quiz: Apparato Urinario", en: 'Quiz: Urinary System' },
-                 progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
-                 btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
-                 btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
-                 resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
-                 resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
-                 btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
-                // --- Domande (q1-q10) ---
-                q1: {
-                    question: { it: "Durante l'esplorazione rettale di un bovino, quale caratteristica distingue il rene sinistro da quello equino?", en: "During rectal examination of a bovine, what characteristic distinguishes the left kidney from that of a horse?" },
-                    options: [
-                        { text: { it: "È fisso dorsalmente.", en: "It is fixed dorsally." }, rationale: { it: "Errato, è il rene sinistro del cavallo ad essere fisso. Quello del bovino è mobile.", en: "Incorrect, it is the horse's left kidney that is fixed. The bovine's is mobile." }, isCorrect: false },
-                        { text: { it: "Ha una forma liscia a 'fagiolo'.", en: "It has a smooth 'bean' shape." }, rationale: { it: "Errato, questa è la forma del rene equino. Quello bovino è lobato.", en: "Incorrect, this is the shape of the equine kidney. The bovine one is lobulated." }, isCorrect: false },
-                        { text: { it: "È mobile ('pendulo') e ha una superficie lobata.", en: "It is mobile ('pendulous') and has a lobulated surface." }, rationale: { it: "Corretto. Il rene sinistro del bovino è mobile e presenta una caratteristica superficie lobata.", en: "Correct. The bovine left kidney is mobile and has a characteristic lobulated surface." }, isCorrect: true },
-                        { text: { it: "Non è mai palpabile.", en: "It is never palpable." }, rationale: { it: "Errato, il rene sinistro del bovino è la struttura renale più facilmente palpabile tra le due specie.", en: "Incorrect, the bovine left kidney is the most easily palpated renal structure between the two species." }, isCorrect: false }
-                    ]
-                },
-                q2: {
-                    question: { it: "Cosa si intende per 'stranguria'?", en: "What is meant by 'stranguria'?" },
-                    options: [
-                        { text: { it: "Aumento della frequenza della minzione.", en: "Increased frequency of urination." }, rationale: { it: "Questo termine definisce la 'pollachiuria'.", en: "This term defines 'pollakiuria'." }, isCorrect: false },
-                        { text: { it: "Assenza completa della produzione di urina.", en: "Complete absence of urine production." }, rationale: { it: "Questo termine definisce l' 'anuria'.", en: "This term defines 'anuria'." }, isCorrect: false },
-                        { text: { it: "Minzione dolorosa o difficoltosa.", en: "Painful or difficult urination." }, rationale: { it: "Corretto. La stranguria è il segno clinico di dolore o difficoltà durante l'atto di urinare.", en: "Correct. Stranguria is the clinical sign of pain or difficulty during the act of urination." }, isCorrect: true },
-                        { text: { it: "Perdita involontaria di urina.", en: "Involuntary loss of urine." }, rationale: { it: "Questo termine definisce l' 'incontinenza'.", en: "This term defines 'incontinence'." }, isCorrect: false }
-                    ]
-                },
-                 q3: {
-                    question: { it: "Un'urina di colore rosso scuro/caffè, positiva al 'sangue' sul dipstick ma con sedimento privo di globuli rossi, indica:", en: "Dark red/coffee-colored urine, positive for 'blood' on the dipstick but with a sediment lacking red blood cells, indicates:" },
-                    options: [
-                        { text: { it: "Ematuria (sangue intero)", en: "Hematuria (whole blood)" }, rationale: { it: "Errato. L'ematuria avrebbe un sedimento ricco di globuli rossi visibili al microscopio.", en: "Incorrect. Hematuria would have a sediment rich in red blood cells visible under the microscope." }, isCorrect: false },
-                        { text: { it: "Emoglobinuria o Mioglobinuria", en: "Hemoglobinuria or Myoglobinuria" }, rationale: { it: "Corretto. Entrambe le proteine (eme) causano la positività al test e colorano l'urina, ma non sono cellule, quindi il sedimento è 'vuoto'.", en: "Correct. Both proteins (heme) cause a positive test and color the urine, but they are not cells, so the sediment is 'empty'." }, isCorrect: true },
-                        { text: { it: "Una normale urina di cavallo", en: "Normal horse urine" }, rationale: { it: "L'urina normale del cavallo può essere torbida e gialla, ma non rosso scuro/caffè.", en: "Normal horse urine can be cloudy and yellow, but not dark red/coffee." }, isCorrect: false },
-                        { text: { it: "Contaminazione fecale", en: "Fecal contamination" }, rationale: { it: "La contaminazione fecale non dà positività al test per l'eme né colora l'urina in questo modo.", en: "Fecal contamination does not cause a positive heme test nor does it color the urine this way." }, isCorrect: false }
-                    ]
-                },
-                q4: {
-                    question: { it: "In un animale disidratato, quale reperto dell'analisi urine è un forte indicatore di insufficienza renale acuta?", en: "In a dehydrated animal, which urinalysis finding is a strong indicator of acute renal failure?" },
-                    options: [
-                        { text: { it: "Peso Specifico (PS) elevato (es. 1.045)", en: "High Specific Gravity (SG) (e.g., 1.045)" }, rationale: { it: "Errato. Un PS elevato indica che i reni stanno funzionando correttamente e stanno concentrando l'urina in risposta alla disidratazione.", en: "Incorrect. A high SG indicates the kidneys are functioning correctly and concentrating urine in response to dehydration." }, isCorrect: false },
-                        { text: { it: "Peso Specifico (PS) basso (es. 1.010 - Isostenuria)", en: "Low Specific Gravity (SG) (e.g., 1.010 - Isosthenuria)" }, rationale: { it: "Corretto. Se l'animale è disidratato, i reni dovrebbero concentrare l'urina (PS alto). Se l'urina è diluita (isostenurica), significa che i reni hanno perso la loro capacità di concentrazione.", en: "Correct. If the animal is dehydrated, the kidneys should concentrate the urine (high SG). If the urine is dilute (isosthenuric), it means the kidneys have lost their concentrating ability." }, isCorrect: true },
-                        { text: { it: "Presenza di cristalli di struvite", en: "Presence of struvite crystals" }, rationale: { it: "I cristalli possono essere presenti anche in animali sani e non indicano direttamente insufficienza renale.", en: "Crystals can be present in healthy animals and do not directly indicate renal failure." }, isCorrect: false },
-                        { text: { it: "pH urinario acido", en: "Acidic urine pH" }, rationale: { it: "Il pH dipende dalla dieta e dallo stato metabolico, non è un indicatore primario di insufficienza renale in questo contesto.", en: "pH depends on diet and metabolic state; it is not a primary indicator of renal failure in this context." }, isCorrect: false }
-                    ]
-                },
-                q5: {
-                    question: { it: "Quale dei seguenti è considerato il marker ematico più affidabile per la stima della Filtrazione Glomerulare (funzionalità renale)?", en: "Which of the following is considered the most reliable blood marker for estimating Glomerular Filtration Rate (renal function)?" },
-                    options: [
-                        { text: { it: "Urea (BUN)", en: "Urea (BUN)" }, rationale: { it: "L'urea è meno affidabile perché influenzata da molti fattori extra-renali (dieta proteica, sanguinamenti GI).", en: "Urea is less reliable because it is influenced by many extra-renal factors (protein diet, GI bleeding)." }, isCorrect: false },
-                        { text: { it: "Creatina Chinasi (CK)", en: "Creatine Kinase (CK)" }, rationale: { it: "La CK è un enzima muscolare, non un indicatore di funzionalità renale.", en: "CK is a muscle enzyme, not an indicator of renal function." }, isCorrect: false },
-                        { text: { it: "Albumina", en: "Albumin" }, rationale: { it: "L'albumina può essere persa nelle urine in caso di danno glomerulare (proteinuria), ma non misura la filtrazione.", en: "Albumin can be lost in urine in cases of glomerular damage (proteinuria), but it does not measure filtration." }, isCorrect: false },
-                        { text: { it: "Creatinina", en: "Creatinine" }, rationale: { it: "Corretto. La creatinina è prodotta dai muscoli a un tasso costante e filtrata liberamente dai glomeruli, rendendola il gold standard per stimare la GFR.", en: "Correct. Creatinine is produced by muscles at a constant rate and freely filtered by the glomeruli, making it the gold standard for estimating GFR." }, isCorrect: true }
-                    ]
-                },
-                 q6: {
-                    question: { it: "L'esame del sedimento urinario rivela numerosi 'cilindri'. Cosa indica questo reperto?", en: "The urine sediment exam reveals numerous 'casts'. What does this finding indicate?" },
-                    options: [
-                        { text: { it: "Danno tubulare renale attivo.", en: "Active renal tubular damage." }, rationale: { it: "Corretto. I cilindri sono 'stampini' dei tubuli renali formati da proteine o cellule, e la loro presenza indica un danno attivo a quel livello.", en: "Correct. Casts are 'molds' of the renal tubules formed by proteins or cells, and their presence indicates active damage at that level." }, isCorrect: true },
-                        { text: { it: "Una normale urina di cavallo.", en: "Normal horse urine." }, rationale: { it: "L'urina di cavallo contiene normalmente cristalli di carbonato di calcio e muco, ma non cilindri.", en: "Normal horse urine contains calcium carbonate crystals and mucus, but not casts." }, isCorrect: false },
-                        { text: { it: "Calcoli vescicali (urolitiasi).", en: "Bladder stones (urolithiasis)." }, rationale: { it: "I calcoli sono associati a cristalli e sangue, ma i cilindri si formano specificamente nei tubuli renali.", en: "Stones are associated with crystals and blood, but casts form specifically in the renal tubules." }, isCorrect: false },
-                        { text: { it: "Contaminazione del campione.", en: "Sample contamination." }, rationale: { it: "La contaminazione può introdurre batteri o cellule squamose, ma non cilindri renali.", en: "Contamination can introduce bacteria or squamous cells, but not renal casts." }, isCorrect: false }
-                    ]
-                },
-                q7: {
-                    question: { it: "Quale marker ematico è noto per aumentare più precocemente della creatinina nell'insufficienza renale cronica?", en: "Which blood marker is known to rise earlier than creatinine in chronic renal failure?" },
-                    options: [
-                        { text: { it: "Urea", en: "Urea" }, rationale: { it: "L'urea non è considerata un marker precoce affidabile a causa della sua variabilità.", en: "Urea is not considered a reliable early marker due to its variability." }, isCorrect: false },
-                        { text: { it: "SDMA (Dimetilarginina Simmetrica)", en: "SDMA (Symmetric Dimethylarginine)" }, rationale: { it: "Corretto. L'SDMA è un marker di funzionalità renale che ha dimostrato di aumentare prima della creatinina quando la funzione renale inizia a diminuire.", en: "Correct. SDMA is a marker of renal function that has been shown to increase earlier than creatinine as kidney function begins to decline." }, isCorrect: true },
-                        { text: { it: "Fosforo", en: "Phosphorus" }, rationale: { it: "L'iperfosfatemia si verifica nell'insufficienza renale, ma tipicamente quando l'azotemia è già presente, non prima.", en: "Hyperphosphatemia occurs in renal failure, but typically when azotemia is already present, not before." }, isCorrect: false },
-                        { text: { it: "AST (Aspartato Aminotransferasi)", en: "AST (Aspartate Aminotransferase)" }, rationale: { it: "L'AST è un enzima epatico e muscolare, non un marker di funzionalità renale.", en: "AST is a liver and muscle enzyme, not a marker of renal function." }, isCorrect: false }
-                    ]
-                },
-                q8: {
-                    question: { it: "Quale alterazione elettrolitica è un reperto comune e quasi specifico nell'insufficienza renale cronica del cavallo?", en: "Which electrolyte abnormality is a common and almost specific finding in chronic renal failure in horses?" },
-                    options: [
-                        { text: { it: "Ipercalcemia (aumento del Calcio)", en: "Hypercalcemia (increased Calcium)" }, rationale: { it: "Corretto. A differenza di altre specie, i cavalli con insufficienza renale cronica spesso sviluppano ipercalcemia a causa della loro peculiare gestione del calcio.", en: "Correct. Unlike other species, horses with chronic renal failure often develop hypercalcemia due to their unique calcium handling." }, isCorrect: true },
-                        { text: { it: "Ipopotassiemia (calo del Potassio)", en: "Hypokalemia (low Potassium)" }, rationale: { it: "L'ipopotassiemia può verificarsi, ma è più comune nelle fasi poliuriche e non è specifica del cavallo.", en: "Hypokalemia can occur, but it is more common in polyuric phases and not specific to horses." }, isCorrect: false },
-                        { text: { it: "Iponatriemia (calo del Sodio)", en: "Hyponatremia (low Sodium)" }, rationale: { it: "L'iponatriemia è un reperto incostante e non specifico.", en: "Hyponatremia is an inconsistent and non-specific finding." }, isCorrect: false },
-                        { text: { it: "Ipofosfatemia (calo del Fosforo)", en: "Hypophosphatemia (low Phosphorus)" }, rationale: { it: "Errato, l'insufficienza renale causa tipicamente iperfosfatemia (aumento del fosforo) a causa della ridotta escrezione.", en: "Incorrect, renal failure typically causes hyperphosphatemia (increased phosphorus) due to reduced excretion." }, isCorrect: false }
-                    ]
-                },
-                q9: {
-                    question: { it: "Qual è la tecnica di imaging di elezione per valutare l'architettura interna dei reni (distinzione cortico-midollare) in un bovino?", en: "What is the imaging modality of choice to assess the internal architecture of the kidneys (corticomedullary distinction) in a bovine?" },
-                    options: [
-                        { text: { it: "Radiografia", en: "Radiography" }, rationale: { it: "La radiografia addominale in un bovino adulto è quasi impossibile e non mostra l'architettura interna dei reni.", en: "Abdominal radiography in an adult bovine is nearly impossible and does not show the internal architecture of the kidneys." }, isCorrect: false },
-                        { text: { it: "Ecografia", en: "Ultrasound" }, rationale: { it: "Corretto. L'ecografia (sia transrettale per il rene sinistro che transaddominale) è eccellente per visualizzare la struttura interna, la pelvi renale e la distinzione cortico-midollare.", en: "Correct. Ultrasound (both transrectal for the left kidney and transabdominal) is excellent for visualizing the internal structure, renal pelvis, and corticomedullary distinction." }, isCorrect: true },
-                        { text: { it: "Tomografia Computerizzata (TC)", en: "Computed Tomography (CT)" }, rationale: { it: "Sebbene la TC sia molto dettagliata, non è una procedura di routine o pratica per l'addome di un bovino adulto.", en: "Although CT is very detailed, it is not a routine or practical procedure for an adult bovine's abdomen." }, isCorrect: false },
-                        { text: { it: "Endoscopia", en: "Endoscopy" }, rationale: { it: "L'endoscopia (cistoscopia) visualizza la vescica dall'interno, ma non può visualizzare i reni.", en: "Endoscopy (cystoscopy) visualizes the bladder from the inside, but cannot visualize the kidneys." }, isCorrect: false }
-                    ]
-                },
-                q10: {
-                    question: { it: "Qual è il metodo di raccolta urine preferito se si sospetta un'infezione (es. pielonefrite) e si necessita di un'urinocoltura?", en: "What is the preferred urine collection method if an infection (e.g., pyelonephritis) is suspected and a urine culture is needed?" },
-                    options: [
-                        { text: { it: "Minzione spontanea ('free catch')", en: "Spontaneous micturition ('free catch')" }, rationale: { it: "Questo metodo è facile ma il campione è quasi sempre contaminato da batteri esterni, rendendolo inadatto per una coltura affidabile.", en: "This method is easy but the sample is almost always contaminated by external bacteria, making it unsuitable for a reliable culture." }, isCorrect: false },
-                        { text: { it: "Cateterismo vescicale sterile", en: "Sterile bladder catheterization" }, rationale: { it: "Corretto. Il cateterismo, eseguito in modo sterile, bypassa la maggior parte dei contaminanti uretrali e fornisce un campione idoneo per l'urinocoltura.", en: "Correct. Catheterization, performed sterilely, bypasses most urethral contaminants and provides a suitable sample for urine culture." }, isCorrect: true },
-                        { text: { it: "Campione raccolto da terra pulita", en: "Sample collected from a clean floor" }, rationale: { it: "Questo campione è altamente contaminato e completamente inutile per un esame batteriologico.", en: "This sample is highly contaminated and completely useless for a bacteriological exam." }, isCorrect: false },
-                        { text: { it: "Cistocentesi", en: "Cystocentesis" }, rationale: { it: "Sebbene sia il gold standard nei piccoli animali, la cistocentesi (puntura della vescica attraverso l'addome) è raramente praticabile o sicura nei grandi animali adulti.", en: "Although the gold standard in small animals, cystocentesis (puncturing the bladder through the abdomen) is rarely feasible or safe in large adult animals." }, isCorrect: false }
-                    ]
-                },
-                // --- Footer ---
-                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                quizTitle: { it: "Quiz: Apparato Urinario", en: 'Quiz: Urinary System' },
+                progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
             };
 
-            const quizData = Object.keys(translations)
-                .filter(k => /^q\d+$/.test(k))
-                .map(k => translations[k]);
+            const questionsPool = [
+                {
+                    question: { it: "Durante l'esplorazione rettale di un bovino, quale caratteristica distingue il rene sinistro da quello equino?", en: "During rectal examination of a bovine, what characteristic distinguishes the left kidney from that of a horse?" },
+                    options: [
+                        { text: { it: "È mobile ('pendulo') e ha una superficie lobata.", en: "It is mobile ('pendulous') and has a lobulated surface." }, isCorrect: true, rationale: { it: "Corretto. Il rene sinistro del bovino è mobile e presenta una caratteristica superficie lobata.", en: "Correct. The bovine left kidney is mobile and has a characteristic lobulated surface." } },
+                        { text: { it: "È fisso dorsalmente.", en: "It is fixed dorsally." }, isCorrect: false, rationale: { it: "È il rene sinistro del cavallo ad essere fisso.", en: "The horse's left kidney is fixed." } },
+                        { text: { it: "Ha una forma liscia a 'fagiolo'.", en: "It has a smooth 'bean' shape." }, isCorrect: false, rationale: { it: "Questa è la forma del rene equino.", en: "This is the shape of the equine kidney." } },
+                        { text: { it: "Non è mai palpabile.", en: "It is never palpable." }, isCorrect: false, rationale: { it: "Il rene sinistro del bovino è facilmente palpabile.", en: "The bovine left kidney is easily palpable." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa si intende per 'stranguria'?", en: "What is meant by 'stranguria'?" },
+                    options: [
+                        { text: { it: "Minzione dolorosa o difficoltosa.", en: "Painful or difficult urination." }, isCorrect: true, rationale: { it: "Corretto. La stranguria è il segno clinico di dolore o difficoltà durante l'atto di urinare.", en: "Correct. Stranguria is the clinical sign of pain or difficulty during the act of urination." } },
+                        { text: { it: "Aumento della frequenza della minzione.", en: "Increased frequency of urination." }, isCorrect: false, rationale: { it: "Questa è la pollachiuria.", en: "This is pollakiuria." } },
+                        { text: { it: "Assenza completa della produzione di urina.", en: "Complete absence of urine production." }, isCorrect: false, rationale: { it: "Questa è l'anuria.", en: "This is anuria." } },
+                        { text: { it: "Perdita involontaria di urina.", en: "Involuntary loss of urine." }, isCorrect: false, rationale: { it: "Questa è l'incontinenza.", en: "This is incontinence." } }
+                    ]
+                },
+                {
+                    question: { it: "Un'urina di colore rosso scuro/caffè, positiva al 'sangue' sul dipstick ma con sedimento privo di globuli rossi, indica:", en: "Dark red/coffee-colored urine, positive for 'blood' on the dipstick but with a sediment lacking red blood cells, indicates:" },
+                    options: [
+                        { text: { it: "Emoglobinuria o Mioglobinuria", en: "Hemoglobinuria or Myoglobinuria" }, isCorrect: true, rationale: { it: "Corretto. Entrambe le proteine (eme) causano positività al test ma il sedimento è 'vuoto' perché non ci sono cellule intere.", en: "Correct. Both proteins (heme) cause a positive test, but the sediment is 'empty' because there are no whole cells." } },
+                        { text: { it: "Ematuria (sangue intero)", en: "Hematuria (whole blood)" }, isCorrect: false, rationale: { it: "L'ematuria avrebbe un sedimento ricco di globuli rossi.", en: "Hematuria would have a sediment rich in red blood cells." } },
+                        { text: { it: "Una normale urina di cavallo", en: "Normal horse urine" }, isCorrect: false, rationale: { it: "Può essere torbida e gialla, ma non color caffè.", en: "It can be cloudy and yellow, but not coffee-colored." } },
+                        { text: { it: "Contaminazione fecale", en: "Fecal contamination" }, isCorrect: false, rationale: { it: "Non dà positività al test per l'eme.", en: "Does not cause a positive heme test." } }
+                    ]
+                },
+                {
+                    question: { it: "In un animale disidratato, quale reperto dell'analisi urine è un forte indicatore di insufficienza renale acuta?", en: "In a dehydrated animal, which urinalysis finding is a strong indicator of acute renal failure?" },
+                    options: [
+                        { text: { it: "Peso Specifico (PS) basso (es. 1.010 - Isostenuria)", en: "Low Specific Gravity (SG) (e.g., 1.010 - Isosthenuria)" }, isCorrect: true, rationale: { it: "Corretto. Se l'animale è disidratato, i reni dovrebbero concentrare l'urina. Se è diluita, significa che hanno perso tale capacità.", en: "Correct. If the animal is dehydrated, the kidneys should concentrate the urine. If it is dilute, they have lost that ability." } },
+                        { text: { it: "Peso Specifico (PS) elevato.", en: "High Specific Gravity (SG)." }, isCorrect: false, rationale: { it: "Indica che i reni stanno concentrando correttamente.", en: "Indicates the kidneys are concentrating correctly." } },
+                        { text: { it: "Presenza di cristalli di struvite", en: "Presence of struvite crystals" }, isCorrect: false, rationale: { it: "Reperto spesso normale o indicativo di urolitiasi, non insufficienza acuta.", en: "Often a normal finding or indicative of urolithiasis, not acute failure." } },
+                        { text: { it: "pH urinario acido", en: "Acidic urine pH" }, isCorrect: false, rationale: { it: "Non è un indicatore di insufficienza renale.", en: "It is not an indicator of renal failure." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale dei seguenti è considerato il marker ematico più affidabile per la stima della funzionalità renale?", en: "Which of the following is considered the most reliable blood marker for estimating renal function?" },
+                    options: [
+                        { text: { it: "Creatinina", en: "Creatinine" }, isCorrect: true, rationale: { it: "Corretto. La creatinina è il gold standard di routine per stimare la Filtrazione Glomerulare (GFR).", en: "Correct. Creatinine is the routine gold standard for estimating GFR." } },
+                        { text: { it: "Urea (BUN)", en: "Urea (BUN)" }, isCorrect: false, rationale: { it: "Troppo influenzata da fattori extra-renali (es. dieta).", en: "Too influenced by extra-renal factors (e.g., diet)." } },
+                        { text: { it: "Creatina Chinasi (CK)", en: "Creatine Kinase (CK)" }, isCorrect: false, rationale: { it: "È un enzima muscolare.", en: "It is a muscle enzyme." } },
+                        { text: { it: "Albumina", en: "Albumin" }, isCorrect: false, rationale: { it: "Dato di sintesi proteica e perdita.", en: "Data on protein synthesis and loss." } }
+                    ]
+                },
+                {
+                    question: { it: "L'esame del sedimento urinario rivela numerosi 'cilindri'. Cosa indica questo reperto?", en: "The urine sediment exam reveals numerous 'casts'. What does this finding indicate?" },
+                    options: [
+                        { text: { it: "Danno tubulare renale attivo.", en: "Active renal tubular damage." }, isCorrect: true, rationale: { it: "Corretto. I cilindri si formano nel lume dei tubuli renali danneggiati.", en: "Correct. Casts form in the lumen of damaged renal tubules." } },
+                        { text: { it: "Una normale urina di cavallo.", en: "Normal horse urine." }, isCorrect: false, rationale: { it: "Normalmente non contiene cilindri.", en: "Normally does not contain casts." } },
+                        { text: { it: "Calcoli vescicali (urolitiasi).", en: "Bladder stones (urolithiasis)." }, isCorrect: false, rationale: { it: "Associati a cristalli e sangue.", en: "Associated with crystals and blood." } },
+                        { text: { it: "Contaminazione del campione.", en: "Sample contamination." }, isCorrect: false, rationale: { it: "Introducono batteri o cellule squamose.", en: "Introduces bacteria or squamous cells." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale marker ematico è noto per aumentare più precocemente della creatinina nell'insufficienza renale cronica?", en: "Which blood marker is known to rise earlier than creatinine in chronic renal failure?" },
+                    options: [
+                        { text: { it: "SDMA (Dimetilarginina Simmetrica)", en: "SDMA (Symmetric Dimethylarginine)" }, isCorrect: true, rationale: { it: "Corretto. L'SDMA aumenta prima della creatinina quando la funzione renale inizia a declinare.", en: "Correct. SDMA increases before creatinine as kidney function begins to decline." } },
+                        { text: { it: "Urea", en: "Urea" }, isCorrect: false, rationale: { it: "Non è un marker precoce affidabile.", en: "Not a reliable early marker." } },
+                        { text: { it: "Fosforo", en: "Phosphorus" }, isCorrect: false, rationale: { it: "Aumenta quando l'azotemia è già presente.", en: "Increases when azotemia is already present." } },
+                        { text: { it: "AST", en: "AST" }, isCorrect: false, rationale: { it: "Enzima epatico/muscolare.", en: "Liver/muscle enzyme." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale alterazione elettrolitica è un reperto comune e quasi specifico nell'insufficienza renale cronica del cavallo?", en: "Which electrolyte abnormality is a common and almost specific finding in chronic renal failure in horses?" },
+                    options: [
+                        { text: { it: "Ipercalcemia (aumento del Calcio)", en: "Hypercalcemia (increased Calcium)" }, isCorrect: true, rationale: { it: "Corretto. A differenza di altre specie, il cavallo con IRC tende a trattenere il calcio.", en: "Correct. Unlike other species, the horse with CRF tends to retain calcium." } },
+                        { text: { it: "Ipopotassiemia", en: "Hypokalemia" }, isCorrect: false, rationale: { it: "Comune ma non specifica del cavallo.", en: "Common but not specific to horses." } },
+                        { text: { it: "Iponatriemia", en: "Hyponatremia" }, isCorrect: false, rationale: { it: "Reperto incostante.", en: "Inconstant finding." } },
+                        { text: { it: "Ipofosfatemia", en: "Hypophosphatemia" }, isCorrect: false, rationale: { it: "L'insufficienza renale causa iperfosfatemia.", en: "Renal failure causes hyperphosphatemia." } }
+                    ]
+                },
+                {
+                    question: { it: "Qual è la tecnica di imaging di elezione per valutare l'architettura interna dei reni (distinzione cortico-midollare)?", en: "What is the imaging modality of choice to assess internal kidney architecture (corticomedullary distinction)?" },
+                    options: [
+                        { text: { it: "Ecografia", en: "Ultrasound" }, isCorrect: true, rationale: { it: "Corretto. L'ecografia è eccellente per visualizzare la struttura interna e la pelvi renale.", en: "Correct. Ultrasound is excellent for visualizing internal structure and the renal pelvis." } },
+                        { text: { it: "Radiografia", en: "Radiography" }, isCorrect: false, rationale: { it: "Non mostra l'architettura interna.", en: "Does not show internal architecture." } },
+                        { text: { it: "TC", en: "CT" }, isCorrect: false, rationale: { it: "Non è una procedura di routine per l'addome dei G.A.", en: "Not a routine procedure for large animal abdomen." } },
+                        { text: { it: "Endoscopia", en: "Endoscopy" }, isCorrect: false, rationale: { it: "Visualizza solo la vescica.", en: "Visualizes only the bladder." } }
+                    ]
+                },
+                {
+                    question: { it: "Qual è il metodo di raccolta urine preferito se si sospetta un'infezione e si necessita di un'urinocoltura?", en: "What is the preferred urine collection method if an infection is suspected and a urine culture is needed?" },
+                    options: [
+                        { text: { it: "Cateterismo vescicale sterile", en: "Sterile bladder catheterization" }, isCorrect: true, rationale: { it: "Corretto. Il cateterismo sterile bypassa i contaminanti uretrali fornendo un campione idoneo.", en: "Correct. Sterile catheterization bypasses urethral contaminants providing a suitable sample." } },
+                        { text: { it: "Minzione spontanea ('free catch')", en: "Spontaneous micturition ('free catch')" }, isCorrect: false, rationale: { it: "Campione quasi sempre contaminato.", en: "Sample is almost always contaminated." } },
+                        { text: { it: "Campione raccolto da terra", en: "Sample collected from the ground" }, isCorrect: false, rationale: { it: "Campione inutilizzabile per coltura.", en: "Unusable sample for culture." } },
+                        { text: { it: "Cistocentesi", en: "Cystocentesis" }, isCorrect: false, rationale: { it: "Raramente praticabile o sicura nei G.A. adulti.", en: "Rarely feasible or safe in adult large animals." } }
+                    ]
+                }
+            ];
 
-            let currentQuestionIndex = 0;
+            let currentIdx = 0;
             let score = 0;
             let shuffledQuestions = [];
-            const synth = window.speechSynthesis;
-            let currentUtterance = null;
-            let activeTTSButton = null;
-            let voices = [];
-
-            // Elementi DOM del Quiz
-            const quizContainer = document.getElementById('quiz-container');
-            const questionArea = document.getElementById('question-area');
-            const resultsArea = document.getElementById('results-area');
-            const questionText = document.getElementById('question-text');
-            let questionTTSButton = document.getElementById('question-tts-button');
-            const optionsContainer = document.getElementById('options-container');
-            const progressText = document.getElementById('progress-text');
-            const feedbackArea = document.getElementById('feedback-area');
-            const rationaleText = document.getElementById('rationale-text');
-            const nextButton = document.getElementById('next-button');
-            const scoreText = document.getElementById('score-text');
-            const restartButton = document.getElementById('restart-button');
-            
-            // Elementi DOM Generali (Header, etc.)
-            const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
-            const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
             let currentLanguage = localStorage.getItem('language') || 'it';
-            const accessibilityToggle = document.getElementById('accessibility-toggle');
-            const langToggle = document.getElementById('lang-toggle');
             const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTS = null;
 
-            // --- Logica TTS ---
-            function populateVoices() {
-                if (typeof speechSynthesis === 'undefined') return;
-                voices = speechSynthesis.getVoices();
-            }
-
-            function speak(text, button) {
-                const isSameButton = activeTTSButton === button;
-                if (synth.speaking && isSameButton) {
-                    if (synth.paused) { synth.resume(); button.classList.add('playing'); }
-                    else { synth.pause(); button.classList.remove('playing'); }
-                } else {
-                    if (synth.speaking) {
-                        if (currentUtterance) currentUtterance.onend = null;
-                        if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                        synth.cancel();
-                    }
-                    setTimeout(() => startSpeaking(text, button), 50);
-                }
-            }
-
-            function startSpeaking(text, button) {
-                 if (!text || typeof text !== 'string' || !text.trim()) {
-                   console.error("Testo non valido per TTS:", text);
-                   return;
-                }
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = text;
-                const ttsIconToRemove = tempDiv.querySelector('.tts-button');
-                if(ttsIconToRemove) ttsIconToRemove.remove();
-                const cleanText = tempDiv.textContent || tempDiv.innerText || "";
-                if (!cleanText.trim()) {
-                   if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                   activeTTSButton = null;
-                   return;
-                }
-
-                currentUtterance = new SpeechSynthesisUtterance(cleanText);
-                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                currentUtterance.onend = () => { if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
-                currentUtterance.onerror = (event) => { 
-                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
-                        console.error("Errore TTS:", event.error); 
-                    }
-                    if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } 
-                };
-                synth.speak(currentUtterance);
-                if (activeTTSButton && activeTTSButton !== button) { activeTTSButton.classList.remove('playing'); }
-                activeTTSButton = button;
-                button.classList.add('playing');
-            }
-
-            function setupTTSListeners() {
-                const oldQuestionTTSButton = document.getElementById('question-tts-button');
-                if (oldQuestionTTSButton) {
-                    const newQuestionTTSButton = oldQuestionTTSButton.cloneNode(true);
-                    if (oldQuestionTTSButton.parentNode) {
-                        oldQuestionTTSButton.parentNode.replaceChild(newQuestionTTSButton, oldQuestionTTSButton);
-                    }
-                    questionTTSButton = newQuestionTTSButton; 
-                    
-                    questionTTSButton.onclick = () => {
-                        const currentQuestion = shuffledQuestions[currentQuestionIndex];
-                        if (currentQuestion && currentQuestion.question[currentLanguage]) {
-                           speak(currentQuestion.question[currentLanguage], questionTTSButton);
-                        }
-                    };
-                } else {
-                    console.error("Pulsante TTS domanda non trovato durante setupTTSListeners.");
-                }
-
-                optionsContainer.querySelectorAll('.tts-button').forEach(ttsBtn => {
-                     const newTTSButton = ttsBtn.cloneNode(true);
-                     const parentButton = newTTSButton.closest('.option-btn-container')?.querySelector('.option-btn');
-                     if (parentButton) {
-                         const optionText = parentButton.textContent;
-                          const currentQuestion = shuffledQuestions[currentQuestionIndex];
-                          if (currentQuestion) {
-                              const originalOption = currentQuestion.options.find(opt => opt.text[currentLanguage] === optionText);
-                             if (originalOption) {
-                                  newTTSButton.addEventListener('click', (e) => {
-                                      e.stopPropagation();
-                                      speak(originalOption.text[currentLanguage], newTTSButton);
-                                  });
-                             }
-                          }
-                          if (ttsBtn.parentNode) {
-                            ttsBtn.parentNode.replaceChild(newTTSButton, ttsBtn);
-                          }
-                     }
-                });
-            }
-
-
-            // --- Logica Quiz ---
-            function shuffleArray(array) {
+            const shuffleArray = (array) => {
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [array[i], array[j]] = [array[j], array[i]];
                 }
                 return array;
-            }
+            };
 
-            function startQuiz() {
-                document.documentElement.scrollTop = 0;
-                document.body.scrollTop = 0;
-
-                currentQuestionIndex = 0;
-                score = 0;
-                shuffledQuestions = shuffleArray([...quizData]);
-                resultsArea.classList.add('hidden');
-                questionArea.classList.remove('hidden');
-                feedbackArea.classList.add('hidden');
-                loadQuestion();
-            }
-            
-            function loadQuestion(isLangChange = false) {
-                if (synth.speaking) synth.cancel();
-                if (activeTTSButton) {
-                    activeTTSButton.classList.remove('playing');
-                    activeTTSButton = null;
+            const speak = (text, button) => {
+                if (synth.speaking) {
+                    synth.cancel();
+                    if (activeTTS === button) { activeTTS.classList.remove('playing'); activeTTS = null; return; }
                 }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onend = () => { button.classList.remove('playing'); activeTTS = null; };
+                synth.speak(utterance);
+                if (activeTTS) activeTTS.classList.remove('playing');
+                activeTTS = button;
+                button.classList.add('playing');
+            };
 
-                if (!isLangChange) {
-                    feedbackArea.classList.add('hidden');
-                }
-                const currentQuestion = shuffledQuestions[currentQuestionIndex];
-
-                progressText.textContent = translations.progressText[currentLanguage]
-                    .replace('{current}', currentQuestionIndex + 1)
-                    .replace('{total}', shuffledQuestions.length);
+            const renderQuestion = () => {
+                const q = shuffledQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', shuffledQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
                 
-                questionText.textContent = currentQuestion.question[currentLanguage];
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
                 
-                questionTTSButton = document.getElementById('question-tts-button');
-                if (questionTTSButton) {
-                    questionTTSButton.onclick = () => {
-                        speak(currentQuestion.question[currentLanguage], questionTTSButton);
-                    };
-                }
+                const shuffledOptions = shuffleArray([...q.options]);
 
-                optionsContainer.innerHTML = ''; 
-
-                const optionsToShow = isLangChange ? [...currentQuestion.options] : shuffleArray([...currentQuestion.options]);
-
-                optionsToShow.forEach(option => {
-                    const buttonContainer = document.createElement('div');
-                    buttonContainer.classList.add('flex', 'items-center', 'w-full', 'option-btn-container');
-
-                    const button = document.createElement('button');
-                    button.textContent = option.text[currentLanguage];
-                    button.classList.add('option-btn', 'flex-grow', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
-                    button.onclick = () => selectAnswer(button, option, currentQuestion.options);
-
-                    const ttsButton = document.createElement('span');
-                    ttsButton.classList.add('tts-button', 'ml-2');
-                    ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
-                    ttsButton.onclick = (e) => {
-                        e.stopPropagation();
-                        speak(option.text[currentLanguage], ttsButton);
-                    };
-
-                    buttonContainer.appendChild(button);
-                    buttonContainer.appendChild(ttsButton);
-                    optionsContainer.appendChild(buttonContainer);
-                });
-
-                if (isLangChange && !feedbackArea.classList.contains('hidden')) {
-                    const rationaleTextContent = rationaleText.textContent; 
-                    const originalOption = currentQuestion.options.find(opt => opt.rationale[currentLanguage] === rationaleTextContent);
+                shuffledOptions.forEach((opt) => {
+                    const div = document.createElement('div');
+                    div.className = "w-full option-btn-container flex items-center gap-2";
                     
-                    const buttons = optionsContainer.querySelectorAll('button.option-btn');
-                    buttons.forEach(btn => {
-                        btn.disabled = true;
-                        const optionDataText = btn.textContent;
-                        const currentOptionData = shuffledQuestions[currentQuestionIndex].options.find(opt => opt.text[lang] === optionDataText);
-                        if (currentOptionData) {
-                            if (currentOptionData.isCorrect) {
-                                btn.classList.add('correct');
-                            }
-                            if (originalOption && originalOption.text[currentLanguage] === optionDataText && !originalOption.isCorrect) {
-                                btn.classList.add('incorrect');
-                            }
-                        }
-                    });
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn);
+                    
+                    const tts = document.createElement('button');
+                    tts.className = "tts-button p-2";
+                    tts.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    tts.onclick = (e) => { e.stopPropagation(); speak(opt.text[currentLanguage], tts); };
+
+                    div.appendChild(btn);
+                    div.appendChild(tts);
+                    container.appendChild(div);
+                });
+            };
+
+            const handleSelect = (opt, btn) => {
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                if (opt.isCorrect) { btn.classList.add('correct'); score++; }
+                else { 
+                    btn.classList.add('incorrect');
+                    const correctIdx = shuffledQuestions[currentIdx].options.findIndex(o => o.isCorrect);
+                    const correctText = shuffledQuestions[currentIdx].options[correctIdx].text[currentLanguage];
+                    btns.forEach(b => { if(b.textContent === correctText) b.classList.add('correct'); });
                 }
-            }
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                document.getElementById('next-button').textContent = currentIdx === shuffledQuestions.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
 
-            function selectAnswer(button, selectedOption, allOptions) {
-                if (synth.speaking) synth.cancel();
-                if (activeTTSButton) { activeTTSButton.classList.remove('playing'); activeTTSButton = null; }
+            const startQuiz = () => {
+                currentIdx = 0; score = 0;
+                shuffledQuestions = shuffleArray([...questionsPool]);
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
 
-                const buttons = optionsContainer.querySelectorAll('button.option-btn');
-                buttons.forEach(btn => {
-                    btn.disabled = true;
-                    const optionDataText = btn.textContent;
-                    const originalOption = allOptions.find(opt => opt.text[currentLanguage] === optionDataText);
-                    if (originalOption && originalOption.isCorrect) {
-                        btn.classList.add('correct');
+            document.getElementById('next-button').onclick = () => {
+                if (currentIdx < shuffledQuestions.length - 1) {
+                    currentIdx++;
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    renderQuestion();
+                } else {
+                    document.getElementById('question-area').classList.add('hidden');
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    document.getElementById('results-area').classList.remove('hidden');
+                    document.getElementById('score-text').textContent = `${score} / ${shuffledQuestions.length}`;
+                }
+            };
+
+            document.getElementById('restart-button').onclick = startQuiz;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) {
+                        if (el.tagName === 'A' && el.querySelector('svg')) {
+                            const svg = el.querySelector('svg').outerHTML;
+                            el.innerHTML = svg + translations[key][lang];
+                        } else {
+                            el.innerHTML = translations[key][lang];
+                        }
                     }
                 });
-
-                if (!selectedOption.isCorrect) {
-                    button.classList.add('incorrect');
-                }
-                
-                score += selectedOption.isCorrect ? 1 : 0;
-                
-                rationaleText.textContent = selectedOption.rationale[currentLanguage];
-                feedbackArea.classList.remove('hidden');
-
-                if (currentQuestionIndex === shuffledQuestions.length - 1) {
-                    nextButton.textContent = translations.btnResults[currentLanguage];
-                } else {
-                    nextButton.textContent = translations.btnNext[currentLanguage];
-                }
-            }
-
-            function showResults() {
-                questionArea.classList.add('hidden');
-                feedbackArea.classList.add('hidden');
-                resultsArea.classList.remove('hidden');
-                scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
-            }
-
-            // --- Funzione Aggiornamento Lingua (Include Quiz Logic) ---
-            const updateLanguage = (lang, previousLang = null) => {
-                 document.documentElement.lang = lang;
-                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-
-                 document.querySelectorAll('[data-lang-key]').forEach(element => {
-                     const key = element.dataset.langKey;
-                     if (translations[key] && translations[key][lang]) {
-                         const translationText = translations[key][lang];
-
-                         if (key === 'footerText' || key === 'backToIndex') {
-                             const svgIcon = element.querySelector('svg');
-                             element.innerHTML = translationText;
-                             if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
-                                   element.insertBefore(svgIcon, element.firstChild);
-                             }
-                         }
-                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
-                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
-                             const sectionKey = currentSectionKey || key;
-                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
-                         }
-                         else if (element.id !== 'question-text' && element.id !== 'rationale-text') {
-                             element.textContent = translationText;
-                         }
-                     }
-                 });
-
-                 if (shuffledQuestions.length > 0 && !questionArea.classList.contains('hidden')) {
-                     const feedbackWasVisible = !feedbackArea.classList.contains('hidden');
-                     let originalSelectedOption = null;
-
-                     if (feedbackWasVisible) {
-                        const rationaleTextContent = rationaleText.textContent;
-                        const currentQuestion = shuffledQuestions[currentQuestionIndex];
-                        // Cerca il rationale nella lingua precedente
-                        originalSelectedOption = currentQuestion.options.find(opt => opt.rationale[previousLang] === rationaleTextContent);
-                     }
-
-                     loadQuestion(true); // Ricarica domanda e opzioni tradotte
-                     
-                     if (feedbackWasVisible && originalSelectedOption) {
-                         const buttons = optionsContainer.querySelectorAll('button.option-btn');
-                         buttons.forEach(btn => {
-                            btn.disabled = true;
-                            const optionDataText = btn.textContent;
-                            // Cerca l'opzione nel DOM in base al testo nella *nuova* lingua
-                            const currentOptionData = shuffledQuestions[currentQuestionIndex].options.find(opt => opt.text[lang] === optionDataText);
-                            if (currentOptionData) {
-                                if (currentOptionData.isCorrect) {
-                                    btn.classList.add('correct');
-                                }
-                                // Confronta l'opzione trovata nel DOM con quella salvata (originalSelectedOption)
-                                if (currentOptionData.text[lang] === originalSelectedOption.text[lang] && !originalSelectedOption.isCorrect) {
-                                    btn.classList.add('incorrect');
-                                }
-                            }
-                         });
-                         
-                         rationaleText.textContent = originalSelectedOption.rationale[lang];
-                         feedbackArea.classList.remove('hidden');
-
-                         if (currentQuestionIndex === shuffledQuestions.length - 1) {
-                              nextButton.textContent = translations.btnResults[lang];
-                         } else {
-                              nextButton.textContent = translations.btnNext[lang];
-                         }
-                     }
-                 } else if (!resultsArea.classList.contains('hidden')) {
-                      resultsArea.querySelector('h2').textContent = translations.resultsTitle[lang];
-                      resultsArea.querySelector('p[data-lang-key="resultsScore"]').textContent = translations.resultsScore[lang];
-                      restartButton.textContent = translations.btnRestart[lang];
-                 }
-
-                 if (synth.speaking || synth.pending) synth.cancel();
-                 setTimeout(setupTTSListeners, 100);
+                renderQuestion();
             };
 
-            // --- Logica Modalità Accessibilità ---
-            const setA11yMode = (enabled) => {
-                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
-                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
             };
 
-            // --- Event Listeners ---
-            if (langToggle) {
-                langToggle.addEventListener('click', () => {
-                    const previousLanguage = currentLanguage;
-                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-                    localStorage.setItem('language', currentLanguage);
-                     if (synth.speaking || synth.pending) synth.cancel();
-                    updateLanguage(currentLanguage, previousLanguage);
-                });
-            } else { console.error("Elemento langToggle non trovato!"); }
+            document.getElementById('accessibility-toggle').onclick = () => {
+                body.classList.toggle('dsa-mode');
+                localStorage.setItem('dsa-mode', body.classList.contains('dsa-mode') ? 'enabled' : 'disabled');
+            };
 
-            if (accessibilityToggle) {
-                 accessibilityToggle.addEventListener('click', () => {
-                    const isEnabled = body.classList.contains('dsa-mode');
-                    setA11yMode(!isEnabled);
-                });
-            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+            document.getElementById('question-tts-button').onclick = () => speak(shuffledQuestions[currentIdx].question[currentLanguage], document.getElementById('question-tts-button'));
 
-             nextButton.addEventListener('click', () => {
-                 currentQuestionIndex++;
-                 if (currentQuestionIndex < shuffledQuestions.length) {
-                     loadQuestion();
-                 } else {
-                     showResults();
-                 }
-             });
-
-             restartButton.addEventListener('click', startQuiz);
-
-            // --- Inizializzazione ---
-            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
-            populateVoices();
-             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-                 speechSynthesis.onvoiceschanged = populateVoices;
-             }
-            startQuiz(); // Avvia il quiz
-            updateLanguage(currentLanguage); // Applica lingua iniziale e setup
-
+            if (localStorage.getItem('dsa-mode') === 'enabled') body.classList.add('dsa-mode');
+            startQuiz();
+            updateLanguage(currentLanguage);
         });
     </script>
-
 </body>
 </html>
