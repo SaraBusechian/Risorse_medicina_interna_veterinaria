@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metodologie Cliniche in Medicina Interna dei Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* TEMA SMERALDO (EMERALD) - Distinto dal Blu dei Grandi Animali */
+        .hero-bg { background-color: #047857; background-image: linear-gradient(to right, #047857, #10b981); } /* emerald-700 to emerald-500 */
+        
+        /* Navigazione: Forza il bianco su sfondo smeraldo */
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #a7f3d0 !important; } /* emerald-200 */
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); transition: transform 0.3s, box-shadow 0.3s; }
+        .section-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        
+        /* Accessibilità */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fdfaf5 !important;
+            letter-spacing: 0.05em;
+            line-height: 1.75;
+        }
+        .dsa-mode .hero-bg, .dsa-mode #main-footer, .dsa-mode #main-header {
+            background-color: #000000 !important;
+            background-image: none !important;
+        }
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle,
+        .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p, .dsa-mode .back-button {
+            color: #ffffff !important;
+        }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .back-button { border: 1px solid #ffffff; }
+        .dsa-mode .section-card { background-color: #fffdfa; border: 1px solid #e0e0e0; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode p, .dsa-mode .nav-link { color: #34495e; }
+        
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover { color: #059669; } /* emerald-600 */
+        .tts-button.playing { color: #059669; }
+        
+        .audio-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; background-color: #ecfdf5; border-radius: 0.5rem; margin-top: 1.5rem; } /* emerald-50 */
+        .audio-container audio { width: 100%; border-radius: 0.5rem; }
+        .audio-container a { display: inline-flex; align-items: center; justify-content: center; width: 100%; }
+        @media (min-width: 640px) {
+            .audio-container { flex-direction: row; }
+            .audio-container audio { width: auto; flex-grow: 1; }
+            .audio-container a { width: auto; }
+        }
+        .dsa-mode .audio-container { background-color: #f0eade !important; }
+        
+        audio::-webkit-media-controls-panel { background-color: #d1fae5; } /* emerald-100 */
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6 text-white">
+                    <li><a href="#anamnesi" class="nav-link font-semibold text-white" data-lang-key="navAnamnesi">Anamnesi</a></li>
+                    <li><a href="#ispezione" class="nav-link font-semibold text-white" data-lang-key="navIspezione">Ispezione</a></li>
+                    <li><a href="#palpazione" class="nav-link font-semibold text-white" data-lang-key="navPalpazione">Palpazione</a></li>
+                    <li><a href="#percussione" class="nav-link font-semibold text-white" data-lang-key="navPercussione">Percussione</a></li>
+                    <li><a href="#auscultazione" class="nav-link font-semibold text-white" data-lang-key="navAuscultazione">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" aria-label="Attiva modalità ad alta leggibilità" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" aria-label="Change language" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="../../index.html" class="back-button text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- Contenuto inserito da JS -->
+                </a>
+            </div>
+            <h2 class="text-5xl font-bold mb-2 mt-12" data-lang-key="heroTitle">Metodologie Cliniche Veterinarie</h2>
+            <p class="text-xl" data-lang-key="heroSubtitle">Una guida interattiva per lo studio della medicina interna dei piccoli animali.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="anamnesi" class="mb-16 p-8 section-card">
+            <h3 class="text-3xl font-bold mb-4 text-emerald-800" data-lang-key="anamnesiTitle">1. Anamnesi</h3>
+            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="anamnesiDesc"></p>
+            <div class="flex flex-wrap gap-4 mt-6">
+                <a href="riassunto_anamnesi.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnReadSummary">Leggi il Riassunto</a>
+                <a href="infografica_anamnesi.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnViewInfographic">Visualizza Infografica</a>
+                <a href="quiz_anamnesi.html" class="bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-cyan-700 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnTakeQuiz">Fai il Quiz</a>
+            </div>
+             <div class="mt-4 p-4 bg-emerald-500/10 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full audio-container">
+                <audio controls class="w-full sm:w-auto flex-grow rounded-lg">
+                    <source src="audio_riassunto_anamnesi_pa.mp3" type="audio/mpeg">
+                    Il tuo browser non supporta l'elemento audio.
+                </audio>
+                <a href="audio_riassunto_anamnesi_pa.mp3" download class="bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center w-full sm:w-auto justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                    <span data-lang-key="btnDownloadAudio">Scarica Audio</span>
+                </a>
+            </div>
+        </section>
+
+        <section id="ispezione" class="mb-16 p-8 section-card">
+            <h3 class="text-3xl font-bold mb-4 text-emerald-800" data-lang-key="ispezioneTitle">2. Ispezione</h3>
+            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="ispezioneDesc"></p>
+             <div class="flex flex-wrap gap-4 mt-6">
+                <a href="riassunto_ispezione.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnReadSummary">Leggi il Riassunto</a>
+                <a href="infografica_ispezione.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnViewInfographic">Visualizza Infografica</a>
+                <a href="quiz_ispezione.html" class="bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-cyan-700 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnTakeQuiz">Fai il Quiz</a>
+            </div>
+            <div class="mt-4 p-4 bg-emerald-500/10 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full audio-container">
+                <audio controls class="w-full sm:w-auto flex-grow rounded-lg">
+                    <source src="audio_riassunto_ispezione_pa.mp3" type="audio/mpeg">
+                    Il tuo browser non supporta l'elemento audio.
+                </audio>
+                <a href="audio_riassunto_ispezione_pa.mp3" download class="bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center w-full sm:w-auto justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                    <span data-lang-key="btnDownloadAudio">Scarica Audio</span>
+                </a>
+            </div>
+        </section>
+
+        <section id="palpazione" class="mb-16 p-8 section-card">
+            <h3 class="text-3xl font-bold mb-4 text-emerald-800" data-lang-key="palpazioneTitle">3. Palpazione</h3>
+            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="palpazioneDesc"></p>
+             <div class="flex flex-wrap gap-4 mt-6">
+                <a href="riassunto_palpazione.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnReadSummary">Leggi il Riassunto</a>
+                <a href="infografica_palpazione.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnViewInfographic">Visualizza Infografica</a>
+                <a href="quiz_palpazione.html" class="bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-cyan-700 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnTakeQuiz">Fai il Quiz</a>
+            </div>
+            <div class="mt-4 p-4 bg-emerald-500/10 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full audio-container">
+                <audio controls class="w-full sm:w-auto flex-grow rounded-lg">
+                    <source src="audio_riassunto_palpazione_pa.mp3" type="audio/mpeg">
+                    Il tuo browser non supporta l'elemento audio.
+                </audio>
+                <a href="audio_riassunto_palpazione_pa.mp3" download class="bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center w-full sm:w-auto justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                    <span data-lang-key="btnDownloadAudio">Scarica Audio</span>
+                </a>
+            </div>
+        </section>
+
+        <section id="percussione" class="mb-16 p-8 section-card">
+            <h3 class="text-3xl font-bold mb-4 text-emerald-800" data-lang-key="percussioneTitle">4. Percussione</h3>
+            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="percussioneDesc"></p>
+            <div class="flex flex-wrap gap-4 mt-6">
+                <a href="riassunto_percussione.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnReadSummary">Leggi il Riassunto</a>
+                <a href="infografica_percussione.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnViewInfographic">Visualizza Infografica</a>
+                <a href="quiz_percussione.html" class="bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-cyan-700 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnTakeQuiz">Fai il Quiz</a>
+            </div>
+             <div class="mt-4 p-4 bg-emerald-500/10 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full audio-container">
+                <audio controls class="w-full sm:w-auto flex-grow rounded-lg">
+                    <source src="audio_riassunto_percussione_pa.mp3" type="audio/mpeg">
+                    Il tuo browser non supporta l'elemento audio.
+                </audio>
+                <a href="audio_riassunto_percussione_pa.mp3" download class="bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center w-full sm:w-auto justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                    <span data-lang-key="btnDownloadAudio">Scarica Audio</span>
+                </a>
+            </div>
+        </section>
+
+        <section id="auscultazione" class="mb-16 p-8 section-card">
+            <h3 class="text-3xl font-bold mb-4 text-emerald-800" data-lang-key="auscultazioneTitle">5. Auscultazione</h3>
+            <p class="text-gray-700 leading-relaxed mb-6" data-lang-key="auscultazioneDesc"></p>
+            <div class="flex flex-wrap gap-4 mt-6">
+                <a href="riassunto_auscultazione.html" class="bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-emerald-700 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnReadSummary">Leggi il Riassunto</a>
+                <a href="infografica_auscultazione.html" class="bg-teal-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-teal-600 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnViewInfographic">Visualizza Infografica</a>
+                <a href="quiz_auscultazione.html" class="bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-cyan-700 transition duration-300 inline-block flex-grow text-center" data-lang-key="btnTakeQuiz">Fai il Quiz</a>
+            </div>
+             <div class="mt-4 p-4 bg-emerald-500/10 rounded-lg flex flex-col sm:flex-row items-center gap-4 w-full audio-container">
+                <audio controls class="w-full sm:w-auto flex-grow rounded-lg">
+                    <source src="audio_riassunto_auscultazione_pa.mp3" type="audio/mpeg">
+                    Il tuo browser non supporta l'elemento audio.
+                </audio>
+                <a href="audio_riassunto_auscultazione_pa.mp3" download class="bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center w-full sm:w-auto justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                    <span data-lang-key="btnDownloadAudio">Scarica Audio</span>
+                </a>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="text-center mt-16 pt-8 border-t border-emerald-100">
+        <p class="text-slate-500" data-lang-key="footer-credit">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const speakerIcon = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
+            
+            const translations = {
+                "main-title": { it: "Dermatologia", en: "Dermatology" },
+                siteTitle: { it: 'Medicina Interna P.A.', en: 'Small Animal Internal Medicine' },
+                backToHome: { it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Torna all\'Indice', en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Back to Index' },
+                navAnamnesi: { it: 'Anamnesi', en: 'History' },
+                navIspezione: { it: 'Ispezione', en: 'Inspection' },
+                navPalpazione: { it: 'Palpazione', en: 'Palpation' },
+                navPercussione: { it: 'Percussione', en: 'Percussion' },
+                navAuscultazione: { it: 'Auscultazione', en: 'Auscultation' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                heroTitle: { it: 'Metodologie Cliniche Veterinarie', en: 'Veterinary Clinical Methodologies' },
+                heroSubtitle: { it: 'Una guida interattiva per lo studio della medicina interna dei piccoli animali.', en: 'An interactive guide to the study of small animal internal medicine.' },
+                anamnesiTitle: { it: '1. Anamnesi', en: '1. History Taking' },
+                ispezioneTitle: { it: '2. Ispezione', en: '2. Inspection' },
+                palpazioneTitle: { it: '3. Palpazione', en: '3. Palpation' },
+                percussioneTitle: { it: '4. Percussione', en: '4. Percussion' },
+                auscultazioneTitle: { it: '5. Auscultazione', en: '5. Auscultation' },
+                
+                // Descrizioni adattate per i Piccoli Animali
+                anamnesiDesc: { it: `Nel cane e nel gatto, l'anamnesi deve focalizzarsi su: vaccinazioni (profilassi), trattamenti antiparassitari, alimentazione, ambiente di vita (indoor/outdoor) e contatti con altri animali. Fondamentale indagare l'esordio dei sintomi e la risposta a terapie precedenti.${speakerIcon}`, en: `In dogs and cats, history taking should focus on: vaccinations (prophylaxis), parasite control, diet, living environment (indoor/outdoor), and contact with other animals. Investigating symptom onset and response to previous therapies is crucial.${speakerIcon}` },
+                ispezioneDesc: { it: `L'ispezione inizia a distanza (osservazione del comportamento in sala d'attesa o in visita) e prosegue con l'esame ravvicinato. Si valutano: stato mentale, postura, andatura, condizione corporea (BCS), mantello e cute. Attenzione particolare a respiro e mucose.${speakerIcon}`, en: `Inspection starts from a distance (observing behavior in the waiting or exam room) and proceeds to a close-up exam. Assess: mental status, posture, gait, body condition score (BCS), coat, and skin. Pay special attention to respiration and mucous membranes.${speakerIcon}` },
+                palpazioneDesc: { it: `La palpazione è essenziale nei piccoli animali. Include: palpazione dei linfonodi superficiali (mandibolari, prescapolari, poplitei), palpazione addominale (organi interni, masse, dolore), polso femorale e valutazione del turgore cutaneo.${speakerIcon}`, en: `Palpation is essential in small animals. Includes: palpation of superficial lymph nodes (mandibular, prescapular, popliteal), abdominal palpation (internal organs, masses, pain), femoral pulse, and skin turgor assessment.${speakerIcon}` },
+                percussioneDesc: { it: `Meno utilizzata che nei grandi animali, ma utile per il torace (presenza di versamenti o masse) e talvolta per l'addome (timpanismo gastrico). Si esegue spesso digit-digitale.${speakerIcon}`, en: `Less commonly used than in large animals, but useful for the chest (presence of effusion or masses) and sometimes the abdomen (gastric tympany). Often performed digit-digitally.${speakerIcon}` },
+                auscultazioneDesc: { it: `Fondamentale per cuore e polmoni. Si ascoltano i toni cardiaci (frequenza, ritmo, soffi) su entrambi gli emitoraci e i campi polmonari (murmure vescicolare, rumori aggiunti). Importante auscultare anche la trachea.${speakerIcon}`, en: `Fundamental for heart and lungs. Listen to heart sounds (rate, rhythm, murmurs) on both sides of the chest and lung fields (vesicular murmur, adventitious sounds). It is also important to auscultate the trachea.${speakerIcon}` },
+                
+                btnReadSummary: { it: 'Leggi il Riassunto', en: 'Read Summary' },
+                btnViewInfographic: { it: 'Visualizza Infografica', en: 'View Infographic' },
+                btnTakeQuiz: { it: 'Fai il Quiz', en: 'Take the Quiz' },
+                btnDownloadAudio: { it: 'Scarica Audio', en: 'Download Audio' },
+                
+                bibliographyTitle: { it: `Letture Consigliate<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`, en: `Recommended Reading<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>` },
+                bibliographyContent: { it: `<p class="text-gray-700 leading-relaxed mb-6">Di seguito i testi consigliati per approfondire gli argomenti trattati in questa sezione:</p><ul class="list-disc pl-5 text-gray-700"><li>Nelson & Couto, <i>Small Animal Internal Medicine</i>, 6th Ed., Elsevier.</li><li>Ettinger et al., <i>Textbook of Veterinary Internal Medicine</i>, 8th Ed., Elsevier.</li><li>Rijnberk & van Sluijs, <i>Medical History and Physical Examination in Companion Animals</i>, Saunders.</li></ul>`, en: `<p class="text-gray-700 leading-relaxed mb-6">The following are recommended texts for further reading on the topics covered in this section:</p><ul class="list-disc pl-5 text-gray-700"><li>Nelson & Couto, <i>Small Animal Internal Medicine</i>, 6th Ed., Elsevier.</li><li>Ettinger et al., <i>Textbook of Veterinary Internal Medicine</i>, 8th Ed., Elsevier.</li><li>Rijnberk & van Sluijs, <i>Medical History and Physical Examination in Companion Animals</i>, Saunders.</li></ul>` },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const accessibilityToggle = document.getElementById('accessibility-toggle');
+            const langToggle = document.getElementById('lang-toggle');
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+            let voices = [];
+
+            function populateVoiceList() {
+                voices = synth.getVoices();
+            }
+            populateVoiceList();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = populateVoiceList;
+            }
+
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else { synth.pause(); button.classList.remove('playing'); }
+                } else {
+                    if (synth.speaking) synth.cancel();
+                    currentUtterance = new SpeechSynthesisUtterance(text);
+                    currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                    currentUtterance.onend = () => {
+                        if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                        activeTTSButton = null;
+                    };
+                    synth.speak(currentUtterance);
+                    if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                }
+            }
+            
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const parentSection = e.currentTarget.closest('section');
+                        if (parentSection) {
+                            const clone = parentSection.cloneNode(true);
+                            clone.querySelectorAll('.audio-container, a').forEach(el => el.remove());
+                             const ttsButtonInClone = clone.querySelector('.tts-button');
+                            if (ttsButtonInClone) ttsButtonInClone.remove();
+
+                            const textToRead = clone.textContent.trim().replace(/\s+/g, ' ');
+                            if (textToRead.trim() !== '.') speak(textToRead, e.currentTarget);
+                        }
+                    });
+                });
+            }
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        const ttsButton = element.querySelector('.tts-button');
+                        element.innerHTML = translations[key][lang];
+                        if (ttsButton) {
+                            element.appendChild(ttsButton);
+                        }
+                    }
+                });
+                document.querySelectorAll('.audio-container').forEach(container => {
+                    container.style.display = 'flex'; // Always show audio container
+                });
+                setupTTSListeners();
+            };
+
+            const setA11yMode = (enabled) => {
+                if (enabled) {
+                    body.classList.add('dsa-mode');
+                    localStorage.setItem('dsa-mode', 'enabled');
+                } else {
+                    body.classList.remove('dsa-mode');
+                    localStorage.setItem('dsa-mode', 'disabled');
+                }
+            };
+
+            langToggle.addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            accessibilityToggle.addEventListener('click', () => {
+                const isEnabled = body.classList.contains('dsa-mode');
+                setA11yMode(!isEnabled);
+            });
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') {
+                setA11yMode(true);
+            }
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
