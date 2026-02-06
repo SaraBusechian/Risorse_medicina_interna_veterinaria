@@ -3,643 +3,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Titolo specifico per questa pagina -->
     <title>Quiz Interattivo: Apparato Respiratorio - Semeiotica Vet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Stili Generali e dal Template */
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; } /* Background leggermente grigio */
-        .section-nav-link {
-            transition: background-color 0.3s, color 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            background-color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
-        }
-        .section-nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        .section-nav-link.active {
-             background-color: white;
-             color: #1E3A8A;
-             cursor: default;
-        }
-        .content-card {
-             background-color: white;
-             border-radius: 0.75rem;
-             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-             padding: 1.5rem;
-             margin-top: 2rem;
-             /* Limit max width for quiz consistency */
-             max-width: 48rem; /* max-w-3xl */
-             margin-left: auto;
-             margin-right: auto;
-        }
-        @media (min-width: 768px) { /* md: */
-            .content-card { padding: 2.5rem; }
-        }
-        #page-header { position: static; } /* Rimosso sticky per le pagine interne */
-        .scrollable-nav {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .scrollable-nav::-webkit-scrollbar { display: none; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
 
-        /* Stili Specifici del Quiz */
-        .option-btn { transition: background-color 0.2s, border-color 0.2s, transform 0.1s; border-width: 2px; }
-        .option-btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f1f5f9; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #475569; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #1e293b; }
+        .quick-nav-item.active { background-color: #1E3A8A; color: #ffffff !important; border-color: #1E3A8A; }
+
+        /* --- SECTION NAV --- */
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #1E3A8A; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 800px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Quiz */
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; text-align: left; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .option-btn:hover:not(:disabled) { border-color: #3B82F6; background-color: #eff6ff; transform: translateY(-2px); }
         .option-btn.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: 600; }
         .option-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: 600; }
-         #question-text-container { /* Nuovo container per testo e bottone TTS */
-            display: flex;
-            align-items: flex-start; /* Allinea all'inizio se il testo va a capo */
-            min-height: 4.5rem; /* ~3 righe */
-            margin-bottom: 1.5rem; /* mb-6 */
+
+        /* TTS Button */
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #2563eb; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
         }
-        #question-text {
-            flex-grow: 1; /* Occupa lo spazio disponibile */
-            font-size: 1.125rem; /* text-lg */
-            color: #374151; /* text-slate-700 */
-        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
 
-        /* DSA Mode Styles */
-        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
-        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
-        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
-        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
-        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
-        .dsa-mode h2, .dsa-mode p, .dsa-mode button, .dsa-mode #score-text, .dsa-mode #question-text { color: #34495e !important; }
-        .dsa-mode .option-btn { background-color: #fefcf7 !important; border-color: #aeaeae !important; }
-        .dsa-mode .option-btn.correct { background-color: #d1f7d1 !important; border-color: #1a7431 !important; color: #1a7431 !important; }
-        .dsa-mode .option-btn.incorrect { background-color: #f7d1d1 !important; border-color: #a31e1e !important; color: #a31e1e !important; }
-        .dsa-mode #rationale-text { background-color: #f0eade !important; border-color: #dcd7cd !important; }
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h2, .dsa-mode h3, .dsa-mode p { color: #000 !important; }
+        .dsa-mode .option-btn { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .option-btn.correct { background-color: #dcfce7 !important; border-width: 5px !important; }
+        .dsa-mode .option-btn.incorrect { background-color: #fee2e2 !important; border-width: 5px !important; }
+        .dsa-mode .tts-button { color: #000 !important; }
 
-        /* TTS Button Styles */
-        .tts-button { cursor: pointer; display: inline-block; margin-left: 8px; vertical-align: middle; color: #64748b; transition: color 0.2s; flex-shrink: 0; /* Impedisci che si rimpicciolisca */ }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
-         .dsa-mode .tts-button { color: #5a738e !important; }
-
-         /* Print Styles - Nascondi quiz */
         @media print {
-            body { background-color: #fff; }
-            #page-header, #main-footer, #quiz-container { display: none; }
-            .container::before { content: "Il contenuto del quiz non è stampabile."; display: block; text-align: center; font-size: 1.2em; margin-top: 2cm; }
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
         }
-
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50 text-gray-800">
 
-    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
-    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
-        <div class="container mx-auto px-6 py-3">
-            <!-- Riga Superiore: Torna all'indice + Controlli -->
-            <div class="flex justify-between items-center mb-4">
-                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
-                 </a>
-                 <div class="flex items-center space-x-2">
-                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
-                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
-                 </div>
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
+        </nav>
+    </header>
 
-            <!-- Titolo della Sezione -->
-            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleResp">3. Apparato Respiratorio</h1>
-
-            <!-- Navigazione Interna alla Sezione -->
-            <nav class="scrollable-nav">
-                 <div class="flex space-x-2 pb-2">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index_semeiotica.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleResp">3. Apparato Respiratorio</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
                      <a href="riassunto_respiratorio.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
                      <a href="infografica_respiratorio.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
                      <a href="checklist_respiratorio.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
                      <a href="collaterali_respiratorio.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
                      <a href="quiz_respiratorio.html" class="section-nav-link active" data-lang-key="navQuiz">Quiz</a>
-                     <a href="riassunto_respiratorio.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
                 </div>
             </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item active" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="quiz-container" class="content-card">
+            
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-blue-800" data-lang-key="quizTitle">Quiz: Apparato Respiratorio</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-gray-500"></p>
+                </div>
+
+                <div class="mb-8 p-4 bg-slate-50 rounded-xl flex items-start gap-3">
+                    <p id="question-text" class="text-lg font-medium text-gray-800 flex-grow"></p>
+                    <button id="question-tts-button" class="tts-button mt-1">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-blue-50 border-2 border-blue-200">
+                    <p id="rationale-text" class="text-sm italic text-blue-800 mb-6"></p>
+                    <button id="next-button" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-blue-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🫁</div>
+                <h2 class="text-3xl font-bold text-blue-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-gray-600" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-6xl font-black text-blue-600 my-6"></p>
+                <button id="restart-button" class="w-full border-2 border-blue-600 text-blue-600 font-bold py-4 px-6 rounded-xl hover:bg-blue-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
 
         </div>
-    </header>
-    <!-- === FINE HEADER === -->
-
-    <!-- Main Content Container - Usiamo flex per centrare verticalmente il quiz -->
-     <main class="container mx-auto p-4 md:px-8 md:py-12 flex items-center justify-center min-h-[calc(100vh-230px)]">
-         <!-- Card Contenuto Quiz -->
-         <div id="quiz-container" class="content-card w-full">
-
-            <div id="question-area">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: Apparato Respiratorio</h2>
-                    <p id="progress-text" class="text-sm font-semibold text-slate-500"></p>
-                </div>
-                <!-- Container per Testo Domanda + Bottone TTS -->
-                <div id="question-text-container">
-                    <p id="question-text"></p>
-                    <span id="question-tts-button" class="tts-button">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    </span>
-                </div>
-                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
-
-            <div id="feedback-area" class="mt-6 hidden">
-                <p id="rationale-text" class="text-sm p-4 rounded-lg bg-slate-100 border border-slate-200"></p>
-                <button id="next-button" class="mt-4 w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnNext">Prossima Domanda</button>
-            </div>
-
-            <div id="results-area" class="text-center hidden">
-                <h2 class="text-2xl font-bold text-sky-800 mb-4" data-lang-key="resultsTitle">Quiz Completato!</h2>
-                <p class="text-lg text-slate-700 mb-2" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
-                <p id="score-text" class="text-5xl font-extrabold text-amber-500 mb-6"></p>
-                <button id="restart-button" class="w-full bg-sky-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-sky-700 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
-            </div>
-
-         </div> <!-- Fine content-card -->
     </main>
 
-    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
-        </div>
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            // === TRADUZIONI ===
             const translations = {
-                // --- Header ---
-                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
                 sectionTitleResp: { it: '3. Apparato Respiratorio', en: '3. Respiratory System' },
                 navSummary: { it: 'Riassunto', en: 'Summary' },
                 navInfographic: { it: 'Infografica', en: 'Infographic' },
                 navChecklist: { it: 'Checklist', en: 'Checklist' },
                 navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
                 navQuiz: { it: 'Quiz', en: 'Quiz' },
-                navAudio: { it: 'Audio', en: 'Audio' },
-                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                // --- Contenuto Quiz Respiratorio ---
-                 siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Veterinary Semeiotics L.A.' },
-                 navBack: { it: 'Indice Esami', en: 'Exams Index' },
-                 quizTitle: { it: 'Quiz: Apparato Respiratorio', en: 'Quiz: Respiratory System' },
-                 progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
-                 btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
-                 btnResults: { it: 'Mostra Risultati', en: 'Show Results' },
-                 resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
-                 resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
-                 btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
-                // --- Domande (q1-q10) ---
-                q1: {
-                    question: { it: "Come si definisce correttamente la 'dispnea'?", en: "How is 'dyspnea' correctly defined?" },
-                    options: [
-                        { text: { it: "Un aumento della sola frequenza respiratoria.", en: "An increase in respiratory rate only." }, rationale: { it: "Questo è 'tachipnea'. La dispnea è più complessa e coinvolge più caratteri del respiro.", en: "This is 'tachypnea'. Dyspnea is more complex and involves more characteristics of breathing." }, isCorrect: false },
-                        { text: { it: "Un'alterazione di almeno due caratteri del respiro (frequenza, ritmo, ampiezza...).", en: "An alteration of at least two characteristics of breathing (rate, rhythm, amplitude...)." }, rationale: { it: "Corretto. La dispnea è una respirazione difficoltosa, che si manifesta alterando più parametri, non solo la frequenza.", en: "Correct. Dyspnea is labored breathing, which manifests by altering multiple parameters, not just the rate." }, isCorrect: true },
-                        { text: { it: "Un tipo respiratorio puramente costale.", en: "A purely costal respiratory type." }, rationale: { it: "Un tipo costale può essere un segno di dispnea (es. dolore addominale), ma non è la definizione di dispnea.", en: "A costal type can be a sign of dyspnea (e.g., abdominal pain), but it is not the definition of dyspnea." }, isCorrect: false },
-                        { text: { it: "La presenza di rantoli secchi all'auscultazione.", en: "The presence of dry rales on auscultation." }, rationale: { it: "I rantoli sono un reperto auscultatorio, mentre la dispnea è una valutazione funzionale dell'atto respiratorio.", en: "Rales are an auscultatory finding, whereas dyspnea is a functional assessment of the act of breathing." }, isCorrect: false }
-                    ]
-                },
-                q2: {
-                    question: { it: "Durante la percussione del torace, per identificare il limite caudale del polmone si segue:", en: "During thoracic percussion, to identify the caudal border of the lung, one follows:" },
-                    options: [
-                        { text: { it: "La prima linea del Vogel, percuotendo da davanti a dietro.", en: "Vogel's first line, percussing from front to back." }, rationale: { it: "Corretto. Questa linea guida anatomica permette di tracciare il margine obliquo del polmone e identificarne il limite caudale.", en: "Correct. This anatomical guideline allows tracing the oblique margin of the lung and identifying its caudal border." }, isCorrect: true },
-                        { text: { it: "Una linea verticale nello spazio intercostale, dal basso verso l'alto.", en: "A vertical line in the intercostal space, from bottom to top." }, rationale: { it: "Questa metodica (anche se si fa dall'alto in basso) serve a definire il profilo diaframmatico, non il limite caudale.", en: "This method (even if done top-to-bottom) is used to define the diaphragmatic profile, not the caudal border." }, isCorrect: false },
-                        { text: { it: "La linea della punta della spalla.", en: "The line of the point of the shoulder." }, rationale: { it: "Questa linea è un riferimento, ma non quella usata per percuotere e definire il limite caudale del polmone.", en: "This line is a reference, but not the one used for percussion to define the caudal border of the lung." }, isCorrect: false },
-                        { text: { it: "Si palpa l'ultima costa.", en: "The last rib is palpated." }, rationale: { it: "La palpazione non è la metodica corretta per definire il limite polmonare, che si basa sulla variazione del suono percussorio.", en: "Palpation is not the correct method to define the lung border, which is based on the variation of the percussion sound." }, isCorrect: false }
-                    ]
-                },
-                q3: {
-                    question: { it: "Un suono 'ottuso' ottenuto durante la percussione del campo polmonare indica:", en: "A 'dull' sound obtained during percussion of the lung field indicates:" },
-                    options: [
-                        { text: { it: "Un normale polmone pieno d'aria.", en: "A normal, air-filled lung." }, rationale: { it: "Il suono normale del polmone è 'chiaro polmonare', non ottuso.", en: "The normal lung sound is 'clear pulmonary', not dull." }, isCorrect: false },
-                        { text: { it: "Aria intrappolata (enfisema).", en: "Trapped air (emphysema)." }, rationale: { it: "L'enfisema produce un suono 'iperchiaro' o 'timpanico', l'opposto dell'ottuso.", en: "Emphysema produces a 'hyperclear' or 'tympanic' sound, the opposite of dull." }, isCorrect: false },
-                        { text: { it: "Aumento di densità (polmonite, versamento pleurico).", en: "Increased density (pneumonia, pleural effusion)." }, rationale: { it: "Corretto. L'ottusità indica che il suono non si propaga bene, a causa di un tessuto solido o di un liquido che ha sostituito l'aria.", en: "Correct. Dullness indicates that the sound is not propagating well, due to solid tissue or fluid replacing the air." }, isCorrect: true },
-                        { text: { it: "La presenza di una cavità.", en: "The presence of a cavity." }, rationale: { it: "Una cavità piena d'aria produrrebbe un suono iperchiaro o timpanico, non ottuso.", en: "An air-filled cavity would produce a hyperclear or tympanic sound, not dull." }, isCorrect: false }
-                    ]
-                },
-                q4: {
-                    question: { it: "Il 'murmure vescicolare' è un suono:", en: "The 'vesicular murmur' is a sound:" },
-                    options: [
-                        { text: { it: "Patologico, udibile solo in caso di polmonite.", en: "Pathological, audible only in case of pneumonia." }, rationale: { it: "No, il murmure vescicolare è il suono respiratorio normale del polmone.", en: "No, the vesicular murmur is the normal respiratory sound of the lung." }, isCorrect: false },
-                        { text: { it: "Fisiologico, udibile durante l'inspirazione.", en: "Physiological, audible during inspiration." }, rationale: { it: "Corretto. È un suono dolce, simile al fruscio delle foglie, prodotto dall'ingresso dell'aria negli alveoli e si apprezza solo nella fase inspiratoria.", en: "Correct. It is a soft sound, similar to rustling leaves, produced by air entering the alveoli and is only appreciated during the inspiratory phase." }, isCorrect: true },
-                        { text: { it: "Fisiologico, udibile durante l'espirazione.", en: "Physiological, audible during expiration." }, rationale: { it: "Normalmente, l'espirazione è silente. Il murmure si apprezza solo nell'inspirazione.", en: "Normally, expiration is silent. The murmur is only appreciated during inspiration." }, isCorrect: false },
-                        { text: { it: "Patologico, simile a un fischio (rantolo secco).", en: "Pathological, similar to a whistle (dry rale)." }, rationale: { it: "Un fischio è un rantolo secco (sibilio), un reperto patologico distinto dal murmure normale.", en: "A whistle is a dry rale (wheeze), a pathological finding distinct from the normal murmur." }, isCorrect: false }
-                    ]
-                },
-                q5: {
-                    question: { it: "Un 'soffio tubario' all'auscultazione del torace indica:", en: "A 'tubal sound' on chest auscultation indicates:" },
-                    options: [
-                        { text: { it: "La normale trasmissione del suono tracheale.", en: "Normal transmission of the tracheal sound." }, rationale: { it: "Il suono tracheale è normale se sentito sopra la trachea, ma se si sente sul torace (dove dovrebbe esserci il murmure) è patologico.", en: "The tracheal sound is normal if heard over the trachea, but if heard over the chest (where the murmur should be) it is pathological." }, isCorrect: false },
-                        { text: { it: "Una grave ostruzione delle vie aeree superiori.", en: "Severe upper airway obstruction." }, rationale: { it: "Un'ostruzione superiore produrrebbe un suono udibile su laringe/trachea (es. cornage), non un soffio tubario sul polmone.", en: "An upper obstruction would produce a sound audible over the larynx/trachea (e.g., roaring), not a tubal sound over the lung." }, isCorrect: false },
-                        { text: { it: "Un'area di consolidamento polmonare.", en: "An area of lung consolidation." }, rationale: { it: "Corretto. Il tessuto polmonare denso (come in polmonite) trasmette meglio il suono dalla trachea al torace, rendendolo udibile.", en: "Correct. Dense lung tissue (as in pneumonia) transmits sound better from the trachea to the chest, making it audible." }, isCorrect: true },
-                        { text: { it: "La presenza di liquido negli alveoli.", en: "The presence of fluid in the alveoli." }, rationale: { it: "Il liquido negli alveoli produce 'rantoli umidi' (a bolle), non un soffio tubario.", en: "Fluid in the alveoli produces 'moist rales' (bubbles), not a tubal sound." }, isCorrect: false }
-                    ]
-                },
-                q6: {
-                    question: { it: "Come si ricerca clinicamente la 'pleurodinia'?", en: "How is 'pleurodynia' clinically tested for?" },
-                    options: [
-                        { text: { it: "Auscultando l'area toracica con il fonendoscopio.", en: "Auscultating the thoracic area with a stethoscope." }, rationale: { it: "L'auscultazione serve per i suoni. La pleurodinia è un dolore, che si evoca con la palpazione.", en: "Auscultation is for sounds. Pleurodynia is pain, which is elicited by palpation." }, isCorrect: false },
-                        { text: { it: "Percuotendo forte sulle coste.", en: "Percussing hard on the ribs." }, rationale: { it: "La percussione valuta la densità del tessuto sottostante, non è il metodo specifico per evocare il dolore pleurico.", en: "Percussion assesses the density of the underlying tissue; it is not the specific method for eliciting pleuritic pain." }, isCorrect: false },
-                        { text: { it: "Osservando il tipo respiratorio dell'animale.", en: "Observing the animal's respiratory type." }, rationale: { it: "Un respiro superficiale può essere un *sintomo* di pleurodinia, ma non è la manovra semeiotica per evocarla.", en: "Shallow breathing can be a *symptom* of pleurodynia, but it is not the semeiotic maneuver to elicit it." }, isCorrect: false },
-                        { text: { it: "Applicando pressione con le dita tese negli spazi intercostali.", en: "Applying pressure with stiff fingers in the intercostal spaces." }, rationale: { it: "Corretto. Questa manovra di palpazione-pressione evoca una reazione di dolore (gemito, flessione) se c'è infiammazione pleurica.", en: "Correct. This palpation-pressure maneuver elicits a pain reaction (groan, flinching) if there is pleural inflammation." }, isCorrect: true }
-                    ]
-                },
-                q7: {
-                    question: { it: "Il tipo respiratorio normale nel bovino adulto a riposo è:", en: "The normal respiratory type in an adult bovine at rest is:" },
-                    options: [
-                        { text: { it: "Costo-addominale", en: "Costo-abdominal" }, rationale: { it: "Corretto. È un tipo misto, con partecipazione sia del torace che dell'addome.", en: "Correct. It is a mixed type, with participation of both the chest and the abdomen." }, isCorrect: true },
-                        { text: { it: "Esclusivamente costale", en: "Exclusively costal" }, rationale: { it: "Un tipo costale puro è patologico nel bovino e indica solitamente dolore addominale (peritonite).", en: "A purely costal type is pathological in cattle and usually indicates abdominal pain (peritonitis)." }, isCorrect: false },
-                        { text: { it: "Esclusivamente addominale", en: "Exclusively abdominal" }, rationale: { it: "Un tipo addominale puro è patologico e indica dolore toracico (pleurite, coste rotte).", en: "A purely abdominal type is pathological and indicates thoracic pain (pleurisy, broken ribs)." }, isCorrect: false },
-                        { text: { it: "Paradossale", en: "Paradoxical" }, rationale: { it: "Il respiro paradossale (torace e addome che si muovono in direzioni opposte) è un grave segno di dispnea/fatica respiratoria.", en: "Paradoxical breathing (chest and abdomen moving in opposite directions) is a severe sign of dyspnea/respiratory fatigue." }, isCorrect: false }
-                    ]
-                },
-                q8: {
-                    question: { it: "Un'inspirazione 'intercisa' o 'a gradini' è spesso associata a:", en: "An 'intermittent' or 'stepladder' inspiration is often associated with:" },
-                    options: [
-                        { text: { it: "Un normale stato di rilassamento.", en: "A normal state of relaxation." }, rationale: { it: "No, è un ritmo respiratorio patologico.", en: "No, it is a pathological respiratory rhythm." }, isCorrect: false },
-                        { text: { it: "Dolore durante la fase inspiratoria (es. pleurodinia).", en: "Pain during the inspiratory phase (e.g., pleurodynia)." }, rationale: { it: "Corretto. L'animale interrompe l'inspirazione a causa di una fitta di dolore, per poi riprenderla, creando un pattern 'a gradini'.", en: "Correct. The animal interrupts inspiration due to a stab of pain, then resumes it, creating a 'stepladder' pattern." }, isCorrect: true },
-                        { text: { it: "Un'ostruzione delle vie aeree inferiori (asma).", en: "Lower airway obstruction (asthma)." }, rationale: { it: "L'asma è tipicamente associata a una difficoltà espiratoria (espirazione dicrota), non inspiratoria.", en: "Asthma is typically associated with expiratory difficulty (dicrotic expiration), not inspiratory." }, isCorrect: false },
-                        { text: { it: "Patologie del sistema nervoso centrale.", en: "Central nervous system pathologies." }, rationale: { it: "Le patologie del SNC causano ritmi diversi (es. Cheyne-Stokes), ma l'inspirazione intercisa è tipicamente legata al dolore.", en: "CNS pathologies cause different rhythms (e.g., Cheyne-Stokes), but intermittent inspiration is typically linked to pain." }, isCorrect: false }
-                    ]
-                },
-                q9: {
-                    question: { it: "I 'sibili' sono causati da:", en: "'Wheezes' are caused by:" },
-                    options: [
-                        { text: { it: "Liquido (edema, essudato) negli alveoli.", en: "Fluid (edema, exudate) in the alveoli." }, rationale: { it: "Il liquido negli alveoli o piccoli bronchi produce rantoli 'umidi' (a bolle), non sibili.", en: "Fluid in the alveoli or small bronchi produces 'moist' rales (bubbles), not wheezes." }, isCorrect: false },
-                        { text: { it: "Restringimento del lume bronchiale (spasmo, muco denso).", en: "Narrowing of the bronchial lumen (spasm, thick mucus)." }, rationale: { it: "Corretto. L'aria che passa ad alta velocità attraverso un lume ristretto vibra, producendo suoni musicali come i fischi (sibili).", en: "Correct. Air passing at high speed through a narrowed lumen vibrates, producing musical sounds like whistles (wheezes)." }, isCorrect: true },
-                        { text: { it: "Sfregamento dei foglietti pleurici infiammati.", en: "Rubbing of inflamed pleural layers." }, rationale: { it: "Questo produce gli 'sfregamenti pleurici', un suono diverso dai sibili.", en: "This produces 'pleural friction rubs', a sound different from wheezes." }, isCorrect: false },
-                        { text: { it: "Un'area di polmone consolidato.", en: "An area of consolidated lung." }, rationale: { it: "Un'area consolidata produce 'soffio tubario' e 'ottusità' alla percussione, ma non è la causa diretta dei sibili.", en: "A consolidated area produces 'tubal sound' and 'dullness' on percussion, but it is not the direct cause of wheezes." }, isCorrect: false }
-                    ]
-                },
-                q10: {
-                    question: { it: "Nel cavallo, la percussione dei seni paranasali si effettua per diagnosticare:", en: "In horses, percussion of the paranasal sinuses is performed to diagnose:" },
-                    options: [
-                        { text: { it: "Enfisema polmonare", en: "Pulmonary emphysema" }, rationale: { it: "L'enfisema è una patologia polmonare, non dei seni. Si valuta con percussione/auscultazione del torace.", en: "Emphysema is a lung pathology, not a sinus one. It is assessed by percussion/auscultation of the chest." }, isCorrect: false },
-                        { text: { it: "Sinusite (accumulo di pus o materiale).", en: "Sinusitis (accumulation of pus or material)." }, rationale: { it: "Corretto. Un seno pieno di materiale (invece che d'aria) produce un suono 'ottuso' alla percussione, invece del normale suono chiaro.", en: "Correct. A sinus filled with material (instead of air) produces a 'dull' sound on percussion, instead of the normal clear sound." }, isCorrect: true },
-                        { text: { it: "Una frattura della costa.", en: "A rib fracture." }, rationale: { it: "Le coste si trovano sul torace, non sulla testa. Si valutano con palpazione toracica.", en: "The ribs are on the chest, not the head. They are assessed by thoracic palpation." }, isCorrect: false },
-                        { text: { it: "Polmonite interstiziale", en: "Interstitial pneumonia" }, rationale: { it: "La polmonite è una patologia polmonare, non dei seni.", en: "Pneumonia is a lung pathology, not a sinus one." }, isCorrect: false }
-                    ]
-                },
-                // --- Footer ---
-                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                quizTitle: { it: 'Quiz: Apparato Respiratorio', en: 'Quiz: Respiratory System' },
+                progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
             };
 
-            const quizData = Object.keys(translations)
-                .filter(k => /^q\d+$/.test(k))
-                .map(k => translations[k]);
+            const questionsPool = [
+                {
+                    question: { it: "Come si definisce correttamente la 'dispnea'?", en: "How is 'dyspnea' correctly defined?" },
+                    options: [
+                        { text: { it: "Un'alterazione di almeno due caratteri del respiro (frequenza, ritmo, ampiezza...).", en: "An alteration of at least two characteristics of breathing (rate, rhythm, amplitude...)." }, isCorrect: true, rationale: { it: "La dispnea è una respirazione difficoltosa che altera più parametri funzionali contemporaneamente.", en: "Dyspnea is labored breathing that alters multiple functional parameters simultaneously." } },
+                        { text: { it: "Un aumento della sola frequenza respiratoria.", en: "An increase in respiratory rate only." }, isCorrect: false, rationale: { it: "Questo è la 'tachipnea'.", en: "This is 'tachypnea'." } },
+                        { text: { it: "Un tipo respiratorio puramente costale.", en: "A purely costal respiratory type." }, isCorrect: false, rationale: { it: "È un segno di dolore addominale, non la definizione di dispnea.", en: "A sign of abdominal pain, not the definition of dyspnea." } },
+                        { text: { it: "La presenza di rantoli all'auscultazione.", en: "The presence of crackles on auscultation." }, isCorrect: false, rationale: { it: "È un reperto auscultatorio stetoscopico.", en: "An auscultatory findings via stethoscope." } }
+                    ]
+                },
+                {
+                    question: { it: "Durante la percussione del torace, per identificare il limite caudale del polmone si segue:", en: "During thoracic percussion, to identify the caudal border of the lung, one follows:" },
+                    options: [
+                        { text: { it: "La prima linea del Vogel, percuotendo da davanti a dietro.", en: "Vogel's first line, percussing from front to back." }, isCorrect: true, rationale: { it: "La linea di Vogel permette di mappare il margine obliquo normale del polmone.", en: "Vogel's line allows mapping the normal oblique margin of the lung." } },
+                        { text: { it: "Una linea verticale dal basso verso l'alto.", en: "A vertical line from bottom to top." }, isCorrect: false, rationale: { it: "Questa linea definisce il profilo diaframmatico.", en: "This line defines the diaphragmatic profile." } },
+                        { text: { it: "La linea della punta della spalla.", en: "The line of the point of the shoulder." }, isCorrect: false, rationale: { it: "Riferimento anatomico ma non percussorio specifico per il limite caudale.", en: "Anatomical reference but not specific for caudal border percussion." } },
+                        { text: { it: "Si palpa l'ultima costa.", en: "The last rib is palpated." }, isCorrect: false, rationale: { it: "La palpazione non definisce i campi sonori.", en: "Palpation does not define sound fields." } }
+                    ]
+                },
+                {
+                    question: { it: "Un suono 'ottuso' ottenuto durante la percussione del campo polmonare indica:", en: "A 'dull' sound obtained during percussion of the lung field indicates:" },
+                    options: [
+                        { text: { it: "Aumento di densità (polmonite, versamento pleurico).", en: "Increased density (pneumonia, pleural effusion)." }, isCorrect: true, rationale: { it: "L'ottusità indica che il parenchima aerato è sostituito da tessuto solido o liquido.", en: "Dullness indicates that aerated parenchyma is replaced by solid tissue or liquid." } },
+                        { text: { it: "Un normale polmone pieno d'aria.", en: "A normal, air-filled lung." }, isCorrect: false, rationale: { it: "Drebbe un suono 'chiaro polmonare'.", en: "Would give a 'resonant lung' sound." } },
+                        { text: { it: "Aria intrappolata (enfisema).", en: "Trapped air (emphysema)." }, isCorrect: false, rationale: { it: "Drebbe un suono 'iperchiaro'.", en: "Would give a 'hyper-resonant' sound." } },
+                        { text: { it: "La presenza di una cavità.", en: "The presence of a cavity." }, isCorrect: false, rationale: { it: "Drebbe un suono timpanico se piena di gas.", en: "Would give a tympanic sound if gas-filled." } }
+                    ]
+                },
+                {
+                    question: { it: "Il 'murmure vescicolare' è un suono:", en: "The 'vesicular murmur' is a sound:" },
+                    options: [
+                        { text: { it: "Fisiologico, udibile durante l'inspirazione.", en: "Physiological, audible during inspiration." }, isCorrect: true, rationale: { it: "È il fruscio dolce dell'aria che entra negli alveoli.", en: "It's the soft rustle of air entering the alveoli." } },
+                        { text: { it: "Patologico, udibile solo in caso di polmonite.", en: "Pathological, audible only in case of pneumonia." }, isCorrect: false, rationale: { it: "È il reperto normale per eccellenza.", en: "It is the primary normal finding." } },
+                        { text: { it: "Fisiologico, udibile durante l'espirazione.", en: "Physiological, audible during expiration." }, isCorrect: false, rationale: { it: "L'espirazione normale è silente.", en: "Normal expiration is silent." } },
+                        { text: { it: "Patologico, simile a un fischio.", en: "Pathological, similar to a whistle." }, isCorrect: false, rationale: { it: "Un fischio è un rantolo secco o sibilo.", en: "A whistle is a dry rale or wheeze." } }
+                    ]
+                },
+                {
+                    question: { it: "Un 'soffio tubario' all'auscultazione del torace indica:", en: "A 'tubal sound' on chest auscultation indicates:" },
+                    options: [
+                        { text: { it: "Un'area di consolidamento polmonare.", en: "An area of lung consolidation." }, isCorrect: true, rationale: { it: "Il polmone denso trasmette meglio il suono tracheale alla parete.", en: "Dense lung transmits tracheal sound better to the chest wall." } },
+                        { text: { it: "La normale trasmissione del suono tracheale.", en: "Normal transmission of tracheal sound." }, isCorrect: false, rationale: { it: "Normale sopra la trachea, patologico sul campo polmonare.", en: "Normal over the trachea, pathological over the lung field." } },
+                        { text: { it: "Una grave ostruzione delle vie aeree superiori.", en: "Severe upper airway obstruction." }, isCorrect: false, rationale: { it: "Drebbe rumori udibili alla testa/collo (es. cornage).", en: "Would give sounds audible at head/neck (e.g. roaring)." } },
+                        { text: { it: "La presenza di liquido negli alveoli.", en: "The presence of fluid in the alveoli." }, isCorrect: false, rationale: { it: "Drebbe rantoli a bolle.", en: "Would give bubbling rales." } }
+                    ]
+                },
+                {
+                    question: { it: "Come si ricerca clinicamente la 'pleurodinia'?", en: "How is 'pleurodynia' clinically tested for?" },
+                    options: [
+                        { text: { it: "Applicando pressione con le dita negli spazi intercostali.", en: "Applying pressure with fingers in the intercostal spaces." }, isCorrect: true, rationale: { it: "La palpazione-pressione evoca dolore se la pleura è infiammata.", en: "Palpation-pressure elicits pain if the pleura is inflamed." } },
+                        { text: { it: "Auscultando l'area toracica.", en: "Auscultating the thoracic area." }, isCorrect: false, rationale: { it: "L'auscultazione rileva i suoni, non il dolore.", en: "Auscultation detects sounds, not pain." } },
+                        { text: { it: "Percuotendo forte sulle coste.", en: "Percussing hard on the ribs." }, isCorrect: false, rationale: { it: "Metodo non specifico e potenzialmente traumatico.", en: "Non-specific and potentially traumatic method." } },
+                        { text: { it: "Osservando il tipo respiratorio.", en: "Observing the respiratory type." }, isCorrect: false, rationale: { it: "Il respiro superficiale è un sintomo, non la prova per evocarlo.", en: "Shallow breathing is a symptom, not the test to elicit it." } }
+                    ]
+                },
+                {
+                    question: { it: "Il tipo respiratorio normale nel bovino adulto a riposo è:", en: "The normal respiratory type in an adult cow at rest is:" },
+                    options: [
+                        { text: { it: "Costo-addominale", en: "Costo-abdominal" }, isCorrect: true, rationale: { it: "Misto, con partecipazione equilibrata di torace e addome.", en: "Mixed, with balanced chest and abdomen participation." } },
+                        { text: { it: "Esclusivamente costale", en: "Exclusively costal" }, isCorrect: false, rationale: { it: "Indica solitamente dolore addominale.", en: "Usually indicates abdominal pain." } },
+                        { text: { it: "Esclusivamente addominale", en: "Exclusively abdominal" }, isCorrect: false, rationale: { it: "Indica solitamente dolore toracico.", en: "Usually indicates thoracic pain." } },
+                        { text: { it: "Paradossale", en: "Paradoxical" }, isCorrect: false, rationale: { it: "Grave segno di affaticamento dei muscoli respiratori.", en: "Severe sign of respiratory muscle fatigue." } }
+                    ]
+                },
+                {
+                    question: { it: "Un'inspirazione 'intercisa' o 'a gradini' è spesso associata a:", en: "An 'intermittent' or 'stepladder' inspiration is often associated with:" },
+                    options: [
+                        { text: { it: "Dolore durante la fase inspiratoria (es. pleurodinia).", en: "Pain during the inspiratory phase (e.g., pleurodynia)." }, isCorrect: true, rationale: { it: "L'animale spezza l'inspirazione per evitare lo stiramento doloroso delle pleure.", en: "The animal breaks inspiration to avoid painful pleural stretching." } },
+                        { text: { it: "Un normale stato di rilassamento.", en: "A normal state of relaxation." }, isCorrect: false, rationale: { it: "Il respiro normale è fluido e continuo.", en: "Normal breathing is fluid and continuous." } },
+                        { text: { it: "Un'ostruzione delle vie aeree inferiori.", en: "Lower airway obstruction." }, isCorrect: false, rationale: { it: "Associata a difficoltà espiratoria.", en: "Associated with expiratory difficulty." } },
+                        { text: { it: "Patologie del SNC.", en: "CNS pathologies." }, isCorrect: false, rationale: { it: "Danno ritmi diversi (es. respiro di Biot).", en: "They cause different rhythms (e.g., Biot's breathing)." } }
+                    ]
+                },
+                {
+                    question: { it: "I 'sibili' sono causati da:", en: "'Wheezes' are caused by:" },
+                    options: [
+                        { text: { it: "Restringimento del lume bronchiale (spasmo, muco).", en: "Narrowing of the bronchial lumen (spasm, mucus)." }, isCorrect: true, rationale: { it: "L'aria ad alta velocità in un lume stretto vibra creando suoni musicali.", en: "High-speed air in a narrow lumen vibrates creating musical sounds." } },
+                        { text: { it: "Liquido negli alveoli.", en: "Fluid in the alveoli." }, isCorrect: false, rationale: { it: "Causa rantoli crepitanti.", en: "Causes crackling rales." } },
+                        { text: { it: "Sfregamento delle pleure.", en: "Pleural rubbing." }, isCorrect: false, rationale: { it: "Produce gli 'sfregamenti pleurici'.", en: "Produces 'pleural friction rubs'." } },
+                        { text: { it: "Consolidamento polmonare.", en: "Lung consolidation." }, isCorrect: false, rationale: { it: "Produce soffio tubario.", en: "Produces tubal sound." } }
+                    ]
+                },
+                {
+                    question: { it: "Nel cavallo, la percussione dei seni paranasali si effettua per diagnosticare:", en: "In horses, percussion of the paranasal sinuses is done to diagnose:" },
+                    options: [
+                        { text: { it: "Sinusite (accumulo di pus o materiale).", en: "Sinusitis (accumulation of pus or material)." }, isCorrect: true, rationale: { it: "Il suono passa da chiaro (aria) a ottuso (solido/liquido).", en: "The sound shifts from resonant (air) to dull (solid/liquid)." } },
+                        { text: { it: "Enfisema polmonare", en: "Pulmonary emphysema" }, isCorrect: false, rationale: { it: "Patologia del campo polmonare toracico.", en: "Pathology of the thoracic lung field." } },
+                        { text: { it: "Una frattura della costa.", en: "A rib fracture." }, isCorrect: false, rationale: { it: "Localizzazione toracica, non cranica.", en: "Thoracic location, not cranial." } },
+                        { text: { it: "Polmonite interstiziale", en: "Interstitial pneumonia" }, isCorrect: false, rationale: { it: "Patologia polmonare profonda.", en: "Deep lung pathology." } }
+                    ]
+                }
+            ];
 
-            let currentQuestionIndex = 0;
+            let currentIdx = 0;
             let score = 0;
             let shuffledQuestions = [];
-            const synth = window.speechSynthesis;
-            let currentUtterance = null;
-            let activeTTSButton = null;
-            let voices = []; // Per "svegliare" il TTS
-
-            // Elementi DOM del Quiz
-            const quizContainer = document.getElementById('quiz-container');
-            const questionArea = document.getElementById('question-area');
-            const resultsArea = document.getElementById('results-area');
-            const questionText = document.getElementById('question-text');
-            let questionTTSButton = document.getElementById('question-tts-button'); // Usiamo let per poterlo riassegnare
-            const optionsContainer = document.getElementById('options-container');
-            const progressText = document.getElementById('progress-text');
-            const feedbackArea = document.getElementById('feedback-area');
-            const rationaleText = document.getElementById('rationale-text');
-            const nextButton = document.getElementById('next-button');
-            const scoreText = document.getElementById('score-text');
-            const restartButton = document.getElementById('restart-button');
-
-             // Elementi DOM Generali (Header, etc.)
-             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
-             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
             let currentLanguage = localStorage.getItem('language') || 'it';
-            const accessibilityToggle = document.getElementById('accessibility-toggle');
-            const langToggle = document.getElementById('lang-toggle');
             const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTS = null;
 
-             // --- Logica TTS ---
-             function populateVoices() {
-                 if (typeof speechSynthesis === 'undefined') return;
-                 voices = synth.getVoices();
-             }
-            function speak(text, button) {
-                 const isSameButton = activeTTSButton === button;
-                 if (synth.speaking && isSameButton) {
-                     if (synth.paused) { synth.resume(); button.classList.add('playing'); }
-                     else { synth.pause(); button.classList.remove('playing'); }
-                 } else {
-                     if (synth.speaking) {
-                         if (currentUtterance) currentUtterance.onend = null;
-                         if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                         synth.cancel();
-                     }
-                     // Piccolo ritardo per assicurarsi che cancel() sia completato
-                     setTimeout(() => startSpeaking(text, button), 50);
-                 }
-             }
-             function startSpeaking(text, button) {
-                  if (!text || typeof text !== 'string' || !text.trim()) return;
-                 currentUtterance = new SpeechSynthesisUtterance(text);
-                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                 currentUtterance.onend = () => { if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
-                 currentUtterance.onerror = (event) => { console.error("Errore TTS:", event.error); if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
-                 synth.speak(currentUtterance);
-                 activeTTSButton = button;
-                 button.classList.add('playing');
-             }
-             function setupTTSListeners() {
-                  // Aggiorna riferimento e listener per il pulsante TTS della domanda
-                 questionTTSButton = document.getElementById('question-tts-button'); // Aggiorna riferimento
-                 if(questionTTSButton) {
-                     // Rimuovi vecchi listener clonando e sostituendo solo se necessario
-                     const newQuestionTTSButton = questionTTSButton.cloneNode(true);
-                     questionTTSButton.parentNode.replaceChild(newQuestionTTSButton, questionTTSButton);
-                     questionTTSButton = newQuestionTTSButton; // Aggiorna la variabile globale
-
-                     questionTTSButton.addEventListener('click', () => { // Usa addEventListener
-                         const currentQuestion = shuffledQuestions[currentQuestionIndex];
-                         if(currentQuestion && currentQuestion.question[currentLanguage]) {
-                            speak(currentQuestion.question[currentLanguage], questionTTSButton);
-                         }
-                     });
-                 } else {
-                     console.error("ID 'question-tts-button' non trovato!");
-                 }
-
-
-                 optionsContainer.querySelectorAll('.tts-button').forEach(ttsBtn => {
-                      const newTTSButton = ttsBtn.cloneNode(true);
-                      const parentButton = newTTSButton.closest('.option-btn-container')?.querySelector('.option-btn'); // Uso optional chaining
-                      if (parentButton) {
-                          const optionText = parentButton.textContent;
-                           const currentQuestion = shuffledQuestions[currentQuestionIndex];
-                           // Aggiungi un controllo per assicurarti che currentQuestion esista
-                           if (currentQuestion) {
-                               const originalOption = currentQuestion.options.find(opt => opt.text[currentLanguage] === optionText);
-                              if (originalOption) {
-                                   newTTSButton.addEventListener('click', (e) => {
-                                       e.stopPropagation();
-                                       speak(originalOption.text[currentLanguage], newTTSButton);
-                                   });
-                              }
-                           }
-                           ttsBtn.parentNode.replaceChild(newTTSButton, ttsBtn);
-                      }
-                 });
-             }
-
-
-            // --- Logica Quiz ---
-            function shuffleArray(array) {
+            const shuffleArray = (array) => {
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [array[i], array[j]] = [array[j], array[i]];
                 }
                 return array;
-            }
-            function startQuiz() {
-                 document.documentElement.scrollTop = 0;
-                 document.body.scrollTop = 0; // Per browser più vecchi
-
-                currentQuestionIndex = 0;
-                score = 0;
-                shuffledQuestions = shuffleArray([...quizData]); // Usa i dati estratti
-                resultsArea.classList.add('hidden');
-                questionArea.classList.remove('hidden');
-                feedbackArea.classList.add('hidden');
-                loadQuestion();
-            }
-            function loadQuestion(isLangChange = false) {
-                 // Reset forzato del TTS
-                 if (synth.speaking) synth.cancel();
-                 if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                 activeTTSButton = null;
-                 currentUtterance = null;
-
-                if(!isLangChange) {
-                    feedbackArea.classList.add('hidden');
-                }
-                const currentQuestion = shuffledQuestions[currentQuestionIndex];
-
-                // Aggiorna testo progresso
-                progressText.textContent = translations.progressText[currentLanguage]
-                    .replace('{current}', currentQuestionIndex + 1)
-                    .replace('{total}', shuffledQuestions.length);
-
-                // Aggiorna testo domanda e listener TTS
-                questionText.textContent = currentQuestion.question[currentLanguage];
-                 // Riassegna l'handler onclick invece di clonare/sostituire
-                 questionTTSButton = document.getElementById('question-tts-button'); // Assicurati di avere il riferimento corretto
-                 if (questionTTSButton) {
-                     // Utilizza un IIFE per creare un nuovo scope per currentQuestion.question[currentLanguage]
-                     questionTTSButton.onclick = (() => {
-                         const questionToSpeak = currentQuestion.question[currentLanguage];
-                         const btnRef = questionTTSButton; // Riferimento al bottone attuale
-                         return () => {
-                             speak(questionToSpeak, btnRef);
-                         };
-                     })();
-                 }
-
-
-                optionsContainer.innerHTML = ''; // Pulisci opzioni precedenti
-
-                // Se stiamo solo cambiando lingua, non mischiare le opzioni
-                 const optionsToShow = isLangChange ? [...currentQuestion.options] : shuffleArray([...currentQuestion.options]);
-
-                 optionsToShow.forEach(option => {
-                    const buttonContainer = document.createElement('div');
-                    buttonContainer.classList.add('flex', 'items-center', 'w-full', 'option-btn-container');
-
-                    const button = document.createElement('button');
-                    button.textContent = option.text[currentLanguage];
-                    button.classList.add('option-btn', 'flex-grow', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'bg-slate-50', 'hover:bg-slate-100', 'border-slate-200', 'hover:border-sky-300');
-                     // Trova l'opzione originale per i dati (isCorrect, rationale)
-                     const originalOption = currentQuestion.options.find(opt => opt.text.it === option.text.it); // Usa una chiave fissa come riferimento
-                    button.onclick = () => selectAnswer(button, originalOption, currentQuestion.options);
-
-                    const ttsButton = document.createElement('span');
-                    ttsButton.classList.add('tts-button', 'ml-2');
-                    ttsButton.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>`;
-                    ttsButton.onclick = (e) => {
-                        e.stopPropagation();
-                        speak(option.text[currentLanguage], ttsButton);
-                    };
-
-                    buttonContainer.appendChild(button);
-                    buttonContainer.appendChild(ttsButton);
-                    optionsContainer.appendChild(buttonContainer);
-                });
-
-                 // Se è un cambio lingua e il feedback era visibile, ripristina lo stato visivo
-                 if (isLangChange && !feedbackArea.classList.contains('hidden')) {
-                     const buttons = optionsContainer.querySelectorAll('button.option-btn');
-                     const rationaleTextContent = rationaleText.textContent; // Prendi il rationale già tradotto
-                     let previouslySelectedOption = null;
-
-                     // Trova quale opzione era stata selezionata basandosi sul rationale mostrato
-                     previouslySelectedOption = currentQuestion.options.find(opt => opt.rationale[currentLanguage] === rationaleTextContent);
-
-                     buttons.forEach(btn => {
-                         btn.disabled = true;
-                         const optionDataText = btn.textContent;
-                         const originalOptionData = currentQuestion.options.find(opt => opt.text[currentLanguage] === optionDataText);
-
-                         if (originalOptionData) {
-                             if (originalOptionData.isCorrect) {
-                                 btn.classList.add('correct');
-                             }
-                             // Se questa è l'opzione che era stata selezionata E non è corretta
-                             if (previouslySelectedOption && originalOptionData.text.it === previouslySelectedOption.text.it && !originalOptionData.isCorrect) {
-                                 btn.classList.add('incorrect');
-                             }
-                         }
-                     });
-                 }
-            }
-            function selectAnswer(button, selectedOption, allOptions) {
-                 if (synth.speaking) synth.cancel();
-                 if (activeTTSButton) {
-                     activeTTSButton.classList.remove('playing');
-                     activeTTSButton = null;
-                 }
-
-                const buttons = optionsContainer.querySelectorAll('button.option-btn');
-
-                buttons.forEach(btn => {
-                    btn.disabled = true;
-                    const optionDataText = btn.textContent;
-                    // Trova l'opzione originale basandosi sul testo nella LINGUA CORRENTE
-                    const originalOption = allOptions.find(opt => opt.text[currentLanguage] === optionDataText);
-                    if (originalOption && originalOption.isCorrect) {
-                        btn.classList.add('correct');
-                    }
-                });
-
-                if (!selectedOption.isCorrect) {
-                    button.classList.add('incorrect');
-                     // Solo incrementa lo score se la risposta è corretta
-                     // Rimuovi l'incremento qui se viene fatto altrove
-                } else {
-                     score++; // Incrementa lo score solo se la risposta è corretta
-                }
-
-
-                rationaleText.textContent = selectedOption.rationale[currentLanguage];
-                feedbackArea.classList.remove('hidden');
-
-                if (currentQuestionIndex === shuffledQuestions.length - 1) {
-                    nextButton.textContent = translations.btnResults[currentLanguage];
-                } else {
-                     nextButton.textContent = translations.btnNext[currentLanguage];
-                }
-            }
-            function showResults() {
-                questionArea.classList.add('hidden');
-                feedbackArea.classList.add('hidden');
-                resultsArea.classList.remove('hidden');
-                scoreText.textContent = `${score} / ${shuffledQuestions.length}`;
-            }
-
-            // --- Funzione Aggiornamento Lingua (Include Quiz Logic) ---
-            const updateLanguage = (lang) => {
-                 document.documentElement.lang = lang;
-                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-
-                 document.querySelectorAll('[data-lang-key]').forEach(element => {
-                     const key = element.dataset.langKey;
-                     if (translations[key] && translations[key][lang]) {
-                         const translationText = translations[key][lang];
-
-                         if (key === 'footerText' || key === 'backToIndex') {
-                             const svgIcon = element.querySelector('svg');
-                             element.innerHTML = translationText;
-                             if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) { element.insertBefore(svgIcon, element.firstChild); }
-                         }
-                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
-                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
-                             const sectionKey = currentSectionKey || key;
-                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
-                         }
-                         // Non aggiornare dinamicamente #question-text e #rationale-text qui
-                         else if (element.id !== 'question-text' && element.id !== 'rationale-text') {
-                             element.textContent = translationText;
-                         }
-                     }
-                 });
-
-                 // Ricarica la domanda corrente con la nuova lingua se il quiz è attivo
-                 if (shuffledQuestions.length > 0 && !questionArea.classList.contains('hidden')) {
-                     loadQuestion(true); // Passa true per indicare cambio lingua
-                 } else if (!resultsArea.classList.contains('hidden')) {
-                      // Aggiorna testi area risultati se visibile
-                      resultsArea.querySelector('h2').textContent = translations.resultsTitle[lang];
-                      resultsArea.querySelector('p[data-lang-key="resultsScore"]').textContent = translations.resultsScore[lang];
-                      restartButton.textContent = translations.btnRestart[lang];
-                 }
-
-                 // Reset TTS e riattacca listener (necessario perché innerHTML li rimuove)
-                 if (synth.speaking || synth.pending) synth.cancel();
-                  if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                  activeTTSButton = null;
-                 setTimeout(setupTTSListeners, 100); // Piccolo ritardo per il DOM
             };
 
-            // --- Logica Modalità Accessibilità ---
-            const setA11yMode = (enabled) => { /* ... (come prima) ... */ };
+            const speak = (text, button) => {
+                if (synth.speaking) {
+                    synth.cancel();
+                    if (activeTTS === button) { activeTTS.classList.remove('playing'); activeTTS = null; return; }
+                }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onend = () => { button.classList.remove('playing'); activeTTS = null; };
+                synth.speak(utterance);
+                if (activeTTS) activeTTS.classList.remove('playing');
+                activeTTS = button;
+                button.classList.add('playing');
+            };
 
-            // --- Event Listeners ---
-             if (langToggle) {
-                 langToggle.addEventListener('click', () => {
-                     currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-                     localStorage.setItem('language', currentLanguage);
-                      if (synth.speaking || synth.pending) synth.cancel(); // Stoppa TTS al cambio lingua
-                     updateLanguage(currentLanguage);
-                 });
-             } else { console.error("Elemento langToggle non trovato!"); }
+            const renderQuestion = () => {
+                const q = shuffledQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', shuffledQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                const shuffledOptions = shuffleArray([...q.options]);
 
-             if (accessibilityToggle) {
-                  accessibilityToggle.addEventListener('click', () => {
-                     const isEnabled = body.classList.contains('dsa-mode');
-                     setA11yMode(!isEnabled);
-                 });
-             } else { console.error("Elemento accessibilityToggle non trovato!"); }
+                shuffledOptions.forEach((opt) => {
+                    const div = document.createElement('div');
+                    div.className = "w-full option-btn-container flex items-center gap-2";
+                    
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn);
+                    
+                    const tts = document.createElement('button');
+                    tts.className = "tts-button p-2";
+                    tts.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    tts.onclick = (e) => { e.stopPropagation(); speak(opt.text[currentLanguage], tts); };
 
-             nextButton.addEventListener('click', () => {
-                 currentQuestionIndex++;
-                 if (currentQuestionIndex < shuffledQuestions.length) {
-                     loadQuestion(false); // Carica prossima domanda (non è cambio lingua)
-                 } else {
-                     showResults();
-                 }
-             });
+                    div.appendChild(btn);
+                    div.appendChild(tts);
+                    container.appendChild(div);
+                });
+            };
 
-             restartButton.addEventListener('click', startQuiz);
+            const handleSelect = (opt, btn) => {
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                if (opt.isCorrect) { btn.classList.add('correct'); score++; }
+                else { 
+                    btn.classList.add('incorrect');
+                    const correctIdx = shuffledQuestions[currentIdx].options.findIndex(o => o.isCorrect);
+                    const correctText = shuffledQuestions[currentIdx].options[correctIdx].text[currentLanguage];
+                    btns.forEach(b => { if(b.textContent === correctText) b.classList.add('correct'); });
+                }
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                document.getElementById('next-button').textContent = currentIdx === questionsPool.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
 
+            const startQuiz = () => {
+                currentIdx = 0; score = 0;
+                shuffledQuestions = shuffleArray([...questionsPool]);
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
 
-            // --- Inizializzazione ---
-            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
-             populateVoices();
-             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-                 speechSynthesis.onvoiceschanged = populateVoices;
-             }
-            startQuiz(); // Avvia il quiz
-            updateLanguage(currentLanguage); // Applica lingua iniziale e setup
+            document.getElementById('next-button').onclick = () => {
+                if (currentIdx < shuffledQuestions.length - 1) {
+                    currentIdx++;
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    renderQuestion();
+                } else {
+                    document.getElementById('question-area').classList.add('hidden');
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    document.getElementById('results-area').classList.remove('hidden');
+                    document.getElementById('score-text').textContent = `${score} / ${shuffledQuestions.length}`;
+                }
+            };
 
+            document.getElementById('restart-button').onclick = startQuiz;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                renderQuestion();
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => {
+                body.classList.toggle('dsa-mode');
+                localStorage.setItem('dsa-mode', body.classList.contains('dsa-mode') ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('question-tts-button').onclick = () => speak(shuffledQuestions[currentIdx].question[currentLanguage], document.getElementById('question-tts-button'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') body.classList.add('dsa-mode');
+            startQuiz();
+            updateLanguage(currentLanguage);
         });
     </script>
 </body>
 </html>
-
