@@ -11,30 +11,33 @@
     <style>
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
-        
         .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
         
-        .nav-link { transition: color 0.3s; color: #ffffff !important; }
-        .nav-link:hover { color: #93C5FD !important; }
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
 
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f1f5f9; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #475569; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #1e293b; }
+        .quick-nav-item.active { background-color: #1E3A8A; color: #ffffff !important; border-color: #1E3A8A; }
+
+        /* --- SECTION NAV --- */
         .section-nav-link {
-            transition: all 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.9);
-            background-color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
-            border: 1px solid transparent;
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
         }
         .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
         .section-nav-link.active { background-color: white; color: #1E3A8A; cursor: default; }
 
-        .content-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: 2rem; max-width: 900px; margin: -2.5rem auto 3rem; position: relative; z-index: 10; }
+        .content-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: 2rem; max-width: 900px; margin: 2rem auto 3rem; position: relative; z-index: 10; }
         
-        .scrollable-nav { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-        .scrollable-nav::-webkit-scrollbar { display: none; }
-
         h2 { font-family: 'Lexend', sans-serif; color: #1e40af; border-bottom: 2px solid #dbeafe; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 600; }
         h3 { font-family: 'Lexend', sans-serif; color: #1e3a8a; font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 1rem; }
         h4 { font-family: 'Lexend', sans-serif; color: #1e3a8a; font-size: 1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; }
@@ -51,52 +54,32 @@
 
         .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
 
-        /* --- STILI ACCESSIBILITÀ (DSA) CORRETTI --- */
-        .dsa-mode {
-            font-family: 'Lexend', sans-serif;
-            background-color: #fffdf5 !important;
-            color: #1a1a1a !important;
-            letter-spacing: 0.05em;
-            line-height: 2;
-        }
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
         
-        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
-            background-color: #ffffff !important;
-            background-image: none !important;
-            border-bottom: 3px solid #1a1a1a !important;
-            color: #1a1a1a !important;
+        /* Evidenziazione DSA migliorata: bordo spesso, NO inversione sfondo */
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { 
+            border-width: 5px !important; 
+            text-decoration: underline;
+            text-underline-offset: 4px;
         }
-
-        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
-            color: #000000 !important;
-        }
-
-        /* Correzione contrasto pulsanti navigazione interna in DSA mode */
-        .dsa-mode .section-nav-link {
-            color: #000000 !important;
-            background-color: transparent !important;
-            border: 2px solid #000000 !important;
-        }
-        .dsa-mode .section-nav-link:hover {
-            background-color: #f0f0f0 !important;
-        }
-        .dsa-mode .section-nav-link.active {
-            background-color: #000000 !important;
-            color: #ffffff !important;
-        }
-
-        .dsa-mode .content-card { background-color: #ffffff; border: 2px solid #000000; box-shadow: none !important; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
         .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
-        .dsa-mode textarea { background-color: #ffffff; border: 2px solid #000000; color: #000000; }
+        .dsa-mode label, .dsa-mode input, .dsa-mode textarea { color: #000 !important; }
+        .dsa-mode textarea { background-color: #ffffff; border: 2px solid #000; }
 
         @media print {
-            #main-header, #main-footer, #print-button, .back-button-container { display: none !important; }
+            #main-header, #main-footer, #print-button, .back-button-container, .quick-nav { display: none !important; }
             body { background-color: white !important; }
-            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
             .hero-bg { background: none !important; color: black !important; }
             h1 { color: black !important; border-bottom: 2px solid #000 !important; }
             h2 { border-bottom: 1px solid #000 !important; color: black !important; }
-            textarea { border: none !important; border-bottom: 1px dotted #000 !important; background: none !important; padding-left: 0 !important; min-height: 40px !important; }
+            textarea { border: none !important; border-bottom: 1px dotted #000 !important; background: none !important; min-height: 40px !important; }
             .grid-container { grid-template-columns: 1fr 1fr !important; }
         }
     </style>
@@ -104,7 +87,7 @@
 <body class="bg-gray-50">
 
     <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
             <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
             <div class="flex items-center space-x-4">
                 <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
@@ -114,30 +97,45 @@
     </header>
 
     <div class="hero-bg text-white">
-        <div class="container mx-auto px-6 pt-8 pb-24 relative">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
             <div class="absolute top-4 left-6 back-button-container">
-                 <a href="index_semeiotica.html#digerente" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                 <a href="index_semeiotica.html#dig" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
+                    <span data-lang-key="backToIndexText">Indice</span>
                  </a>
             </div>
             
-            <div class="text-center">
-                <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white !border-none" data-lang-key="sectionTitleDig">4. Apparato Digerente</h1>
-                
-                <!-- Navigazione Interna -->
-                <nav class="scrollable-nav mt-6">
-                     <div class="flex justify-center space-x-2 pb-2">
-                         <a href="riassunto_digerente.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
-                         <a href="infografica_digerente.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
-                         <a href="checklist_digerente.html" class="section-nav-link active" data-lang-key="navChecklist">Checklist</a>
-                         <a href="collaterali_digerente.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
-                         <a href="quiz_digerente.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
-                    </div>
-                </nav>
-            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleDig">4. Apparato Digerente</h1>
+            
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_digerente.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_digerente.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_digerente.html" class="section-nav-link active" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_digerente.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_digerente.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
         </div>
     </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item active" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
 
     <main class="container mx-auto px-4">
         <div id="main-content" class="content-card">
@@ -307,19 +305,30 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const backIcon = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" fill-rule="evenodd" clip-rule="evenodd"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>`;
+            
             const translations = {
                 siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
-                backToIndex: { it: 'Indice Sezioni', en: 'Sections Index' },
-                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                backToIndex: { it: 'Indice', en: 'Index' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
                 sectionTitleDig: { it: '4. Apparato Digerente', en: '4. Digestive System' },
                 navSummary: { it: 'Riassunto', en: 'Summary' },
                 navInfographic: { it: 'Infografica', en: 'Infographic' },
                 navChecklist: { it: 'Checklist', en: 'Checklist' },
                 navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
                 navQuiz: { it: 'Quiz', en: 'Quiz' },
-                navAudio: { it: 'Audio', en: 'Audio' },
-                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                pageTitle: { it: "Checklist: Esame Apparato Digerente", en: "Checklist: Digestive System Exam" },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                pageTitle: { it: "Checklist: Esame Apparato Digerente", en: "Digestive System Exam Checklist" },
                 sectionIspezione: { it: "1. Ispezione", en: "1. Inspection" },
                 inspAddomeForma: { it: "Forma Addome", en: "Abdomen Shape" },
                 inspAddomeFormaDesc: { it: "Normale, asimmetrico (meteorismo Sx), a bisaccia (versamento).", en: "Normal, asymmetric (L-flank bloat), pear-shaped (effusion)." },
@@ -410,11 +419,11 @@
                 document.querySelectorAll('[data-lang-key]').forEach(el => {
                     const key = el.dataset.langKey;
                     if (translations[key]) {
-                        // Special handling for nav links to keep consistent with index
-                        if (el.classList.contains('section-nav-link')) {
-                            el.textContent = translations[key][lang];
+                        if (el.tagName === 'A' && el.querySelector('svg')) {
+                            const svg = el.querySelector('svg').outerHTML;
+                            el.innerHTML = svg + translations[key][lang];
                         } else {
-                            el.textContent = translations[key][lang];
+                            el.innerHTML = translations[key][lang];
                         }
                     }
                 });
