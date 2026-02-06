@@ -3,160 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Titolo specifico per questa pagina -->
     <title>Riassunto: Esame Sistema Nervoso - Semeiotica Vet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Stili Generali e dal Template */
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f1f5f9; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #475569; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #1e293b; }
+        .quick-nav-item.active { background-color: #1E3A8A; color: #ffffff !important; border-color: #1E3A8A; }
+
+        /* --- SECTION NAV --- */
         .section-nav-link {
-            transition: background-color 0.3s, color 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            background-color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
         }
-        .section-nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        .section-nav-link.active {
-             background-color: white;
-             color: #1E3A8A;
-             cursor: default;
-        }
-        .content-card {
-             background-color: white;
-             border-radius: 0.75rem;
-             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-             padding: 1.5rem;
-             margin-top: 2rem;
-        }
-        @media (min-width: 768px) { /* md: */
-            .content-card { padding: 2.5rem; }
-        }
-        #page-header { position: static; }
-        .scrollable-nav {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .scrollable-nav::-webkit-scrollbar { display: none; }
-        .audio-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; background-color: #fff7ed; /* orange-50 */ border-radius: 0.5rem; margin-top: 1.5rem; }
-        .audio-container audio { width: 100%; border-radius: 0.5rem; }
-        .audio-container a { display: inline-flex; align-items: center; justify-content: center; width: 100%; }
-        @media (min-width: 640px) { /* sm: */
-            .audio-container { flex-direction: row; }
-            .audio-container audio { width: auto; flex-grow: 1; }
-            .audio-container a { width: auto; }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #1E3A8A; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2.5rem; 
+            max-width: 900px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
         }
 
-        /* Stili Specifici del Riassunto */
-        #main-content h1, #main-content h2, #main-content h3 { color: #0d47a1; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 2em; }
-        #main-content h1 { text-align: center; font-size: 2.2em; border-bottom: 3px solid #0d47a1; }
-        #main-content h2 { font-size: 1.5rem; /* text-2xl */ }
-        #main-content h3 { font-size: 1.25rem; /* text-xl */ color: #1565c0; border-bottom: none; font-weight: 600; margin-bottom: 0.5rem; }
-        #main-content ul { padding-left: 20px; list-style-type: disc; margin-top: 1rem; margin-bottom: 1rem;}
-         #main-content ul ul { margin-top: 0.5rem; margin-bottom: 0.5rem;}
-        #main-content li { margin-bottom: 10px; }
-        #main-content strong { color: #1565c0; }
-        #main-content .section-block { background-color: #f0f9ff; /* sky-50 */ border-left: 5px solid #0ea5e9; /* sky-500 */ padding: 15px 20px; margin: 20px 0; border-radius: 5px; }
-        /* Stili per H3 dentro .section-block */
-        #main-content .section-block h3 {
-            margin-top: 0;
-            border-bottom: none;
-            padding-bottom: 0;
-            font-size: 1.125rem; /* text-lg */
+        /* Stili Testo Riassunto */
+        #main-content h2 { color: #1e40af; border-bottom: 2px solid #dbeafe; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.25rem; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between; }
+        #main-content h3 { color: #1e3a8a; font-size: 1.2rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; border-bottom: none; }
+        #main-content p { margin-bottom: 1rem; }
+        #main-content ul { padding-left: 1.5rem; list-style-type: disc; margin-bottom: 1.5rem; }
+        #main-content li { margin-bottom: 0.75rem; }
+        #main-content strong { color: #1e3a8a; font-weight: 700; }
+        .section-block { background-color: #f0f9ff; border-left: 5px solid #0ea5e9; padding: 1.25rem; margin: 1.5rem 0; border-radius: 0 0.5rem 0.5rem 0; }
+
+        /* TTS Button */
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #2563eb; }
+
+        .audio-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1.5rem; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; margin-top: 3rem; }
+        .audio-container audio { width: 100%; max-width: 400px; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
         }
-        #main-content .section-block p {
-            margin-top: 0.5rem; /* mt-2 */
-        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
 
-        /* DSA Mode Styles */
-        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
-        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
-        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
-        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
-        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
-        .dsa-mode #main-content h1, .dsa-mode #main-content h2, .dsa-mode #main-content h3, .dsa-mode #main-content p, .dsa-mode #main-content li, .dsa-mode #main-content strong { color: #34495e !important; }
-        .dsa-mode #main-content .section-block { background-color: #fefcf7 !important; border-left-color: #5a738e; }
-        .dsa-mode .audio-container { background-color: #f0eade !important; }
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .section-block { background-color: #fffdf5; border: 1px solid #000; border-left-width: 8px; }
+        .dsa-mode .tts-button { color: #000 !important; }
 
-        /* TTS Button Styles */
-        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
-        .dsa-mode .tts-button { color: #5a738e !important; }
-
-        /* Print Styles */
         @media print {
-            body { background-color: #fff; margin: 0; padding: 0; font-family: sans-serif; font-size: 11pt; color: #000; }
-            #page-header, #main-footer, #print-button, .tts-button, .audio-container { display: none; }
-            .container { max-width: 100%; padding: 1cm; box-shadow: none; border: none; margin: 0; }
-            .content-card { box-shadow: none; border: none; padding: 0; margin: 0; }
-            #main-content h1, #main-content h2, #main-content h3 { color: #000 !important; border-color: #ccc; margin-top: 1.5em; page-break-after: avoid; }
-            #main-content h1 { font-size: 18pt; text-align: left; }
-            #main-content h2 { font-size: 14pt; }
-            #main-content h3 { font-size: 12pt; border-bottom: none; padding-bottom: 0; margin-bottom: 0.5rem;}
-            #main-content ul { padding-left: 25px; }
-            #main-content li { margin-bottom: 5px; }
-            #main-content strong { color: #000 !important; font-weight: bold; }
-            #main-content .section-block { border: 1px solid #ccc; padding: 10px; margin: 10px 0; background-color: #f9f9f9 !important; page-break-inside: avoid; }
-            div[data-lang-key] { page-break-inside: avoid; margin-bottom: 1.5rem;}
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav, .audio-container, .tts-button { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50">
 
-    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
-    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
-        <div class="container mx-auto px-6 py-3">
-            <!-- Riga Superiore: Torna all'indice + Controlli -->
-            <div class="flex justify-between items-center mb-4">
-                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
-                 </a>
-                 <div class="flex items-center space-x-2">
-                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
-                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
-                 </div>
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
+        </nav>
+    </header>
 
-            <!-- Titolo della Sezione -->
-            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleNerv">9. Sistema Nervoso</h1>
-
-            <!-- Navigazione Interna alla Sezione -->
-            <nav class="scrollable-nav">
-                 <div class="flex space-x-2 pb-2">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <!-- FIX: Il link punta ora a index.html senza ../ -->
+                 <a href="index.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleNerv">9. Sistema Nervoso</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
                      <a href="riassunto_nervoso.html" class="section-nav-link active" data-lang-key="navSummary">Riassunto</a>
                      <a href="infografica_nervoso.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
                      <a href="checklist_nervoso.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
                      <a href="collaterali_nervoso.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
                      <a href="quiz_nervoso.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
-                     <a href="#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
                 </div>
             </nav>
-
         </div>
-    </header>
-    <!-- === FINE HEADER === -->
+    </div>
 
-    <!-- Main Content Container -->
-    <main class="container mx-auto p-4 md:px-8 md:py-12">
-        <!-- Card Contenuto -->
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item active" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
         <div id="main-content" class="content-card">
+            
+            <h1 class="flex items-center justify-between" data-lang-key="pageTitle">
+                <span>Esame del Sistema Nervoso</span>
+            </h1>
 
-             <!-- Contenuto Specifico del Riassunto -->
-            <h1 data-lang-key="pageTitle"></h1>
-            <p class="section-block" data-lang-key="introText"></p>
+            <div class="section-block" data-lang-key="introText"></div>
 
             <div data-lang-key="sectionSensorio"></div>
             <div data-lang-key="sectionPostura"></div>
@@ -164,400 +156,148 @@
             <div data-lang-key="sectionNerviCranici"></div>
             <div data-lang-key="sectionRiflessi"></div>
             <div data-lang-key="sectionLocalizzazione"></div>
-            <div data-lang-key="sectionGrafico"></div> <!-- Info box per il grafico -->
-            <!-- Fine Contenuto Specifico -->
+            <div data-lang-key="sectionGrafico"></div>
 
             <!-- Sezione Audio -->
             <div class="audio-container" id="audio">
-                <audio controls class="rounded-lg">
+                <audio controls>
                     <source src="audio_riassunto_nervoso.mp3" type="audio/mpeg">
                     Audio non disponibile.
                 </audio>
-                <a href="audio_riassunto_nervoso.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition duration-300">
+                <a href="audio_riassunto_nervoso.mp3" download class="bg-orange-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-orange-600 transition inline-flex items-center" data-lang-key="btnDownloadAudio">
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="btnDownloadAudio">Scarica Audio</span>
+                    <span>Scarica Audio</span>
                 </a>
             </div>
 
-            <!-- Bottone Stampa -->
             <div class="mt-12 text-center">
-                 <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center" data-lang-key="btnPrint">
-                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
-                     <span data-lang-key="btnPrintText">Stampa</span>
-                 </button>
-             </div>
-
-        </div> <!-- Fine content-card -->
+                <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-10 rounded-xl hover:bg-emerald-700 transition shadow-lg inline-flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="btnPrintText">Stampa Riassunto</span>
+                </button>
+            </div>
+        </div>
     </main>
 
-    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
-        </div>
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-             const speakerIconLarge = `<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
-             const speakerIconSmall = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
-             const speakerIconH2 = `<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
-
-            // === TRADUZIONI ===
+            const speakerIcon = `<button class="tts-button ml-2" aria-label="Riproduci audio"><svg class="w-6 h-6 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></button>`;
+            
             const translations = {
-                // --- Header ---
-                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
-                sectionTitleNerv: { it: '9. Sistema Nervoso', en: '9. Nervous System' }, // Nuova chiave
+                siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleNerv: { it: '9. Sistema Nervoso', en: '9. Nervous System' },
                 navSummary: { it: 'Riassunto', en: 'Summary' },
                 navInfographic: { it: 'Infografica', en: 'Infographic' },
                 navChecklist: { it: 'Checklist', en: 'Checklist' },
                 navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
                 navQuiz: { it: 'Quiz', en: 'Quiz' },
-                navAudio: { it: 'Audio', en: 'Audio' },
-                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                // --- Contenuto Riassunto Nervoso (MODIFICATO) ---
-                 pageTitle: { it: `Esame del Sistema Nervoso ${speakerIconLarge}`, en: `Nervous System Examination ${speakerIconLarge}` },
-                 introText: { it: `L'esame neurologico è uno dei più complessi e sistematici. L'obiettivo primario non è solo identificare una disfunzione, ma determinarne la <strong>localizzazione neuroanatomica</strong> (cervello, tronco encefalico, midollo spinale, nervi periferici). Questo processo, chiamato "localizzazione della lesione", è fondamentale per la diagnosi. ${speakerIconSmall}`, en: `The neurological exam is one of the most complex and systematic. The primary goal is not just to identify a dysfunction, but to determine its <strong>neuroanatomical location</strong> (brain, brainstem, spinal cord, peripheral nerves). This "lesion localization" process is fundamental for diagnosis. ${speakerIconSmall}` },
-                 sectionSensorio: {
-                     it: `<h2>1. Stato del Sensorio e Comportamento${speakerIconH2}</h2>
-                         <p>Valutazione iniziale a distanza e interazione.</p>
-                         <ul>
-                             <li><strong>Stato del Sensorio:</strong> Si valuta il livello di coscienza. <strong>Normale</strong> (vigile, attento), <strong>Depresso</strong> (cosciente ma risponde lentamente), <strong>Stuporoso</strong> (incosciente, risponde solo a stimoli dolorosi), <strong>Comatoso</strong> (incosciente, nessuna risposta).</li>
-                             <li><strong>Comportamento:</strong> Ricerca di alterazioni come <strong>andatura in circolo</strong> (circoli ampi = cervello anteriore; circoli stretti = tronco encefalico/vestibolare), <strong>pressione della testa</strong> contro ostacoli (lesione cervello anteriore), vocalizzazioni anomale.</li>
-                         </ul>`,
-                     en: `<h2>1. Mental Status and Behavior${speakerIconH2}</h2>
-                         <p>Initial assessment from a distance and during interaction.</p>
-                         <ul>
-                             <li><strong>Mental Status:</strong> Assess level of consciousness. <strong>Normal</strong> (alert, responsive), <strong>Depressed</strong> (conscious but slow to respond), <strong>Stuporous</strong> (unconscious, responds only to painful stimuli), <strong>Comatose</strong> (unconscious, no response).</li>
-                             <li><strong>Behavior:</strong> Look for alterations such as <strong>circling</strong> (wide circles = forebrain; tight circles = brainstem/vestibular), <strong>head pressing</strong> against obstacles (forebrain lesion), abnormal vocalizations.</li>
-                         </ul>`
-                 },
-                 sectionPostura: {
-                     it: `<h2>2. Stazione e Postura${speakerIconH2}</h2>
-                         <p>Come l'animale si tiene in piedi da fermo.</p>
-                         <ul>
-                             <li><strong>Postura della Testa:</strong> Ricerca di <strong>testa ruotata</strong> (inclinata su un lato, "head tilt"), segno tipico di sindrome vestibolare.</li>
-                             <li><strong>Posizione degli Arti:</strong> Valutare la <strong>base d'appoggio</strong>. Una base d'appoggio allargata è un segno comune di <strong>atassia</strong> (incoordinazione) per aumentare la stabilità.</li>
-                         </ul>`,
-                     en: `<h2>2. Stance and Posture${speakerIconH2}</h2>
-                         <p>How the animal stands at rest.</p>
-                         <ul>
-                             <li><strong>Head Posture:</strong> Look for <strong>head tilt</strong> (head tilted to one side), a typical sign of vestibular syndrome.</li>
-                             <li><strong>Limb Position:</strong> Assess the <strong>stance</strong>. A wide-based stance is a common sign of <strong>ataxia</strong> (incoordination) to increase stability.</li>
-                         </ul>`
-                 },
-                 sectionAndatura: {
-                     it: `<h2>3. Andatura (Esame Dinamico)${speakerIconH2}</h2>
-                         <p>Valutazione dell'animale in movimento (passo, trotto, circoli, passi indietro).</p>
-                         <ul>
-                             <li><strong>Paresi/Paralisi:</strong> Debolezza (paresi) o assenza di movimento (paralisi) di uno (mono-), due (emi- o para-) o quattro (tetra-) arti. Si manifesta con arti trascinati, inciampi.</li>
-                             <li><strong>Atassia:</strong> Incoordinazione. Il segno chiave è che l'andatura peggiora se si toglie la vista (bendaggio). Si distingue in:
-                                 <ul>
-                                     <li><strong>Atassia Cerebellare:</strong> Ipermetria (passi esagerati "da soldatino"), tremori.</li>
-                                     <li><strong>Atassia Vestibolare:</strong> Tendenza a cadere o deviare da un lato, testa ruotata.</li>
-                                     <li><strong>Atassia Midollare (Propriocettiva):</strong> L'animale "non sa dove mette i piedi", incrocia gli arti, inciampa.</li>
-                                 </ul>
-                             </li>
-                         </ul>`,
-                     en: `<h2>3. Gait (Dynamic Exam)${speakerIconH2}</h2>
-                         <p>Assessment of the animal in motion (walk, trot, circles, backing up).</p>
-                         <ul>
-                             <li><strong>Paresis/Paralysis:</strong> Weakness (paresis) or absence of movement (paralysis) of one (mono-), two (hemi- or para-), or four (tetra-) limbs. Manifests as dragging limbs, stumbling.</li>
-                             <li><strong>Ataxia:</strong> Incoordination. The key sign is that the gait worsens when vision is removed (blindfolding). It is distinguished into:
-                                 <ul>
-                                     <li><strong>Cerebellar Ataxia:</strong> Hypermetria (exaggerated "tin soldier" steps), tremors.</li>
-                                     <li><strong>Vestibular Ataxia:</strong> Tendency to fall or drift to one side, head tilt.</li>
-                                     <li><strong>Spinal (Proprioceptive) Ataxia:</strong> The animal "doesn't know where its feet are," crosses limbs, stumbles.</li>
-                                 </ul>
-                             </li>
-                         </ul>`
-                 },
-                 sectionNerviCranici: {
-                     it: `<h2>4. Nervi Cranici${speakerIconH2}</h2>
-                         <p>Valutazione sistematica dei 12 nervi cranici, spesso valutando le risposte riflesse.</p>
-                         <ul>
-                             <li><strong>Riflesso alla Minaccia (N. II - Ottico, N. VII - Facciale):</strong> Avvicinare la mano all'occhio. L'animale deve ammiccare.</li>
-                             <li><strong>Riflesso Pupillare alla Luce (PLR) (N. II - Ottico, N. III - Oculomotore):</strong> La pupilla si restringe con la luce.</li>
-                             <li><strong>Simmetria Facciale (N. VII - Facciale):</strong> Ricerca di ptosi palpebrale (palpebra calante), ptosi auricolare (orecchio cadente) o deviazione del labbro, che indicano paralisi facciale.</li>
-                             <li><strong>Sensibilità Facciale (N. V - Trigemino):</strong> Toccando la cute del muso, l'animale deve ritrarsi o ammiccare.</li>
-                             <li><strong>Deglutizione e Tono Lingua (N. IX, X, XII):</strong> Valutare la capacità di deglutire e il tono/simmetria della lingua.</li>
-                         </ul>`,
-                     en: `<h2>4. Cranial Nerves${speakerIconH2}</h2>
-                         <p>Systematic assessment of the 12 cranial nerves, often by evaluating reflex responses.</p>
-                         <ul>
-                             <li><strong>Menace Response (CN II - Optic, CN VII - Facial):</strong> Move hand towards the eye. The animal should blink.</li>
-                             <li><strong>Pupillary Light Reflex (PLR) (CN II - Optic, CN III - Oculomotor):</strong> Pupil constricts with light.</li>
-                             <li><strong>Facial Symmetry (CN VII - Facial):</strong> Look for ptosis (drooping eyelid), ear droop, or lip deviation, indicating facial paralysis.</li>
-                             <li><strong>Facial Sensation (CN V - Trigeminal):</strong> Touching the skin of the face; the animal should retract or blink.</li>
-                             <li><strong>Swallowing and Tongue Tone (CN IX, X, XII):</strong> Assess ability to swallow and tongue tone/symmetry.</li>
-                         </ul>`
-                 },
-                 sectionRiflessi: {
-                     it: `<h2>5. Reazioni Posturali e Riflessi Spinali${speakerIconH2}</h2>
-                         <p>Valutano l'integrità delle vie nervose spinali.</p>
-                         <ul>
-                             <li><strong>Propriocezione Cosciente:</strong> Mettere il piede dell'animale in posizione anomala (es. flesso dorsalmente). L'animale deve correggerlo immediatamente. Un ritardo è un segno precoce di compressione midollare.</li>
-                             <li><strong>Riflessi Spinali (es. patellare, flessorio):</strong> Valutati principalmente negli arti posteriori. Permettono di distinguere lesioni del <strong>Motoneurone Superiore (UMN)</strong> (riflessi normali o esagerati) da lesioni del <strong>Motoneurone Inferiore (LMN)</strong> (riflessi diminuiti o assenti).</li>
-                         </ul>`,
-                     en: `<h2>5. Postural Reactions and Spinal Reflexes${speakerIconH2}</h2>
-                         <p>Assess the integrity of spinal nerve pathways.</p>
-                         <ul>
-                             <li><strong>Conscious Proprioception:</strong> Placing the animal's foot in an abnormal position (e.g., knuckled over). The animal should correct it immediately. A delay is an early sign of spinal cord compression.</li>
-                             <li><strong>Spinal Reflexes (e.g., patellar, flexor):</strong> Assessed mainly in the hind limbs. They help distinguish <strong>Upper Motor Neuron (UMN)</strong> lesions (normal or exaggerated reflexes) from <strong>Lower Motor Neuron (LMN)</strong> lesions (decreased or absent reflexes).</li>
-                         </ul>`
-                 },
-                 sectionLocalizzazione: {
-                     it: `<h2>6. Il Fine Ultimo: La Localizzazione della Lesione${speakerIconH2}</h2>
-                         <p>Tutti i test precedenti servono a rispondere alla domanda: "Dov'è la lesione?"</p>
-                         <h3>Cervello Anteriore (Telencefalo/Diencefalo)</h3>
-                         <ul>
-                             <li><strong>Segni:</strong> Convulsioni, cambiamenti comportamentali, andatura compulsiva in circolo (circoli ampi, verso il lato della lesione), deficit di propriocezione controlaterale, deficit della minaccia (lato opposto), pressione della testa. Può presentarsi anche stato <strong>stuporoso</strong> o <strong>comatoso</strong>.</li>
-                         </ul>
-                         <h3>Tronco Encefalico</h3>
-                         <ul>
-                             <li><strong>Segni:</strong> Alterazioni gravi dello stato del sensorio (depressione, stupore, coma), deficit multipli dei nervi cranici (dallo stesso lato della lesione), andatura in circolo "stretta", atassia, paresi (UMN) dei quattro arti.</li>
-                         </ul>
-                         <h3>Cervelletto</h3>
-                         <ul>
-                             <li><strong>Segni:</strong> Atassia ipermetrica (passi esagerati), tremori intenzionali della testa. Stato del sensorio e forza sono normali.</li>
-                         </ul>
-                         <h3>Midollo Spinale (diviso per segmenti)</h3>
-                         <ul>
-                             <li><strong>C1-C5:</strong> Segni di UMN (paresi spastica, atassia) su tutti e quattro gli arti.</li>
-                             <li><strong>C6-T2 (Intumescenza Cervicale):</strong> Segni di LMN (paresi flaccida, atrofia) sugli arti anteriori; segni di UMN sugli arti posteriori.</li>
-                             <li><strong>T3-L3:</strong> Arti anteriori normali; segni di UMN (paresi spastica, atassia) sugli arti posteriori.</li>
-                             <li><strong>L4-S2 (Intumescenza Lombosacrale):</strong> Arti anteriori normali; segni di LMN (paresi flaccida, atrofia) sugli arti posteriori.</li>
-                         </ul>
-                         <h3>Sistema Nervoso Periferico</h3>
-                         <ul>
-                             <li><strong>Segni:</strong> Debolezza (LMN), atrofia muscolare rapida, riflessi spinali diminuiti o assenti, limitati a un singolo nervo o arto.</li>
-                         </ul>`,
-                     en: `<h2>6. The Ultimate Goal: Lesion Localization${speakerIconH2}</h2>
-                         <p>All previous tests serve to answer the question: "Where is the lesion?"</p>
-                         <h3>Forebrain (Telencephalon/Diencephalon)</h3>
-                         <ul>
-                             <li><strong>Signs:</strong> Seizures, behavioral changes, compulsive pacing/circling (wide circles, towards the side of the lesion), contralateral proprioceptive deficits, menace deficit (opposite side), head pressing. <strong>Stuporous</strong> or <strong>comatose</strong> state may also be present.</li>
-                         </ul>
-                         <h3>Brainstem</h3>
-                         <ul>
-                             <li><strong>Signs:</strong> Severe alterations in mental status (depression, stupor, coma), multiple cranial nerve deficits (same side as the lesion), "tight" circling, ataxia, UMN paresis of all four limbs.</li>
-                         </ul>
-                         <h3>Cerebellum</h3>
-                         <ul>
-                             <li><strong>Signs:</strong> Hypermetric ataxia (exaggerated steps), intention tremors of the head. Mental status and strength are normal.</li>
-                         </ul>
-                         <h3>Spinal Cord (divided by segments)</h3>
-                         <ul>
-                             <li><strong>C1-C5:</strong> UMN signs (spastic paresis, ataxia) in all four limbs.</li>
-                             <li><strong>C6-T2 (Cervical Intumescence):</strong> LMN signs (flaccid paresis, atrophy) in the forelimbs; UMN signs in the hindlimbs.</li>
-                             <li><strong>T3-L3:</strong> Normal forelimbs; UMN signs (spastic paresis, ataxia) in the hindlimbs.</li>
-                             <li><strong>L4-S2 (Lumbosacral Intumescence):</strong> Normal forelimbs; LMN signs (flaccid paresis, atrophy) in the hindlimbs.</li>
-                         </ul>
-                         <h3>Peripheral Nervous System</h3>
-                         <ul>
-                             <li><strong>Signs:</strong> Weakness (LMN), rapid muscle atrophy, decreased or absent spinal reflexes, limited to a single nerve or limb.</li>
-                         </ul>`
-                 },
-                 sectionGrafico: {
-                     it: `<div class="section-block mt-8">
-                            <h3 class="!mt-0 !border-none !text-lg">Nota sulla Localizzazione</h3>
-                            <p class="!mt-2">Questo riassunto introduce i concetti base della localizzazione. La pagina <strong>Infografica</strong> di questa sezione fornirà uno schema visivo per aiutarti a mappare i segni clinici alle diverse aree neuroanatomiche.</p>
-                         </div>`,
-                     en: `<div class="section-block mt-8">
-                            <h3 class="!mt-0 !border-none !text-lg">Note on Localization</h3>
-                            <p class="!mt-2">This summary introduces the basic concepts of localization. The <strong>Infographic</strong> page in this section will provide a visual diagram to help you map clinical signs to the different neuroanatomic areas.</p>
-                         </div>`
-                 },
-                 btnPrint: { it: 'Stampa', en: 'Print' },
-                 btnPrintText: { it: 'Stampa', en: 'Print' },
-                 btnDownloadAudio: { it: 'Scarica Audio', en: 'Download Audio' },
-                // --- Footer ---
-                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical Examination" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular System" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory System" },
+                navDig: { it: "Apparato Digerente", en: "Digestive System" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal System" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary System" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic System" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine System" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous System" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary System" },
+                pageTitle: { it: `<span>Esame del Sistema Nervoso</span>${speakerIcon}`, en: `<span>Nervous System Examination</span>${speakerIcon}` },
+                introText: { it: `L'esame neurologico mira a determinare la localizzazione neuroanatomica (cervello, tronco, midollo, nervi) della lesione. Questo processo è fondamentale per la diagnosi e la prognosi. ${speakerIcon}`, en: `The neurological exam aims to determine the neuroanatomical localization (brain, brainstem, spinal cord, nerves) of the lesion. This process is essential for diagnosis and prognosis. ${speakerIcon}` },
+                sectionSensorio: {
+                    it: `<h2>1. Stato del Sensorio e Comportamento${speakerIcon}</h2><ul><li><strong>Sensorio:</strong> Valutare livello di coscienza (Normale, Depresso, Stuporoso, Comatoso).</li><li><strong>Comportamento:</strong> Circoli ampi (Cervello anteriore), circoli stretti (Tronco encefalico), pressione della testa.</li></ul>`,
+                    en: `<h2>1. Mental Status and Behavior${speakerIcon}</h2><ul><li><strong>Mental Status:</strong> Assess consciousness level (Normal, Depressed, Stuporous, Comatose).</li><li><strong>Behavior:</strong> Wide circles (Forebrain), tight circles (Brainstem), head pressing.</li></ul>`
+                },
+                sectionPostura: {
+                    it: `<h2>2. Stazione e Postura${speakerIcon}</h2><ul><li><strong>Postura della Testa:</strong> Testa ruotata (head tilt) indica problema vestibolare.</li><li><strong>Arti:</strong> Base d'appoggio allargata suggerisce atassia.</li></ul>`,
+                    en: `<h2>2. Stance and Posture${speakerIcon}</h2><ul><li><strong>Head Posture:</strong> Head tilt indicates a vestibular problem.</li><li><strong>Limbs:</strong> Wide-based stance suggests ataxia.</li></ul>`
+                },
+                sectionAndatura: {
+                    it: `<h2>3. Andatura (Esame Dinamico)${speakerIcon}</h2><ul><li><strong>Atassia:</strong> Incoordinazione (Cerebellare = ipermetria; Vestibolare = deviazione; Midollare = incrocio).</li><li><strong>Paresi/Paralisi:</strong> Debolezza o assenza totale di movimento.</li></ul>`,
+                    en: `<h2>3. Gait (Dynamic Exam)${speakerIcon}</h2><ul><li><strong>Ataxia:</strong> Incoordination (Cerebellar = hypermetria; Vestibular = drifting; Spinal = crossing).</li><li><strong>Paresis/Paralysis:</strong> Weakness or total loss of movement.</li></ul>`
+                },
+                sectionNerviCranici: {
+                    it: `<h2>4. Nervi Cranici${speakerIcon}</h2><ul><li><strong>Vista:</strong> Riflesso alla minaccia (II, VII) e PLR (II, III).</li><li><strong>Simmetria Facciale:</strong> Ricerca di paralisi (VII), sensibilità (V) e deglutizione (IX, X).</li></ul>`,
+                    en: `<h2>4. Cranial Nerves${speakerIcon}</h2><ul><li><strong>Vision:</strong> Menace response (II, VII) and PLR (II, III).</li><li><strong>Facial Symmetry:</strong> Look for paralysis (VII), sensitivity (V), and swallowing (IX, X).</li></ul>`
+                },
+                sectionRiflessi: {
+                    it: `<h2>5. Riflessi Spinali${speakerIcon}</h2><ul><li><strong>Propriocezione:</strong> Test di posizionamento dell'arto (incrocio).</li><li><strong>UMN vs LMN:</strong> Motoneurone Superiore (iper-riflessia) vs Inferiore (ipo-riflessia/atrofia rapida).</li></ul>`,
+                    en: `<h2>5. Spinal Reflexes${speakerIcon}</h2><ul><li><strong>Proprioception:</strong> Limb positioning test (crossing).</li><li><strong>UMN vs LMN:</strong> Upper Motor Neuron (hyper-reflexia) vs Lower (hypo-reflexia/rapid atrophy).</li></ul>`
+                },
+                sectionLocalizzazione: {
+                    it: `<h2>6. Localizzazione della Lesione${speakerIcon}</h2><ul><li><strong>Cervello Anteriore:</strong> Sensorio alterato, circoli ampi, deficit controlaterali.</li><li><strong>Tronco Encefalico:</strong> Sensorio gravemente depresso, deficit NC multipli ipsilaterali.</li><li><strong>Midollo (C1-C5):</strong> Deficit UMN su tutti e 4 gli arti.</li><li><strong>Midollo (T3-L3):</strong> Anteriori normali, Posteriori UMN.</li></ul>`,
+                    en: `<h2>6. Lesion Localization${speakerIcon}</h2><ul><li><strong>Forebrain:</strong> Altered mental status, wide circles, contralateral deficits.</li><li><strong>Brainstem:</strong> Severely depressed status, multiple ipsilateral CN deficits.</li><li><strong>Spinal (C1-C5):</strong> UMN deficits on all 4 limbs.</li><li><strong>Spinal (T3-L3):</strong> Normal forelimbs, UMN hindlimbs.</li></ul>`
+                },
+                sectionGrafico: {
+                    it: `<div class="section-block mt-8"><h3>Nota sulla Localizzazione</h3><p>La localizzazione della lesione è il punto chiave dell'esame neurologico. Segni LMN (debolezza flaccida) localizzano sempre la lesione nel segmento midollare che innerva quell'arto.</p></div>`,
+                    en: `<div class="section-block mt-8"><h3>Note on Localization</h3><p>Lesion localization is the key point of the neurological exam. LMN signs (flaccid weakness) always localize the lesion to the spinal segment innervating that limb.</p></div>`
+                },
+                btnDownloadAudio: { it: 'Scarica Audio', en: 'Download Audio' },
+                btnPrintText: { it: 'Stampa Riassunto', en: 'Print Summary' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
             };
 
-             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
-             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
             let currentLanguage = localStorage.getItem('language') || 'it';
-            const accessibilityToggle = document.getElementById('accessibility-toggle');
-            const langToggle = document.getElementById('lang-toggle');
             const body = document.body;
             const synth = window.speechSynthesis;
-            let currentUtterance = null;
             let activeTTSButton = null;
-            let voices = [];
 
-            // --- Logica TTS ---
-             function populateVoiceList() {
-                 if (typeof speechSynthesis !== 'undefined') {
-                     voices = synth.getVoices();
-                 }
-            }
-             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-                 speechSynthesis.onvoiceschanged = populateVoiceList;
-             }
-             populateVoiceList();
-
-             function speak(text, button) {
-                 const isSameButton = activeTTSButton === button;
-                 if (synth.speaking && isSameButton) {
-                     if (synth.paused) { synth.resume(); button.classList.add('playing'); }
-                     else { synth.pause(); button.classList.remove('playing'); }
-                 } else {
-                     if (synth.speaking) {
-                         if (currentUtterance) currentUtterance.onend = null;
-                         if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                         synth.cancel();
-                     }
-                     setTimeout(() => startSpeaking(text, button), 50);
-                 }
-             }
-             function startSpeaking(text, button) {
-                  if (!text || typeof text !== 'string' || !text.trim()) {
-                    console.error("Testo non valido per TTS:", text);
-                    return;
-                 }
-                 const tempDiv = document.createElement('div');
-                 tempDiv.innerHTML = text;
-                 const ttsIconToRemove = tempDiv.querySelector('.tts-button');
-                 if(ttsIconToRemove) ttsIconToRemove.remove();
-                 const cleanText = tempDiv.textContent || tempDiv.innerText || "";
-                 if (!cleanText.trim()) {
-                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                    activeTTSButton = null;
-                    return;
-                 }
-
-                 currentUtterance = new SpeechSynthesisUtterance(cleanText);
-                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                 currentUtterance.onend = () => { if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
-                 currentUtterance.onerror = (event) => { 
-                    if (event.error !== 'canceled' && event.error !== 'interrupted') {
-                        console.error("Errore TTS:", event.error); 
-                    }
-                    if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } 
-                 };
-                 synth.speak(currentUtterance);
-                 if (activeTTSButton && activeTTSButton !== button) { activeTTSButton.classList.remove('playing'); }
-                 activeTTSButton = button;
-                 button.classList.add('playing');
-             }
-             function setupTTSListeners() {
-                 document.querySelectorAll('.tts-button').forEach(button => {
-                     const newButton = button.cloneNode(true);
-                     button.parentNode.replaceChild(newButton, button);
-                     newButton.addEventListener('click', (e) => {
-                         e.stopPropagation();
-                         const parentElement = newButton.parentNode;
-                         let textToRead = '';
-                         let key = parentElement.dataset.langKey; 
-
-                         if (parentElement.tagName === 'H1' || parentElement.tagName === 'P') {
-                             key = parentElement.dataset.langKey;
-                         } else if (parentElement.tagName === 'H2') {
-                             const container = parentElement.closest('[data-lang-key]');
-                             if(container) key = container.dataset.langKey;
-                         }
-
-                         if (key && translations[key] && translations[key][currentLanguage]) {
-                             textToRead = translations[key][currentLanguage];
-                             if (textToRead) {
-                                 speak(textToRead, newButton);
-                             } else { console.warn("Testo vuoto per TTS per la chiave:", key); }
-                         } else { console.warn("Nessuna traduzione trovata per TTS per il pulsante:", newButton, "Key:", key); }
-                     });
-                 });
-             }
-
-            // --- Funzione Aggiornamento Lingua ---
-            const updateLanguage = (lang, previousLang = null) => {
-                 document.documentElement.lang = lang;
-                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-
-                 document.querySelectorAll('[data-lang-key]').forEach(element => {
-                     const key = element.dataset.langKey;
-                     if (translations[key] && translations[key][lang]) {
-                         const translationText = translations[key][lang];
-
-                         if (key === 'footerText' || key === 'backToIndex' || key === 'btnDownloadAudio') {
-                              const svgIcon = element.querySelector('svg');
-                              element.innerHTML = translationText;
-                              if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
-                                   element.insertBefore(svgIcon, element.firstChild);
-                              }
-                         }
-                         else if (key === 'btnPrint') {
-                              const svgIcon = element.querySelector('svg');
-                              const textSpan = element.querySelector('span[data-lang-key="btnPrintText"]');
-                              if (textSpan) { textSpan.textContent = translations['btnPrintText'][lang]; }
-                              else {
-                                  element.innerHTML = translationText;
-                                   if (svgIcon) element.insertBefore(svgIcon, element.firstChild);
-                              }
-                               element.setAttribute('aria-label', translationText);
-                         }
-                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
-                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
-                             const sectionKey = currentSectionKey || key;
-                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
-                         }
-                         else if (element.id === 'main-content' || element.closest('#main-content')) { 
-                             element.innerHTML = translationText; 
-                         }
-                         else { element.textContent = translationText; }
-                     }
-                 });
-
-                 // Gestione visibilità audio
-                 document.querySelectorAll('.audio-container').forEach(container => {
-                     const audioSource = container.querySelector('audio source');
-                     const downloadLink = container.querySelector('a[download]');
-                     const hasValidSource = audioSource && audioSource.getAttribute('src') && audioSource.getAttribute('src') !== '#';
-                     const hasValidDownload = downloadLink && downloadLink.getAttribute('href') && downloadLink.getAttribute('href') !== '#';
-                     
-                     container.style.display = (lang === 'it' && hasValidSource && hasValidDownload) ? 'flex' : 'none';
-                 });
-
-                 // Reset TTS
-                 if (synth.speaking || synth.pending) synth.cancel();
-                 if(activeTTSButton) activeTTSButton.classList.remove('playing');
-                 activeTTSButton = null;
-                 setTimeout(setupTTSListeners, 50);
+            const speak = (text, button) => {
+                if (synth.speaking && activeTTSButton === button) {
+                    synth.paused ? synth.resume() : synth.pause();
+                } else {
+                    synth.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                    utterance.onend = () => button.classList.remove('playing');
+                    synth.speak(utterance);
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                }
             };
 
-            // --- Logica Modalità Accessibilità ---
+            const setupTTS = () => {
+                document.querySelectorAll('.tts-button').forEach(btn => {
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        const container = btn.closest('div, h1, h2');
+                        const text = container.innerText.trim();
+                        speak(text, btn);
+                    };
+                });
+            };
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                setupTTS();
+            };
+
             const setA11yMode = (enabled) => {
-                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
-                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
             };
 
-            // --- Event Listeners ---
-            if (langToggle) {
-                langToggle.addEventListener('click', () => {
-                    const previousLanguage = currentLanguage;
-                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-                    localStorage.setItem('language', currentLanguage);
-                     if (synth.speaking || synth.pending) synth.cancel();
-                     updateLanguage(currentLanguage, previousLanguage);
-                });
-            } else { console.error("Elemento langToggle non trovato!"); }
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
 
-            if (accessibilityToggle) {
-                 accessibilityToggle.addEventListener('click', () => {
-                    const isEnabled = body.classList.contains('dsa-mode');
-                    setA11yMode(!isEnabled);
-                });
-            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
 
-            // --- Inizializzazione ---
-            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
-            populateVoiceList();
-             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-                 speechSynthesis.onvoiceschanged = populateVoiceList;
-             }
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
             updateLanguage(currentLanguage);
-
         });
     </script>
-
 </body>
 </html>
-
