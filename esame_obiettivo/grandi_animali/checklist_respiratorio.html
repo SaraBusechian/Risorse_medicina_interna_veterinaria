@@ -3,504 +3,335 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Titolo specifico per questa pagina -->
     <title>Checklist: Apparato Respiratorio - Semeiotica Vet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Stili Generali e dal Template */
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f1f5f9; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #475569; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #1e293b; }
+        .quick-nav-item.active { background-color: #1E3A8A; color: #ffffff !important; border-color: #1E3A8A; }
+
         .section-nav-link {
-            transition: background-color 0.3s, color 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            background-color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
         }
-        .section-nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        .section-nav-link.active {
-             background-color: white;
-             color: #1E3A8A;
-             cursor: default;
-        }
-        .content-card {
-             background-color: white;
-             border-radius: 0.75rem;
-             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-             padding: 1.5rem;
-             margin-top: 2rem;
-             max-width: 56rem; /* max-w-2xl increased slightly for checklist */
-             margin-left: auto;
-             margin-right: auto;
-        }
-        @media (min-width: 768px) { /* md: */
-            .content-card { padding: 2.5rem; }
-        }
-        #page-header { position: static; }
-        .scrollable-nav {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .scrollable-nav::-webkit-scrollbar { display: none; }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #1E3A8A; cursor: default; }
 
-        /* Stili Specifici Checklist Respiratorio (Integrati) */
-         #main-content h1 {
-             font-family: 'Lexend', sans-serif;
-             color: #1e3a8a;
-             border-bottom: 3px solid #1e3a8a;
-             padding-bottom: 0.5rem;
-             font-size: 1.75rem; /* text-2xl */
-             text-align: center;
-             margin-bottom: 1.5rem; /* mb-6 */
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 900px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
         }
-         #main-content h2 {
-             font-family: 'Lexend', sans-serif;
-             color: #1e40af;
-             border-bottom: 2px solid #dbeafe;
-             padding-bottom: 0.5rem;
-             margin-top: 2rem;
-             font-size: 1.25rem; /* text-xl */
-             font-weight: 600; /* font-semibold */
-             margin-bottom: 1rem; /* mb-4 */
+        
+        .field { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; gap: 1rem; }
+        .label-area { flex-basis: 55%; display: flex; flex-direction: column; }
+        .label-area label { font-weight: 600; color: #1f2937; }
+        .label-desc { font-size: 0.85rem; color: #6b7280; font-style: italic; }
+        .input-area { flex-basis: 40%; display: flex; align-items: center; justify-content: flex-end; flex-grow: 1; }
+        
+        input[type="text"], textarea { 
+            border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.6rem 0.75rem; 
+            background-color: #f9fafb; width: 100%; transition: all 0.2s;
         }
-         #main-content h3 {
-             font-family: 'Lexend', sans-serif;
-             color: #1e3a8a; /* Stesso colore h2 per coerenza */
-             font-size: 1.125rem; /* text-lg */
-             font-weight: 600; /* font-semibold */
-             margin-top: 1.5rem; /* mt-6 */
-             padding-top: 1rem; /* pt-4 */
-             border-top: 1px solid #e5e7eb; /* border-t */
-             margin-bottom: 1rem; /* mb-4 */
+        input:focus, textarea:focus { border-color: #2563eb; outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        textarea { min-height: 80px; margin-top: 0.5rem; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
         }
-         #main-content section:first-of-type h2 { margin-top: 0; } /* Rimuovi margine sopra al primo H2 */
-         #main-content section:first-of-type h3:first-of-type { margin-top: 1rem; padding-top: 0; border-top: none; } /* Rimuovi bordo sopra al primo H3 */
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
 
-         .input-box {
-             border: 1px solid #cbd5e1; /* slate-300 */
-             border-radius: 6px;
-             padding: 8px 12px; /* Aumentato padding */
-             width: 100%;
-             transition: border-color 0.2s, box-shadow 0.2s;
-        }
-         .input-box:focus {
-             border-color: #2563eb; /* blue-600 */
-             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
-             outline: none;
-        }
-         .label-desc { font-size: 0.875rem; color: #475569; /* slate-600 */ margin-top: 2px; }
-
-         #print-button { /* Cambiato da classe a ID per coerenza */
-             display: inline-flex;
-             align-items: center;
-             text-align: center;
-             margin-top: 2rem;
-             background-color: #16a34a; /* green-600 */
-             color: #ffffff;
-             font-weight: 600;
-             padding: 0.75rem 1.5rem;
-             border-radius: 0.375rem;
-             transition: background-color 0.2s;
-             cursor: pointer;
-        }
-         #print-button:hover { background-color: #15803d; /* green-700 */ }
-
-
-        /* DSA Mode Styles */
-        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
-        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
-        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
-        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
-        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
-        .dsa-mode #main-content h1, .dsa-mode #main-content h2, .dsa-mode #main-content h3, .dsa-mode label, .dsa-mode .label-desc, .dsa-mode input { color: #34495e !important; }
-        .dsa-mode .input-box { background-color: #fefcf7 !important; border-color: #aeaeae !important; }
-
-
-        /* Print Styles */
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode label, .dsa-mode input, .dsa-mode textarea, .dsa-mode .label-desc { color: #000 !important; }
+        .dsa-mode input, .dsa-mode textarea { background-color: #ffffff; border: 2px solid #000; }
+        
         @media print {
-            body { background-color: #ffffff; margin: 0; padding: 0; font-family: sans-serif; font-size: 10pt; color: #000; }
-            #page-header, #main-footer, #print-button { display: none; }
-            .container { max-width: 100%; padding: 1cm; margin: 0; }
-            .content-card { box-shadow: none; border: none; padding: 0; margin: 0; }
-            #main-content h1 { font-size: 16pt; text-align: center; border-color: #000; color: #000 !important; margin-bottom: 1.5rem; }
-            #main-content h2 { font-size: 12pt; border-color: #ccc; color: #000 !important; margin-top: 1.5rem; page-break-after: avoid; }
-            #main-content h3 { font-size: 11pt; color: #000 !important; border-top-color: #ccc; margin-top: 1rem; padding-top: 0.5rem;}
-            .grid { display: grid; } /* Assicura che la griglia funzioni in stampa */
-            .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-            .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } /* Mantieni 2 colonne se possibile */
-            .gap-6 { gap: 1rem; } /* Riduci gap */
-            .label-desc { color: #555 !important; font-size: 8pt;}
-            .input-box { border: 1px dotted #999; padding: 4px; font-size: 10pt; background: #f9f9f9 !important; }
-            section { page-break-inside: avoid; margin-bottom: 1rem;}
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+            input, textarea { border: none !important; border-bottom: 1px dotted #000 !important; background: none !important; }
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50">
 
-    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
-    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
-        <div class="container mx-auto px-6 py-3">
-            <!-- Riga Superiore: Torna all'indice + Controlli -->
-            <div class="flex justify-between items-center mb-4">
-                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
-                 </a>
-                 <div class="flex items-center space-x-2">
-                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
-                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
-                 </div>
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
+        </nav>
+    </header>
 
-            <!-- Titolo della Sezione -->
-            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleResp">3. Apparato Respiratorio</h1>
-
-            <!-- Navigazione Interna alla Sezione -->
-            <nav class="scrollable-nav">
-                 <div class="flex space-x-2 pb-2">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index_semeiotica.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleResp">3. Apparato Respiratorio</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
                      <a href="riassunto_respiratorio.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
                      <a href="infografica_respiratorio.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
                      <a href="checklist_respiratorio.html" class="section-nav-link active" data-lang-key="navChecklist">Checklist</a>
                      <a href="collaterali_respiratorio.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
                      <a href="quiz_respiratorio.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
-                     <a href="riassunto_respiratorio.html#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
                 </div>
             </nav>
-
         </div>
-    </header>
-    <!-- === FINE HEADER === -->
+    </div>
 
-    <!-- Main Content Container -->
-    <main class="container mx-auto p-4 md:px-8 md:py-12">
-        <!-- Card Contenuto -->
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item active" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
         <div id="main-content" class="content-card">
+            
+            <h1 class="text-2xl font-bold mb-8 text-center" data-lang-key="pageTitle">Checklist: Apparato Respiratorio</h1>
 
-            <!-- Contenuto Specifico Checklist -->
-             <h1 class="text-3xl font-bold text-center sm:text-left" data-lang-key="pageTitle">Checklist: Apparato Respiratorio</h1>
+            <!-- 1. ISPEZIONE -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4" data-lang-key="titleIspezione">1. Ispezione</h2>
+                <h3 class="font-bold text-blue-800 mb-2" data-lang-key="titleIspezioneStatica">Valutazione Statica del Torace</h3>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="ispezioneForma">Forma</label><p class="label-desc" data-lang-key="ispezioneFormaDesc">Valutare deformità, cifosi, lordosi...</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="ispezioneVolume">Volume e Simmetria</label><p class="label-desc" data-lang-key="ispezioneVolumeDesc">Confrontare emitorace dx e sx.</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
 
-             <!-- Ispezione -->
-             <section>
-                 <h2 data-lang-key="titleIspezione">1. Ispezione</h2>
+                <h3 class="font-bold text-blue-800 mt-6 mb-2" data-lang-key="titleIspezioneDinamica">Esame Funzionale del Respiro</h3>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="ispezioneFR">Frequenza Respiratoria (FR)</label><p class="label-desc" data-lang-key="ispezioneFRDesc">Atti/minuto (es. Bov: 10-30, Eq: 8-16)</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="ispezioneTipo">Tipo Respiratorio</label><p class="label-desc" data-lang-key="ispezioneTipoDesc">Costale, Addominale, Costo-Addominale</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="ispezioneRitmo">Ritmo e Ampiezza</label><p class="label-desc" data-lang-key="ispezioneRitmoDesc">Regolare, periodico, ampiezza atti.</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
 
-                 <h3 data-lang-key="titleIspezioneStatica">Valutazione Statica del Torace</h3>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                     <div>
-                         <label class="font-semibold" data-lang-key="ispezioneForma">Forma</label>
-                         <p class="label-desc" data-lang-key="ispezioneFormaDesc">Valutare deformità, cifosi, lordosi...</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                     <div>
-                         <label class="font-semibold" data-lang-key="ispezioneVolume">Volume e Simmetria</label>
-                         <p class="label-desc" data-lang-key="ispezioneVolumeDesc">Confrontare emitorace dx e sx.</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                 </div>
+                <h3 class="font-bold text-blue-800 mt-6 mb-2" data-lang-key="titleIspezioneAltre">Altre Ispezioni</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                    <div class="field border-none"><div class="label-area"><label data-lang-key="ispezioneNarici">Motilità Narici (Eq)</label></div><div class="input-area"><input type="text"></div></div>
+                    <div class="field border-none"><div class="label-area"><label data-lang-key="ispezioneScolo">Scolo Nasale</label></div><div class="input-area"><input type="text"></div></div>
+                </div>
+            </section>
 
-                 <h3 data-lang-key="titleIspezioneDinamica">Esame Funzionale del Respiro</h3>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                     <div>
-                         <label class="font-semibold" data-lang-key="ispezioneFR">Frequenza Respiratoria (FR)</label>
-                         <p class="label-desc" data-lang-key="ispezioneFRDesc">Atti/minuto (es. Bov: 10-30, Eq: 8-16)</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                     <div>
-                         <label class="font-semibold" data-lang-key="ispezioneTipo">Tipo Respiratorio</label>
-                         <p class="label-desc" data-lang-key="ispezioneTipoDesc">Costale, Addominale, Costo-Addominale</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                     <div>
-                         <label class="font-semibold" data-lang-key="ispezioneRitmo">Ritmo</label>
-                         <p class="label-desc" data-lang-key="ispezioneRitmoDesc">Regolare, Periodico, Interciso, etc.</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                     <div>
-                         <label class="font-semibold" data-lang-key="ispezioneAmpiezza">Ampiezza e Celerità</label>
-                         <p class="label-desc" data-lang-key="ispezioneAmpiezzaDesc">Ampio/Piccolo, Celere/Lento (Dispnea?)</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                 </div>
+            <!-- 2. PALPAZIONE -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4" data-lang-key="titlePalpazione">2. Palpazione</h2>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="palpazioneTrachea">Laringe e Trachea</label><p class="label-desc" data-lang-key="palpazioneTracheaDesc">Sensibilità, evocazione tosse (palpazione-trazione).</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="palpazionePleurodinia">Ricerca Pleurodinia</label><p class="label-desc" data-lang-key="palpazionePleurodiniaDesc">Pressione negli spazi intercostali.</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="palpazioneSeni">Seni Paranasali (Eq)</label><p class="label-desc" data-lang-key="palpazioneSeniDesc">Deformazioni, calore, dolore.</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+            </section>
 
-                 <h3 data-lang-key="titleIspezioneAltre">Altre Ispezioni</h3>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                     <div>
-                         <label class="font-semibold" data-lang-key="ispezioneNarici">Motilità Narici (Cavallo)</label>
-                         <p class="label-desc" data-lang-key="ispezioneNariciDesc">Sincronia con atti respiratori, dilatazione.</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                     <div>
-                         <label class="font-semibold" data-lang-key="ispezioneScolo">Scolo Nasale</label>
-                         <p class="label-desc" data-lang-key="ispezioneScoloDesc">Monolaterale/Bilaterale, tipo (sieroso, mucoso...).</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                 </div>
-             </section>
+            <!-- 3. PERCUSSIONE -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4" data-lang-key="titlePercussione">3. Percussione</h2>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="percussioneLimiteCaudale">Limite Caudale (Linea Vogel)</label><p class="label-desc" data-lang-key="percussioneLimiteCaudaleDesc">Cav: 13°-15° s.i. | Bov: 9° s.i.</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="percussioneSuoni">Suoni Percussori</label><p class="label-desc" data-lang-key="percussioneSuonoPatologicoDesc">Normale (Chiaro), Enfisema (Iperchiaro), Ottuso.</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+            </section>
 
-             <!-- Palpazione -->
-             <section>
-                 <h2 data-lang-key="titlePalpazione">2. Palpazione</h2>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                     <div>
-                         <label class="font-semibold" data-lang-key="palpazioneTrachea">Trachea e Laringe</label>
-                         <p class="label-desc" data-lang-key="palpazioneTracheaDesc">Valutare sensibilità, evocazione tosse.</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                      <div>
-                         <label class="font-semibold" data-lang-key="palpazionePleurodinia">Ricerca Pleurodinia</label>
-                         <p class="label-desc" data-lang-key="palpazionePleurodiniaDesc">Pressione dita tese spazi intercostali.</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                     <div>
-                         <label class="font-semibold" data-lang-key="palpazioneSeni">Seni Paranasali (Cavallo)</label>
-                         <p class="label-desc" data-lang-key="palpazioneSeniDesc">Valutare deformazioni, dolore.</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                     <div>
-                         <label class="font-semibold" data-lang-key="palpazioneFremiti">Fremiti</label>
-                         <p class="label-desc" data-lang-key="palpazioneFremitiDesc">Ricerca di vibrazioni patologiche.</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                 </div>
-             </section>
+            <!-- 4. AUSCULTAZIONE -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4" data-lang-key="titleAuscultazione">4. Auscultazione</h2>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="auscultazioneTrachea">Soffio Laringo-Tracheale</label><p class="label-desc" data-lang-key="auscultazioneTracheaDesc">Udibile normalmente in entrambe le fasi.</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="auscultazioneMurmure">Murmure Vescicolare</label><p class="label-desc" data-lang-key="auscultazioneMurmureDesc">Fisiologico (Inspiratorio), aspro, abolito.</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="auscultazioneSoffi">Soffi Patologici e Rantoli</label><p class="label-desc" data-lang-key="auscultazioneRantoliDesc">Tubario, Sibili, Gemiti, Bolle.</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+            </section>
 
-             <!-- Percussione -->
-             <section>
-                 <h2 data-lang-key="titlePercussione">3. Percussione</h2>
-
-                 <h3 data-lang-key="titlePercussioneArea">Delimitazione Area Polmonare</h3>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                     <div>
-                         <label class="font-semibold" data-lang-key="percussioneLimiteCaudale">Limite Caudale (Linea Vogel)</label>
-                         <p class="label-desc" data-lang-key="percussioneLimiteCaudaleDesc">Normale: Cav: 13°-15° s.i. | Bov: 9° s.i.</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                     <div>
-                         <label class="font-semibold" data-lang-key="percussioneProfiloDiaf">Profilo Diaframmatico</label>
-                         <p class="label-desc" data-lang-key="percussioneProfiloDiafDesc">Scendendo negli spazi, da chiaro a ottuso.</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                 </div>
-
-                 <h3 data-lang-key="titlePercussioneSuoni">Valutazione Suoni Percussori</h3>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                     <div>
-                         <label class="font-semibold" data-lang-key="percussioneSuonoChiaro">Suono Chiaro Polmonare</label>
-                         <p class="label-desc" data-lang-key="percussioneSuonoChiaroDesc">Normale su area polmonare.</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                     <div>
-                         <label class="font-semibold" data-lang-key="percussioneSuonoPatologico">Suoni Patologici</label>
-                         <p class="label-desc" data-lang-key="percussioneSuonoPatologicoDesc">Iperchiaro (enfisema), Ottuso (polmonite).</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                 </div>
-             </section>
-
-             <!-- Auscultazione -->
-             <section>
-                 <h2 data-lang-key="titleAuscultazione">4. Auscultazione</h2>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
-                     <div>
-                         <label class="font-semibold" data-lang-key="auscultazioneTrachea">Laringe e Trachea</label>
-                         <p class="label-desc" data-lang-key="auscultazioneTracheaDesc">Soffio laringo-tracheale (normale).</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                     <div>
-                         <label class="font-semibold" data-lang-key="auscultazioneMurmure">Murmure Vescicolare (Inspiratorio)</label>
-                         <p class="label-desc" data-lang-key="auscultazioneMurmureDesc">Normale, aspro, rinforzato, abolito?</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                     <div>
-                         <label class="font-semibold" data-lang-key="auscultazioneSoffi">Soffi Patologici</label>
-                         <p class="label-desc" data-lang-key="auscultazioneSoffiDesc">Soffio tubario, etc.</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                     <div>
-                         <label class="font-semibold" data-lang-key="auscultazioneRantoli">Rantoli</label>
-                         <p class="label-desc" data-lang-key="auscultazioneRantoliDesc">Secchi (sibili, gemiti), Umidi (bolle).</p>
-                         <input type="text" class="input-box mt-1">
-                     </div>
-                 </div>
-             </section>
-             <!-- Fine Contenuto Specifico Checklist -->
-
-             <!-- Bottone Stampa -->
-            <div class="mt-12 text-center">
-                <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center" data-lang-key="btnPrint">
+            <div class="mt-8 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-green-600 text-white font-bold py-3 px-10 rounded-xl hover:bg-green-700 transition shadow-lg inline-flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
                     <span data-lang-key="btnPrintText">Stampa Checklist</span>
                 </button>
             </div>
-
-        </div> <!-- Fine content-card -->
+        </div>
     </main>
 
-    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
-        </div>
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-
-            // === TRADUZIONI ===
             const translations = {
-                // --- Header ---
-                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
+                siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
                 sectionTitleResp: { it: '3. Apparato Respiratorio', en: '3. Respiratory System' },
                 navSummary: { it: 'Riassunto', en: 'Summary' },
                 navInfographic: { it: 'Infografica', en: 'Infographic' },
                 navChecklist: { it: 'Checklist', en: 'Checklist' },
-                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
                 navQuiz: { it: 'Quiz', en: 'Quiz' },
-                navAudio: { it: 'Audio', en: 'Audio' },
-                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                // --- Contenuto Checklist Respiratorio ---
-                 siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Veterinary Semeiotics L.A.' },
-                 navBack: { it: 'Indice Esami', en: 'Exams Index' },
-                 pageTitle: { it: 'Checklist: Apparato Respiratorio', en: 'Checklist: Respiratory System' },
-                 btnPrint: { it: 'Stampa', en: 'Print' },
-                 btnPrintText: { it: 'Stampa Checklist', en: 'Print Checklist' },
-
-                 titleIspezione: { it: '1. Ispezione', en: '1. Inspection' },
-                 titleIspezioneStatica: { it: 'Valutazione Statica del Torace', en: 'Static Thorax Assessment' },
-                 ispezioneForma: { it: 'Forma', en: 'Shape' },
-                 ispezioneFormaDesc: { it: 'Valutare deformità, cifosi, lordosi...', en: 'Assess deformities, kyphosis, lordosis...' },
-                 ispezioneVolume: { it: 'Volume e Simmetria', en: 'Volume and Symmetry' },
-                 ispezioneVolumeDesc: { it: 'Confrontare emitorace dx e sx.', en: 'Compare right and left hemithorax.' },
-                 titleIspezioneDinamica: { it: 'Esame Funzionale del Respiro', en: 'Functional Breath Examination' },
-                 ispezioneFR: { it: 'Frequenza Respiratoria (FR)', en: 'Respiratory Rate (RR)' },
-                 ispezioneFRDesc: { it: 'Atti/minuto (es. Bov: 10-30, Eq: 8-16)', en: 'Breaths/minute (e.g. Bov: 10-30, Eq: 8-16)' },
-                 ispezioneTipo: { it: 'Tipo Respiratorio', en: 'Respiratory Type' },
-                 ispezioneTipoDesc: { it: 'Costale, Addominale, Costo-Addominale', en: 'Costal, Abdominal, Costo-Abdominal' },
-                 ispezioneRitmo: { it: 'Ritmo', en: 'Rhythm' },
-                 ispezioneRitmoDesc: { it: 'Regolare, Periodico, Interciso, etc.', en: 'Regular, Periodic, Intermittent, etc.' },
-                 ispezioneAmpiezza: { it: 'Ampiezza e Celerità', en: 'Amplitude and Celerity' },
-                 ispezioneAmpiezzaDesc: { it: 'Ampio/Piccolo, Celere/Lento (Dispnea?)', en: 'Large/Small, Fast/Slow (Dyspnea?)' },
-                 titleIspezioneAltre: { it: 'Altre Ispezioni', en: 'Other Inspections' },
-                 ispezioneNarici: { it: 'Motilità Narici (Cavallo)', en: 'Nostril Motility (Horse)' },
-                 ispezioneNariciDesc: { it: 'Sincronia con atti respiratori, dilatazione.', en: 'Synchrony with breathing, dilation.' },
-                 ispezioneScolo: { it: 'Scolo Nasale', en: 'Nasal Discharge' },
-                 ispezioneScoloDesc: { it: 'Monolaterale/Bilaterale, tipo (sieroso, mucoso...).', en: 'Monolateral/Bilateral, type (serous, mucous...).' },
-
-                 titlePalpazione: { it: '2. Palpazione', en: '2. Palpation' },
-                 palpazioneTrachea: { it: 'Trachea e Laringe', en: 'Trachea and Larynx' },
-                 palpazioneTracheaDesc: { it: 'Valutare sensibilità, evocazione tosse.', en: 'Assess sensitivity, cough reflex.' },
-                 palpazionePleurodinia: { it: 'Ricerca Pleurodinia', en: 'Check for Pleurodynia' },
-                 palpazionePleurodiniaDesc: { it: 'Pressione dita tese spazi intercostali.', en: 'Pressure with stiff fingers on intercostal spaces.' },
-                 palpazioneSeni: { it: 'Seni Paranasali (Cavallo)', en: 'Paranasal Sinuses (Horse)' },
-                 palpazioneSeniDesc: { it: 'Valutare deformazioni, dolore.', en: 'Assess deformities, pain.' },
-                 palpazioneFremiti: { it: 'Fremiti', en: 'Fremitus' },
-                 palpazioneFremitiDesc: { it: 'Ricerca di vibrazioni patologiche.', en: 'Check for pathological vibrations.' },
-
-                 titlePercussione: { it: '3. Percussione', en: '3. Percussion' },
-                 titlePercussioneArea: { it: 'Delimitazione Area Polmonare', en: 'Lung Field Delimitation' },
-                 percussioneLimiteCaudale: { it: 'Limite Caudale (Linea Vogel)', en: 'Caudal Border (Vogel\'s Line)' },
-                 percussioneLimiteCaudaleDesc: { it: 'Normale: Cav: 13°-15° s.i. | Bov: 9° s.i.', en: 'Normal: Eq: 13th-15th i.s. | Bov: 9th i.s.' },
-                 percussioneProfiloDiaf: { it: 'Profilo Diaframmatico', en: 'Diaphragmatic Profile' },
-                 percussioneProfiloDiafDesc: { it: 'Scendendo negli spazi, da chiaro a ottuso.', en: 'Going down the spaces, from clear to dull.' },
-                 titlePercussioneSuoni: { it: 'Valutazione Suoni Percussori', en: 'Percussion Sounds Assessment' },
-                 percussioneSuonoChiaro: { it: 'Suono Chiaro Polmonare', en: 'Clear Lung Sound' },
-                 percussioneSuonoChiaroDesc: { it: 'Normale su area polmonare.', en: 'Normal over lung field.' },
-                 percussioneSuonoPatologico: { it: 'Suoni Patologici', en: 'Pathological Sounds' },
-                 percussioneSuonoPatologicoDesc: { it: 'Iperchiaro (enfisema), Ottuso (polmonite).', en: 'Hyperclear (emphysema), Dull (pneumonia).' },
-
-                 titleAuscultazione: { it: '4. Auscultazione', en: '4. Auscultation' },
-                 auscultazioneTrachea: { it: 'Laringe e Trachea', en: 'Larynx and Trachea' },
-                 auscultazioneTracheaDesc: { it: 'Soffio laringo-tracheale (normale).', en: 'Laryngo-tracheal sound (normal).' },
-                 auscultazioneMurmure: { it: 'Murmure Vescicolare (Inspiratorio)', en: 'Vesicular Murmur (Inspiratory)' },
-                 auscultazioneMurmureDesc: { it: 'Normale, aspro, rinforzato, abolito?', en: 'Normal, harsh, reinforced, absent?' },
-                 auscultazioneSoffi: { it: 'Soffi Patologici', en: 'Pathological Murmurs' },
-                 auscultazioneSoffiDesc: { it: 'Soffio tubario, etc.', en: 'Tubal sound, etc.' },
-                 auscultazioneRantoli: { it: 'Rantoli', en: 'Rales' },
-                 auscultazioneRantoliDesc: { it: 'Secchi (sibili, gemiti), Umidi (bolle).', en: 'Dry (wheezes, groans), Moist (bubbles).' },
-                // --- Footer ---
-                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical Examination" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular System" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory System" },
+                navDig: { it: "Apparato Digerente", en: "Digestive System" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal System" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary System" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic System" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine System" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous System" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary System" },
+                pageTitle: { it: 'Checklist: Apparato Respiratorio', en: 'Checklist: Respiratory System' },
+                titleIspezione: { it: '1. Ispezione', en: '1. Inspection' },
+                titleIspezioneStatica: { it: 'Valutazione Statica del Torace', en: 'Static Thorax Assessment' },
+                ispezioneForma: { it: 'Forma', en: 'Shape' },
+                ispezioneFormaDesc: { it: 'Valutare deformità, cifosi, lordosi...', en: 'Assess deformities, kyphosis, lordosis...' },
+                ispezioneVolume: { it: 'Volume e Simmetria', en: 'Volume and Symmetry' },
+                ispezioneVolumeDesc: { it: 'Confrontare emitorace dx e sx.', en: 'Compare right and left hemithorax.' },
+                titleIspezioneDinamica: { it: 'Esame Funzionale del Respiro', en: 'Functional Breath Examination' },
+                ispezioneFR: { it: 'Frequenza Respiratoria (FR)', en: 'Respiratory Rate (RR)' },
+                ispezioneFRDesc: { it: 'Atti/minuto (es. Bov: 10-30, Eq: 8-16)', en: 'Breaths/minute (e.g. Bov: 10-30, Eq: 8-16)' },
+                ispezioneTipo: { it: 'Tipo Respiratorio', en: 'Respiratory Type' },
+                ispezioneTipoDesc: { it: 'Costale, Addominale, Costo-Addominale', en: 'Costal, Abdominal, Costo-Abdominal' },
+                ispezioneRitmo: { it: 'Ritmo e Ampiezza', en: 'Rhythm and Amplitude' },
+                ispezioneRitmoDesc: { it: 'Regolare, periodico, ampiezza atti.', en: 'Regular, periodic, breath amplitude.' },
+                titleIspezioneAltre: { it: 'Altre Ispezioni', en: 'Other Inspections' },
+                ispezioneNarici: { it: 'Motilità Narici (Eq)', en: 'Nostril Motility (Eq)' },
+                ispezioneScolo: { it: 'Scolo Nasale', en: 'Nasal Discharge' },
+                titlePalpazione: { it: '2. Palpazione', en: '2. Palpation' },
+                palpazioneTrachea: { it: 'Laringe e Trachea', en: 'Larynx and Trachea' },
+                palpazioneTracheaDesc: { it: 'Sensibilità, evocazione tosse (palpazione-trazione).', en: 'Sensitivity, cough reflex (palpation-traction).' },
+                palpazionePleurodinia: { it: 'Ricerca Pleurodinia', en: 'Check for Pleurodynia' },
+                palpazionePleurodiniaDesc: { it: 'Pressione negli spazi intercostali.', en: 'Pressure in the intercostal spaces.' },
+                palpazioneSeni: { it: 'Seni Paranasali (Eq)', en: 'Paranasal Sinuses (Eq)' },
+                palpazioneSeniDesc: { it: 'Deformazioni, calore, dolore.', en: 'Deformations, heat, pain.' },
+                titlePercussione: { it: '3. Percussione', en: '3. Percussion' },
+                percussioneLimiteCaudale: { it: 'Limite Caudale (Linea Vogel)', en: 'Caudal Border (Vogel\'s Line)' },
+                percussioneLimiteCaudaleDesc: { it: 'Cav: 13°-15° s.i. | Bov: 9° s.i.', en: 'Eq: 13th-15th i.s. | Bov: 9th i.s.' },
+                percussioneSuoni: { it: 'Suoni Percussori', en: 'Percussion Sounds' },
+                percussioneSuonoPatologicoDesc: { it: 'Normale (Chiaro), Enfisema (Iperchiaro), Ottuso.', en: 'Normal (Resonant), Emphysema (Hyper-resonant), Dull.' },
+                titleAuscultazione: { it: '4. Auscultazione', en: '4. Auscultation' },
+                auscultazioneTrachea: { it: 'Soffio Laringo-Tracheale', en: 'Laryngo-Tracheal Breath Sound' },
+                auscultazioneTracheaDesc: { it: 'Udibile normalmente in entrambe le fasi.', en: 'Normally audible in both phases.' },
+                auscultazioneMurmure: { it: 'Murmure Vescicolare', en: 'Vesicular Murmur' },
+                auscultazioneMurmureDesc: { it: 'Fisiologico (Inspiratorio), aspro, abolito.', en: 'Physiological (Inspiratory), harsh, absent.' },
+                auscultazioneSoffi: { it: 'Soffi Patologici e Rantoli', en: 'Pathological Sounds & Rales' },
+                auscultazioneRantoliDesc: { it: 'Tubario, Sibili, Gemiti, Bolle.', en: 'Tubal, Wheezes, Groans, Bubbles.' },
+                btnPrintText: { it: 'Stampa Checklist', en: 'Print Checklist' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
             };
 
-             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
-             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
             let currentLanguage = localStorage.getItem('language') || 'it';
-            const accessibilityToggle = document.getElementById('accessibility-toggle');
-            const langToggle = document.getElementById('lang-toggle');
             const body = document.body;
-            // No TTS needed
 
-            // --- Funzione Aggiornamento Lingua ---
-            const updateLanguage = (lang, previousLang = null) => {
-                 document.documentElement.lang = lang;
-                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-
-                 document.querySelectorAll('[data-lang-key]').forEach(element => {
-                     const key = element.dataset.langKey;
-                     if (translations[key] && translations[key][lang]) {
-                         const translationText = translations[key][lang];
-
-                         if (key === 'footerText' || key === 'backToIndex') {
-                              const svgIcon = element.querySelector('svg');
-                              element.innerHTML = translationText;
-                              if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) { element.insertBefore(svgIcon, element.firstChild); }
-                         }
-                         else if (key === 'btnPrint') {
-                              const svgIcon = element.querySelector('svg');
-                              const textSpan = element.querySelector('span');
-                              if (textSpan) { textSpan.textContent = translationText; }
-                              else {
-                                   element.textContent = translationText;
-                                   if (svgIcon) element.insertBefore(svgIcon, element.firstChild);
-                              }
-                               element.setAttribute('aria-label', translationText);
-                         }
-                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
-                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
-                             const sectionKey = currentSectionKey || key;
-                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
-                         }
-                         else { element.textContent = translationText; }
-                     }
-                 });
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) {
+                        if (el.tagName === 'A' && el.querySelector('svg')) {
+                            const svg = el.querySelector('svg').outerHTML;
+                            el.innerHTML = svg + translations[key][lang];
+                        } else {
+                            el.innerHTML = translations[key][lang];
+                        }
+                    }
+                });
             };
 
-            // --- Logica Modalità Accessibilità ---
             const setA11yMode = (enabled) => {
-                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
-                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
             };
 
-            // --- Event Listeners ---
-            if (langToggle) {
-                langToggle.addEventListener('click', () => {
-                    const previousLanguage = currentLanguage;
-                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-                    localStorage.setItem('language', currentLanguage);
-                     updateLanguage(currentLanguage, previousLanguage);
-                });
-            } else { console.error("Elemento langToggle non trovato!"); }
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
 
-            if (accessibilityToggle) {
-                 accessibilityToggle.addEventListener('click', () => {
-                    const isEnabled = body.classList.contains('dsa-mode');
-                    setA11yMode(!isEnabled);
-                });
-            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
 
-            // --- Inizializzazione ---
-            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
             updateLanguage(currentLanguage);
-
         });
     </script>
-
 </body>
 </html>
