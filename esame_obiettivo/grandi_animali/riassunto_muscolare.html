@@ -3,410 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Titolo specifico per questa pagina -->
     <title>Riassunto: Esame Apparato Muscolare - Semeiotica Vet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Stili Generali e dal Template */
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f1f5f9; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #475569; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #1e293b; }
+        .quick-nav-item.active { background-color: #1E3A8A; color: #ffffff !important; border-color: #1E3A8A; }
+
+        /* --- SECTION NAV --- */
         .section-nav-link {
-            transition: background-color 0.3s, color 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.8);
-            background-color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
         }
-        .section-nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-        .section-nav-link.active {
-             background-color: white;
-             color: #1E3A8A;
-             cursor: default;
-        }
-        .content-card {
-             background-color: white;
-             border-radius: 0.75rem;
-             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-             padding: 1.5rem;
-             margin-top: 2rem;
-        }
-        @media (min-width: 768px) { /* md: */
-            .content-card { padding: 2.5rem; }
-        }
-        #page-header { position: static; }
-        .scrollable-nav {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .scrollable-nav::-webkit-scrollbar { display: none; }
-        .audio-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem; background-color: #fff7ed; /* orange-50 */ border-radius: 0.5rem; margin-top: 1.5rem; }
-        .audio-container audio { width: 100%; border-radius: 0.5rem; }
-        .audio-container a { display: inline-flex; align-items: center; justify-content: center; width: 100%; }
-        @media (min-width: 640px) { /* sm: */
-            .audio-container { flex-direction: row; }
-            .audio-container audio { width: auto; flex-grow: 1; }
-            .audio-container a { width: auto; }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #1E3A8A; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2.5rem; 
+            max-width: 900px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
         }
 
-        /* Stili Specifici del Riassunto (come gli altri) */
-        #main-content h1, #main-content h2, #main-content h3 { color: #0d47a1; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 2em; }
-        #main-content h1 { text-align: center; font-size: 2.2em; border-bottom: 3px solid #0d47a1; }
-        #main-content h2 { font-size: 1.5rem; /* text-2xl */ }
-        #main-content h3 { font-size: 1.25rem; /* text-xl */ color: #1565c0; border-bottom: none; font-weight: 600; margin-bottom: 0.5rem; }
-        #main-content ul { padding-left: 20px; list-style-type: disc; margin-top: 1rem; margin-bottom: 1rem;}
-         #main-content ul ul { margin-top: 0.5rem; margin-bottom: 0.5rem;}
-        #main-content li { margin-bottom: 10px; }
-        #main-content strong { color: #1565c0; }
-        #main-content .section-block { background-color: #f0f9ff; /* sky-50 */ border-left: 5px solid #0ea5e9; /* sky-500 */ padding: 15px 20px; margin: 20px 0; border-radius: 5px; }
+        /* Stili Testo Riassunto */
+        #main-content h2 { color: #1e40af; border-bottom: 2px solid #dbeafe; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.25rem; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between; }
+        #main-content h3 { color: #1e3a8a; font-size: 1.2rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; border-bottom: none; }
+        #main-content p { margin-bottom: 1rem; }
+        #main-content ul { padding-left: 1.5rem; list-style-type: disc; margin-bottom: 1.5rem; }
+        #main-content li { margin-bottom: 0.75rem; }
+        #main-content strong { color: #1e3a8a; font-weight: 700; }
+        .section-block { background-color: #f0f9ff; border-left: 5px solid #0ea5e9; padding: 1.25rem; margin: 1.5rem 0; border-radius: 0 0.5rem 0.5rem 0; }
 
-        /* DSA Mode Styles */
-        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fdfaf5 !important; letter-spacing: 0.05em; line-height: 1.75; color: #34495e !important;}
-        .dsa-mode #page-header, .dsa-mode #main-footer { background-color: #000000 !important; background-image: none !important; }
-        .dsa-mode #page-header h1, .dsa-mode #main-footer p, .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { color: #ffffff !important; }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .section-nav-link { border: 1px solid #ffffff; background-color: transparent !important; }
-        .dsa-mode .section-nav-link.active { background-color: #ffffff !important; color: #000000 !important; border-color: #ffffff;}
-        .dsa-mode .content-card { background-color: #fffdfa !important; border: 1px solid #e0e0e0; }
-        .dsa-mode #main-content h1, .dsa-mode #main-content h2, .dsa-mode #main-content h3, .dsa-mode #main-content p, .dsa-mode #main-content li, .dsa-mode #main-content strong { color: #34495e !important; }
-        .dsa-mode #main-content .section-block { background-color: #fefcf7 !important; border-left-color: #5a738e; }
-        .dsa-mode .audio-container { background-color: #f0eade !important; }
+        /* TTS Button */
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #2563eb; }
 
-        /* TTS Button Styles */
-        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
-        .tts-button:hover { color: #0ea5e9; }
-        .tts-button.playing { color: #0ea5e9; }
-        .dsa-mode .tts-button { color: #5a738e !important; }
+        .audio-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1.5rem; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; margin-top: 3rem; }
+        .audio-container audio { width: 100%; max-width: 400px; }
 
-        /* Print Styles */
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .section-block { background-color: #fffdf5; border: 1px solid #000; border-left-width: 8px; }
+        .dsa-mode .tts-button { color: #000 !important; }
+
         @media print {
-            body { background-color: #fff; margin: 0; padding: 0; font-family: sans-serif; font-size: 11pt; color: #000; }
-            #page-header, #main-footer, #print-button, .tts-button, .audio-container { display: none; }
-            .container { max-width: 100%; padding: 1cm; box-shadow: none; border: none; margin: 0; }
-            .content-card { box-shadow: none; border: none; padding: 0; margin: 0; }
-            #main-content h1, #main-content h2, #main-content h3 { color: #000 !important; border-color: #ccc; margin-top: 1.5em; page-break-after: avoid; }
-            #main-content h1 { font-size: 18pt; text-align: left; }
-            #main-content h2 { font-size: 14pt; }
-            #main-content h3 { font-size: 12pt; border-bottom: none; padding-bottom: 0; margin-bottom: 0.5rem;}
-            #main-content ul { padding-left: 25px; }
-            #main-content li { margin-bottom: 5px; }
-            #main-content strong { color: #000 !important; font-weight: bold; }
-            #main-content .section-block { border: 1px solid #ccc; padding: 10px; margin: 10px 0; background-color: #f9f9f9 !important; page-break-inside: avoid; }
-            div[data-lang-key] { page-break-inside: avoid; margin-bottom: 1.5rem;}
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav, .audio-container, .tts-button { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
         }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50">
 
-    <!-- === HEADER SEMPLIFICATO PER PAGINE INTERNE === -->
-    <header id="page-header" class="bg-[#1E3A8A] text-white shadow-lg z-20">
-        <div class="container mx-auto px-6 py-3">
-            <!-- Riga Superiore: Torna all'indice + Controlli -->
-            <div class="flex justify-between items-center mb-4">
-                 <a href="index.html" class="inline-flex items-center text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="backToIndex">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="backToIndexText">Indice Sezioni</span>
-                 </a>
-                 <div class="flex items-center space-x-2">
-                    <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition" data-lang-key="accessibility">Accessibilità</button>
-                    <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">EN</button>
-                 </div>
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet G.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
             </div>
+        </nav>
+    </header>
 
-            <!-- Titolo della Sezione -->
-            <h1 class="text-3xl font-bold mb-4 !text-white !border-none !p-0 !text-left" data-lang-key="sectionTitleMusc">5. Apparato Muscolare</h1>
-
-            <!-- Navigazione Interna alla Sezione -->
-            <nav class="scrollable-nav">
-                 <div class="flex space-x-2 pb-2">
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleMusc">5. Apparato Muscolare</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
                      <a href="riassunto_muscolare.html" class="section-nav-link active" data-lang-key="navSummary">Riassunto</a>
                      <a href="infografica_muscolare.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
                      <a href="checklist_muscolare.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
                      <a href="collaterali_muscolare.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
                      <a href="quiz_muscolare.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
-                     <a href="#audio" class="section-nav-link" data-lang-key="navAudio">Audio</a>
                 </div>
             </nav>
-
         </div>
-    </header>
-    <!-- === FINE HEADER === -->
+    </div>
 
-    <!-- Main Content Container -->
-    <main class="container mx-auto p-4 md:px-8 md:py-12">
-        <!-- Card Contenuto -->
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item active" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
         <div id="main-content" class="content-card">
+            
+            <h1 class="flex items-center justify-between" data-lang-key="pageTitle">
+                <span>Esame dell'Apparato Muscolare</span>
+            </h1>
 
-             <!-- Contenuto Specifico del Riassunto Muscolare -->
-            <h1 data-lang-key="pageTitle"></h1>
-            <p class="section-block" data-lang-key="introText"></p>
+            <div class="section-block" data-lang-key="introText"></div>
 
             <div data-lang-key="sectionIspezione"></div>
             <div data-lang-key="sectionPalpazione"></div>
             <div data-lang-key="sectionDinamica"></div>
             <div data-lang-key="sectionComplementari"></div>
-            <!-- Fine Contenuto Specifico -->
 
             <!-- Sezione Audio -->
             <div class="audio-container" id="audio">
-                <audio controls class="rounded-lg">
-                    <!-- Assicurati che il file audio esista con questo nome -->
+                <audio controls>
                     <source src="audio_riassunto_muscolare.mp3" type="audio/mpeg">
                     Audio non disponibile.
                 </audio>
-                <a href="audio_riassunto_muscolare.mp3" download class="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition duration-300">
+                <a href="audio_riassunto_muscolare.mp3" download class="bg-orange-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-orange-600 transition inline-flex items-center" data-lang-key="btnDownloadAudio">
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    <span data-lang-key="btnDownloadAudio">Scarica Audio</span>
+                    <span>Scarica Audio</span>
                 </a>
             </div>
 
-
-            <!-- Bottone Stampa -->
             <div class="mt-12 text-center">
-                 <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-emerald-700 transition duration-300 inline-flex items-center" data-lang-key="btnPrint">
-                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
-                     <span data-lang-key="btnPrintText">Stampa</span>
-                 </button>
-             </div>
-
-        </div> <!-- Fine content-card -->
+                <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-10 rounded-xl hover:bg-emerald-700 transition shadow-lg inline-flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="btnPrintText">Stampa Riassunto</span>
+                </button>
+            </div>
+        </div>
     </main>
 
-    <footer id="main-footer" class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-6 py-4 text-center">
-            <p data-lang-key="footerText">&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.</p>
-        </div>
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-             const speakerIconLarge = `<span class="tts-button"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
-             const speakerIconSmall = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
-             const speakerIconH2 = `<span class="tts-button"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></span>`;
-
-            // === TRADUZIONI ===
+            const speakerIcon = `<button class="tts-button ml-2" aria-label="Riproduci audio"><svg class="w-6 h-6 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></button>`;
+            
             const translations = {
-                // --- Header ---
-                backToIndexText: { it: 'Indice Sezioni', en: 'Sections Index' },
-                sectionTitleMusc: { it: '5. Apparato Muscolare', en: '5. Muscular System' }, // Chiave titolo sezione
+                siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleMusc: { it: '5. Apparato Muscolare', en: '5. Muscular System' },
                 navSummary: { it: 'Riassunto', en: 'Summary' },
                 navInfographic: { it: 'Infografica', en: 'Infographic' },
                 navChecklist: { it: 'Checklist', en: 'Checklist' },
                 navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
                 navQuiz: { it: 'Quiz', en: 'Quiz' },
-                navAudio: { it: 'Audio', en: 'Audio' },
-                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                // --- Contenuto Riassunto Muscolare (MODIFICATO) ---
-                 pageTitle: { it: `Esame dell'Apparato Muscolare ${speakerIconLarge}`, en: `Muscular System Examination ${speakerIconLarge}` },
-                 introText: { it: `L'esame dell'apparato muscolare valuta l'integrità e la funzionalità dei muscoli. È strettamente integrato con l'esame neurologico e ortopedico, e mira a identificare dolore, debolezza, atrofia o alterazioni strutturali. ${speakerIconSmall}`, en: `The examination of the muscular system assesses the integrity and function of the muscles. It is closely integrated with the neurological and orthopedic exam, and aims to identify pain, weakness, atrophy, or structural changes. ${speakerIconSmall}` },
-                 sectionIspezione: {
-                     it: `<h2>1. Ispezione (Statica e a Distanza)${speakerIconH2}</h2><p>Valutazione visiva dell'animale fermo, da diverse angolazioni.</p><ul><li><strong>Simmetria:</strong> Confrontare i due lati del corpo. Ricercare <strong>atrofia muscolare</strong> (diminuzione della massa, spesso da disuso o denervazione) o <strong>ipertrofia</strong> (aumento, a volte compensatorio).</li><li><strong>Postura e Appiombi:</strong> Valutare come l'animale porta il peso. Notare se un arto è tenuto "in scarico" (tipico segno di dolore) o in posizioni anomale (es. abdotto, addotto).</li><li><strong>Consumo degli Unghioni/Zoccoli:</strong> Un consumo anomalo o asimmetrico può indicare un appiombo scorretto o una zoppia cronica (es. consumo eccessivo in punta o su un lato).</li><li><strong>Tumefazioni:</strong> Identificare gonfiori a carico di articolazioni (versamento sinoviale), guaine tendinee (tenosinovite) o masse muscolari.</li></ul>`,
-                     en: `<h2>1. Inspection (Static and Distance)${speakerIconH2}</h2><p>Visual assessment of the animal at rest, from different angles.</p><ul><li><strong>Symmetry:</strong> Compare both sides of the body. Look for <strong>muscle atrophy</strong> (decreased mass, often from disuse or denervation) or <strong>hypertrophy</strong> (increase, sometimes compensatory).</li><li><strong>Posture and Stance:</strong> Assess how the animal bears weight. Note if a limb is "unloaded" (a typical sign of pain) or held in an abnormal position (e.g., abducted, adducted).</li><li><strong>Hoof/Claw Wear:</strong> Abnormal or asymmetric wear can indicate incorrect conformation or chronic lameness (e.g., excessive wear at the toe or on one side).</li><li><strong>Swellings:</strong> Identify swellings affecting joints (synovial effusion), tendon sheaths (tenosynovitis), or muscle masses.</li></ul>`
-                 },
-                 sectionPalpazione: {
-                     it: `<h2>2. Palpazione${speakerIconH2}</h2><p>Manovra fondamentale per localizzare il dolore e valutare la consistenza dei tessuti.</p><ul><li><strong>Muscoli:</strong> Palpare i principali gruppi muscolari (es. glutei, quadricipiti, muscoli della schiena, tricipiti) valutando <strong>tono</strong> (aumentato/spastico, diminuito/flaccido), <strong>dolorabilità</strong> (reazione alla pressione) e <strong>temperatura</strong>.</li><li><strong>Ossa:</strong> Seguire il profilo delle ossa lunghe (tibia, radio, metacarpi/metatarsi) e delle prominenze ossee (es. tuberosità) per rilevare dolore, deformazioni o crepitii (fratture).</li><li><strong>Articolazioni:</strong> Palpare ogni articolazione accessibile (es. garretto, ginocchio, carpo, nodello) per identificare <strong>calore</strong>, <strong>dolore alla flesso-estensione</strong>, <strong>versamento articolare</strong> (distensione della capsula) e <strong>crepitio</strong> durante il movimento.</li></ul>`,
-                     en: `<h2>2. Palpation${speakerIconH2}</h2><p>Fundamental maneuver to localize pain and assess tissue consistency.</p><ul><li><strong>Muscles:</strong> Palpate major muscle groups (e.g., glutes, quadriceps, back muscles, triceps) assessing <strong>tone</strong> (increased/spastic, decreased/flaccid), <strong>pain</strong> (reaction to pressure), and <strong>temperature</strong>.</li><li><strong>Bones:</strong> Follow the profile of long bones (tibia, radius, metacarpals/metatarsals) and bony prominences (e.g., tuberosities) to detect pain, deformities, or crepitus (fractures).</li><li><strong>Joints:</strong> Palpate each accessible joint (e.g., hock, stifle, carpus, fetlock) to identify <strong>heat</strong>, <strong>pain on flexion-extension</strong>, <strong>joint effusion</strong> (capsule distension), and <strong>crepitus</strong> during movement.</li></ul>`
-                 },
-                 sectionDinamica: {
-                     it: `<h2>3. Esame Dinamico (Valutazione dell'Andatura)${speakerIconH2}</h2><p>L'osservazione dell'animale in movimento è essenziale per diagnosticare le zoppie.</p><ul><li><strong>Tipo di Andatura:</strong> Valutare al passo, al trotto (andatura che evidenzia meglio le zoppie) e, se necessario, in circoli stretti.</li><li><strong>Identificazione della Zoppia:</strong><ul><li><strong>Arto Anteriore:</strong> Il cavallo "batte sul sano", ovvero abbassa la testa quando l'arto sano tocca terra.</li><li><strong>Arto Posteriore:</strong> Si osserva un'oscillazione anomala della groppa (il lato dolente si solleva di più, "hip hike").</li></ul></li><li><strong>Grado della Zoppia:</strong> Classificare la gravità (es. scala AAEP da 0 a 5).</li><li><strong>Distinzione:</strong> Differenziare una zoppia (dolore) da una debolezza (neurologica) o un'atassia (neurologica).</li></ul>`,
-                     en: `<h2>3. Dynamic Examination (Gait Assessment)${speakerIconH2}</h2><p>Observing the animal in motion is essential for diagnosing lameness.</p><ul><li><strong>Gait Type:</strong> Assess at a walk, trot (the gait that best highlights lameness), and, if necessary, in tight circles.</li><li><strong>Lameness Identification:</strong><ul><li><strong>Forelimb:</strong> The horse "nods down on the sound," meaning it lowers its head when the sound limb hits the ground.</li><li><strong>Hindlimb:</strong> An abnormal croup oscillation is observed (the painful side rises higher, "hip hike").</li></ul></li><li><strong>Lameness Grade:</strong> Classify the severity (e.g., AAEP scale 0 to 5).</li><li><strong>Distinction:</strong> Differentiate lameness (pain) from weakness (neurological) or ataxia (neurological).</li></ul>`
-                 },
-                 sectionComplementari: {
-                     it: `<h2>4. Metodiche Complementari Semeiologiche${speakerIconH2}</h2><p>Manovre specifiche che aiutano a localizzare il dolore.</p><ul><li><strong>Test di Flessione (Cavallo):</strong> Flessione forzata di un'articolazione per 1-2 minuti, seguita da un trotto immediato per vedere se la zoppia peggiora (indica dolore in quell'articolazione).</li><li><strong>Uso della Pinza da Zoccolo (Cavallo/Bovino):</strong> Applicazione di pressione su suola e muraglia per identificare dolore podale (es. ascessi, laminite).</li></ul>`,
-                     en: `<h2>4. Complementary Semeiotic Methods${speakerIconH2}</h2><p>Specific maneuvers that help localize pain.</p><ul><li><strong>Flexion Tests (Horse):</strong> Forced flexion of a joint for 1-2 minutes, followed by an immediate trot to see if lameness worsens (indicates pain in that joint).</li><li><strong>Hoof Testers (Horse/Cattle):</strong> Application of pressure on the sole and wall to identify foot pain (e.g., abscesses, laminitis).</li></ul>`
-                 },
-                 btnPrint: { it: 'Stampa', en: 'Print' },
-                 btnPrintText: { it: 'Stampa', en: 'Print' },
-                 btnDownloadAudio: { it: 'Scarica Audio', en: 'Download Audio' },
-                // --- Footer ---
-                footerText: { it: '&copy; 2024 Semeiotica Veterinaria. Creato da Sara Busechian.', en: '&copy; 2024 Veterinary Semeiotics. Created by Sara Busechian.' }
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical Examination" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular System" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory System" },
+                navDig: { it: "Apparato Digerente", en: "Digestive System" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal System" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary System" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic System" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine System" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous System" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary System" },
+                pageTitle: { it: `<span>Esame dell'Apparato Muscolare</span>${speakerIcon}`, en: `<span>Muscular System Examination</span>${speakerIcon}` },
+                introText: { it: `L'esame dell'apparato muscolare valuta l'integrità e la funzionalità dei muscoli. È strettamente integrato con l'esame neurologico e ortopedico, e mira a identificare dolore, debolezza, atrofia o alterazioni strutturali. ${speakerIcon}`, en: `The examination of the muscular system assesses the integrity and function of the muscles. It is closely integrated with the neurological and orthopedic exam, and aims to identify pain, weakness, atrophy, or structural changes. ${speakerIcon}` },
+                sectionIspezione: {
+                    it: `<h2>1. Ispezione (Statica e a Distanza)${speakerIcon}</h2><p>Valutazione visiva dell'animale fermo, da diverse angolazioni.</p><ul><li><strong>Simmetria:</strong> Confrontare i due lati del corpo. Ricercare <strong>atrofia muscolare</strong> (spesso da disuso o denervazione) o <strong>ipertrofia</strong> (compensatoria).</li><li><strong>Postura e Appiombi:</strong> Notare se un arto è tenuto "in scarico" (segno di dolore) o in posizioni anomale (abdotto, addotto).</li><li><strong>Consumo degli Unghioni/Zoccoli:</strong> Un consumo asimmetrico indica un appiombo scorretto o una zoppia cronica.</li><li><strong>Tumefazioni:</strong> Identificare gonfiori a carico di articolazioni (versamento), guaine tendinee o masse muscolari.</li></ul>`,
+                    en: `<h2>1. Inspection (Static and Distance)${speakerIcon}</h2><p>Visual assessment of the animal at rest, from different angles.</p><ul><li><strong>Symmetry:</strong> Compare both sides of the body. Look for <strong>muscle atrophy</strong> (often from disuse or denervation) or <strong>hypertrophy</strong> (compensatory).</li><li><strong>Posture and Stance:</strong> Note if a limb is "unloaded" (sign of pain) or held in abnormal positions.</li><li><strong>Hoof/Claw Wear:</strong> Abnormal or asymmetric wear indicates incorrect conformation or chronic lameness.</li><li><strong>Swellings:</strong> Identify swellings in joints (effusion), tendon sheaths, or muscle masses.</li></ul>`
+                },
+                sectionPalpazione: {
+                    it: `<h2>2. Palpazione${speakerIcon}</h2><p>Manovra fondamentale per localizzare il dolore e valutare la consistenza dei tessuti.</p><ul><li><strong>Muscoli:</strong> Valutazione di <strong>tono</strong> (spastico/flaccido), <strong>dolorabilità</strong> (reazione alla pressione) e <strong>temperatura</strong>.</li><li><strong>Ossa:</strong> Ricerca di dolore, deformazioni o crepitii (fratture) sul profilo delle ossa lunghe.</li><li><strong>Articolazioni:</strong> Ricerca di <strong>calore</strong>, <strong>dolore alla flesso-estensione</strong> e <strong>versamento</strong>.</li></ul>`,
+                    en: `<h2>2. Palpation${speakerIcon}</h2><p>Fundamental maneuver to localize pain and assess tissue consistency.</p><ul><li><strong>Muscles:</strong> Assessment of <strong>tone</strong> (spastic/flaccid), <strong>pain</strong> (reaction to pressure), and <strong>temperature</strong>.</li><li><strong>Bones:</strong> Searching for pain, deformities, or crepitus (fractures) along bone profiles.</li><li><strong>Joints:</strong> Checking for <strong>heat</strong>, <strong>pain on flexion-extension</strong>, and <strong>effusion</strong>.</li></ul>`
+                },
+                sectionDinamica: {
+                    it: `<h2>3. Esame Dinamico (Valutazione dell'Andatura)${speakerIcon}</h2><p>L'osservazione dell'animale in movimento è essenziale per diagnosticare le zoppie.</p><ul><li><strong>Tipo di Andatura:</strong> Valutare al passo e al trotto (che evidenzia meglio le zoppie).</li><li><strong>Identificazione della Zoppia:</strong><ul><li><strong>Arto Anteriore:</strong> L'animale "batte sul sano" (abbassa la testa quando l'arto sano tocca terra).</li><li><strong>Arto Posteriore:</strong> Si osserva il sollevamento della groppa sul lato dolente ("hip hike").</li></ul></li><li><strong>Distinzione:</strong> Differenziare una zoppia (dolore) da una debolezza o un'atassia (neurologica).</li></ul>`,
+                    en: `<h2>3. Dynamic Examination (Gait Assessment)${speakerIcon}</h2><p>Observing the animal in motion is essential for diagnosing lameness.</p><ul><li><strong>Gait Type:</strong> Assess at a walk and trot (which best highlights lameness).</li><li><strong>Lameness Identification:</strong><ul><li><strong>Forelimb:</strong> The animal "nods down on the sound" (lowers head on sound limb).</li><li><strong>Hindlimb:</strong> Vertical rise of the croup on the painful side is observed ("hip hike").</li></ul></li><li><strong>Distinction:</strong> Differentiate lameness (pain) from weakness or ataxia (neurological).</li></ul>`
+                },
+                sectionComplementari: {
+                    it: `<h2>4. Metodiche Complementari${speakerIcon}</h2><ul><li><strong>Test di Flessione (Cavallo):</strong> Flessione forzata seguita da trotto immediato per localizzare il dolore articolare.</li><li><strong>Pinza da Zoccolo:</strong> Pressione su suola e muraglia per identificare dolore podale (ascessi, laminite).</li></ul>`,
+                    en: `<h2>4. Complementary Methods${speakerIcon}</h2><ul><li><strong>Flexion Tests (Horse):</strong> Forced flexion followed by immediate trot to localize joint pain.</li><li><strong>Hoof Testers:</strong> Pressure on sole and wall to identify foot pain (abscesses, laminitis).</li></ul>`
+                },
+                btnDownloadAudio: { it: 'Scarica Audio', en: 'Download Audio' },
+                btnPrintText: { it: 'Stampa Riassunto', en: 'Print Summary' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
             };
 
-             const sectionTitleElement = document.querySelector('#page-header h1[data-lang-key]');
-             const currentSectionKey = sectionTitleElement ? sectionTitleElement.getAttribute('data-lang-key') : null;
             let currentLanguage = localStorage.getItem('language') || 'it';
-            const accessibilityToggle = document.getElementById('accessibility-toggle');
-            const langToggle = document.getElementById('lang-toggle');
             const body = document.body;
             const synth = window.speechSynthesis;
-            let currentUtterance = null;
             let activeTTSButton = null;
-            let voices = [];
 
-            // --- Logica TTS ---
-             function populateVoiceList() {
-                 if (typeof speechSynthesis !== 'undefined') {
-                     voices = synth.getVoices();
-                 }
-            }
-             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-                 speechSynthesis.onvoiceschanged = populateVoiceList;
-             }
-             populateVoiceList();
-
-             function speak(text, button) {
-                 const isSameButton = activeTTSButton === button;
-                 if (synth.speaking && isSameButton) {
-                     if (synth.paused) { synth.resume(); button.classList.add('playing'); }
-                     else { synth.pause(); button.classList.remove('playing'); }
-                 } else {
-                     if (synth.speaking) {
-                         if (currentUtterance) currentUtterance.onend = null;
-                         if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                         synth.cancel();
-                     }
-                     setTimeout(() => startSpeaking(text, button), 50);
-                 }
-             }
-             function startSpeaking(text, button) {
-                  if (!text || typeof text !== 'string' || !text.trim()) {
-                    console.error("Testo non valido per TTS:", text);
-                    return;
-                 }
-                 const tempDiv = document.createElement('div');
-                 tempDiv.innerHTML = text;
-                 const ttsIconToRemove = tempDiv.querySelector('.tts-button');
-                 if(ttsIconToRemove) ttsIconToRemove.remove();
-                 const cleanText = tempDiv.textContent || tempDiv.innerText || "";
-                 if (!cleanText.trim()) {
-                    if (activeTTSButton) activeTTSButton.classList.remove('playing');
-                    activeTTSButton = null;
-                    return;
-                 }
-
-                 currentUtterance = new SpeechSynthesisUtterance(cleanText);
-                 currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
-                 currentUtterance.onend = () => { if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
-                 currentUtterance.onerror = (event) => { console.error("Errore TTS:", event.error); if (button === activeTTSButton) { button.classList.remove('playing'); activeTTSButton = null; } };
-                 synth.speak(currentUtterance);
-                 if (activeTTSButton && activeTTSButton !== button) { activeTTSButton.classList.remove('playing'); }
-                 activeTTSButton = button;
-                 button.classList.add('playing');
-             }
-             function setupTTSListeners() {
-                 document.querySelectorAll('.tts-button').forEach(button => {
-                     const newButton = button.cloneNode(true);
-                     button.parentNode.replaceChild(newButton, button);
-                     newButton.addEventListener('click', (e) => {
-                         e.stopPropagation();
-                         const parentElement = newButton.parentNode;
-                         let textToRead = '';
-                         let key = parentElement.dataset.langKey; 
-
-                         if (parentElement.tagName === 'H1' || parentElement.tagName === 'P') {
-                             key = parentElement.dataset.langKey;
-                         } else if (parentElement.tagName === 'H2') {
-                             const container = parentElement.closest('[data-lang-key]');
-                             if(container) key = container.dataset.langKey;
-                         }
-
-                         if (key && translations[key] && translations[key][currentLanguage]) {
-                             textToRead = translations[key][currentLanguage];
-                             if (textToRead) {
-                                 speak(textToRead, newButton);
-                             } else { console.warn("Testo vuoto per TTS per la chiave:", key); }
-                         } else { console.warn("Nessuna traduzione trovata per TTS per il pulsante:", newButton, "Key:", key); }
-                     });
-                 });
-             }
-
-            // --- Funzione Aggiornamento Lingua ---
-            const updateLanguage = (lang, previousLang = null) => {
-                 document.documentElement.lang = lang;
-                 if(langToggle) langToggle.textContent = lang === 'it' ? 'EN' : 'IT';
-
-                 document.querySelectorAll('[data-lang-key]').forEach(element => {
-                     const key = element.dataset.langKey;
-                     if (translations[key] && translations[key][lang]) {
-                         const translationText = translations[key][lang];
-
-                         if (key === 'footerText' || key === 'backToIndex' || key === 'btnDownloadAudio') {
-                              const svgIcon = element.querySelector('svg');
-                              element.innerHTML = translationText;
-                              if (svgIcon && (element.tagName === 'A' || element.tagName === 'BUTTON')) {
-                                   element.insertBefore(svgIcon, element.firstChild);
-                              }
-                         }
-                         else if (key === 'btnPrint') {
-                              const svgIcon = element.querySelector('svg');
-                              const textSpan = element.querySelector('span[data-lang-key="btnPrintText"]');
-                              if (textSpan) { textSpan.textContent = translations['btnPrintText'][lang]; }
-                              else {
-                                  element.innerHTML = translationText;
-                                   if (svgIcon) element.insertBefore(svgIcon, element.firstChild);
-                              }
-                               element.setAttribute('aria-label', translationText);
-                         }
-                         else if (element.classList.contains('section-nav-link')) { element.textContent = translationText; }
-                         else if (element.tagName === 'H1' && element.closest('#page-header')) {
-                             const sectionKey = currentSectionKey || key;
-                             element.textContent = translations[sectionKey] ? translations[sectionKey][lang] : translationText;
-                         }
-                         else if (element.id === 'main-content' || element.closest('#main-content')) { element.innerHTML = translationText; }
-                         else { element.textContent = translationText; }
-                     }
-                 });
-
-                 // Gestione visibilità audio
-                 document.querySelectorAll('.audio-container').forEach(container => {
-                     const audioSource = container.querySelector('audio source');
-                     const downloadLink = container.querySelector('a[download]');
-                     const hasValidSource = audioSource && audioSource.getAttribute('src') && audioSource.getAttribute('src') !== '#';
-                     const hasValidDownload = downloadLink && downloadLink.getAttribute('href') && downloadLink.getAttribute('href') !== '#';
-                     
-                     // Mostra solo se la lingua è IT E ci sono file validi
-                     container.style.display = (lang === 'it' && hasValidSource && hasValidDownload) ? 'flex' : 'none';
-                 });
-
-                 // Reset TTS
-                 if (synth.speaking || synth.pending) synth.cancel();
-                 if(activeTTSButton) activeTTSButton.classList.remove('playing');
-                 activeTTSButton = null;
-                 setTimeout(setupTTSListeners, 50);
+            const speak = (text, button) => {
+                if (synth.speaking && activeTTSButton === button) {
+                    synth.paused ? synth.resume() : synth.pause();
+                } else {
+                    synth.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                    utterance.onend = () => button.classList.remove('playing');
+                    synth.speak(utterance);
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                }
             };
 
-            // --- Logica Modalità Accessibilità ---
+            const setupTTS = () => {
+                document.querySelectorAll('.tts-button').forEach(btn => {
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        const container = btn.closest('div, h1, h2');
+                        const text = container.innerText.trim();
+                        speak(text, btn);
+                    };
+                });
+            };
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                setupTTS();
+            };
+
             const setA11yMode = (enabled) => {
-                if (enabled) { body.classList.add('dsa-mode'); localStorage.setItem('dsa-mode', 'enabled'); }
-                else { body.classList.remove('dsa-mode'); localStorage.setItem('dsa-mode', 'disabled'); }
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
             };
 
-            // --- Event Listeners ---
-            if (langToggle) {
-                langToggle.addEventListener('click', () => {
-                    const previousLanguage = currentLanguage;
-                    currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
-                    localStorage.setItem('language', currentLanguage);
-                     if (synth.speaking || synth.pending) synth.cancel();
-                     updateLanguage(currentLanguage, previousLanguage);
-                });
-            } else { console.error("Elemento langToggle non trovato!"); }
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
 
-            if (accessibilityToggle) {
-                 accessibilityToggle.addEventListener('click', () => {
-                    const isEnabled = body.classList.contains('dsa-mode');
-                    setA11yMode(!isEnabled);
-                });
-            } else { console.error("Elemento accessibilityToggle non trovato!"); }
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
 
-            // --- Inizializzazione ---
-            if (localStorage.getItem('dsa-mode') === 'enabled') { setA11yMode(true); }
-            populateVoiceList();
-             if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-                 speechSynthesis.onvoiceschanged = populateVoiceList;
-             }
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
             updateLanguage(currentLanguage);
-
         });
     </script>
-
 </body>
 </html>
-
