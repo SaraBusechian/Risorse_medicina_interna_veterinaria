@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: La Raccolta dell'Anamnesi - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #0284c7; background-image: linear-gradient(to right, #0284c7, #38bdf8); }
+        
+        /* Navigazione */
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #bae6fd !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        .chart-container { position: relative; width: 100%; height: 450px; }
+        
+        .flow-step { background-color: #f0f9ff; border: 2px solid #0284c7; color: #0284c7; }
+        .flow-arrow { color: #38bdf8; font-weight: bold; font-size: 1.5rem; }
+
+        /* --- STILI DSA --- */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
+            letter-spacing: 0.05em;
+            line-height: 2;
+        }
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+        }
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
+        }
+
+        .dsa-mode .section-card { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+        }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: underline;
+            text-decoration-color: #fbbf24;
+        }
+
+        .dsa-mode .flow-step { background-color: #ffffff; border-color: #000000; color: #000000; }
+
+        /* --- TTS BUTTON --- */
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover, .tts-button.playing { color: #0284c7; }
+        .dsa-mode .tts-button { color: #000000 !important; }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6">
+                    <li><a href="metodologie_piccoli_animali.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="metodologie_piccoli_animali.html#anamnesi" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- Contenuto inserito da JS -->
+                </a>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">L'Arte dell'Anamnesi (P.A.)</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">Protocollo sistematico per il primo approccio clinico a cani e gatti.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 -mt-10 pb-12">
+        
+        <!-- INTRODUZIONE -->
+        <section class="mb-12 p-8 section-card">
+            <div class="text-center">
+                <p class="text-2xl font-semibold text-sky-900 leading-relaxed" data-lang-key="introText">
+                    Una buona anamnesi permette di indirizzare la diagnosi e la scelta degli esami collaterali
+                    <span class="text-sky-600 font-bold">nella maggioranza dei casi clinici</span>, 
+                    ottimizzando l'intero percorso diagnostico.
+                </p>
+            </div>
+        </section>
+
+        <!-- I TRE PILASTRI -->
+        <section class="mb-12">
+            <h3 class="text-2xl font-bold mb-8 text-sky-800 text-center flex justify-center items-center" data-lang-key="pillarsTitle">
+                I Tre Pilastri dell'Indagine Clinica
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 section-card border-t-4 border-sky-600 text-center">
+                    <h4 class="text-xl font-bold mb-2" data-lang-key="pillar1Title">1. Anamnesi Remota</h4>
+                    <p class="text-gray-700 text-sm" data-lang-key="pillar1Desc">Profilassi (vaccini, vermifughi), malattie passate e provenienza del paziente.</p>
+                </div>
+                <div class="p-6 section-card border-t-4 border-cyan-500 text-center">
+                    <h4 class="text-xl font-bold mb-2" data-lang-key="pillar2Title">2. Anamnesi Recente</h4>
+                    <p class="text-gray-700 text-sm" data-lang-key="pillar2Desc">Il problema attuale: sintomi, alterazioni delle funzioni organiche e terapie in corso.</p>
+                </div>
+                <div class="p-6 section-card border-t-4 border-blue-400 text-center">
+                    <h4 class="text-xl font-bold mb-2" data-lang-key="pillar3Title">3. Ambiente e Stile di Vita</h4>
+                    <p class="text-gray-700 text-sm" data-lang-key="pillar3Desc">Contesto abitativo, dieta, attività sportiva e convivenza con altri animali.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANALISI DETTAGLIATA E FLUSSO -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Grafico Remota -->
+            <section class="p-8 section-card">
+                <h3 class="text-2xl font-bold mb-4 text-sky-800 flex items-center" data-lang-key="remoteKeysTitle">
+                    Focus: Storia Clinica e Profilassi
+                </h3>
+                <p class="mb-6 text-gray-600 text-sm" data-lang-key="remoteKeysDesc">L'importanza dei dati identificativi e preventivi nel restringere la diagnosi.</p>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="remoteAnamnesisChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Flusso Recente -->
+            <section class="p-8 section-card">
+                <h3 class="text-2xl font-bold mb-4 text-sky-800 flex items-center" data-lang-key="recentFlowTitle">
+                    Algoritmo Investigativo
+                </h3>
+                <p class="mb-6 text-gray-600 text-sm" data-lang-key="recentFlowDesc">Il percorso logico per restringere il campo delle cause possibili e guidare la visita.</p>
+                <div class="space-y-4">
+                    <div class="flow-step rounded-xl p-4 text-center font-bold" data-lang-key="flow1">Motivo principale della visita?</div>
+                    <div class="flow-arrow text-center">↓</div>
+                    <div class="flow-step rounded-xl p-4 text-center font-bold" data-lang-key="flow2">Insorgenza e durata?</div>
+                    <div class="flow-arrow text-center">↓</div>
+                    <div class="flow-step rounded-xl p-4 text-center font-bold" data-lang-key="flow3">Risposta alla terapia?</div>
+                    <div class="flow-arrow text-center">↓</div>
+                    <div class="flow-step rounded-xl p-4 text-center font-bold" data-lang-key="flow4">Selezione dell'EOP per Apparati</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- VISIONE DI INSIEME: RADAR CHART -->
+        <section class="mt-8 p-8 section-card">
+            <h3 class="text-2xl font-bold mb-6 text-sky-900 text-center flex justify-center items-center" data-lang-key="lifestyleTitle">
+                Correlazione tra Stile di Vita e Rischi Clinici
+            </h3>
+            <div class="flex flex-col gap-8">
+                <div class="space-y-4 text-center md:text-left max-w-4xl mx-auto w-full">
+                    <p class="text-gray-700" data-lang-key="lifestyleDesc">L'anamnesi ambientale non è un dato statistico, ma serve a costruire un <strong>profilo di rischio</strong>. Conoscere l'ambiente permette al clinico di pesare la probabilità delle diverse eziologie durante il ragionamento diagnostico.</p>
+                    <div class="p-4 bg-sky-50 rounded-xl border border-sky-100">
+                        <p class="text-sm text-sky-900 leading-relaxed" data-lang-key="lifestyleClinicalInsight">
+                            <strong>Insight Clinico:</strong> Un animale da appartamento ha un rischio metabolico maggiore, mentre la vita all'aperto sposta l'attenzione su parassiti, malattie trasmesse da vettori e traumi.
+                        </p>
+                    </div>
+                </div>
+                <div class="chart-container mx-auto max-w-2xl w-full">
+                    <canvas id="lifestyleRadarChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const speakerIcon = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna P.A.', en: 'Small Animal Internal Medicine' },
+                backToHome: { 
+                    it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Torna all\'Indice', 
+                    en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'L\'Arte dell\'Anamnesi', en: 'The Art of History Taking' },
+                pageSubtitle: { it: 'Il primo passo fondamentale per orientare correttamente il percorso diagnostico.', en: 'The fundamental first step to correctly guide the diagnostic path.' },
+                introText: { it: 'Una buona anamnesi permette di indirizzare la diagnosi e la scelta degli esami collaterali <span class="text-sky-600 font-bold">nella maggioranza dei casi clinici</span>, ottimizzando l\'intero percorso diagnostico.' + speakerIcon, en: 'A good history allows for directing the diagnosis and the choice of collateral tests in the <span class="text-sky-600 font-bold">majority of clinical cases</span>, optimizing the entire diagnostic path.' + speakerIcon },
+                pillarsTitle: { it: 'I Tre Pilastri dell\'Indagine Clinica' + speakerIcon, en: 'The Three Pillars of Clinical Investigation' + speakerIcon },
+                pillar1Title: { it: '1. Anamnesi Remota', en: '1. Past History' },
+                pillar1Desc: { it: 'Profilassi (vaccini, vermifughi), malattie passate e provenienza del paziente.', en: 'Prophylaxis (vaccines, wormers), past illnesses, and patient origin.' },
+                pillar2Title: { it: '2. Anamnesi Recente', en: '2. Recent History' },
+                pillar2Desc: { it: 'Il problema attuale: sintomi, alterazioni delle funzioni organiche e terapie in corso.', en: 'The current problem: symptoms, changes in organic functions, and ongoing therapies.' },
+                pillar3Title: { it: '3. Ambiente e Stile di Vita', en: '3. Environment and Lifestyle' },
+                pillar3Desc: { it: 'Contesto abitativo, dieta, attività sportiva e convivenza con altri animali.', en: 'Housing context, diet, sports activity, and cohabitation with other animals.' },
+                remoteKeysTitle: { it: 'Focus: Storia Clinica e Profilassi' + speakerIcon, en: 'Focus: Medical History and Prophylaxis' + speakerIcon },
+                remoteKeysDesc: { it: 'L\'importanza dei dati identificativi e preventivi nel restringere la diagnosi.', en: 'The importance of identification and preventive data in narrowing down the diagnosis.' },
+                recentFlowTitle: { it: 'Algoritmo Investigativo' + speakerIcon, en: 'Investigative Algorithm' + speakerIcon },
+                recentFlowDesc: { it: 'Il percorso logico per restringere il campo delle cause possibili e guidare la visita.', en: 'The logical path to narrow down possible causes and guide the visit.' },
+                flow1: { it: 'Motivo principale della visita?', en: 'Main reason for the visit?' },
+                flow2: { it: 'Insorgenza e durata?', en: 'Onset and duration?' },
+                flow3: { it: 'Risposta alla terapia?', en: 'Response to therapy?' },
+                flow4: { it: 'Selezione dell\'EOP per Apparati', en: 'Selection of Systemic EOP' },
+                lifestyleTitle: { it: 'Correlazione tra Stile di Vita e Rischi Clinici' + speakerIcon, en: 'Lifestyle Correlation and Clinical Risks' + speakerIcon },
+                lifestyleDesc: { it: "L'anamnesi ambientale non è un dato statistico, ma serve a costruire un profilo di rischio. Conoscere l'ambiente permette al clinico di pesare la probabilità delle diverse eziologie durante il ragionamento diagnostico.", en: "Environmental history is not statistical data, but serves to build a risk profile. Knowing the environment allows the clinician to weigh the probability of different etiologies during diagnostic reasoning." },
+                lifestyleClinicalInsight: { it: '<strong>Insight Clinico:</strong> Un animale da appartamento ha un rischio metabolico maggiore, mentre la vita all\'aperto sposta l\'attenzione su parassiti, malattie trasmesse da vettori e traumi.', en: '<strong>Clinical Insight:</strong> An apartment animal has a higher metabolic risk, while outdoor life shifts attention to parasites, vector-borne diseases, and trauma.' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' },
+                chart1Labels: {
+                    it: ['Profilassi (Vaccini)', 'Segnalamento', 'Malattie Pregresse', 'Stile di Vita', 'Provenienza'],
+                    en: ['Prophylaxis (Vaccines)', 'Signalment', 'Past Illnesses', 'Lifestyle', 'Origin']
+                },
+                radarLabels: {
+                    it: ['Rischio Metabolico', 'Rischio Infettivo', 'Rischio Traumatico', 'Rischio Parassitario', 'Rischio Comportamentale'],
+                    en: ['Metabolic Risk', 'Infectious Risk', 'Traumatic Risk', 'Parasitic Risk', 'Behavioral Risk']
+                },
+                datasetLabels: {
+                    indoor: { it: 'Vita in Appartamento', en: 'Indoor Life' },
+                    outdoor: { it: 'Vita all\'Aperto / Sportiva', en: 'Outdoor / Sporting Life' }
+                }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            // --- INIZIALIZZAZIONE GRAFICI ---
+            const remoteCtx = document.getElementById('remoteAnamnesisChart').getContext('2d');
+            const radarCtx = document.getElementById('lifestyleRadarChart').getContext('2d');
+            
+            let remoteChart = new Chart(remoteCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [95, 85, 75, 70, 50],
+                        backgroundColor: '#0284c7',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { display: false }, y: { grid: { display: false } } }
+                }
+            });
+
+            let lifestyleChart = new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: '',
+                            data: [90, 20, 10, 15, 70], // Profilo Indoor
+                            fill: true,
+                            backgroundColor: 'rgba(2, 132, 199, 0.2)',
+                            borderColor: 'rgb(2, 132, 199)',
+                            pointBackgroundColor: 'rgb(2, 132, 199)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgb(2, 132, 199)'
+                        },
+                        {
+                            label: '',
+                            data: [40, 80, 90, 85, 30], // Profilo Outdoor
+                            fill: true,
+                            backgroundColor: 'rgba(14, 165, 233, 0.2)',
+                            borderColor: 'rgb(14, 165, 233)',
+                            pointBackgroundColor: 'rgb(14, 165, 233)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgb(14, 165, 233)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: 30
+                    },
+                    elements: { line: { borderWidth: 3 } },
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false },
+                            pointLabels: {
+                                font: {
+                                    size: 13,
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // --- FUNZIONI CORE ---
+            function speak(text, button) {
+                if (synth.speaking && activeTTSButton === button) {
+                    synth.paused ? synth.resume() : synth.pause();
+                    button.classList.toggle('playing', !synth.paused);
+                } else {
+                    synth.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                    utterance.onend = () => { button.classList.remove('playing'); activeTTSButton = null; };
+                    synth.speak(utterance);
+                    if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                }
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    button.onclick = (e) => {
+                        e.stopPropagation();
+                        const section = e.currentTarget.closest('section') || e.currentTarget.parentElement;
+                        const clone = section.cloneNode(true);
+                        clone.querySelectorAll('.tts-button, canvas').forEach(el => el.remove());
+                        speak(clone.innerText.trim(), button);
+                    };
+                });
+            }
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+
+                // Aggiorna Grafico Bar
+                remoteChart.data.labels = translations.chart1Labels[lang];
+                remoteChart.update();
+
+                // Aggiorna Grafico Radar
+                lifestyleChart.data.labels = translations.radarLabels[lang];
+                lifestyleChart.data.datasets[0].label = translations.datasetLabels.indoor[lang];
+                lifestyleChart.data.datasets[1].label = translations.datasetLabels.outdoor[lang];
+                lifestyleChart.update();
+
+                setupTTSListeners();
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                setA11yMode(!body.classList.contains('dsa-mode'));
+            });
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
