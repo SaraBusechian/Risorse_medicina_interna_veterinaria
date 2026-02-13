@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: La Raccolta dell'Anamnesi - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #0284c7; background-image: linear-gradient(to right, #0284c7, #38bdf8); }
+        
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #bae6fd !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; }
+        .option-btn:hover:not(:disabled) { border-color: #0284c7; background-color: #f0f9ff; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d !important; font-weight: bold; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c !important; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
+            letter-spacing: 0.05em;
+            line-height: 2;
+        }
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+            box-shadow: none !important;
+        }
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
+        }
+
+        .dsa-mode .section-card, .dsa-mode .option-btn { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+            color: #000000 !important;
+        }
+
+        .dsa-mode .correct { background-color: #dcfce7 !important; border-width: 4px !important; }
+        .dsa-mode .incorrect { background-color: #fee2e2 !important; border-width: 4px !important; }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: underline;
+            text-decoration-color: #fbbf24;
+        }
+
+        /* --- TTS BUTTON --- */
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover, .tts-button.playing { color: #0284c7; }
+        .dsa-mode .tts-button { color: #000000 !important; }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6 text-white">
+                    <li><a href="metodologie_piccoli_animali.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="metodologie_piccoli_animali.html#anamnesi" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- JS inserisce icona e testo -->
+                </a>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">Test di Valutazione</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">Metti alla prova le tue conoscenze sulla raccolta dell'anamnesi nel cane e nel gatto.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 -mt-10 pb-12 flex justify-center">
+        <div id="quiz-container" class="section-card w-full max-w-3xl p-8">
+            
+            <!-- AREA DOMANDA -->
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-sky-800 font-bold uppercase tracking-wider text-sm" data-lang-key="quizLabel">Anamnesi Clinica P.A.</h3>
+                    <span id="progress-text" class="text-slate-500 font-bold text-sm bg-slate-100 px-3 py-1 rounded-full"></span>
+                </div>
+
+                <div class="mb-8">
+                    <div class="flex items-start">
+                        <p id="question-text" class="text-xl md:text-2xl font-semibold text-slate-800 leading-snug flex-grow"></p>
+                        <button id="question-tts" class="tts-button flex-shrink-0 mt-1">
+                            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4">
+                    <!-- Opzioni via JS -->
+                </div>
+            </div>
+
+            <!-- AREA FEEDBACK -->
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-slate-50 border-2 border-slate-200">
+                    <p id="rationale-text" class="text-slate-700 italic mb-6"></p>
+                    <button id="next-button" class="w-full bg-sky-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-sky-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <!-- AREA RISULTATI -->
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🎓</div>
+                <h2 class="text-3xl font-bold text-sky-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <div class="inline-block bg-sky-50 border-2 border-sky-200 rounded-2xl px-10 py-6 mb-10 mt-6">
+                    <p class="text-slate-500 uppercase text-xs font-bold tracking-widest mb-1">Punteggio Finale</p>
+                    <p id="score-text" class="text-6xl font-black text-sky-600"></p>
+                </div>
+                <button id="restart-button" class="w-full border-2 border-sky-600 text-sky-600 font-bold py-4 px-6 rounded-xl hover:bg-sky-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backIcon = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna P.A.', en: 'Small Animal Internal Medicine' },
+                backToHome: { 
+                    it: backIcon + 'Torna all\'Indice', 
+                    en: backIcon + 'Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'Test di Valutazione', en: 'Assessment Quiz' },
+                pageSubtitle: { it: 'Metti alla prova le tue conoscenze sulla raccolta dell\'anamnesi nel cane e nel gatto.', en: 'Test your knowledge of clinical history taking in dogs and cats.' },
+                quizLabel: { it: 'Anamnesi Clinica P.A.', en: 'Small Animal History' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' },
+                progressText: { it: 'Domanda {current} di {total}', en: 'Question {current} of {total}' }
+            };
+
+            const quizQuestions = [
+                {
+                    question: { it: "Un cane Boxer di 8 anni viene presentato per episodi di debolezza improvvisa e svenimento. Perché in questo caso il segnalamento (razza ed età) è fondamentale?", en: "An 8-year-old Boxer dog is presented for episodes of sudden weakness and fainting. Why is signalment (breed and age) essential in this case?" },
+                    options: [
+                        { text: { it: "Perché permette di stabilire immediatamente la prognosi senza ulteriori esami.", en: "Because it allows establishing the prognosis immediately without further tests." }, isCorrect: false, rationale: { it: "L'anamnesi indirizza il sospetto, ma la prognosi richiede una diagnosi definitiva basata sulla visita clinica.", en: "History guides suspicion, but prognosis requires a definitive diagnosis based on examination." } },
+                        { text: { it: "Perché orienta verso patologie ereditarie o degenerative tipiche, come la cardiomiopatia aritmogena del Boxer.", en: "Because it points toward typical hereditary or degenerative pathologies, such as Boxer Arrhythmogenic Cardiomyopathy." }, isCorrect: true, rationale: { it: "Esatto. Il segnalamento permette di pesare le probabilità in base alle predisposizioni genetiche note.", en: "Exact. Signalment allows weighing probabilities based on known genetic predispositions." } },
+                        { text: { it: "Perché serve esclusivamente a identificare l'animale all'interno del database gestionale.", en: "Because it only serves to identify the animal within the management database." }, isCorrect: false, rationale: { it: "Il valore clinico del segnalamento risiede nelle correlazioni epidemiologiche e genetiche, non solo burocratiche.", en: "The clinical value of signalment lies in epidemiological and genetic correlations, not just administrative ones." } },
+                        { text: { it: "Perché definisce il livello di attività sportiva svolta abitualmente dall'animale.", en: "Because it defines the level of sporting activity habitually performed by the animal." }, isCorrect: false, rationale: { it: "Questa informazione appartiene allo stile di vita, non al segnalamento anagrafico.", en: "This information belongs to lifestyle, not to demographics." } }
+                    ]
+                },
+                {
+                    question: { it: "Un gatto anziano viene presentato perché 'beve molto più del solito'. Qual è il termine tecnico corretto e in quale ambito anamnestico va indagato?", en: "An old cat is presented because it 'drinks much more than usual'. What is the correct technical term and in which history area should it be investigated?" },
+                    options: [
+                        { text: { it: "Poliuria; va indagata nell'anamnesi remota.", en: "Polyuria; to be investigated in past history." }, isCorrect: false, rationale: { it: "Poliuria riguarda la produzione di urina; l'insorgenza di un sintomo attuale riguarda l'anamnesi recente.", en: "Polyuria concerns urine production; the onset of a current symptom concerns recent history." } },
+                        { text: { it: "Polifagia; va indagata nello stile di vita.", en: "Polyphagia; to be investigated in lifestyle." }, isCorrect: false, rationale: { it: "La polifagia riguarda l'eccesso di appetito, non l'aumento della sete.", en: "Polyphagia concerns excess appetite, not increased thirst." } },
+                        { text: { it: "Polidipsia; va indagata nelle funzioni organiche dell'anamnesi recente.", en: "Polydipsia; to be investigated in the organic functions of recent history." }, isCorrect: true, rationale: { it: "Esatto. Le alterazioni della sete sono parametri cardine per sospettare malattie metaboliche o renali.", en: "Exact. Changes in thirst are key parameters for suspecting metabolic or renal diseases." } },
+                        { text: { it: "Disuria; va indagata nel segnalamento.", en: "Dysuria; to be investigated in signalment." }, isCorrect: false, rationale: { it: "Disuria riguarda la difficoltà nell'urinare e non è un dato del segnalamento.", en: "Dysuria concerns difficulty in urinating and is not a signalment fact." } }
+                    ]
+                },
+                {
+                    question: { it: "Una zoppia persiste da circa 3 mesi con fasi di miglioramento e peggioramento. Come si definisce correttamente questa modalità clinica?", en: "Lameness persists for about 3 months with phases of improvement and worsening. How is this clinical mode correctly defined?" },
+                    options: [
+                        { text: { it: "Insorgenza acuta ad andamento progressivo.", en: "Acute onset with progressive course." }, isCorrect: false, rationale: { it: "L'insorgenza acuta indica una comparsa improvvisa in pochi giorni, non compatibile con 3 mesi.", en: "Acute onset indicates sudden appearance in a few days, incompatible with 3 months." } },
+                        { text: { it: "Insorgenza cronica ad andamento remittente.", en: "Chronic onset with remitting course." }, isCorrect: true, rationale: { it: "Sì. Sintomi che superano le 4 settimane sono cronici; l'alternanza indica un andamento remittente.", en: "Yes. Symptoms exceeding 4 weeks are chronic; alternation indicates a remitting course." } },
+                        { text: { it: "Insorgenza iperacuta ad andamento stazionario.", en: "Hyperacute onset with stationary course." }, isCorrect: false, rationale: { it: "Iperacuta indica una comparsa fulminea, tipica di traumi o eventi vascolari.", en: "Hyperacute indicates a lightning-fast appearance, typical of trauma or vascular events." } },
+                        { text: { it: "Insorgenza subacuta ad andamento ciclico.", en: "Subacute onset with cyclic course." }, isCorrect: false, rationale: { it: "La subacuta copre solitamente l'arco di 1-2 settimane.", en: "Subacute usually covers a 1-2 week period." } }
+                    ]
+                },
+                {
+                    question: { it: "Perché è fondamentale indagare se un cane ha soggiornato recentemente in aree geografiche diverse dalla residenza?", en: "Why is it essential to investigate if a dog has recently stayed in different geographical areas than its residence?" },
+                    options: [
+                        { text: { it: "Per valutare l'esposizione a malattie trasmesse da vettori endemiche in altre zone.", en: "To assess exposure to vector-borne diseases endemic in other areas." }, isCorrect: true, rationale: { it: "Fondamentale per includere malattie come Leishmaniosi o Filariosi legate a specifici habitat.", en: "Essential for including diseases like Leishmaniasis or Heartworm linked to specific habitats." } },
+                        { text: { it: "Per stabilire se lo stress del viaggio possa aver causato una patologia genetica.", en: "To establish if travel stress could have caused a genetic pathology." }, isCorrect: false, rationale: { it: "Le patologie genetiche sono ereditarie e indipendenti dai fattori ambientali come il viaggio.", en: "Genetic pathologies are hereditary and independent of environmental factors like travel." } },
+                        { text: { it: "Per verificare se l'animale ha cambiato marca di cibo durante la vacanza.", en: "To check if the animal changed food brands during the holiday." }, isCorrect: false, rationale: { it: "Importante per problemi gastroenterici, ma il motivo primario della domanda è il rischio epidemiologico.", en: "Important for gastroenteric problems, but the primary reason for the question is epidemiological risk." } },
+                        { text: { it: "Per confermare la razza del cane in base al suo luogo di origine.", en: "To confirm the dog's breed based on its place of origin." }, isCorrect: false, rationale: { it: "La razza è un dato genetico raccolto nel segnalamento e non muta con i viaggi.", en: "Breed is a genetic fact collected in signalment and does not change with travel." } }
+                    ]
+                },
+                {
+                    question: { it: "Una cagna di 8 anni, non sterilizzata, presenta abbattimento e polidipsia. Quale dato dell'anamnesi ti indirizza verso un sospetto di piometra (infezione dell'utero)?", en: "An 8-year-old intact female dog shows lethargy and increased thirst. Which history data points you toward a suspicion of pyometra (uterine infection)?" },
+                    options: [
+                        { text: { it: "Il tipo di alimentazione abituale (umido o secco).", en: "The typical diet type (wet or dry)." }, isCorrect: false, rationale: { it: "L'alimentazione non è un fattore di rischio diretto per le infezioni uterine.", en: "Diet is not a direct risk factor for uterine infections." } },
+                        { text: { it: "L'intensità dell'attività sportiva svolta.", en: "The intensity of sporting activity performed." }, isCorrect: false, rationale: { it: "L'attività fisica influenza il metabolismo generale, non lo sviluppo di piometra.", en: "Physical activity influences general metabolism, not the development of pyometra." } },
+                        { text: { it: "Lo stato riproduttivo (intera) e la data dell'ultimo calore.", en: "Reproductive status (intact) and date of last heat." }, isCorrect: true, rationale: { it: "Corretto. Poiché l'infezione è mediata dal progesterone, la piometra compare tipicamente 4-8 settimane dopo il calore.", en: "Correct. Since infection is progesterone-mediated, pyometra typically appears 4-8 weeks after heat." } },
+                        { text: { it: "La cronistoria completa delle vaccinazioni core.", en: "The complete history of core vaccinations." }, isCorrect: false, rationale: { it: "I vaccini core proteggono da malattie virali, non da patologie ormonali.", en: "Core vaccines protect against viral diseases, not hormonal pathologies." } }
+                    ]
+                },
+                {
+                    question: { it: "Perché è importante indagare se un cane svolge attività sportiva intensa (es. Agility o Caccia)?", en: "Why is it important to investigate if a dog performs intense sporting activity (e.g., Agility or Hunting)?" },
+                    options: [
+                        { text: { it: "Per escludere la possibilità di contrarre malattie infettive.", en: "To rule out the possibility of contracting infectious diseases." }, isCorrect: false, rationale: { it: "L'attività all'aperto può anzi aumentare l'esposizione a vettori e agenti infettivi.", en: "Outdoor activity can actually increase exposure to vectors and infectious agents." } },
+                        { text: { it: "Per valutare il fabbisogno energetico e il rischio di patologie ortopediche da sovraccarico.", en: "To assess energy requirements and the risk of overload orthopedic pathologies." }, isCorrect: true, rationale: { it: "Lo sport sposta il profilo verso traumi, usura articolare e bisogni nutrizionali specifici.", en: "Sport shifts the profile toward trauma, joint wear, and specific nutritional needs." } },
+                        { text: { it: "Perché i cani sportivi non possono soffrire di diabete mellito.", en: "Because sporting dogs cannot suffer from diabetes mellitus." }, isCorrect: false, rationale: { it: "L'esercizio aiuta la gestione, ma non rende l'animale immune da patologie endocrine.", en: "Exercise helps management but does not make the animal immune to endocrine pathologies." } },
+                        { text: { it: "Per definire la frequenza corretta dei trattamenti vaccinali core.", en: "To define the correct frequency of core vaccination treatments." }, isCorrect: false, rationale: { it: "Le vaccinazioni core seguono protocolli standard indipendenti dall'attività fisica.", en: "Core vaccinations follow standard protocols independent of physical activity." } }
+                    ]
+                },
+                {
+                    question: { it: "Un cane trattato con antibiotici per 10 giorni non mostra miglioramenti della tosse. Cosa suggerisce questo dato?", en: "A dog treated with antibiotics for 10 days shows no improvement in cough. What does this suggest?" },
+                    options: [
+                        { text: { it: "Che il proprietario non ha somministrato correttamente il farmaco.", en: "That the owner did not administer the drug correctly." }, isCorrect: false, rationale: { it: "Possibile, ma clinicamente bisogna prima valutare l'appropriatezza della diagnosi iniziale.", en: "Possible, but clinically one must first evaluate the appropriateness of the initial diagnosis." } },
+                        { text: { it: "Che è necessario aumentare immediatamente il dosaggio del farmaco.", en: "That it is necessary to immediately increase the drug dosage." }, isCorrect: false, rationale: { it: "Aumentare la dose senza diagnosi certa favorisce solo le resistenze batteriche.", en: "Increasing the dose without a certain diagnosis only favors bacterial resistance." } },
+                        { text: { it: "Che la causa della tosse potrebbe non essere batterica o che il batterio è resistente.", en: "That the cause of the cough might not be bacterial or the bacterium is resistant." }, isCorrect: true, rationale: { it: "La mancata risposta è un segnale per riconsiderare l'ipotesi diagnostica (es. causa cardiaca).", en: "Lack of response is a signal to reconsider the diagnostic hypothesis (e.g., cardiac cause)." } },
+                        { text: { it: "Che la patologia è cronica e quindi sicuramente incurabile.", en: "That the pathology is chronic and therefore definitely incurable." }, isCorrect: false, rationale: { it: "Il fallimento di un singolo protocollo richiede solo approfondimenti diagnostici mirati.", en: "The failure of a single protocol only requires targeted diagnostic investigations." } }
+                    ]
+                },
+                {
+                    question: { it: "Per un gatto che vive esclusivamente 'indoor', quale profilo di rischio è più probabile rispetto a un gatto 'outdoor'?", en: "For an exclusively 'indoor' cat, which risk profile is more likely compared to an 'outdoor' cat?" },
+                    options: [
+                        { text: { it: "Patologie metaboliche (obesità, diabete) e stress comportamentale.", en: "Metabolic pathologies (obesity, diabetes) and behavioral stress." }, isCorrect: true, rationale: { it: "Sedentarietà e ambiente confinato sono i fattori di rischio principali delle malattie del benessere.", en: "Sedentariness and confined environment are the main risk factors for welfare diseases." } },
+                        { text: { it: "Elevato rischio di traumi stradali e ferite da combattimento.", en: "High risk of road trauma and combat wounds." }, isCorrect: false, rationale: { it: "Questi sono rischi tipici dello stile di vita outdoor o con accesso esterno.", en: "These are typical risks of the outdoor lifestyle or with outdoor access." } },
+                        { text: { it: "Elevata probabilità di malattie trasmesse da vettori.", en: "High probability of vector-borne diseases." }, isCorrect: false, rationale: { it: "Il rischio diminuisce drasticamente se l'animale non frequenta aree esterne.", en: "The risk decreases drastically if the animal does not frequent outdoor areas." } },
+                        { text: { it: "Necessità di piani vaccinali core molto più frequenti.", en: "Need for much more frequent core vaccination plans." }, isCorrect: false, rationale: { it: "I gatti indoor hanno solitamente una pressione infettiva minore rispetto agli outdoor.", en: "Indoor cats usually have lower infectious pressure compared to outdoor cats." } }
+                    ]
+                },
+                {
+                    question: { it: "Qual è il principale significato clinico dei trattamenti antiparassitari pregressi nell'anamnesi del cane?", en: "What is the primary clinical significance of past parasite treatments in a dog's history?" },
+                    options: [
+                        { text: { it: "Serve a valutare la copertura verso patologie gravi e prevenibili come la Filariosi.", en: "It serves to assess coverage against serious and preventable pathologies like Heartworm." }, isCorrect: true, rationale: { it: "Permette di pesare il sospetto diagnostico per malattie potenzialmente letali ma prevenibili.", en: "It allows weighing the diagnostic suspicion for potentially lethal but preventable diseases." } },
+                        { text: { it: "Serve esclusivamente a decidere se l'animale può essere ricoverato.", en: "It only serves to decide if the animal can be hospitalized." }, isCorrect: false, rationale: { it: "Sebbene utile per la biosicurezza, il valore diagnostico per il paziente è superiore.", en: "While useful for biosecurity, the diagnostic value for the patient is superior." } },
+                        { text: { it: "Fornisce una diagnosi certa di parassitosi intestinale senza esami collaterali.", en: "It provides a certain diagnosis of intestinal parasitosis without collateral tests." }, isCorrect: false, rationale: { it: "Suggerisce un rischio, ma la diagnosi richiede sempre una conferma laboratoristica.", en: "It suggests a risk, but diagnosis always requires laboratory confirmation." } },
+                        { text: { it: "Permette di calcolare l'età esatta del soggetto in base ai cicli effettuati.", en: "It allows calculating the subject's exact age based on performed cycles." }, isCorrect: false, rationale: { it: "L'età è un dato del segnalamento; i trattamenti riguardano la storia sanitaria.", en: "Age is a signalment fact; treatments concern medical history." } }
+                    ]
+                },
+                {
+                    question: { it: "Qual è lo scopo ultimo di un'anamnesi ben condotta?", en: "What is the ultimate goal of a well-conducted history?" },
+                    options: [
+                        { text: { it: "Sostituire l'esame fisico per ridurre lo stress del paziente.", en: "Replace the physical exam to reduce patient stress." }, isCorrect: false, rationale: { it: "L'esame clinico obiettivo è imprescindibile e non può mai essere sostituito.", en: "The objective clinical examination is essential and can never be replaced." } },
+                        { text: { it: "Indirizzare l'EOP per apparati e selezionare razionalmente i test collaterali.", en: "Direct the systemic EOP and rationally select collateral tests." }, isCorrect: true, rationale: { it: "L'anamnesi restringe il campo delle ipotesi, rendendo mirata la visita e gli esami successivi.", en: "History narrows the field of hypotheses, making the visit and subsequent tests targeted." } },
+                        { text: { it: "Fornire una diagnosi eziologica definitiva basata sui dati soggettivi.", en: "Provide a definitive etiological diagnosis based on subjective data." }, isCorrect: false, rationale: { it: "I dati soggettivi devono essere oggettivati dalla visita e dai test diagnostici.", en: "Subjective data must be objectified by the exam and diagnostic tests." } },
+                        { text: { it: "Giustificare economicamente il costo della visita clinica professionale.", en: "Economically justify the cost of the professional clinical visit." }, isCorrect: false, rationale: { it: "L'anamnesi è uno strumento scientifico-diagnostico, non una giustificazione commerciale.", en: "History taking is a scientific-diagnostic tool, not a commercial justification." } }
+                    ]
+                }
+            ];
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            let currentIdx = 0;
+            let score = 0;
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) {
+                        if (key === 'backToHome') el.innerHTML = translations[key][lang];
+                        else el.textContent = translations[key][lang];
+                    }
+                });
+                renderQuestion();
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking && activeTTSButton === button) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else { synth.pause(); button.classList.remove('playing'); }
+                    return;
+                }
+                synth.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onstart = () => { button.classList.add('playing'); activeTTSButton = button; };
+                utterance.onend = () => { button.classList.remove('playing'); activeTTSButton = null; };
+                synth.speak(utterance);
+            };
+
+            const renderQuestion = () => {
+                const q = quizQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', quizQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                document.getElementById('question-tts').onclick = () => speak(q.question[currentLanguage], document.getElementById('question-tts'));
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                q.options.forEach((opt, i) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-3 w-full";
+                    
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn flex-grow text-left p-5 rounded-xl font-semibold text-slate-700";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn);
+                    
+                    const ttsBtn = document.createElement('button');
+                    ttsBtn.className = "tts-button p-2";
+                    ttsBtn.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    ttsBtn.onclick = () => speak(opt.text[currentLanguage], ttsBtn);
+
+                    div.appendChild(btn);
+                    div.appendChild(ttsBtn);
+                    container.appendChild(div);
+                });
+            };
+
+            const handleSelect = (opt, btn) => {
+                if (synth.speaking) synth.cancel();
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                
+                if (opt.isCorrect) {
+                    btn.classList.add('correct');
+                    score++;
+                } else {
+                    btn.classList.add('incorrect');
+                    const correctBtnIdx = quizQuestions[currentIdx].options.findIndex(o => o.isCorrect);
+                    btns[correctBtnIdx].classList.add('correct');
+                }
+
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                
+                const nextBtn = document.getElementById('next-button');
+                nextBtn.textContent = currentIdx === quizQuestions.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
+
+            document.getElementById('next-button').onclick = () => {
+                document.getElementById('feedback-area').classList.add('hidden');
+                if (currentIdx < quizQuestions.length - 1) {
+                    currentIdx++;
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            };
+
+            const showResults = () => {
+                document.getElementById('question-area').classList.add('hidden');
+                document.getElementById('results-area').classList.remove('hidden');
+                document.getElementById('score-text').textContent = `${score} / ${quizQuestions.length}`;
+            };
+
+            document.getElementById('restart-button').onclick = () => {
+                currentIdx = 0; score = 0;
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+                if (synth.speaking) synth.cancel();
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
