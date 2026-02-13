@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: L'Ispezione Clinica - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #0284c7; background-image: linear-gradient(to right, #0284c7, #38bdf8); }
+        
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #bae6fd !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        .chart-container { position: relative; width: 100%; height: 400px; }
+        
+        .flow-step { background-color: #f0f9ff; border: 2px solid #0284c7; color: #0284c7; }
+        .flow-arrow { color: #38bdf8; font-weight: bold; font-size: 1.2rem; }
+
+        /* --- STILI DSA --- */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
+            letter-spacing: 0.05em;
+            line-height: 2;
+        }
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+        }
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
+        }
+
+        .dsa-mode .section-card { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+        }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: none !important;
+        }
+
+        .dsa-mode .flow-step { background-color: #ffffff; border-color: #000000; color: #000000; }
+
+        /* --- TTS BUTTON --- */
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover, .tts-button.playing { color: #0284c7; }
+        .dsa-mode .tts-button { color: #000000 !important; }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6">
+                    <li><a href="metodologie_piccoli_animali.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="metodologie_piccoli_animali.html#ispezione" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- JS inserisce icona e testo -->
+                </a>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">L'Arte dell'Ispezione (P.A.)</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">Raccogliere dati obiettivi attraverso l'osservazione sistematica.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 -mt-10 pb-12">
+        
+        <!-- INTRODUZIONE -->
+        <section class="mb-12 p-8 section-card">
+            <div class="text-center">
+                <p class="text-2xl font-semibold text-sky-900 leading-relaxed" data-lang-key="introText">
+                    L'ispezione segue un ordine metodico: si osserva il paziente senza toccarlo per valutare lo stato naturale del <span class="text-sky-600 font-bold">sensorio</span> e della <span class="text-sky-600 font-bold">postura</span>.
+                </p>
+            </div>
+        </section>
+
+        <!-- ISPEZIONE AMBIENTALE -->
+        <section class="mb-12">
+            <h3 class="text-2xl font-bold mb-8 text-sky-800 text-center flex justify-center items-center" data-lang-key="envTitle">
+                1. Ispezione Ambientale (Domicilio)
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div class="p-6 section-card border-b-4 border-sky-600 text-center">
+                    <div class="text-3xl mb-3">🏠</div>
+                    <h4 class="font-bold mb-1" data-lang-key="envHousing">Sicurezza Casa</h4>
+                    <p class="text-gray-600 text-xs" data-lang-key="envHousingDesc">Presenza di piante tossiche o pericoli ambientali.</p>
+                </div>
+                <div class="p-6 section-card border-b-4 border-orange-500 text-center">
+                    <div class="text-3xl mb-3">💩</div>
+                    <h4 class="font-bold mb-1" data-lang-key="envManure">Deiezioni</h4>
+                    <p class="text-gray-600 text-xs" data-lang-key="envManureDesc">Valutazione diretta di campioni fisici presenti.</p>
+                </div>
+                <div class="p-6 section-card border-b-4 border-indigo-500 text-center">
+                    <div class="text-3xl mb-3">🐾</div>
+                    <h4 class="font-bold mb-1" data-lang-key="envInter">Interazioni</h4>
+                    <p class="text-gray-600 text-xs" data-lang-key="envInterDesc">Socialità e comportamento esplorativo.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANALISI ANIMALE -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Grafico Radar a Distanza -->
+            <section class="p-8 section-card flex flex-col items-center">
+                <h3 class="text-2xl font-bold mb-4 text-sky-800 self-start" data-lang-key="distantTitle">
+                    Ispezione a Distanza
+                </h3>
+                <div class="text-gray-700 text-sm mb-6 w-full space-y-2">
+                    <p data-lang-key="distantDesc1">Valutazione obiettiva dello stato generale prima dello stress da manipolazione.</p>
+                    <div class="p-3 bg-blue-50 rounded-lg border border-blue-100 italic">
+                        <p data-lang-key="radarExplain"><strong>Come leggere il grafico:</strong> Il valore 10 (perimetro) rappresenta la normalità fisiologica. Più l'area è "piena" (Blu), più il soggetto è sano. Un collasso dell'area (Rosso) evidenzia deficit clinici.</p>
+                    </div>
+                </div>
+                <div class="chart-container w-full">
+                    <canvas id="distanceInspectionChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Percorso Testa-Coda -->
+            <section class="p-8 section-card">
+                <h3 class="text-2xl font-bold mb-4 text-sky-800 flex items-center" data-lang-key="closeupTitle">
+                    Percorso "Testa-Coda"
+                </h3>
+                <p class="mb-6 text-gray-600 text-sm" data-lang-key="closeupDesc">Analisi ravvicinata dei dettagli funzionali e dei profili corporei.</p>
+                <div class="space-y-2">
+                    <div class="flow-step rounded-xl p-3 text-center font-bold text-sm" data-lang-key="flow1">1. Testa (Simmetria e Narici)</div>
+                    <div class="flow-arrow text-center">↓</div>
+                    <div class="flow-step rounded-xl p-3 text-center font-bold text-sm" data-lang-key="flow2">2. Profili (Torace e Addome)</div>
+                    <div class="flow-arrow text-center">↓</div>
+                    <div class="flow-step rounded-xl p-3 text-center font-bold text-sm" data-lang-key="flow3">3. Esame Funzionale del Respiro</div>
+                    <div class="flow-arrow text-center">↓</div>
+                    <div class="flow-step rounded-xl p-3 text-center font-bold text-sm" data-lang-key="flow4">4. Apparato Locomotore e Arti</div>
+                    <div class="flow-arrow text-center">↓</div>
+                    <div class="flow-step rounded-xl p-3 text-center font-bold text-sm" data-lang-key="flow5">5. Cute e Mucose Apparenti</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- FOCUS MUCOSE -->
+        <section class="mt-8 p-8 section-card">
+            <h3 class="text-2xl font-bold mb-6 text-rose-800 text-center flex justify-center items-center" data-lang-key="mucousTitle">
+                Il Colore delle Mucose Apparenti
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <p class="text-gray-700" data-lang-key="mucousDesc">Le mucose sono fondamentali per valutare perfusione e ossigenazione. Ogni variazione cromatica indirizza verso quadri patologici specifici.</p>
+                    <div class="p-4 bg-rose-50 rounded-xl border border-rose-100">
+                        <p class="text-sm font-semibold text-rose-900" data-lang-key="mucousChartLabel">Allerta Clinica per Colore:</p>
+                    </div>
+                </div>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="mucousMembraneChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const speakerIcon = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna P.A.', en: 'Small Animal Internal Medicine' },
+                backToHome: { 
+                    it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Torna all\'Indice', 
+                    en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'Guida all\'Ispezione Clinica', en: 'Clinical Inspection Guide' },
+                pageSubtitle: { it: 'L\'arte di osservare l\'animale per raccogliere prove oggettive.', en: 'The art of observing the animal to collect objective evidence.' },
+                introText: { it: 'L\'ispezione segue un ordine metodico: si osserva il paziente senza toccarlo per valutare lo stato naturale del <span class="text-sky-600 font-bold">sensorio</span> e della <span class="text-sky-600 font-bold">postura</span>.' + speakerIcon, en: 'Inspection follows a logical order: the patient is observed without touching to assess the natural state of <span class="text-sky-600 font-bold">mental status</span> and <span class="text-sky-600 font-bold">posture</span>.' + speakerIcon },
+                envTitle: { it: '1. Ispezione Ambientale (Domicilio)' + speakerIcon, en: '1. Environmental Inspection (Home)' + speakerIcon },
+                envHousing: { it: 'Sicurezza Casa', en: 'Home Safety' },
+                envHousingDesc: { it: 'Presenza di piante tossiche o pericoli ambientali.', en: 'Presence of toxic plants or hazards.' },
+                envManure: { it: 'Deiezioni', en: 'Excreta' },
+                envManureDesc: { it: 'Valutazione diretta di campioni fisici presenti.', en: 'Direct evaluation of physical samples.' },
+                envInter: { it: 'Interazioni', en: 'Interactions' },
+                envInterDesc: { it: 'Socialità e comportamento esplorativo.', en: 'Sociality and exploratory behavior.' },
+                distantTitle: { it: 'Ispezione a Distanza' + speakerIcon, en: 'Distance Inspection' + speakerIcon },
+                distantDesc1: { it: 'Valutazione obiettiva dello stato generale prima dello stress da manipolazione.', en: 'Objective evaluation of general status before manipulation stress.' },
+                radarExplain: { it: '<strong>Come leggere il grafico:</strong> Il valore 10 (perimetro) rappresenta la normalità fisiologica. Più l\'area è "piena" (Blu), più il soggetto è sano. Un collasso dell\'area (Rosso) evidenzia deficit clinici.', en: '<strong>How to read the chart:</strong> The value 10 (perimeter) represents physiological normality. The "fuller" the area (Blue), the healthier the subject. A collapse of the area (Red) highlights clinical deficits.' },
+                closeupTitle: { it: 'Percorso "Testa-Coda"' + speakerIcon, en: '"Head-to-Tail" Path' + speakerIcon },
+                closeupDesc: { it: 'Analisi ravvicinata dei dettagli funzionali e dei profili corporei.', en: 'Close-up analysis of functional details and body profiles.' },
+                flow1: { it: '1. Testa (Simmetria e Narici)', en: '1. Head (Symmetry and Nostrils)' },
+                flow2: { it: '2. Profili (Torace e Addome)', en: '2. Body Profiles (Thorax and Abdomen)' },
+                flow3: { it: '3. Esame Funzionale del Respiro', en: '3. Functional Respiratory Exam' },
+                flow4: { it: '4. Apparato Locomotore e Arti', en: '4. Locomotor System and Limbs' },
+                flow5: { it: '5. Cute e Mucose Apparenti', en: '5. Skin and Mucous Membranes' },
+                mucousTitle: { it: 'Il Colore delle Mucose Apparenti' + speakerIcon, en: 'The Color of Visible Mucous Membranes' + speakerIcon },
+                mucousDesc: { it: 'Le mucose sono fondamentali per valutare perfusione e ossigenazione. Ogni variazione cromatica indirizza verso quadri patologici specifici.', en: 'Mucous membranes are essential for assessing perfusion and oxygenation. Each color variation points towards specific pathologies.' },
+                mucousChartLabel: { it: 'Allerta Clinica per Colore:', en: 'Clinical Alert by Color:' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' },
+                radarLabels: {
+                    it: ['Stato Mentale', 'Postura', 'Andatura', 'BCS', 'Respiro'],
+                    en: ['Mental Status', 'Posture', 'Gait', 'BCS', 'Breathing']
+                },
+                radarNormal: { it: 'Soggetto Sano', en: 'Healthy Subject' },
+                radarAltered: { it: 'Soggetto Patologico', en: 'Pathological Subject' },
+                mucousLabels: {
+                    it: ['Roseo', 'Pallido', 'Iperemico', 'Itterico', 'Cianotico'],
+                    en: ['Pink', 'Pale', 'Hyperemic', 'Icteric', 'Cyanotic']
+                }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            // --- GRAFICI ---
+            const radarCtx = document.getElementById('distanceInspectionChart').getContext('2d');
+            const barCtx = document.getElementById('mucousMembraneChart').getContext('2d');
+            
+            let distanceChart = new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '',
+                        data: [10, 10, 10, 8, 10], // Sano
+                        backgroundColor: 'rgba(2, 132, 199, 0.2)',
+                        borderColor: '#0284c7',
+                        pointBackgroundColor: '#0284c7'
+                    }, {
+                        label: '',
+                        data: [4, 5, 3, 2, 4], // Malato
+                        backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                        borderColor: '#EF4444',
+                        pointBackgroundColor: '#EF4444'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: 25 },
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: { 
+                        r: { 
+                            suggestedMin: 0, 
+                            suggestedMax: 10, 
+                            ticks: { display: false }, 
+                            pointLabels: { 
+                                font: { size: 12, weight: 'bold' },
+                                padding: 15
+                            } 
+                        } 
+                    }
+                }
+            });
+
+            let mucousChart = new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [1, 6, 8, 9, 10],
+                        backgroundColor: ['#F472B6', '#E2E8F0', '#EF4444', '#FBBF24', '#0284c7'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { display: false }, y: { grid: { display: false } } }
+                }
+            });
+
+            // --- FUNZIONI CORE ---
+            function speak(text, button) {
+                if (synth.speaking && activeTTSButton === button) {
+                    synth.paused ? synth.resume() : synth.pause();
+                    button.classList.toggle('playing', !synth.paused);
+                } else {
+                    synth.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                    utterance.onend = () => { button.classList.remove('playing'); activeTTSButton = null; };
+                    synth.speak(utterance);
+                    if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                }
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    button.onclick = (e) => {
+                        e.stopPropagation();
+                        const section = e.currentTarget.closest('section') || e.currentTarget.parentElement;
+                        const clone = section.cloneNode(true);
+                        clone.querySelectorAll('.tts-button, canvas').forEach(el => el.remove());
+                        speak(clone.innerText.trim(), button);
+                    };
+                });
+            }
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+
+                distanceChart.data.labels = translations.radarLabels[lang];
+                distanceChart.data.datasets[0].label = translations.radarNormal[lang];
+                distanceChart.data.datasets[1].label = translations.radarAltered[lang];
+                distanceChart.update();
+
+                mucousChart.data.labels = translations.mucousLabels[lang];
+                mucousChart.update();
+
+                setupTTSListeners();
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+                if (synth.speaking) synth.cancel();
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                setA11yMode(!body.classList.contains('dsa-mode'));
+            });
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
