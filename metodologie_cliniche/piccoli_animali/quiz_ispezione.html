@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: L'Ispezione Clinica - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #0284c7; background-image: linear-gradient(to right, #0284c7, #38bdf8); }
+        
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #bae6fd !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; }
+        .option-btn:hover:not(:disabled) { border-color: #0284c7; background-color: #f0f9ff; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d !important; font-weight: bold; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c !important; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
+            letter-spacing: 0.05em;
+            line-height: 2;
+        }
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+            box-shadow: none !important;
+        }
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
+        }
+
+        .dsa-mode .section-card, .dsa-mode .option-btn { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+            color: #000000 !important;
+        }
+
+        .dsa-mode .correct { background-color: #dcfce7 !important; border-width: 4px !important; }
+        .dsa-mode .incorrect { background-color: #fee2e2 !important; border-width: 4px !important; }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: none !important;
+        }
+
+        /* --- TTS BUTTON --- */
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover, .tts-button.playing { color: #0284c7; }
+        .dsa-mode .tts-button { color: #000000 !important; }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6 text-white">
+                    <li><a href="metodologie_piccoli_animali.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="metodologie_piccoli_animali.html#ispezione" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- JS inserisce icona e testo -->
+                </a>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">Test di Valutazione</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">Metti alla prova le tue capacità di osservazione clinica.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 -mt-10 pb-12 flex justify-center">
+        <div id="quiz-container" class="section-card w-full max-w-3xl p-8">
+            
+            <!-- AREA DOMANDA -->
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-sky-800 font-bold uppercase tracking-wider text-sm" data-lang-key="quizLabel">Ispezione Clinica P.A.</h3>
+                    <span id="progress-text" class="text-slate-500 font-bold text-sm bg-slate-100 px-3 py-1 rounded-full"></span>
+                </div>
+
+                <div class="mb-8">
+                    <div class="flex items-start">
+                        <p id="question-text" class="text-xl md:text-2xl font-semibold text-slate-800 leading-snug flex-grow"></p>
+                        <button id="question-tts" class="tts-button flex-shrink-0 mt-1">
+                            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4">
+                    <!-- Opzioni via JS -->
+                </div>
+            </div>
+
+            <!-- AREA FEEDBACK -->
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-slate-50 border-2 border-slate-200">
+                    <p id="rationale-text" class="text-slate-700 italic mb-6"></p>
+                    <button id="next-button" class="w-full bg-sky-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-sky-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <!-- AREA RISULTATI -->
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🎓</div>
+                <h2 class="text-3xl font-bold text-sky-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <div class="inline-block bg-sky-50 border-2 border-sky-200 rounded-2xl px-10 py-6 mb-10 mt-6">
+                    <p class="text-slate-500 uppercase text-xs font-bold tracking-widest mb-1">Punteggio Finale</p>
+                    <p id="score-text" class="text-6xl font-black text-sky-600"></p>
+                </div>
+                <button id="restart-button" class="w-full border-2 border-sky-600 text-sky-600 font-bold py-4 px-6 rounded-xl hover:bg-sky-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backIcon = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna P.A.', en: 'Small Animal Internal Medicine' },
+                backToHome: { 
+                    it: backIcon + 'Torna all\'Indice', 
+                    en: backIcon + 'Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'Test di Valutazione', en: 'Assessment Quiz' },
+                pageSubtitle: { it: 'Metti alla prova le tue conoscenze sulla raccolta dell\'anamnesi nel cane e nel gatto.', en: 'Test your knowledge of clinical history taking in dogs and cats.' },
+                quizLabel: { it: 'Ispezione Clinica P.A.', en: 'Small Animal Inspection' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' },
+                progressText: { it: 'Domanda {current} di {total}', en: 'Question {current} of {total}' }
+            };
+
+            const quizQuestions = [
+                {
+                    question: { it: "In un contesto di medicina interna, perché l'ispezione a distanza deve precedere quella ravvicinata?", en: "In internal medicine, why must distance inspection precede close-up inspection?" },
+                    options: [
+                        { text: { it: "Per evitare che lo stress o l'eccitazione causati dal contatto fisico alterino il sensorio e la frequenza respiratoria.", en: "To prevent stress or excitement caused by physical contact from altering mental status and respiratory rate." }, isCorrect: true, rationale: { it: "Esatto. L'osservazione a distanza permette di vedere il paziente nel suo stato basale.", en: "Exact. Distance observation allows seeing the patient in its basal state." } },
+                        { text: { it: "Perché è l'unico modo per valutare il colore delle mucose apparenti.", en: "Because it is the only way to assess the color of visible mucous membranes." }, isCorrect: false, rationale: { it: "Le mucose richiedono una manipolazione e quindi fanno parte dell'ispezione ravvicinata.", en: "Mucous membranes require handling and thus are part of close-up inspection." } },
+                        { text: { it: "Perché permette al medico di risparmiare tempo prima della palpazione.", en: "Because it allows the doctor to save time before palpation." }, isCorrect: false, rationale: { it: "L'ispezione non è una questione di tempo, ma di accuratezza dei segni obiettivi rilevati.", en: "Inspection is not about time, but about the accuracy of detected objective signs." } },
+                        { text: { it: "Per poter raccogliere l'anamnesi ambientale dal proprietario.", en: "To collect environmental history from the owner." }, isCorrect: false, rationale: { it: "L'anamnesi ambientale è un dato soggettivo (riferito), mentre l'ispezione è un dato obiettivo (osservato).", en: "Environmental history is subjective data, while inspection is objective data." } }
+                    ]
+                },
+                {
+                    question: { it: "Durante l'ispezione a distanza, cosa indica l'acronimo BAR nella valutazione del sensorio?", en: "During distance inspection, what does the acronym BAR stand for in assessing mental status?" },
+                    options: [
+                        { text: { it: "Body Abnormal Reaction (Reazione Corporea Anomala).", en: "Body Abnormal Reaction." }, isCorrect: false, rationale: { it: "Non è un acronimo clinico standard.", en: "It is not a standard clinical acronym." } },
+                        { text: { it: "Basic Animal Reflex (Riflesso Animale di Base).", en: "Basic Animal Reflex." }, isCorrect: false, rationale: { it: "L'acronimo corretto riguarda lo stato di coscienza vigile.", en: "The correct acronym concerns alert state of consciousness." } },
+                        { text: { it: "Bright, Alert, Responsive (Vivace, Vigile, Reattivo).", en: "Bright, Alert, Responsive." }, isCorrect: true, rationale: { it: "Corretto. Indica un animale con sensorio normale che interagisce correttamente con l'ambiente.", en: "Correct. It indicates an animal with normal sensorium interacting correctly with the environment." } },
+                        { text: { it: "Breath and Rhythm (Respiro e Ritmo).", en: "Breath and Rhythm." }, isCorrect: false, rationale: { it: "BAR si riferisce al sistema nervoso/stato mentale, non all'apparato respiratorio.", en: "BAR refers to the nervous system/mental status, not the respiratory system." } }
+                    ]
+                },
+                {
+                    question: { it: "Un cane assume la cosiddetta 'posizione a preghiera' (arti anteriori estesi al suolo e posteriore sollevato). Qual è il significato clinico di questa postura?", en: "A dog assumes the 'praying position' (forelimbs extended on the ground, hindquarters raised). What is the clinical significance of this posture?" },
+                    options: [
+                        { text: { it: "Indica un comportamento di gioco e sottomissione al medico.", en: "It indicates play behavior and submission to the doctor." }, isCorrect: false, rationale: { it: "In contesto clinico, è una postura antalgica ben precisa.", en: "In a clinical context, it is a very specific antalgic posture." } },
+                        { text: { it: "È una postura antalgica indicativa di forte dolore addominale.", en: "It is an antalgic posture indicative of severe abdominal pain." }, isCorrect: true, rationale: { it: "Vero. L'animale cerca di scaricare la tensione dai visceri addominali dolenti.", en: "True. The animal tries to relieve tension from painful abdominal viscera." } },
+                        { text: { it: "Segnala un deficit neurologico a carico dei nervi cranici.", en: "It signals a neurological deficit of the cranial nerves." }, isCorrect: false, rationale: { it: "I nervi cranici non influenzano questa specifica postura del tronco e degli arti.", en: "Cranial nerves do not influence this specific trunk and limb posture." } },
+                        { text: { it: "Indica una normale fase di stretching dopo il sonno.", en: "It indicates a normal stretching phase after sleep." }, isCorrect: false, rationale: { it: "Se mantenuta durante la visita, deve essere considerata un segno patologico.", en: "If maintained during the visit, it must be considered a pathological sign." } }
+                    ]
+                },
+                {
+                    question: { it: "Nell'ispezione ravvicinata, l'osservazione di una dilatazione ritmica delle narici durante l'inspirazione suggerisce:", en: "In close-up inspection, the observation of rhythmic nostril flaring during inspiration suggests:" },
+                    options: [
+                        { text: { it: "Uno sforzo inspiratorio legato a dispnea (difficoltà respiratoria).", en: "Inspiratory effort linked to dyspnea (breathing difficulty)." }, isCorrect: true, rationale: { it: "Esatto. Il movimento delle narici è un segno obiettivo di reclutamento dei muscoli accessori per respirare.", en: "Exact. Nostril movement is an objective sign of accessory muscle recruitment for breathing." } },
+                        { text: { it: "Una normale risposta fisiologica alla temperatura dell'ambulatorio.", en: "A normal physiological response to clinic temperature." }, isCorrect: false, rationale: { it: "La termoregolazione nel cane avviene solitamente tramite polipnea termica (lingua fuori).", en: "Thermoregulation in dogs usually occurs via thermal polypnea (panting)." } },
+                        { text: { it: "Un segnale olfattivo legato alla presenza di altri animali.", en: "An olfactory signal linked to the presence of other animals." }, isCorrect: false, rationale: { it: "Sebbene i cani annusino, la dilatazione ritmica in visita va indagata come segno respiratorio.", en: "While dogs sniff, rhythmic flaring during examination should be investigated as a respiratory sign." } },
+                        { text: { it: "Una malformazione congenita delle cartilagini nasali.", en: "A congenital malformation of nasal cartilages." }, isCorrect: false, rationale: { it: "È un segno funzionale, non necessariamente legato a una malformazione anatomica fissa.", en: "It is a functional sign, not necessarily linked to a fixed anatomical malformation." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale dei seguenti parametri NON fa parte dell'esame funzionale del respiro durante l'ispezione?", en: "Which of the following parameters is NOT part of the functional respiratory exam during inspection?" },
+                    options: [
+                        { text: { it: "Frequenza respiratoria.", en: "Respiratory frequency." }, isCorrect: false, rationale: { it: "La frequenza è un parametro base valutabile visivamente durante l'ispezione.", en: "Frequency is a basic parameter visually assessable during inspection." } },
+                        { text: { it: "Tipo respiratorio.", en: "Respiratory type." }, isCorrect: false, rationale: { it: "Il tipo (costale, addominale, ecc.) si valuta osservando i movimenti di torace e addome.", en: "The type (costal, abdominal, etc.) is assessed by observing chest and abdomen movements." } },
+                        { text: { it: "Presenza di rumori aggiunti (rantoli).", en: "Presence of adventitious sounds (crackles)." }, isCorrect: true, rationale: { it: "Corretto. I rumori aggiunti (rantoli, fischi) si rilevano solo con l'auscultazione.", en: "Correct. Adventitious sounds are only detected by auscultation." } },
+                        { text: { it: "Profondità del respiro.", en: "Breathing depth." }, isCorrect: false, rationale: { it: "La profondità (respiro superficiale o profondo) è parte integrante dell'ispezione funzionale.", en: "Depth (shallow or deep breathing) is an integral part of functional inspection." } }
+                    ]
+                },
+                {
+                    question: { it: "Il proprietario porta un campione di feci nerastre e catramose (melena). Se il medico le osserva direttamente, questo dato appartiene a:", en: "The owner brings a sample of black, tarry stool (melena). If the doctor observes it directly, this data belongs to:" },
+                    options: [
+                        { text: { it: "Ispezione clinica (osservazione diretta del reperto).", en: "Clinical inspection (direct observation of the finding)." }, isCorrect: true, rationale: { it: "Esatto. Poiché il medico vede direttamente il segno obiettivo, si configura come ispezione.", en: "Exact. Since the doctor directly sees the objective sign, it counts as inspection." } },
+                        { text: { it: "Anamnesi (funzioni organiche).", en: "History (organic functions)." }, isCorrect: false, rationale: { it: "L'anamnesi riguarda ciò che viene riferito a parole, non ciò che viene visto dal medico.", en: "History concerns what is reported in words, not what is seen by the doctor." } },
+                        { text: { it: "Palpazione addominale.", en: "Abdominal palpation." }, isCorrect: false, rationale: { it: "La palpazione richiede il tatto sui visceri, non l'osservazione delle feci.", en: "Palpation requires touch on viscera, not stool observation." } },
+                        { text: { it: "Segnalamento.", en: "Signalment." }, isCorrect: false, rationale: { it: "Il segnalamento riguarda l'anagrafica del paziente.", en: "Signalment concerns the patient's demographics." } }
+                    ]
+                },
+                {
+                    question: { it: "Un addome che appare asimmetrico all'ispezione, con una distensione evidente solo sul lato sinistro, può suggerire:", en: "An abdomen that appears asymmetric during inspection, with evident distension only on the left side, may suggest:" },
+                    options: [
+                        { text: { it: "Presenza di ascite (liquido libero).", en: "Presence of ascites (free fluid)." }, isCorrect: false, rationale: { it: "L'ascite causa solitamente una distensione simmetrica bilaterale verso il basso.", en: "Ascites usually causes symmetrical bilateral downward distension." } },
+                        { text: { it: "L'ingrossamento di uno specifico organo (es. milza) o una massa localizzata.", en: "Enlargement of a specific organ (e.g., spleen) or a localized mass." }, isCorrect: true, rationale: { it: "Le asimmetrie indirizzano verso eziologie localizzate piuttosto che sistemiche.", en: "Asymmetries point toward localized rather than systemic etiologies." } },
+                        { text: { it: "Un normale stato di gravidanza iniziale.", en: "A normal early pregnancy state." }, isCorrect: false, rationale: { it: "La gravidanza causa solitamente distensioni simmetriche o comunque non così localizzate.", en: "Pregnancy usually causes symmetrical or at least not so localized distensions." } },
+                        { text: { it: "Eccesso di grasso sottocutaneo.", en: "Excess subcutaneous fat." }, isCorrect: false, rationale: { it: "L'obesità porta a un aumento di volume simmetrico dell'intero profilo.", en: "Obesity leads to a symmetrical volume increase of the entire profile." } }
+                    ]
+                },
+                {
+                    question: { it: "Mucose congiuntivali e gengivali di colore bluastro (cianosi) sono indice obiettivo di:", en: "Bluish conjunctival and gingival mucous membranes (cyanosis) are an objective index of:" },
+                    options: [
+                        { text: { it: "Grave anemia (carenza di globuli rossi).", en: "Severe anemia (red blood cell deficiency)." }, isCorrect: false, rationale: { it: "L'anemia causa mucose pallide o porcellanacee, non bluastre.", en: "Anemia causes pale or porcelain-like mucous membranes, not bluish ones." } },
+                        { text: { it: "Ittero legato a emolisi o patologia epatica.", en: "Icterus linked to hemolysis or liver disease." }, isCorrect: false, rationale: { it: "L'ittero colora le mucose di giallo.", en: "Icterus colors the mucous membranes yellow." } },
+                        { text: { it: "Insufficiente ossigenazione del sangue periferico.", en: "Insufficient oxygenation of peripheral blood." }, isCorrect: true, rationale: { it: "Corretto. La cianosi indica un eccesso di emoglobina ridotta (non ossigenata).", en: "Correct. Cyanosis indicates an excess of reduced (deoxygenated) hemoglobin." } },
+                        { text: { it: "Shock emorragico imminente.", en: "Imminent hemorrhagic shock." }, isCorrect: false, rationale: { it: "Lo shock emorragico si manifesta tipicamente con mucose pallide.", en: "Hemorrhagic shock typically manifests with pale mucous membranes." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale affermazione descrive correttamente l'ispezione ambientale in medicina dei piccoli animali?", en: "Which statement correctly describes environmental inspection in small animal medicine?" },
+                    options: [
+                        { text: { it: "È l'osservazione dell'igiene e della sicurezza della clinica veterinaria durante la visita.", en: "It is the observation of the hygiene and safety of the veterinary clinic during the visit." }, isCorrect: false, rationale: { it: "L'ispezione ambientale si riferisce all'habitat del paziente, non alla clinica.", en: "Environmental inspection refers to the patient's habitat, not the clinic." } },
+                        { text: { it: "È un'osservazione praticabile solo in corso di visita domiciliare per rilevare rischi o tossici.", en: "It is an observation practicable only during home visits to detect risks or toxins." }, isCorrect: true, rationale: { it: "Vero. In ambulatorio l'ambiente è neutro e non fornisce dati sul contesto di vita reale del paziente.", en: "True. In the clinic, the environment is neutral and provides no data on the patient's real context." } },
+                        { text: { it: "Serve a valutare se la marca di cibo utilizzata è idonea alla razza del cane.", en: "It serves to assess whether the food brand used is suitable for the dog breed." }, isCorrect: false, rationale: { it: "Questo è un dato dello stile di vita raccolto in anamnesi.", en: "This is a lifestyle fact collected in history." } },
+                        { text: { it: "Consiste nel controllo dei certificati vaccinali portati dal proprietario.", en: "It consists of checking the vaccination certificates brought by the owner." }, isCorrect: false, rationale: { it: "Questi sono dati dell'anamnesi remota e non dell'ispezione clinica.", en: "These are past history data and not clinical inspection." } }
+                    ]
+                },
+                {
+                    question: { it: "Qual è lo scopo ultimo di un'ispezione clinica ben condotta?", en: "What is the ultimate goal of a well-conducted clinical inspection?" },
+                    options: [
+                        { text: { it: "Sostituire la necessità di toccare l'animale durante le fasi successive della visita.", en: "Replace the need to touch the animal during the subsequent phases of the visit." }, isCorrect: false, rationale: { it: "L'ispezione è solo il primo tempo; palpazione, percussione e auscultazione sono necessari per la completezza del quadro.", en: "Inspection is only the first stage; palpation, percussion, and auscultation are necessary for a complete picture." } },
+                        { text: { it: "Rilevare segni clinici oggettivi che confermino o indirizzino i sospetti nati con l'anamnesi.", en: "Detect objective clinical signs that confirm or guide suspicions raised during history taking." }, isCorrect: true, rationale: { it: "Esatto. L'ispezione trasforma il racconto soggettivo del proprietario in evidenze mediche osservabili.", en: "Exact. Inspection transforms the owner's subjective story into observable medical evidence." } },
+                        { text: { it: "Fornire una diagnosi eziologica definitiva senza ricorrere a esami collaterali.", en: "Provide a definitive etiological diagnosis without resorting to ancillary tests." }, isCorrect: false, rationale: { it: "Spesso l'ispezione indirizza l'iter ma raramente conclude da sola il processo diagnostico definitivo.", en: "Inspection often guides the process but rarely concludes the definitive diagnosis on its own." } },
+                        { text: { it: "Calibrare correttamente gli strumenti elettronici per la rilevazione dei parametri vitali.", en: "Correctly calibrate electronic instruments for vital parameter detection." }, isCorrect: false, rationale: { it: "L'ispezione clinica utilizza i sensi del medico (vista), non la calibrazione di macchinari.", en: "Clinical inspection uses the doctor's senses (sight), not machine calibration." } }
+                    ]
+                }
+            ];
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            let currentIdx = 0;
+            let score = 0;
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) {
+                        if (key === 'backToHome') el.innerHTML = translations[key][lang];
+                        else el.textContent = translations[key][lang];
+                    }
+                });
+                renderQuestion();
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking && activeTTSButton === button) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else { synth.pause(); button.classList.remove('playing'); }
+                    return;
+                }
+                synth.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onstart = () => { button.classList.add('playing'); activeTTSButton = button; };
+                utterance.onend = () => { button.classList.remove('playing'); activeTTSButton = null; };
+                synth.speak(utterance);
+            };
+
+            const renderQuestion = () => {
+                const q = quizQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', quizQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                document.getElementById('question-tts').onclick = () => speak(q.question[currentLanguage], document.getElementById('question-tts'));
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                // Shuffle options for better pedagogical effect
+                const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+                
+                shuffledOptions.forEach((opt, i) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-3 w-full";
+                    
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn flex-grow text-left p-5 rounded-xl font-semibold text-slate-700";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn, shuffledOptions);
+                    
+                    const ttsBtn = document.createElement('button');
+                    ttsBtn.className = "tts-button p-2";
+                    ttsBtn.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    ttsBtn.onclick = () => speak(opt.text[currentLanguage], ttsBtn);
+
+                    div.appendChild(btn);
+                    div.appendChild(ttsBtn);
+                    container.appendChild(div);
+                });
+            };
+
+            const handleSelect = (opt, btn, currentOptions) => {
+                if (synth.speaking) synth.cancel();
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                
+                if (opt.isCorrect) {
+                    btn.classList.add('correct');
+                    score++;
+                } else {
+                    btn.classList.add('incorrect');
+                    // Find and highlight correct button among the shuffled ones
+                    btns.forEach(b => {
+                        const originalOpt = currentOptions.find(o => o.text[currentLanguage] === b.textContent);
+                        if (originalOpt && originalOpt.isCorrect) b.classList.add('correct');
+                    });
+                }
+
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                
+                const nextBtn = document.getElementById('next-button');
+                nextBtn.textContent = currentIdx === quizQuestions.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
+
+            document.getElementById('next-button').onclick = () => {
+                document.getElementById('feedback-area').classList.add('hidden');
+                if (currentIdx < quizQuestions.length - 1) {
+                    currentIdx++;
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            };
+
+            const showResults = () => {
+                document.getElementById('question-area').classList.add('hidden');
+                document.getElementById('results-area').classList.remove('hidden');
+                document.getElementById('score-text').textContent = `${score} / ${quizQuestions.length}`;
+            };
+
+            document.getElementById('restart-button').onclick = () => {
+                currentIdx = 0; score = 0;
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+                if (synth.speaking) synth.cancel();
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
