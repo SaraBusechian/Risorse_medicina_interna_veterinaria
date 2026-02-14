@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: Esame Obiettivo Generale (EOG) - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA AZZURRO (SKY) per Piccoli Animali */
+        .hero-bg { background-color: #0369a1; background-image: linear-gradient(to right, #0369a1, #0284c7); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f0f9ff; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #0369a1; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e0f2fe; color: #0284c7; }
+        .quick-nav-item.active { background-color: #0369a1; color: #ffffff !important; border-color: #0369a1; }
+
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #0369a1; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 1000px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Infografica */
+        h2 { font-family: 'Lexend', sans-serif; color: #0c4a6e; border-bottom: 2px solid #e0f2fe; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700; text-align: center; }
+        .flow-step { border-left: 4px solid #0369a1; padding: 1rem 1.5rem; background-color: #f8fafc; border-radius: 0 0.5rem 0.5rem 0; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); width: 100%; max-width: 500px; margin: 0 auto; }
+        .flow-step:hover { transform: translateX(5px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .flow-arrow { color: #0ea5e9; font-size: 1.5rem; font-weight: bold; text-align: center; margin: 0.5rem 0; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .flow-step, .dsa-mode .bg-emerald-50, .dsa-mode .bg-white { background-color: #ffffff !important; border: 2px solid #000 !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet EOG</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="esami_clinici_piccoli_animali.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleEOG">1. Esame Obiettivo Generale (EOG)</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_eog.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_eog.html" class="section-nav-link active" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_eog.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="quiz_eog.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item active" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <header class="text-center mb-12">
+                <h1 class="text-3xl font-bold mb-2 text-sky-900" data-lang-key="pageTitle">L'EOG Piccoli Animali</h1>
+                <p class="text-gray-600" data-lang-key="pageSubtitle">Guida visiva al protocollo sistematico per cane e gatto.</p>
+            </header>
+
+            <main class="space-y-16">
+                <!-- Flusso Operativo Verticale -->
+                <section>
+                    <h2 data-lang-key="flowTitle">Flusso Operativo dell'EOG</h2>
+                    <div class="flex flex-col items-center">
+                        <div class="flow-step border-sky-800">
+                            <h3 class="text-lg text-sky-900 font-bold" data-lang-key="step1Title">1. Ispezione a Distanza</h3>
+                            <p class="text-xs mt-2 text-gray-600" data-lang-key="step1Desc">Valutazione sensorio, postura, BCS e andatura prima di toccare il paziente.</p>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step border-sky-600">
+                            <h3 class="text-lg text-sky-800 font-bold" data-lang-key="step2Title">2. Cute e Connettivo</h3>
+                            <p class="text-xs mt-2 text-gray-600" data-lang-key="step2Desc">Qualità del mantello, elasticità cutanea (idratazione) e ricerca edemi.</p>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step border-cyan-600">
+                            <h3 class="text-lg text-cyan-900 font-bold" data-lang-key="step3Title">3. Linfonodi</h3>
+                            <p class="text-xs mt-2 text-gray-600" data-lang-key="step3Desc">Palpazione sistematica di mandibolari, prescapolari e poplitei.</p>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step border-teal-500">
+                            <h3 class="text-lg text-teal-900 font-bold" data-lang-key="step4Title">4. Mucose Apparenti</h3>
+                            <p class="text-xs mt-2 text-gray-600" data-lang-key="step4Desc">Colore, umidità e Tempo di Riempimento Capillare (TRC).</p>
+                        </div>
+                        <div class="flow-arrow">↓</div>
+                        <div class="flow-step border-emerald-500">
+                            <h3 class="text-lg text-emerald-800 font-bold" data-lang-key="step5Title">5. Parametri Vitali</h3>
+                            <p class="text-xs mt-2 text-gray-600" data-lang-key="step5Desc">Temperatura (rettale), Polso (femorale) e Respiro.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Grafici e Mucose -->
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div class="bg-white rounded-lg shadow-md p-6 h-full border border-gray-100">
+                        <h3 class="text-xl font-bold mb-4 text-sky-800 text-center" data-lang-key="chart1Title">Parametri di Riferimento (Adulti)</h3>
+                        <div class="relative h-64">
+                            <canvas id="vitalSignsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6 h-full border border-gray-100">
+                        <h3 class="text-xl font-bold mb-4 text-sky-700 text-center" data-lang-key="chart2Title">Interpretazione Colore Mucose</h3>
+                        <div class="space-y-4 mt-2">
+                            <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-[#FFC0CB] mr-4 border"></div><div data-lang-key="mucosa1"><strong>Roseo:</strong> Normale</div></div>
+                            <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-[#F5F5DC] mr-4 border"></div><div data-lang-key="mucosa2"><strong>Pallide:</strong> Anemia, shock</div></div>
+                            <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-[#FFFFE0] mr-4 border"></div><div data-lang-key="mucosa3"><strong>Itteriche:</strong> Emolisi, epatopatia</div></div>
+                            <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-[#ADD8E6] mr-4 border"></div><div data-lang-key="mucosa4"><strong>Cianotiche:</strong> Ipossia grave</div></div>
+                            <div class="flex items-center"><div class="w-8 h-8 rounded-full bg-[#DC143C] mr-4 border"></div><div data-lang-key="mucosa5"><strong>Iperemiche:</strong> Flogosi, shock iniziale</div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Accorgimenti di Specie Ottimizzati per EOG -->
+                <section class="bg-sky-50/50 p-8 rounded-xl border border-sky-100 text-center">
+                    <h2 class="!mt-0 !text-sky-800 font-bold" data-lang-key="specieTitle">Accorgimenti per l'EOG</h2>
+                    <p class="text-sm text-gray-600 mb-8" data-lang-key="specieDesc">Dettagli per una valutazione generale accurata.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-sky-100">
+                            <h3 class="text-sm font-bold text-sky-800" data-lang-key="specie1Title">Ambiente Neutro</h3>
+                            <p class="text-xs text-gray-600" data-lang-key="specie1Desc">Osserva il sensorio prima che lo stress dell'interazione alteri la reattività.</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-sky-100">
+                            <h3 class="text-sm font-bold text-sky-800" data-lang-key="specie2Title">Test della Plica</h3>
+                            <p class="text-xs text-gray-600" data-lang-key="specie2Desc">Eseguire sul collo o sulla regione toracica per valutare l'idratazione.</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-sky-100">
+                            <h3 class="text-sm font-bold text-sky-800" data-lang-key="specie3Title">FC al Polso</h3>
+                            <p class="text-xs text-gray-600" data-lang-key="specie3Desc">In fase EOG, rileva la frequenza alla femorale (risparmia tempo e stress).</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-sky-100">
+                            <h3 class="text-sm font-bold text-sky-800" data-lang-key="specie4Title">Palpazione BCS</h3>
+                            <p class="text-xs text-gray-600" data-lang-key="specie4Desc">Usa il palmo per sentire le coste: la sola ispezione visiva può ingannare.</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet EOG', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleEOG: { it: '1. Esame Obiettivo Generale (EOG)', en: '1. General Physical Exam (GPE)' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical Examination" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular System" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory System" },
+                navDig: { it: "Apparato Digerente", en: "Digestive System" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal System" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary System" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic System" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine System" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous System" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary System" },
+                pageTitle: { it: "L'EOG Piccoli Animali", en: "Small Animal GPE" },
+                pageSubtitle: { it: "Guida visiva al protocollo sistematico per cane e gatto.", en: "Visual guide to the systematic protocol for dogs and cats." },
+                flowTitle: { it: "Flusso Operativo dell'EOG", en: "GPE Operational Flow" },
+                step1Title: { it: "1. Ispezione a Distanza", en: "1. Distance Inspection" },
+                step1Desc: { it: "Valutazione sensorio, postura, BCS e andatura prima di toccare il paziente.", en: "Status, posture, BCS, and gait before contact." },
+                step2Title: { it: "2. Cute e Connettivo", en: "2. Skin and Connective" },
+                step2Desc: { it: "Qualità del mantello, elasticità cutanea (idratazione) e ricerca edemi.", en: "Coat, skin tent (hydration), and edema check." },
+                step3Title: { it: "3. Linfonodi", en: "3. Lymph Nodes" },
+                step3Desc: { it: "Palpazione sistematica di mandibolari, prescapolari e poplitei.", en: "Palpation of mandibular, prescapular, and popliteal nodes." },
+                step4Title: { it: "4. Mucose", en: "4. Mucosae" },
+                step4Desc: { it: "Colore, umidità e Tempo di Riempimento Capillare (TRC).", en: "Color, moisture, and Capillary Refill Time (CRT)." },
+                step5Title: { it: "5. Parametri Vitali", en: "5. Vital Parameters" },
+                step5Desc: { it: "Temperatura (rettale), Polso (femorale) e Respiro.", en: "Temperature (rectal), Pulse (femoral), and Breathing." },
+                chart1Title: { it: "Parametri di Riferimento (Adulti)", en: "Reference Parameters (Adults)" },
+                chart2Title: { it: "Interpretazione Colore Mucose", en: "Mucous Membrane Color Interpretation" },
+                mucosa1: { it: "<strong>Roseo:</strong> Normale", en: "<strong>Pink:</strong> Normal" },
+                mucosa2: { it: "<strong>Pallide:</strong> Anemia, shock", en: "<strong>Pale:</strong> Anemia, shock" },
+                mucosa3: { it: "<strong>Itteriche:</strong> Emolisi, epatopatia", en: "<strong>Icteric:</strong> Hemolysis, liver disease" },
+                mucosa4: { it: "<strong>Cianotiche:</strong> Ipossia grave", en: "<strong>Cyanotic:</strong> Severe hypoxia" },
+                mucosa5: { it: "<strong>Iperemiche:</strong> Flogosi, shock iniziale", en: "<strong>Hyperemic:</strong> Inflammation, early shock" },
+                specieTitle: { it: "Accorgimenti per l'EOG", en: "GPE Tips" },
+                specieDesc: { it: "Dettagli per una valutazione generale accurata.", en: "Details for an accurate general assessment." },
+                specie1Title: { it: "Ambiente Neutro", en: "Neutral Environment" },
+                specie1Desc: { it: "Osserva il sensorio prima che lo stress dell'interazione alteri la reattività.", en: "Observe sensorium before interaction stress alters reactivity." },
+                specie2Title: { it: "Test della Plica", en: "Skin Tent Test" },
+                specie2Desc: { it: "Eseguire sul collo o sulla regione toracica per valutare l'idratazione.", en: "Perform on the neck or thoracic region to assess hydration." },
+                specie3Title: { it: "FC al Polso", en: "Pulse HR" },
+                specie3Desc: { it: "In fase EOG, rileva la frequenza alla femorale (risparmia tempo e stress).", en: "In GPE phase, take HR at the femoral (saves time and stress)." },
+                specie4Title: { it: "Palpazione BCS", en: "BCS Palpation" },
+                specie4Desc: { it: "Usa il palmo per sentire le coste: la sola ispezione visiva può ingannare.", en: "Use palm to feel ribs: visual inspection alone can be misleading." },
+                chartTemp: { it: 'Temp (°C)', en: 'Temp (°C)' },
+                chartHR: { it: 'FC (bpm)', en: 'HR (bpm)' },
+                chartRR: { it: 'FR (apm)', en: 'RR (bpm)' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            let vitalSignsChart;
+
+            const createChart = (lang) => {
+                const ctx = document.getElementById('vitalSignsChart').getContext('2d');
+                if(vitalSignsChart) vitalSignsChart.destroy();
+                vitalSignsChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Cane', 'Gatto'],
+                        datasets: [
+                            { label: translations.chartTemp[lang], data: [38.5, 38.8], backgroundColor: '#ef5675', yAxisID: 'y' },
+                            { label: translations.chartHR[lang], data: [100, 180], backgroundColor: '#0369a1', yAxisID: 'y1' },
+                            { label: translations.chartRR[lang], data: [22, 25], backgroundColor: '#0ea5e9', yAxisID: 'y1' }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { type: 'linear', position: 'left', min: 35, max: 41, title: { display: true, text: '°C' } },
+                            y1: { type: 'linear', position: 'right', min: 0, max: 240, title: { display: true, text: 'battiti/atti al min' }, grid: { drawOnChartArea: false } }
+                        },
+                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
+                    }
+                });
+            };
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                createChart(lang);
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
