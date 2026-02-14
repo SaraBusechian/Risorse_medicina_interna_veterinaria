@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: La Palpazione Clinica - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #0284c7; background-image: linear-gradient(to right, #0284c7, #38bdf8); }
+        
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #bae6fd !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; }
+        .option-btn:hover:not(:disabled) { border-color: #0284c7; background-color: #f0f9ff; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d !important; font-weight: bold; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c !important; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
+            letter-spacing: 0.05em;
+            line-height: 2;
+        }
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+            box-shadow: none !important;
+        }
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
+        }
+
+        .dsa-mode .section-card, .dsa-mode .option-btn { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+            color: #000000 !important;
+        }
+
+        .dsa-mode .correct { background-color: #dcfce7 !important; border-width: 4px !important; }
+        .dsa-mode .incorrect { background-color: #fee2e2 !important; border-width: 4px !important; }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: none !important;
+        }
+
+        /* --- TTS BUTTON --- */
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover, .tts-button.playing { color: #0284c7; }
+        .dsa-mode .tts-button { color: #000000 !important; }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6 text-white">
+                    <li><a href="metodologie_piccoli_animali.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="metodologie_piccoli_animali.html#palpazione" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- JS inserisce icona e testo -->
+                </a>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">Test di Valutazione</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">Metti alla prova le tue capacità tattili e semeiologiche.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 -mt-10 pb-12 flex justify-center">
+        <div id="quiz-container" class="section-card w-full max-w-3xl p-8">
+            
+            <!-- AREA DOMANDA -->
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-sky-800 font-bold uppercase tracking-wider text-sm" data-lang-key="quizLabel">Palpazione Clinica P.A.</h3>
+                    <span id="progress-text" class="text-slate-500 font-bold text-sm bg-slate-100 px-3 py-1 rounded-full"></span>
+                </div>
+
+                <div class="mb-8">
+                    <div class="flex items-start">
+                        <p id="question-text" class="text-xl md:text-2xl font-semibold text-slate-800 leading-snug flex-grow"></p>
+                        <button id="question-tts" class="tts-button flex-shrink-0 mt-1">
+                            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4">
+                    <!-- Opzioni via JS -->
+                </div>
+            </div>
+
+            <!-- AREA FEEDBACK -->
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-slate-50 border-2 border-slate-200">
+                    <p id="rationale-text" class="text-slate-700 italic mb-6"></p>
+                    <button id="next-button" class="w-full bg-sky-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-sky-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <!-- AREA RISULTATI -->
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🎓</div>
+                <h2 class="text-3xl font-bold text-sky-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <div class="inline-block bg-sky-50 border-2 border-sky-200 rounded-2xl px-10 py-6 mb-10 mt-6">
+                    <p class="text-slate-500 uppercase text-xs font-bold tracking-widest mb-1">Punteggio Finale</p>
+                    <p id="score-text" class="text-6xl font-black text-sky-600"></p>
+                </div>
+                <button id="restart-button" class="w-full border-2 border-sky-600 text-sky-600 font-bold py-4 px-6 rounded-xl hover:bg-sky-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backIcon = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 011.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna P.A.', en: 'Small Animal Internal Medicine' },
+                backToHome: { 
+                    it: backIcon + 'Torna all\'Indice', 
+                    en: backIcon + 'Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'Test di Valutazione', en: 'Assessment Quiz' },
+                pageSubtitle: { it: 'Metti alla prova le tue capacità di osservazione clinica.', en: 'Test your clinical observation skills.' },
+                quizLabel: { it: 'Palpazione Clinica P.A.', en: 'Small Animal Palpation' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' },
+                progressText: { it: 'Domanda {current} di {total}', en: 'Question {current} of {total}' }
+            };
+
+            const quizQuestions = [
+                {
+                    question: { it: "In quale distretto anatomico si ricerca correttamente il polso arterioso nel cane e nel gatto?", en: "In which anatomical area is the arterial pulse correctly sought in dogs and cats?" },
+                    options: [
+                        { text: { it: "Arteria femorale, nell'interno coscia.", en: "Femoral artery, in the inner thigh." }, isCorrect: true, rationale: { it: "Corretto. È il sito elettivo per valutare frequenza, ritmo e qualità del polso nei piccoli animali.", en: "Correct. It is the elective site to assess pulse rate, rhythm, and quality in small animals." } },
+                        { text: { it: "Arteria facciale, sul bordo della mandibola.", en: "Facial artery, on the edge of the mandible." }, isCorrect: false, rationale: { it: "Questo è un sito comune nei grandi animali (es. cavallo), non nei piccoli.", en: "This is a common site in large animals (e.g., horse), not small ones." } },
+                        { text: { it: "Arteria coccigea, alla base della coda.", en: "Coccygeal artery, at the base of the tail." }, isCorrect: false, rationale: { it: "Utilizzata nel bovino, ma di difficile reperimento in cane e gatto.", en: "Used in cattle, but difficult to find in dogs and cats." } },
+                        { text: { it: "Arteria giugulare, nel solco del collo.", en: "Jugular artery, in the neck groove." }, isCorrect: false, rationale: { it: "La giugulare è una vena; la palpazione del battito in questa sede indica un polso venoso patologico.", en: "The jugular is a vein; feeling a beat here indicates a pathological venous pulse." } }
+                    ]
+                },
+                {
+                    question: { it: "Qual è la tecnica corretta per eseguire la palpazione addominale profonda nel gatto?", en: "What is the correct technique for performing deep abdominal palpation in cats?" },
+                    options: [
+                        { text: { it: "Tecnica bimanuale con forte pressione.", en: "Bimanual technique with strong pressure." }, isCorrect: false, rationale: { it: "Troppa pressione causa dolore e contrattività riflessa; nel gatto si preferisce la monomanuale.", en: "Too much pressure causes pain and guarding; monomanual is preferred in cats." } },
+                        { text: { it: "Tecnica monomanuale 'a pinza' con estrema delicatezza.", en: "Monomanual 'pincer' technique with extreme gentleness." }, isCorrect: true, rationale: { it: "Vero. La delicatezza è essenziale per rilassare la parete e isolare i visceri (reni, anse, vescica).", en: "True. Gentleness is essential to relax the wall and isolate viscera (kidneys, loops, bladder)." } },
+                        { text: { it: "Palpazione superficiale tramite sfioramento.", en: "Superficial palpation via light stroking." }, isCorrect: false, rationale: { it: "Questa serve solo per la cute, non permette di valutare gli organi interni.", en: "This only works for the skin, not for assessing internal organs." } },
+                        { text: { it: "Manovra di ballottamento bilaterale veloce.", en: "Fast bilateral ballottement maneuver." }, isCorrect: false, rationale: { it: "Il ballottamento serve per rilevare masse o liquidi liberi, non è la tecnica di base sistematica.", en: "Ballottement is for detecting masses or free fluid, not the basic systematic technique." } }
+                    ]
+                },
+                {
+                    question: { it: "Quali linfonodi superficiali sono generalmente palpabili in un cane sano?", en: "Which superficial lymph nodes are generally palpable in a healthy dog?" },
+                    options: [
+                        { text: { it: "Solo i prescapolari e gli inguinali.", en: "Only prescapular and inguinal." }, isCorrect: false, rationale: { it: "Gli inguinali si sentono solo se aumentati di volume.", en: "Inguinal nodes are felt only if enlarged." } },
+                        { text: { it: "Retromandibolari, prescapolari e poplitei.", en: "Retromandibular, prescapular, and popliteal." }, isCorrect: true, rationale: { it: "Esatto. Questi tre gruppi sono isolabili fisiologicamente nel soggetto normale.", en: "Exact. These three groups are physiologically isolatable in a normal subject." } },
+                        { text: { it: "Ascellari, inguinali e mandibolari.", en: "Axillary, inguinal, and mandibular." }, isCorrect: false, rationale: { it: "Ascellari e inguinali si palpano solo in caso di linfoadenomegalia.", en: "Axillary and inguinal are palpable only in case of lymphadenomegaly." } },
+                        { text: { it: "Tutti i linfonodi della catena superficiale.", en: "All superficial chain lymph nodes." }, isCorrect: false, rationale: { it: "Alcuni linfonodi sono troppo piccoli o profondi per essere sentiti se non patologici.", en: "Some nodes are too small or deep to be felt unless pathological." } }
+                    ]
+                },
+                {
+                    question: { it: "Come si valuta correttamente il Tempo di Riempimento Capillare (TRC) tramite palpazione?", en: "How is Capillary Refill Time (CRT) correctly assessed via palpation?" },
+                    options: [
+                        { text: { it: "Tramite pressione digitale sulla gengiva e conteggio dei secondi per il ritorno del colore roseo.", en: "By digital pressure on the gum and counting the seconds for the pink color to return." }, isCorrect: true, rationale: { it: "Corretto. Un TRC normale è inferiore ai 2 secondi.", en: "Correct. A normal CRT is less than 2 seconds." } },
+                        { text: { it: "Osservando semplicemente il colore delle mucose congiuntivali.", en: "By simply observing the color of the conjunctival mucosae." }, isCorrect: false, rationale: { it: "Questa è ispezione; il TRC richiede la manovra fisica della pressione.", en: "This is inspection; CRT requires the physical maneuver of pressure." } },
+                        { text: { it: "Eseguendo la manovra della plica cutanea sul collo.", en: "By performing the skin tent maneuver on the neck." }, isCorrect: false, rationale: { it: "La plica valuta l'idratazione dei tessuti, non la perfusione capillare.", en: "The skin tent assesses tissue hydration, not capillary perfusion." } },
+                        { text: { it: "Palpando la temperatura delle estremità (polpastrelli).", en: "By palpating the temperature of the extremities (paw pads)." }, isCorrect: false, rationale: { it: "La temperatura fornisce indizi, ma non è il metodo per misurare il TRC.", en: "Temperature provides clues, but it's not the method to measure CRT." } }
+                    ]
+                },
+                {
+                    question: { it: "Durante la palpazione dei linfonodi, quale caratteristica indirizza verso un processo flogistico (infiammatorio) acuto?", en: "During lymph node palpation, which characteristic points towards an acute inflammatory process?" },
+                    options: [
+                        { text: { it: "Consistenza lignea e assenza di dolore.", en: "Woody consistency and absence of pain." }, isCorrect: false, rationale: { it: "Questi segni sono più tipici di processi neoplastici o cronici.", en: "These signs are more typical of neoplastic or chronic processes." } },
+                        { text: { it: "Aumento di volume, calore locale e dolorabilità.", en: "Enlargement, local heat, and tenderness." }, isCorrect: true, rationale: { it: "Sì. I segni cardinali dell'infiammazione (calor, dolor, tumor) si riflettono nella palpazione.", en: "Yes. The cardinal signs of inflammation are reflected in palpation." } },
+                        { text: { it: "Diminuzione delle dimensioni e freddezza.", en: "Decrease in size and coldness." }, isCorrect: false, rationale: { it: "Un linfonodo infiammato aumenta di volume e temperatura.", en: "An inflamed lymph node increases in size and temperature." } },
+                        { text: { it: "Eccessiva mobilità rispetto ai piani sottostanti.", en: "Excessive mobility relative to underlying planes." }, isCorrect: false, rationale: { it: "La mobilità è normale; la fissità ai tessuti è invece un segno d'allarme.", en: "Mobility is normal; fixation to tissues is a warning sign." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa si valuta eseguendo la manovra della 'plica cutanea'?", en: "What is assessed by performing the 'skin tent' maneuver?" },
+                    options: [
+                        { text: { it: "Lo stato di idratazione (elasticità dei tessuti).", en: "Hydration status (tissue elasticity)." }, isCorrect: true, rationale: { it: "Esatto. Un ritardo nella distensione della plica indica disidratazione.", en: "Exact. A delay in the flattening of the tent indicates dehydration." } },
+                        { text: { it: "La presenza di parassiti sottocutanei.", en: "The presence of subcutaneous parasites." }, isCorrect: false, rationale: { it: "Questi si rilevano solitamente con l'ispezione o la palpazione superficiale.", en: "These are usually detected with inspection or superficial palpation." } },
+                        { text: { it: "Lo spessore del grasso corporeo per il BCS.", en: "Body fat thickness for BCS." }, isCorrect: false, rationale: { it: "Il BCS si valuta principalmente con l'ispezione visiva e la palpazione delle coste.", en: "BCS is mainly assessed with visual inspection and rib palpation." } },
+                        { text: { it: "La sensibilità dolorifica cutanea.", en: "Skin pain sensitivity." }, isCorrect: false, rationale: { it: "Sebbene valuti la reazione, lo scopo principale è l'idratazione.", en: "While it assesses reaction, the main purpose is hydration." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale affermazione descrive correttamente l'esplorazione rettale nei piccoli animali?", en: "Which statement correctly describes rectal examination in small animals?" },
+                    options: [
+                        { text: { it: "È una manovra sistematica da eseguire in ogni visita clinica.", en: "It is a routine maneuver to be performed in every clinical visit." }, isCorrect: false, rationale: { it: "A differenza dei grandi animali, nei piccoli è una manovra selettiva.", en: "Unlike large animals, in small ones it is a selective maneuver." } },
+                        { text: { it: "È indicata solo in casi selezionati (es. sospetto prostatico o traumi del bacino).", en: "It is indicated only in selected cases (e.g., prostatic suspicion or pelvic trauma)." }, isCorrect: true, rationale: { it: "Vero. Si esegue quando l'anamnesi o i segni clinici indirizzano verso l'area pelvica/rettale.", en: "True. It is performed when history or signs point to the pelvic/rectal area." } },
+                        { text: { it: "Serve principalmente per misurare la temperatura interna.", en: "It serves mainly to measure internal temperature." }, isCorrect: false, rationale: { it: "La misurazione della temperatura è una procedura separata che usa il termometro.", en: "Temperature measurement is a separate procedure using a thermometer." } },
+                        { text: { it: "Si esegue sempre bimanualmente con l'ausilio di un assistente.", en: "It is always performed bimanually with the help of an assistant." }, isCorrect: false, rationale: { it: "È una manovra monomanuale che richiede solo una corretta contenzione.", en: "It is a monomanual maneuver that only requires proper restraint." } }
+                    ]
+                },
+                {
+                    question: { it: "La palpazione della trachea nel cane è utile per:", en: "Tracheal palpation in dogs is useful for:" },
+                    options: [
+                        { text: { it: "Valutare la pervietà dell'esofago.", en: "Assessing esophageal patency." }, isCorrect: false, rationale: { it: "L'esofago è dorsale alla trachea e difficilmente palpabile se vuoto.", en: "The esophagus is dorsal to the trachea and hard to palpate if empty." } },
+                        { text: { it: "Evocare il riflesso della tosse (segno di sensibilità tracheale).", en: "Evoking the cough reflex (sign of tracheal sensitivity)." }, isCorrect: true, rationale: { it: "Esatto. Un riflesso facilmente evocabile suggerisce infiammazione o collasso tracheale.", en: "Exact. An easily elicited reflex suggests inflammation or tracheal collapse." } },
+                        { text: { it: "Misurare la frequenza cardiaca a riposo.", en: "Measuring resting heart rate." }, isCorrect: false, rationale: { it: "Il cuore si valuta nel torace tramite auscultazione o palpazione dell'itto.", en: "The heart is assessed in the chest via auscultation or apex beat palpation." } },
+                        { text: { it: "Identificare la presenza di calcoli salivari.", en: "Identifying salivary stones." }, isCorrect: false, rationale: { it: "Questi si ricercano nella cavità orale o sotto la mandibola.", en: "These are sought in the oral cavity or under the mandible." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale caratteristica dei linfonodi inguinali e ascellari è corretta?", en: "Which characteristic of inguinal and axillary lymph nodes is correct?" },
+                    options: [
+                        { text: { it: "Sono sempre palpabili chiaramente nel gatto adulto.", en: "They are always clearly palpable in adult cats." }, isCorrect: false, rationale: { it: "Nel soggetto sano non sono reperibili.", en: "They are not detectable in a healthy subject." } },
+                        { text: { it: "Si palpano solo se aumentati di volume (condizione patologica).", en: "They are palpable only if enlarged in volume (pathological condition)." }, isCorrect: true, rationale: { it: "Corretto. La loro reperibilità è quasi sempre indice di linfoadenomegalia.", en: "Correct. Their detectability is almost always an index of lymphadenomegaly." } },
+                        { text: { it: "Hanno una consistenza fluttuante nel cane normale.", en: "They have a fluctuant consistency in normal dogs." }, isCorrect: false, rationale: { it: "La consistenza fluttuante indica presenza di liquido (ascesso/cisti), non è normale.", en: "Fluctuant consistency indicates fluid (abscess/cyst), which is not normal." } },
+                        { text: { it: "Sono i primi ad essere palpati nella sequenza testa-coda.", en: "They are the first to be palpated in the head-to-tail sequence." }, isCorrect: false, rationale: { it: "La sequenza inizia dai retromandibolari.", en: "The sequence starts with the retromandibular nodes." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa si intende per 'fremito' durante la palpazione toracica?", en: "What is meant by 'thrill' during thoracic palpation?" },
+                    options: [
+                        { text: { it: "Il normale rumore del respiro avvertito sulla mano.", en: "The normal breathing sound felt on the hand." }, isCorrect: false, rationale: { it: "Il respiro normale non produce vibrazioni palpabili sulla parete.", en: "Normal breathing doesn't produce palpable vibrations on the wall." } },
+                        { text: { it: "Una vibrazione palpabile sulla superficie corporea causata da turbolenze (es. soffi cardiaci gravi).", en: "A palpable vibration on the body surface caused by turbulence (e.g., severe heart murmurs)." }, isCorrect: true, rationale: { it: "Esatto. Il fremito è la traduzione tattile di un rumore molto intenso.", en: "Exact. A thrill is the tactile translation of a very intense sound." } },
+                        { text: { it: "La reazione di tremore dell'animale causata dal freddo.", en: "The animal's shivering reaction caused by cold." }, isCorrect: false, rationale: { it: "Questo è un brivido termico, non un fremito semeiologico.", en: "This is thermal shivering, not a semiological thrill." } },
+                        { text: { it: "Il movimento ritmico della coda durante la visita.", en: "The rhythmic movement of the tail during the visit." }, isCorrect: false, rationale: { it: "Non ha rilevanza semeiologica come 'fremito'.", en: "It has no semiological relevance as a 'thrill'." } }
+                    ]
+                }
+            ];
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            let currentIdx = 0;
+            let score = 0;
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) {
+                        if (key === 'backToHome') el.innerHTML = translations[key][lang];
+                        else el.textContent = translations[key][lang];
+                    }
+                });
+                renderQuestion();
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking && activeTTSButton === button) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else { synth.pause(); button.classList.remove('playing'); }
+                    return;
+                }
+                synth.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onstart = () => { button.classList.add('playing'); activeTTSButton = button; };
+                utterance.onend = () => { button.classList.remove('playing'); activeTTSButton = null; };
+                synth.speak(utterance);
+            };
+
+            const renderQuestion = () => {
+                const q = quizQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', quizQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                document.getElementById('question-tts').onclick = () => speak(q.question[currentLanguage], document.getElementById('question-tts'));
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+                
+                shuffledOptions.forEach((opt, i) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-3 w-full";
+                    
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn flex-grow text-left p-5 rounded-xl font-semibold text-slate-700";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn, shuffledOptions);
+                    
+                    const ttsBtn = document.createElement('button');
+                    ttsBtn.className = "tts-button p-2";
+                    ttsBtn.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    ttsBtn.onclick = () => speak(opt.text[currentLanguage], ttsBtn);
+
+                    div.appendChild(btn);
+                    div.appendChild(ttsBtn);
+                    container.appendChild(div);
+                });
+            };
+
+            const handleSelect = (opt, btn, currentOptions) => {
+                if (synth.speaking) synth.cancel();
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                
+                if (opt.isCorrect) {
+                    btn.classList.add('correct');
+                    score++;
+                } else {
+                    btn.classList.add('incorrect');
+                    btns.forEach(b => {
+                        const originalOpt = currentOptions.find(o => o.text[currentLanguage] === b.textContent);
+                        if (originalOpt && originalOpt.isCorrect) b.classList.add('correct');
+                    });
+                }
+
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                
+                const nextBtn = document.getElementById('next-button');
+                nextBtn.textContent = currentIdx === quizQuestions.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
+
+            document.getElementById('next-button').onclick = () => {
+                document.getElementById('feedback-area').classList.add('hidden');
+                if (currentIdx < quizQuestions.length - 1) {
+                    currentIdx++;
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            };
+
+            const showResults = () => {
+                document.getElementById('question-area').classList.add('hidden');
+                document.getElementById('results-area').classList.remove('hidden');
+                document.getElementById('score-text').textContent = `${score} / ${quizQuestions.length}`;
+            };
+
+            document.getElementById('restart-button').onclick = () => {
+                currentIdx = 0; score = 0;
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+                if (synth.speaking) synth.cancel();
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
