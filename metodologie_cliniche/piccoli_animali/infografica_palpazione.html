@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: La Palpazione Clinica - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #0284c7; background-image: linear-gradient(to right, #0284c7, #38bdf8); }
+        
+        /* Navigazione */
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #bae6fd !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        .chart-container { position: relative; width: 100%; height: 350px; }
+        
+        /* --- STILI DSA --- */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
+            letter-spacing: 0.05em;
+            line-height: 2;
+        }
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+            box-shadow: none !important;
+        }
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
+        }
+
+        .dsa-mode .section-card { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+        }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: none;
+        }
+
+        /* --- TTS BUTTON --- */
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover, .tts-button.playing { color: #0284c7; }
+        .dsa-mode .tts-button { color: #000000 !important; }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6">
+                    <li><a href="metodologie_piccoli_animali.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="metodologie_piccoli_animali.html#palpazione" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- JS inserisce icona e testo -->
+                </a>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">Le Mani che Esplorano</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">Guida alla palpazione clinica: decifrare i segni profondi in cane e gatto.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 -mt-10 pb-12">
+        
+        <!-- COSA RIVELANO -->
+        <section class="mb-12 p-8 section-card">
+            <h3 class="text-2xl font-bold mb-8 text-sky-800 text-center flex justify-center items-center" data-lang-key="revealTitle">
+                Cosa Rivelano le Mani?
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+                <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                    <div class="text-3xl mb-2">📐</div>
+                    <h4 class="font-bold text-sm" data-lang-key="paramSize">Dimensioni</h4>
+                </div>
+                <div class="p-4 bg-sky-50 rounded-xl border border-sky-100">
+                    <div class="text-3xl mb-2">🧱</div>
+                    <h4 class="font-bold text-sm" data-lang-key="paramConsistency">Consistenza</h4>
+                </div>
+                <div class="p-4 bg-teal-50 rounded-xl border border-teal-100">
+                    <div class="text-3xl mb-2">🌡️</div>
+                    <h4 class="font-bold text-sm" data-lang-key="paramTemp">Caldo e Freddo</h4>
+                </div>
+                <div class="p-4 bg-orange-50 rounded-xl border border-orange-100">
+                    <div class="text-3xl mb-2">❗</div>
+                    <h4 class="font-bold text-sm" data-lang-key="paramTenderness">Dolorabilità</h4>
+                </div>
+                <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+                    <div class="text-3xl mb-2">🌊</div>
+                    <h4 class="font-bold text-sm" data-lang-key="paramFluids">Fluidi / Gas</h4>
+                </div>
+            </div>
+        </section>
+
+        <!-- APPROCCIO SISTEMATICO -->
+        <section class="mb-12">
+            <h3 class="text-2xl font-bold mb-8 text-sky-800 text-center flex justify-center items-center" data-lang-key="systematicTitle">
+                L'Approccio Testa-Coda Integrato
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="p-6 section-card border-t-4 border-sky-600">
+                    <h4 class="text-xl font-bold mb-3 text-sky-800" data-lang-key="step1Title">1. Testa e Mucose</h4>
+                    <p class="text-gray-700 text-sm" data-lang-key="step1Desc">Umidità delle mucose e Tempo di Riempimento Capillare (TRC). Palpazione di linfonodi retromandibolari e trachea.</p>
+                </div>
+                <div class="p-6 section-card border-t-4 border-cyan-500">
+                    <h4 class="text-xl font-bold mb-3 text-cyan-800" data-lang-key="step2Title">2. Tronco e Idratazione</h4>
+                    <p class="text-gray-700 text-sm" data-lang-key="step2Desc">Manovra della plica cutanea. Fremito cardiaco e linfonodi prescapolari (ascellari solo se aumentati di volume).</p>
+                </div>
+                <div class="p-6 section-card border-t-4 border-teal-500">
+                    <h4 class="text-xl font-bold mb-3 text-teal-800" data-lang-key="step3Title">3. Addome e Arti</h4>
+                    <p class="text-gray-700 text-sm" data-lang-key="step3Desc">Palpazione organi addominali, linfonodi poplitei (e inguinali solo se aumentati di volume) e polso femorale.</p>
+                </div>
+                <div class="p-6 section-card border-t-4 border-orange-500">
+                    <h4 class="text-xl font-bold mb-3 text-orange-800" data-lang-key="step4Title">4. Esplorazione Rettale</h4>
+                    <p class="text-gray-700 text-sm" data-lang-key="step4Desc">Manovra selettiva da eseguire solo in <strong>casi selezionati</strong>. Valutazione prostata, sacchi anali e bacino.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANALISI DETTAGLIATA -->
+        <div class="grid grid-cols-1 gap-8">
+            <!-- Linfonodi Esplorabili -->
+            <section class="p-8 section-card">
+                <div class="flex flex-col md:flex-row gap-8 items-center">
+                    <div class="md:w-1/2">
+                        <h3 class="text-2xl font-bold mb-4 text-teal-800 flex items-center" data-lang-key="lymphTitle">
+                            I Linfonodi di Cane e Gatto
+                        </h3>
+                        <p class="mb-6 text-gray-600 text-sm" data-lang-key="lymphDesc">Indicatori di flogosi o neoplasia: la facilità di reperimento anatomico guida la rapidità dell'esame fisico.</p>
+                        <div class="p-4 bg-teal-50 rounded-xl border border-teal-100">
+                            <p class="text-sm italic text-teal-900" data-lang-key="lymphNote">Nota: I linfonodi retromandibolari, prescapolari e poplitei sono isolabili nel sano. Inguinali e ascellari si palpano solo se aumentati di volume.</p>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 chart-container">
+                        <canvas id="lymphNodeChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const speakerIcon = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna P.A.', en: 'Small Animal Internal Medicine' },
+                backToHome: { 
+                    it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Torna all\'Indice', 
+                    en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'Le Mani che Esplorano', en: 'Hands that Explore' },
+                pageSubtitle: { it: 'Guida alla palpazione clinica: decifrare i segni profondi in cane e gatto.', en: 'Guide to clinical palpation: deciphering deep signs in dogs and cats.' },
+                revealTitle: { it: 'Cosa Rivelano le Mani?' + speakerIcon, en: 'What Do Hands Reveal?' + speakerIcon },
+                paramSize: { it: 'Dimensioni', en: 'Size' },
+                paramConsistency: { it: 'Consistenza', en: 'Consistency' },
+                paramTemp: { it: 'Caldo e Freddo', en: 'Hot and Cold' },
+                paramTenderness: { it: 'Dolorabilità', en: 'Tenderness' },
+                paramFluids: { it: 'Fluidi / Gas', en: 'Fluids / Gas' },
+                systematicTitle: { it: 'L\'Approccio Testa-Coda Integrato' + speakerIcon, en: 'Integrated Head-to-Tail Approach' + speakerIcon },
+                step1Title: { it: '1. Testa e Mucose', en: '1. Head and Mucosae' },
+                step1Desc: { it: 'Umidità delle mucose e Tempo di Riempimento Capillare (TRC). Palpazione di linfonodi retromandibolari e trachea.', en: 'Mucous moisture and Capillary Refill Time (CRT). Palpation of retromandibular lymph nodes and trachea.' },
+                step2Title: { it: '2. Tronco e Idratazione', en: '2. Trunk and Hydration' },
+                step2Desc: { it: 'Manovra della plica cutanea. Fremito cardiaco e linfonodi prescapolari (ascellari solo se aumentati di volume).', en: 'Skin tent maneuver. Cardiac thrill and prescapular lymph nodes (axillary only if enlarged in volume).' },
+                step3Title: { it: '3. Addome e Arti', en: '3. Abdomen and Limbs' },
+                step3Desc: { it: 'Palpazione organi addominali, linfonodi poplitei (e inguinali solo se aumentati di volume) e polso femorale.', en: 'Palpation of abdominal organs, popliteal lymph nodes (and inguinal only if enlarged in volume), and femoral pulse.' },
+                step4Title: { it: '4. Esplorazione Rettale', en: '4. Rectal Examination' },
+                step4Desc: { it: 'Manovra selettiva da eseguire solo in <strong>casi selezionati</strong>. Valutazione prostata, sacchi anali e bacino.', en: 'Selective maneuver to be performed only in <strong>selected cases</strong> (not routine). Assessment of prostate, anal sacs, and pelvis.' },
+                lymphTitle: { it: 'I Linfonodi di Cane e Gatto' + speakerIcon, en: 'Small Animal Lymph Nodes' + speakerIcon },
+                lymphDesc: { it: 'Indicatori di flogosi o neoplasia: la facilità di reperimento anatomico guida la rapidità dell\'esame fisico.', en: 'Indicators of inflammation or neoplasia: ease of anatomical detection guides the physical exam.' },
+                lymphNote: { it: 'Nota: I linfonodi retromandibolari, prescapolari e poplitei sono isolabili nel sano. Inguinali e ascellari si palpano solo se aumentati di volume.', en: 'Note: Retromandibular, prescapular, and popliteal lymph nodes are isolated in healthy subjects. Inguinal and axillary are palpable only if enlarged in volume.' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' },
+                lymphLabels: {
+                    it: ['Retromandibolari', 'Prescapolari', 'Poplitei', 'Inguinali', 'Ascellari'],
+                    en: ['Retromandibular', 'Prescapular', 'Popliteal', 'Inguinal', 'Axillary']
+                }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            // --- GRAFICI ---
+            const lymphCtx = document.getElementById('lymphNodeChart').getContext('2d');
+            
+            let lymphChart = new Chart(lymphCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [10, 9, 8, 2, 1], // Inguinali (2) e Ascellari (1) sono bassi perché reperibili solo se patologici
+                        backgroundColor: '#0ea5e9',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    },
+                    scales: { 
+                        x: { 
+                            display: true, 
+                            title: { display: true, text: 'Reperibilità nel sano (0-10)' },
+                            suggestedMax: 10
+                        }, 
+                        y: { grid: { display: false } } 
+                    }
+                }
+            });
+
+            // --- FUNZIONI CORE ---
+            function speak(text, button) {
+                if (synth.speaking && activeTTSButton === button) {
+                    synth.paused ? synth.resume() : synth.pause();
+                    button.classList.toggle('playing', !synth.paused);
+                } else {
+                    synth.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                    utterance.onend = () => { button.classList.remove('playing'); activeTTSButton = null; };
+                    synth.speak(utterance);
+                    if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                }
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    button.onclick = (e) => {
+                        e.stopPropagation();
+                        const section = e.currentTarget.closest('section');
+                        const clone = section.cloneNode(true);
+                        clone.querySelectorAll('.tts-button, canvas').forEach(el => el.remove());
+                        speak(clone.innerText.trim(), button);
+                    };
+                });
+            }
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+
+                // Update Chart
+                lymphChart.data.labels = translations.lymphLabels[lang];
+                lymphChart.update();
+
+                setupTTSListeners();
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                setA11yMode(!body.classList.contains('dsa-mode'));
+            });
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
