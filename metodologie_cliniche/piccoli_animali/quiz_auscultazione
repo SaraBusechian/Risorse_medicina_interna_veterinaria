@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: L'Auscultazione Clinica - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #0284c7; background-image: linear-gradient(to right, #0284c7, #38bdf8); }
+        
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #bae6fd !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; }
+        .option-btn:hover:not(:disabled) { border-color: #0284c7; background-color: #f0f9ff; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d !important; font-weight: bold; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c !important; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
+            letter-spacing: 0.05em;
+            line-height: 2;
+        }
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+            box-shadow: none !important;
+        }
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
+        }
+
+        .dsa-mode .section-card, .dsa-mode .option-btn { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+            color: #000000 !important;
+        }
+
+        .dsa-mode .correct { background-color: #dcfce7 !important; border-width: 4px !important; }
+        .dsa-mode .incorrect { background-color: #fee2e2 !important; border-width: 4px !important; }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: none !important;
+        }
+
+        /* --- TTS BUTTON --- */
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover, .tts-button.playing { color: #0284c7; }
+        .dsa-mode .tts-button { color: #000000 !important; }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6 text-white">
+                    <li><a href="metodologie_piccoli_animali.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="metodologie_piccoli_animali.html#auscultazione" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                    <!-- JS inserisce icona e testo -->
+                </a>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">Test di Valutazione</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">Metti alla prova il tuo udito clinico su cuore e polmoni.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 -mt-10 pb-12 flex justify-center">
+        <div id="quiz-container" class="section-card w-full max-w-3xl p-8">
+            
+            <!-- AREA DOMANDA -->
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-sky-800 font-bold uppercase tracking-wider text-sm" data-lang-key="quizLabel">Auscultazione Clinica P.A.</h3>
+                    <span id="progress-text" class="text-slate-500 font-bold text-sm bg-slate-100 px-3 py-1 rounded-full"></span>
+                </div>
+
+                <div class="mb-8">
+                    <div class="flex items-start">
+                        <p id="question-text" class="text-xl md:text-2xl font-semibold text-slate-800 leading-snug flex-grow"></p>
+                        <button id="question-tts" class="tts-button flex-shrink-0 mt-1">
+                            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4">
+                    <!-- Opzioni via JS -->
+                </div>
+            </div>
+
+            <!-- AREA FEEDBACK -->
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-slate-50 border-2 border-slate-200">
+                    <p id="rationale-text" class="text-slate-700 italic mb-6"></p>
+                    <button id="next-button" class="w-full bg-sky-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-sky-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <!-- AREA RISULTATI -->
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🎓</div>
+                <h2 class="text-3xl font-bold text-sky-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <div class="inline-block bg-sky-50 border-2 border-sky-200 rounded-2xl px-10 py-6 mb-10 mt-6">
+                    <p class="text-slate-500 uppercase text-xs font-bold tracking-widest mb-1">Punteggio Finale</p>
+                    <p id="score-text" class="text-6xl font-black text-sky-600"></p>
+                </div>
+                <button id="restart-button" class="w-full border-2 border-sky-600 text-sky-600 font-bold py-4 px-6 rounded-xl hover:bg-sky-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backIcon = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna P.A.', en: 'Small Animal Internal Medicine' },
+                backToHome: { 
+                    it: backIcon + 'Torna all\'Indice', 
+                    en: backIcon + 'Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'Test di Valutazione', en: 'Assessment Quiz' },
+                pageSubtitle: { it: 'Metti alla prova le tue capacità di analisi dei suoni auscultatori.', en: 'Test your skills in analyzing auscultatory sounds.' },
+                quizLabel: { it: 'Auscultazione Clinica P.A.', en: 'Small Animal Auscultation' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' },
+                progressText: { it: 'Domanda {current} di {total}', en: 'Question {current} of {total}' }
+            };
+
+            const quizQuestions = [
+                {
+                    question: { it: "Cosa indica l'acronimo P.A.M. - T. nell'auscultazione cardiaca del cane e del gatto?", en: "What does the P.A.M. - T. acronym stand for in dog and cat cardiac auscultation?" },
+                    options: [
+                        { text: { it: "I focolai di auscultazione: Polmonare, Aortico, Mitralico e Tricuspidale.", en: "Auscultation sites: Pulmonary, Aortic, Mitral, and Tricuspid." }, isCorrect: true, rationale: { it: "Corretto. Indica i punti di repere anatomici per la massima intensità dei rumori valvolari.", en: "Correct. It indicates the anatomical landmarks for maximum intensity of valvular sounds." } },
+                        { text: { it: "La frequenza cardiaca media per razza (Piccola, Alta, Media).", en: "Average heart rate by breed size." }, isCorrect: false, rationale: { it: "L'acronimo si riferisce alla topografia valvolare, non alla taglia.", en: "The acronym refers to valvular topography, not size." } },
+                        { text: { it: "Il ritmo respiratorio associato al battito (Pausa, Apnea, Movimento).", en: "Respiratory rhythm associated with heartbeat." }, isCorrect: false, rationale: { it: "Si riferisce esclusivamente alle valvole cardiache.", en: "It refers exclusively to cardiac valves." } },
+                        { text: { it: "Una scala di intensità dei soffi dal grado 1 al 4.", en: "A murmur intensity scale from grade 1 to 4." }, isCorrect: false, rationale: { it: "L'acronimo identifica le valvole; la scala di intensità è numerica (1-6).", en: "The acronym identifies valves; the intensity scale is numerical (1-6)." } }
+                    ]
+                },
+                {
+                    question: { it: "Nel cane, come viene definita l'aritmia fisiologica legata al respiro in cui la frequenza aumenta in inspirazione?", en: "In dogs, what is the term for the physiological arrhythmia where the rate increases during inspiration?" },
+                    options: [
+                        { text: { it: "Bradicardia sinusale.", en: "Sinus bradycardia." }, isCorrect: false, rationale: { it: "La bradicardia è un rallentamento del battito, non un'aritmia legata al respiro.", en: "Bradycardia is a slow rate, not a respiratory-linked arrhythmia." } },
+                        { text: { it: "Fibrillazione atriale.", en: "Atrial fibrillation." }, isCorrect: false, rationale: { it: "È un'aritmia patologica 'caoticamente irregolare'.", en: "It is a pathologically 'chaotically irregular' arrhythmia." } },
+                        { text: { it: "Aritmia sinusale respiratoria.", en: "Respiratory sinus arrhythmia." }, isCorrect: true, rationale: { it: "Sì. È una variazione ritmica normale nel cane legata al tono vagale.", en: "Yes. It is a normal rhythmic variation in dogs linked to vagal tone." } },
+                        { text: { it: "Tachicardia parossistica.", en: "Paroxysmal tachycardia." }, isCorrect: false, rationale: { it: "Indica un aumento improvviso e patologico della frequenza.", en: "Indicates a sudden and pathological increase in rate." } }
+                    ]
+                },
+                {
+                    question: { it: "Quali manovre o accorgimenti sono utili per far smettere temporaneamente un gatto di fare le fusa durante l'auscultazione?", en: "Which maneuvers or steps are useful to temporarily stop a cat from purring during auscultation?" },
+                    options: [
+                        { text: { it: "Chiudere energicamente la bocca dell'animale.", en: "Energetically closing the animal's mouth." }, isCorrect: false, rationale: { it: "Le fusa sono un processo laringeo che non dipende necessariamente dalla bocca aperta.", en: "Purring is a laryngeal process not necessarily dependent on an open mouth." } },
+                        { text: { it: "Aprire un rubinetto vicino o esercitare una leggera pressione sulla laringe.", en: "Running a nearby tap or applying light pressure to the larynx." }, isCorrect: true, rationale: { it: "Esatto. Rumori bianchi o stimoli laringei possono inibire momentaneamente le fusa.", en: "Exact. White noise or laryngeal stimuli can momentarily inhibit purring." } },
+                        { text: { it: "Coprire gli occhi del gatto con un panno scuro.", en: "Covering the cat's eyes with a dark cloth." }, isCorrect: false, rationale: { it: "Può tranquillizzarlo, ma spesso non interrompe le fusa.", en: "It might calm the cat, but often doesn't stop the purring." } },
+                        { text: { it: "Sollevare il gatto per la collottola.", en: "Lifting the cat by the scruff." }, isCorrect: false, rationale: { it: "È una manovra di contenzione stressante e sconsigliata per l'auscultazione.", en: "It's a stressful restraint maneuver and not recommended for auscultation." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa si intende per andamento 'a plateau' di un soffio cardiaco?", en: "What is meant by a 'plateau' heart murmur pattern?" },
+                    options: [
+                        { text: { it: "Un soffio che scompare a metà della sistole.", en: "A murmur that disappears halfway through systole." }, isCorrect: false, rationale: { it: "Sarebbe un soffio decrescente o interrotto.", en: "That would be a decrescendo or interrupted murmur." } },
+                        { text: { it: "Un soffio la cui intensità rimane costante per tutta la sua durata.", en: "A murmur whose intensity remains constant throughout its duration." }, isCorrect: true, rationale: { it: "Corretto. È tipico di insufficienze valvolari come la mitralica.", en: "Correct. It's typical of valvular insufficiencies like mitral." } },
+                        { text: { it: "Un soffio che aumenta progressivamente di volume.", en: "A murmur that progressively increases in volume." }, isCorrect: false, rationale: { it: "Questo andamento è definito 'crescendo'.", en: "This pattern is defined as 'crescendo'." } },
+                        { text: { it: "Un soffio udibile solo in una specifica area del torace.", en: "A murmur audible only in a specific chest area." }, isCorrect: false, rationale: { it: "Questo si riferisce alla localizzazione, non all'andamento (pattern).", en: "This refers to location, not to the pattern." } }
+                    ]
+                },
+                {
+                    question: { it: "Il 'Murmure Vescicolare' rilevato durante l'auscultazione polmonare indica:", en: "The 'Vesicular Murmur' detected during lung auscultation indicates:" },
+                    options: [
+                        { text: { it: "Un accumulo di liquido negli alveoli.", en: "Fluid accumulation in the alveoli." }, isCorrect: false, rationale: { it: "I liquidi causano rantoli, non il murmure vescicolare.", en: "Fluids cause crackles, not vesicular murmur." } },
+                        { text: { it: "Il suono fisiologico dell'ingresso dell'aria negli alveoli.", en: "The physiological sound of air entering the alveoli." }, isCorrect: true, rationale: { it: "Sì. È il rumore normale che deve essere presente in un animale sano.", en: "Yes. It's the normal sound that must be present in a healthy animal." } },
+                        { text: { it: "Una broncocostrizione in atto.", en: "Active bronchoconstriction." }, isCorrect: false, rationale: { it: "La broncocostrizione produce sibili.", en: "Bronchoconstriction produces wheezes." } },
+                        { text: { it: "L'assenza di ventilazione in un lobo polmonare.", en: "Absence of ventilation in a lung lobe." }, isCorrect: false, rationale: { it: "L'assenza di ventilazione causa silenzio respiratorio.", en: "Absence of ventilation causes respiratory silence." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa suggerisce la presenza di 'rantoli' durante l'auscultazione toracica?", en: "What does the presence of 'crackles' suggest during thoracic auscultation?" },
+                    options: [
+                        { text: { it: "Presenza di essudato o liquido nei bronchi.", en: "Presence of exudate or fluid in the bronchi." }, isCorrect: true, rationale: { it: "Esatto. Sono rumori discontinui causati dal passaggio d'aria attraverso secrezioni.", en: "Exact. They are discontinuous sounds caused by air passing through secretions." } },
+                        { text: { it: "Un restringimento elastico delle vie aeree (sibili).", en: "Elastic narrowing of the airways (wheezes)." }, isCorrect: false, rationale: { it: "Il restringimento produce suoni musicali continui, non i rantoli.", en: "Narrowing produces continuous musical sounds, not crackles." } },
+                        { text: { it: "La normale espansione della pleura.", en: "Normal expansion of the pleura." }, isCorrect: false, rationale: { it: "La pleura sana non produce rumori udibili.", en: "Healthy pleura produces no audible sounds." } },
+                        { text: { it: "Un collasso totale del polmone.", en: "Total collapse of the lung." }, isCorrect: false, rationale: { it: "Il collasso totale produce silenzio, non rantoli.", en: "Total collapse produces silence, not crackles." } }
+                    ]
+                },
+                {
+                    question: { it: "Perché è importante tenere chiusa la bocca di un cane che ansima durante l'auscultazione?", en: "Why is it important to keep a panting dog's mouth closed during auscultation?" },
+                    options: [
+                        { text: { it: "Per impedire all'animale di mordere lo stetoscopio.", en: "To prevent the animal from biting the stethoscope." }, isCorrect: false, rationale: { it: "Sebbene utile per la sicurezza, il motivo clinico è acustico.", en: "While useful for safety, the clinical reason is acoustic." } },
+                        { text: { it: "Per eliminare il rumore del passaggio d'aria in gola che maschera i suoni profondi.", en: "To eliminate the noise of air moving in the throat masking deep sounds." }, isCorrect: true, rationale: { it: "Vero. Il rumore dell'ansito maschera toni cardiaci e murmure polmonare.", en: "True. Panting noise masks heart tones and pulmonary murmur." } },
+                        { text: { it: "Per indurre una bradicardia riflessa utile all'esame.", en: "To induce a reflex bradycardia useful for the exam." }, isCorrect: false, rationale: { it: "Chiudere la bocca non serve a rallentare il cuore.", en: "Closing the mouth doesn't serve to slow the heart." } },
+                        { text: { it: "Per valutare la pervietà delle cavità nasali.", en: "To assess the patency of nasal cavities." }, isCorrect: false, rationale: { it: "Questo si valuta tramite l'ispezione (scolo/appannamento vetrino).", en: "This is assessed via inspection (discharge/slide fogging)." } }
+                    ]
+                },
+                {
+                    question: { it: "Dove si trova il focolaio della valvola Tricuspidale nel cane?", en: "Where is the Tricuspid valve auscultation site in dogs?" },
+                    options: [
+                        { text: { it: "Emitorace sinistro, 5° spazio intercostale.", en: "Left side, 5th intercostal space." }, isCorrect: false, rationale: { it: "Questo è il focolaio Mitralico.", en: "This is the Mitral site." } },
+                        { text: { it: "Emitorace destro, 4° spazio intercostale.", en: "Right side, 4th intercostal space." }, isCorrect: true, rationale: { it: "Esatto. È l'unico dei quattro principali focolai situato a destra.", en: "Exact. It is the only one of the four main sites located on the right." } },
+                        { text: { it: "Emitorace sinistro, 3° spazio intercostale.", en: "Left side, 3rd intercostal space." }, isCorrect: false, rationale: { it: "Questo è il focolaio Polmonare.", en: "This is the Pulmonary site." } },
+                        { text: { it: "In corrispondenza dell'olecrano, bilateralmente.", en: "At the level of the olecranon, bilaterally." }, isCorrect: false, rationale: { it: "L'olecrano è un riferimento generico per l'ottusità cardiaca, non un focolaio valvolare.", en: "The olecranon is a general reference for cardiac dullness, not a valvular site." } }
+                    ]
+                },
+                {
+                    question: { it: "Un 'silenzio respiratorio' rilevato nella parte ventrale del torace suggerisce:", en: "A 'respiratory silence' detected in the ventral part of the thorax suggests:" },
+                    options: [
+                        { text: { it: "Una polmonite batterica diffusa.", en: "Diffuse bacterial pneumonia." }, isCorrect: false, rationale: { it: "La polmonite dà solitamente rumori patologici (rantoli), non silenzio.", en: "Pneumonia usually gives pathological sounds (crackles), not silence." } },
+                        { text: { it: "Presenza di un versamento pleurico (liquido).", en: "Presence of a pleural effusion (fluid)." }, isCorrect: true, rationale: { it: "Vero. Il liquido si deposita ventralmente e scherma i suoni del polmone.", en: "True. Fluid settles ventrally and masks lung sounds." } },
+                        { text: { it: "Un normale stato di rilassamento dell'animale.", en: "A normal state of relaxation of the animal." }, isCorrect: false, rationale: { it: "Il suono polmonare deve essere presente su tutto l'ambito fisiologico.", en: "Lung sounds must be present across the entire physiological area." } },
+                        { text: { it: "Un'eccessiva ventilazione alveolare.", en: "Excessive alveolar ventilation." }, isCorrect: false, rationale: { it: "L'iperventilazione aumenta l'intensità del murmure, non lo annulla.", en: "Hyperventilation increases murmur intensity, it doesn't cancel it." } }
+                    ]
+                },
+                {
+                    question: { it: "Nella classificazione dell'intensità di un soffio cardiaco, un grado 6 (G6) indica:", en: "In heart murmur intensity classification, a grade 6 (G6) indicates:" },
+                    options: [
+                        { text: { it: "Un soffio udibile solo in un ambiente perfettamente silenzioso.", en: "A murmur audible only in a perfectly quiet environment." }, isCorrect: false, rationale: { it: "Questo descrive i gradi bassi (G1-G2).", en: "This describes low grades (G1-G2)." } },
+                        { text: { it: "Un soffio molto forte, udibile anche staccando leggermente lo stetoscopio dal torace.", en: "A very loud murmur, audible even when slightly lifting the stethoscope from the chest." }, isCorrect: true, rationale: { it: "Esatto. Il grado 6 è il massimo dell'intensità percepibile.", en: "Exact. Grade 6 is the maximum intensity perceivable." } },
+                        { text: { it: "Un soffio intermittente che compare solo dopo l'esercizio.", en: "An intermittent murmur appearing only after exercise." }, isCorrect: false, rationale: { it: "La scala 1-6 riguarda l'intensità acustica, non la frequenza di comparsa.", en: "The 1-6 scale concerns acoustic intensity, not frequency of appearance." } },
+                        { text: { it: "L'assenza di patologia valvolare.", en: "Absence of valvular pathology." }, isCorrect: false, rationale: { it: "I gradi elevati (G4-G6) indicano solitamente patologie valvolari significative.", en: "High grades (G4-G6) usually indicate significant valvular pathologies." } }
+                    ]
+                }
+            ];
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            let currentIdx = 0;
+            let score = 0;
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) {
+                        if (key === 'backToHome') el.innerHTML = translations[key][lang];
+                        else el.textContent = translations[key][lang];
+                    }
+                });
+                renderQuestion();
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking && activeTTSButton === button) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else { synth.pause(); button.classList.remove('playing'); }
+                    return;
+                }
+                synth.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onstart = () => { button.classList.add('playing'); activeTTSButton = button; };
+                utterance.onend = () => { button.classList.remove('playing'); activeTTSButton = null; };
+                synth.speak(utterance);
+            };
+
+            const renderQuestion = () => {
+                const q = quizQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', quizQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                document.getElementById('question-tts').onclick = () => speak(q.question[currentLanguage], document.getElementById('question-tts'));
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+                
+                shuffledOptions.forEach((opt, i) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-3 w-full";
+                    
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn flex-grow text-left p-5 rounded-xl font-semibold text-slate-700";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn, shuffledOptions);
+                    
+                    const ttsBtn = document.createElement('button');
+                    ttsBtn.className = "tts-button p-2";
+                    ttsBtn.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    ttsBtn.onclick = () => speak(opt.text[currentLanguage], ttsBtn);
+
+                    div.appendChild(btn);
+                    div.appendChild(ttsBtn);
+                    container.appendChild(div);
+                });
+            };
+
+            const handleSelect = (opt, btn, currentOptions) => {
+                if (synth.speaking) synth.cancel();
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                
+                if (opt.isCorrect) {
+                    btn.classList.add('correct');
+                    score++;
+                } else {
+                    btn.classList.add('incorrect');
+                    btns.forEach(b => {
+                        const originalOpt = currentOptions.find(o => o.text[currentLanguage] === b.textContent);
+                        if (originalOpt && originalOpt.isCorrect) b.classList.add('correct');
+                    });
+                }
+
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                
+                const nextBtn = document.getElementById('next-button');
+                nextBtn.textContent = currentIdx === quizQuestions.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
+
+            document.getElementById('next-button').onclick = () => {
+                document.getElementById('feedback-area').classList.add('hidden');
+                if (currentIdx < quizQuestions.length - 1) {
+                    currentIdx++;
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            };
+
+            const showResults = () => {
+                document.getElementById('question-area').classList.add('hidden');
+                document.getElementById('results-area').classList.remove('hidden');
+                document.getElementById('score-text').textContent = `${score} / ${quizQuestions.length}`;
+            };
+
+            document.getElementById('restart-button').onclick = () => {
+                currentIdx = 0; score = 0;
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+                if (synth.speaking) synth.cancel();
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
