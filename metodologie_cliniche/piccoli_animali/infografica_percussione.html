@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: La Percussione Clinica - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #0284c7; background-image: linear-gradient(to right, #0284c7, #38bdf8); }
+        
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #bae6fd !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        .chart-container { position: relative; width: 100%; height: 300px; }
+        
+        .step-pill { background-color: #f0f9ff; border: 2px solid #0284c7; color: #0284c7; font-weight: bold; }
+
+        /* --- STILI DSA --- */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
+            letter-spacing: 0.05em;
+            line-height: 2;
+        }
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+        }
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
+        }
+
+        .dsa-mode .section-card { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+        }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: none;
+        }
+
+        /* --- TTS BUTTON --- */
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover, .tts-button.playing { color: #0284c7; }
+        .dsa-mode .tts-button { color: #000000 !important; }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6 text-white">
+                    <li><a href="metodologie_piccoli_animali.html#anamnesi" class="nav-link font-semibold">Anamnesi</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#ispezione" class="nav-link font-semibold">Ispezione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#palpazione" class="nav-link font-semibold">Palpazione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#percussione" class="nav-link font-semibold">Percussione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#auscultazione" class="nav-link font-semibold">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="metodologie_piccoli_animali.html#percussione" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                </a>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">Vedere con i Suoni</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">La guida visiva alla percussione clinica del cane e del gatto.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 -mt-10 pb-12">
+        
+        <!-- INTRODUZIONE FISICA -->
+        <section class="mb-12 p-8 section-card">
+            <h3 class="text-2xl font-bold mb-6 text-sky-800 text-center flex justify-center items-center" data-lang-key="physicsTitle">
+                Dalla Densità al Suono
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <p class="text-gray-700" data-lang-key="physicsDesc">La percussione traduce la densità dei tessuti sottostanti in vibrazioni sonore. Minore è la densità (più gas), maggiore è la risonanza e la durata del suono.</p>
+                    <div class="p-4 bg-sky-50 rounded-xl border border-sky-100 italic text-sm text-sky-900" data-lang-key="physicsNote">
+                        Semafori Sonori: Il suono Ottuso indica solidità, il Chiaro aria parenchimatosa, il Timpanico gas in cavità chiuse.
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="soundDensityChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- TECNICA E MAPPATURA -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Tecnica Digito-Digitale -->
+            <section class="p-8 section-card">
+                <h3 class="text-2xl font-bold mb-6 text-sky-800" data-lang-key="techTitle">Tecnica Digito-Digitale</h3>
+                <div class="space-y-6">
+                    <div class="flex gap-4 items-start">
+                        <div class="step-pill px-4 py-2 rounded-full">01</div>
+                        <div>
+                            <h4 class="font-bold text-sky-900" data-lang-key="step1Title">Il Plessimetro</h4>
+                            <p class="text-sm text-gray-600" data-lang-key="step1Desc">Dito medio della mano sinistra premuto saldamente negli spazi intercostali.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="step-pill px-4 py-2 rounded-full">02</div>
+                        <div>
+                            <h4 class="font-bold text-sky-900" data-lang-key="step2Title">Il Percussore</h4>
+                            <p class="text-sm text-gray-600" data-lang-key="step2Desc">Dito medio della mano destra che colpisce verticalmente la falange.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="step-pill px-4 py-2 rounded-full">03</div>
+                        <div>
+                            <h4 class="font-bold text-sky-900" data-lang-key="step3Title">Il Movimento</h4>
+                            <p class="text-sm text-gray-600" data-lang-key="step3Desc">Esclusivamente di polso: secco, rapido e di intensità calibrata.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Topografia Toracica -->
+            <section class="p-8 section-card">
+                <h3 class="text-2xl font-bold mb-6 text-sky-800" data-lang-key="topoTitle">Mappatura del Torace</h3>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="p-4 border-l-4 border-sky-500 bg-sky-50">
+                        <h4 class="font-bold text-sky-900" data-lang-key="limitTitle">Limite Polmonare Posteriore</h4>
+                        <p class="text-xs text-gray-600" data-lang-key="limitDesc">Ricerca al 9° spazio intercostale (destra e sinistra) seguendo la prima linea del Vogel.</p>
+                    </div>
+                    <div class="p-4 border-l-4 border-cyan-500 bg-cyan-50">
+                        <h4 class="font-bold text-cyan-900" data-lang-key="diaphTitle">Linea Diaframmatica</h4>
+                        <p class="text-xs text-gray-600" data-lang-key="diaphDesc">Valutazione dell'area polmonare percuotendo lungo gli spazi intercostali dall'alto in basso.</p>
+                    </div>
+                    <div class="p-4 border-l-4 border-blue-500 bg-blue-50">
+                        <h4 class="font-bold text-blue-900" data-lang-key="cardiacTitle">Ottusità Cardiaca Bilaterale</h4>
+                        <p class="text-xs text-gray-600" data-lang-key="cardiacDesc">Percussione a raggera eseguita a destra e sinistra, con centro all'altezza dell'olecrano.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- FOCUS CLINICO -->
+        <section class="mt-8 p-8 section-card">
+            <h3 class="text-2xl font-bold mb-8 text-sky-900 text-center flex justify-center items-center" data-lang-key="clinicalFocusTitle">
+                Focus Addome: Urgenze
+            </h3>
+            <div class="max-w-2xl mx-auto">
+                <div class="p-8 bg-orange-50 rounded-2xl border border-orange-100 text-center">
+                    <div class="text-5xl mb-4">🎈</div>
+                    <h4 class="text-xl font-bold text-orange-900 mb-3" data-lang-key="gdvTitle">Torsione Gastrica (GDV)</h4>
+                    <p class="text-gray-700 leading-relaxed" data-lang-key="gdvDesc">La percussione rivela un suono timpanico metallico nell'addome craniale sinistro. È il segno semeiologico chiave per l'identificazione immediata del meteorismo gastrico patologico.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const speakerIcon = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna P.A.', en: 'Small Animal Internal Medicine' },
+                backToHome: { 
+                    it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Torna all\'Indice', 
+                    en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'Vedere con i Suoni', en: 'Seeing with Sounds' },
+                pageSubtitle: { it: 'La guida visiva alla percussione clinica del cane e del gatto.', en: 'The visual guide to clinical percussion in dogs and cats.' },
+                physicsTitle: { it: 'Dalla Densità al Suono' + speakerIcon, en: 'From Density to Sound' + speakerIcon },
+                physicsDesc: { it: 'La percussione traduce la densità dei tessuti sottostanti in vibrazioni sonore. Minore è la densità (più gas), maggiore è la risonanza e la durata del suono.', en: 'Percussion translates the density of underlying tissues into sound vibrations. The lower the density (more gas), the greater the resonance and duration of the sound.' },
+                physicsNote: { it: 'Semafori Sonori: Il suono Ottuso indica solidità, il Chiaro aria parenchimatosa, il Timpanico gas in cavità chiuse.', en: 'Sound Signals: Dull sound indicates solidity, Resonant indicates lung air, Tympanic indicates gas in closed cavities.' },
+                techTitle: { it: 'Tecnica Digito-Digitale' + speakerIcon, en: 'Digit-Digital Technique' + speakerIcon },
+                step1Title: { it: 'Il Plessimetro', en: 'The Plessimeter' },
+                step1Desc: { it: 'Dito medio della mano sinistra premuto saldamente negli spazi intercostali.', en: 'Middle finger of the left hand pressed firmly into intercostal spaces.' },
+                step2Title: { it: 'Il Percussore', en: 'The Percussor' },
+                step2Desc: { it: 'Dito medio della mano destra che colpisce verticalmente la falange.', en: 'Middle finger of the right hand striking the phalanx vertically.' },
+                step3Title: { it: 'Il Movimento', en: 'The Movement' },
+                step3Desc: { it: 'Esclusivamente di polso: secco, rapido e di intensità calibrata.', en: 'Wrist-only: sharp, fast, and of calibrated intensity.' },
+                topoTitle: { it: 'Mappatura del Torace' + speakerIcon, en: 'Thoracic Mapping' + speakerIcon },
+                limitTitle: { it: 'Limite Polmonare Posteriore', en: 'Posterior Lung Limit' },
+                limitDesc: { it: 'Ricerca al 9° spazio intercostale (destra e sinistra) seguendo la prima linea del Vogel.', en: 'Searching at the 9th intercostal space (right and left) following Vogel\'s first line.' },
+                diaphTitle: { it: 'Linea Diaframmatica', en: 'Diaphragmatic Line' },
+                diaphDesc: { it: 'Valutazione dell\'area polmonare percuotendo lungo gli spazi intercostali dall\'alto in basso.', en: 'Assessment of the lung area by percussing along intercostal spaces from top to bottom.' },
+                cardiacTitle: { it: 'Ottusità Cardiaca Bilaterale', en: 'Bilateral Cardiac Dullness' },
+                cardiacDesc: { it: 'Percussione a raggera eseguita a destra e sinistra, con centro all\'altezza dell\'olecrano.', en: 'Radial percussion performed on the right and left sides, centered at the level of the olecranon.' },
+                clinicalFocusTitle: { it: 'Focus Addome: Urgenze' + speakerIcon, en: 'Abdominal Focus: Emergencies' + speakerIcon },
+                gdvTitle: { it: 'Torsione Gastrica (GDV)', en: 'Gastric Torsion (GDV)' },
+                gdvDesc: { it: 'La percussione rivela un suono timpanico metallico nell\'addome craniale sinistro. È il segno semeiologico chiave per l\'identificazione immediata del meteorismo gastrico patologico.', en: 'Percussion reveals a metallic tympanic sound in the left cranial abdomen. It is the key semiological sign for immediate identification of pathological gastric meteorism.' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' },
+                chartLabels: {
+                    it: ['Ottuso (Pieno)', 'Chiaro (Aria)', 'Timpanico (Gas)'],
+                    en: ['Dull (Full)', 'Resonant (Air)', 'Tympanic (Gas)']
+                },
+                chartYAxis: { it: 'Intensità Sonora', en: 'Sound Intensity' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            // --- GRAFICO ---
+            const ctx = document.getElementById('soundDensityChart').getContext('2d');
+            let soundChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [20, 60, 100],
+                        backgroundColor: ['#0369a1', '#38bdf8', '#fbbf24'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            max: 110,
+                            title: { display: true, text: '' } 
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // --- FUNZIONI CORE ---
+            function speak(text, button) {
+                if (synth.speaking && activeTTSButton === button) {
+                    synth.paused ? synth.resume() : synth.pause();
+                    button.classList.toggle('playing', !synth.paused);
+                } else {
+                    synth.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                    utterance.onend = () => { button.classList.remove('playing'); activeTTSButton = null; };
+                    synth.speak(utterance);
+                    if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                }
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    button.onclick = (e) => {
+                        e.stopPropagation();
+                        const section = e.currentTarget.closest('section') || e.currentTarget.parentElement;
+                        const clone = section.cloneNode(true);
+                        clone.querySelectorAll('.tts-button, canvas').forEach(el => el.remove());
+                        speak(clone.innerText.trim(), button);
+                    };
+                });
+            }
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+
+                soundChart.data.labels = translations.chartLabels[lang];
+                soundChart.options.scales.y.title.text = translations.chartYAxis[lang];
+                soundChart.update();
+
+                setupTTSListeners();
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+                if (synth.speaking) synth.cancel();
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                setA11yMode(!body.classList.contains('dsa-mode'));
+            });
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
