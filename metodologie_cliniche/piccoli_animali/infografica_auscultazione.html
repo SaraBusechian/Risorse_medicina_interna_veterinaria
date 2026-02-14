@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: L'Auscultazione Clinica - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hero-bg { background-color: #0284c7; background-image: linear-gradient(to right, #0284c7, #38bdf8); }
+        
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #bae6fd !important; }
+
+        .section-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: transform 0.3s; }
+        .chart-container { position: relative; width: 100%; height: 300px; }
+        
+        .focale-pill { background-color: #f0f9ff; border: 2px solid #0284c7; color: #0284c7; font-weight: bold; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 9999px; }
+
+        /* --- STILI DSA --- */
+        .dsa-mode {
+            font-family: 'Lexend', sans-serif;
+            background-color: #fffdf5 !important;
+            color: #1a1a1a !important;
+            letter-spacing: 0.05em;
+            line-height: 2;
+        }
+        
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            border-bottom: 3px solid #1a1a1a !important;
+            color: #1a1a1a !important;
+        }
+
+        .dsa-mode #main-header h1, .dsa-mode #main-header .nav-link, .dsa-mode .hero-bg h2, .dsa-mode .hero-bg p {
+            color: #000000 !important;
+        }
+
+        .dsa-mode .section-card { 
+            background-color: #ffffff; 
+            border: 2px solid #000000; 
+            box-shadow: none !important; 
+        }
+
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { 
+            color: #000000 !important; 
+            text-decoration: none;
+        }
+
+        /* --- TTS BUTTON --- */
+        .tts-button {
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .tts-button:hover, .tts-button.playing { color: #0284c7; }
+        .dsa-mode .tts-button { color: #000000 !important; }
+    </style>
+</head>
+<body class="bg-sky-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center flex-wrap">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Medicina Interna P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <ul class="hidden md:flex space-x-6 text-white">
+                    <li><a href="metodologie_piccoli_animali.html#anamnesi" class="nav-link font-semibold text-white">Anamnesi</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#ispezione" class="nav-link font-semibold text-white">Ispezione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#palpazione" class="nav-link font-semibold text-white">Palpazione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#percussione" class="nav-link font-semibold text-white">Percussione</a></li>
+                    <li><a href="metodologie_piccoli_animali.html#auscultazione" class="nav-link font-semibold text-white">Auscultazione</a></li>
+                </ul>
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-20 text-center relative">
+            <div class="absolute top-4 left-6">
+                 <a href="metodologie_piccoli_animali.html#auscultazione" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
+                </a>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 mt-12" data-lang-key="pageTitle">I Ritmi della Vita</h2>
+            <p class="text-xl max-w-2xl mx-auto" data-lang-key="pageSubtitle">Guida visiva all'auscultazione di cuore e polmoni nel cane e nel gatto.</p>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6 -mt-10 pb-12">
+        
+        <!-- CARDIO: FOCOLAI E TONI -->
+        <section class="mb-12 p-8 section-card">
+            <h3 class="text-2xl font-bold mb-6 text-sky-800 text-center flex justify-center items-center" data-lang-key="cardioTitle">
+                Auscultazione Cardiaca: Mappa dei Focolai
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <p class="text-gray-700" data-lang-key="cardioDesc">Il cuore viene auscultato bilateralmente per identificare i Punti di Massima Intensità (PMI) delle diverse valvole (Acronimo P.A.M. - T.).</p>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                            <span class="focale-pill">P</span>
+                            <div>
+                                <h4 class="font-bold text-blue-900" data-lang-key="focalP">Polmonare</h4>
+                                <p class="text-xs text-blue-700" data-lang-key="focalPDesc">Sinistro, 3° spazio intercostale.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                            <span class="focale-pill">A</span>
+                            <div>
+                                <h4 class="font-bold text-blue-900" data-lang-key="focalA">Aortico</h4>
+                                <p class="text-xs text-blue-700" data-lang-key="focalADesc">Sinistro, 4° spazio intercostale.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                            <span class="focale-pill">M</span>
+                            <div>
+                                <h4 class="font-bold text-blue-900" data-lang-key="focalM">Mitralico</h4>
+                                <p class="text-xs text-blue-700" data-lang-key="focalMDesc">Sinistro, 5° spazio intercostale (apice).</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-sky-100 rounded-lg border border-sky-200">
+                            <span class="focale-pill">T</span>
+                            <div>
+                                <h4 class="font-bold text-sky-900" data-lang-key="focalT">Tricuspide</h4>
+                                <p class="text-xs text-sky-700" data-lang-key="focalTDesc">Destro, 4° spazio intercostale.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="murmurIntensityChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOFFI E ANDAMENTI -->
+        <section class="mb-12 p-8 section-card">
+            <h3 class="text-2xl font-bold mb-8 text-sky-800 text-center" data-lang-key="murmurPatternTitle">Andamento dei Soffi Cardiaci</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                    <div class="text-3xl mb-3">📈</div>
+                    <h4 class="font-bold text-sky-900" data-lang-key="patternCrescendo">Crescendo</h4>
+                    <p class="text-xs text-gray-600 mt-2" data-lang-key="patternCrescendoDesc">L'intensità aumenta progressivamente durante la fase.</p>
+                </div>
+                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                    <div class="text-3xl mb-3">📉</div>
+                    <h4 class="font-bold text-sky-900" data-lang-key="patternDecrescendo">Decrescendo</h4>
+                    <p class="text-xs text-gray-600 mt-2" data-lang-key="patternDecrescendoDesc">L'intensità diminuisce progressivamente fino a svanire.</p>
+                </div>
+                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col items-center">
+                    <div class="mb-3 flex items-center h-[36px]">
+                        <svg class="w-10 h-1" viewBox="0 0 40 4" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="4" rx="2" fill="#0369a1"/></svg>
+                    </div>
+                    <h4 class="font-bold text-sky-900" data-lang-key="patternPlateau">Plateau</h4>
+                    <p class="text-xs text-gray-600 mt-2" data-lang-key="patternPlateauDesc">L'intensità rimane costante per tutta la durata del soffio.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- POLMONARE E GESTIONE PAZIENTE -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Auscultazione Polmonare -->
+            <section class="p-8 section-card">
+                <h3 class="text-2xl font-bold mb-6 text-sky-800" data-lang-key="lungTitle">Campo Polmonare</h3>
+                <div class="space-y-4">
+                    <p class="text-gray-700 text-sm" data-lang-key="lungDesc">Ricerca del <strong>Murmure Vescicolare</strong> fisiologico su tutto l'ambito polmonare (fino al 9° spazio intercostale nel cane).</p>
+                    <div class="p-4 bg-teal-50 rounded-xl border border-teal-100">
+                        <h4 class="font-bold text-teal-900 text-sm mb-2" data-lang-key="lungAbnormalTitle">Suoni Patologici:</h4>
+                        <div id="lung-sounds-list">
+                            <!-- Inserito da JS tramite traduzioni -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tips Gestione -->
+            <section class="p-8 section-card border-2 border-orange-200 bg-orange-50">
+                <h3 class="text-2xl font-bold mb-6 text-orange-800" data-lang-key="tipsTitle">Gestione delle Interferenze</h3>
+                <div class="space-y-6">
+                    <div class="flex gap-4 items-start">
+                        <div class="text-2xl">🐱</div>
+                        <div>
+                            <h4 class="font-bold text-orange-900" data-lang-key="tipCatTitle">Far smettere al gatto di fare le fusa</h4>
+                            <p class="text-sm text-orange-800" data-lang-key="tipCatDesc">Le fusa coprono i toni cardiaci. Utile aprire l'acqua del rubinetto o premere leggermente la laringe.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start">
+                        <div class="text-2xl">🐶</div>
+                        <div>
+                            <h4 class="font-bold text-orange-900" data-lang-key="tipDogTitle">Chiusura della bocca</h4>
+                            <p class="text-sm text-orange-800" data-lang-key="tipDogDesc">Se il cane ansima a bocca aperta, il rumore del passaggio d'aria in gola maschera l'auscultazione toracica.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const speakerIcon = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
+            
+            const translations = {
+                siteTitle: { it: 'Medicina Interna P.A.', en: 'Small Animal Internal Medicine' },
+                backToHome: { 
+                    it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Torna all\'Indice', 
+                    en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Back to Index' 
+                },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                pageTitle: { it: 'I Ritmi della Vita', en: 'Rhythms of Life' },
+                pageSubtitle: { it: 'Guida visiva all\'auscultazione di cuore e polmoni nel cane e nel gatto.', en: 'Visual guide to heart and lung auscultation in dogs and cats.' },
+                cardioTitle: { it: 'Auscultazione Cardiaca: Mappa dei Focolai' + speakerIcon, en: 'Cardiac Auscultation: Heart Valve Map' + speakerIcon },
+                cardioDesc: { it: 'Il cuore viene auscultato bilateralmente per identificare i Punti di Massima Intensità (PMI) delle diverse valvole (Acronimo P.A.M. - T.).', en: 'The heart is auscultated bilaterally to identify Points of Maximum Intensity (PMI) of different valves (Acronym P.A.M. - T.).' },
+                focalP: { it: 'Polmonare', en: 'Pulmonary' },
+                focalPDesc: { it: 'Sinistro, 3° spazio intercostale.', en: 'Left side, 3rd intercostal space.' },
+                focalA: { it: 'Aortico', en: 'Aortic' },
+                focalADesc: { it: 'Sinistro, 4° spazio intercostale.', en: 'Left side, 4th intercostal space.' },
+                focalM: { it: 'Mitralico', en: 'Mitral' },
+                focalMDesc: { it: 'Sinistro, 5° spazio intercostale (apice).', en: 'Left side, 5th intercostal space (apex).' },
+                focalT: { it: 'Tricuspide', en: 'Tricuspid' },
+                focalTDesc: { it: 'Destro, 4° spazio intercostale.', en: 'Right side, 4th intercostal space.' },
+                murmurPatternTitle: { it: 'Andamento dei Soffi Cardiaci' + speakerIcon, en: 'Heart Murmur Patterns' + speakerIcon },
+                patternCrescendo: { it: 'Crescendo', en: 'Crescendo' },
+                patternCrescendoDesc: { it: 'L\'intensità aumenta progressivamente durante la fase.', en: 'Intensity progressively increases during the phase.' },
+                patternDecrescendo: { it: 'Decrescendo', en: 'Decrescendo' },
+                patternDecrescendoDesc: { it: 'L\'intensità diminuisce progressivamente fino a svanire.', en: 'Intensity progressively decreases until it fades away.' },
+                patternPlateau: { it: 'Plateau', en: 'Plateau' },
+                patternPlateauDesc: { it: 'L\'intensità rimane costante per tutta la durata del soffio.', en: 'Intensity remains constant throughout the duration of the murmur.' },
+                lungTitle: { it: 'Campo Polmonare' + speakerIcon, en: 'Lung Field' + speakerIcon },
+                lungDesc: { it: 'Ricerca del Murmure Vescicolare fisiologico su tutto l\'ambito polmonare (fino al 9° spazio intercostale nel cane).', en: 'Search for physiological Vesicular Murmur throughout the lung field (up to the 9th intercostal space in dogs).' },
+                lungAbnormalTitle: { it: 'Suoni Patologici:', en: 'Pathological Sounds:' },
+                lungSoundsList: {
+                    it: `<ul class="text-xs text-teal-800 space-y-1">
+                            <li>• <strong>Rantoli:</strong> essudato nei bronchi.</li>
+                            <li>• <strong>Sibili:</strong> Broncocostrizione.</li>
+                            <li>• <strong>Silenzio:</strong> Versamento o masse.</li>
+                        </ul>`,
+                    en: `<ul class="text-xs text-teal-800 space-y-1">
+                            <li>• <strong>Crackles:</strong> bronchial exudate.</li>
+                            <li>• <strong>Wheezes:</strong> Bronchoconstriction.</li>
+                            <li>• <strong>Silence:</strong> Effusion or masses.</li>
+                        </ul>`
+                },
+                tipsTitle: { it: 'Gestione delle Interferenze' + speakerIcon, en: 'Managing Interferences' + speakerIcon },
+                tipCatTitle: { it: 'Far smettere al gatto di fare le fusa', en: 'Stopping a cat from purring' },
+                tipCatDesc: { it: 'Le fusa coprono i toni cardiaci. Utile aprire l\'acqua del rubinetto o premere leggermente la laringe.', en: 'Purring masks heart sounds. Try running tap water or lightly pressing the larynx.' },
+                tipDogTitle: { it: 'Chiusura della bocca', en: 'Closing the mouth' },
+                tipDogDesc: { it: 'Se il cane ansima a bocca aperta, il rumore del passaggio d\'aria maschera l\'auscultazione.', en: 'If the dog pants with an open mouth, the air movement noise masks the auscultation.' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' },
+                chartLabel: { it: 'Scala Intensità Soffio (Grade 1-6)', en: 'Murmur Intensity Scale (Grade 1-6)' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            // --- GRAFICO INTENSITÀ SOFFIO ---
+            const ctx = document.getElementById('murmurIntensityChart').getContext('2d');
+            let murmurChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['G1', 'G2', 'G3', 'G4', 'G5', 'G6'],
+                    datasets: [{
+                        data: [1, 2, 4, 6, 8, 10],
+                        backgroundColor: ['#e0f2fe', '#bae6fd', '#7dd3fc', '#38bdf8', '#0284c7', '#0369a1'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        title: { display: true, text: translations.chartLabel[currentLanguage] }
+                    },
+                    scales: { 
+                        y: { display: false },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // --- FUNZIONI CORE ---
+            function speak(text, button) {
+                if (synth.speaking && activeTTSButton === button) {
+                    synth.paused ? synth.resume() : synth.pause();
+                    button.classList.toggle('playing', !synth.paused);
+                } else {
+                    synth.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                    utterance.onend = () => { button.classList.remove('playing'); activeTTSButton = null; };
+                    synth.speak(utterance);
+                    if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                    activeTTSButton = button;
+                    button.classList.add('playing');
+                }
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    button.onclick = (e) => {
+                        e.stopPropagation();
+                        const section = e.currentTarget.closest('section') || e.currentTarget.parentElement;
+                        const clone = section.cloneNode(true);
+                        clone.querySelectorAll('.tts-button, canvas').forEach(el => el.remove());
+                        speak(clone.innerText.trim(), button);
+                    };
+                });
+            }
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                
+                document.getElementById('lung-sounds-list').innerHTML = translations.lungSoundsList[lang];
+
+                murmurChart.options.plugins.title.text = translations.chartLabel[lang];
+                murmurChart.update();
+
+                setupTTSListeners();
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+                if (synth.speaking) synth.cancel();
+            });
+
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                setA11yMode(!body.classList.contains('dsa-mode'));
+            });
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
