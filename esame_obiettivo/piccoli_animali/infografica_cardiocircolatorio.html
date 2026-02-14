@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: Apparato Cardiocircolatorio - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA AZZURRO (SKY) per Piccoli Animali */
+        .hero-bg { background-color: #0369a1; background-image: linear-gradient(to right, #0369a1, #0284c7); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f0f9ff; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #0369a1; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #0284c7; }
+        .quick-nav-item.active { background-color: #0369a1; color: #ffffff !important; border-color: #0369a1; }
+
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #0369a1; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 1000px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Infografica */
+        h2 { font-family: 'Lexend', sans-serif; color: #0c4a6e; border-bottom: 2px solid #e0f2fe; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700; text-align: center; }
+        .flow-step { border-top: 4px solid #0369a1; padding: 1.25rem; background-color: #f8fafc; border-radius: 0.5rem; height: 100%; transition: transform 0.2s; }
+        .flow-step:hover { transform: translateY(-3px); }
+        .focus-box { padding: 1.25rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .flow-step, .dsa-mode .focus-box { background-color: #ffffff !important; border: 2px solid #000 !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleCardio">2. Apparato Cardiocircolatorio</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_cardiocircolatorio.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_cardiocircolatorio.html" class="section-nav-link active" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_cardiocircolatorio.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_cardiocircolatorio.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_cardiocircolatorio.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item active" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <header class="text-center mb-12">
+                <h1 class="text-3xl font-bold mb-2 text-sky-900" data-lang-key="pageTitle">L'Esame Cardiocircolatorio (P.A.)</h1>
+                <p class="text-gray-600" data-lang-key="pageSubtitle">Schema riassuntivo della metodologia clinica per cane e gatto.</p>
+            </header>
+
+            <!-- I 4 TEMPI -->
+            <section class="mb-16">
+                <h2 data-lang-key="flowTitle">I 4 Tempi dell'Esame</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="flow-step border-sky-400">
+                        <h3 class="text-sky-700" data-lang-key="step1Title">1. Ispezione</h3>
+                        <p class="text-sm text-gray-600" data-lang-key="step1Desc">Itto visibile (Sx), giugulari (solo in magri/pelo corto) ed edemi declivi.</p>
+                    </div>
+                    <div class="flow-step border-sky-600">
+                        <h3 class="text-sky-800" data-lang-key="step2Title">2. Palpazione</h3>
+                        <p class="text-sm text-gray-600" data-lang-key="step2Desc">Itto, fremiti cardiaci e rilievo del polso all'arteria femorale.</p>
+                    </div>
+                    <div class="flow-step border-sky-800">
+                        <h3 class="text-sky-900" data-lang-key="step3Title">3. Percussione</h3>
+                        <p class="text-sm text-gray-600" data-lang-key="step3Desc">A raggera con centro sull'olecrano per mappare l'area di ottusità.</p>
+                    </div>
+                    <div class="flow-step border-teal-500">
+                        <h3 class="text-teal-700" data-lang-key="step4Title">4. Auscultazione</h3>
+                        <p class="text-sm text-gray-600" data-lang-key="step4Desc">Analisi focolai (P.A.M.-T.), toni, soffi e aritmia sinusale fisiologica.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CARATTERI DEL POLSO -->
+            <section class="mb-16 bg-slate-50 p-8 rounded-xl">
+                <h2 data-lang-key="pulseTitle">Focus: Polso Arterioso Femorale</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="focus-box bg-white">
+                        <h4 class="text-sky-800 font-bold" data-lang-key="pulse1Title">Sincronia</h4>
+                        <p class="text-xs text-gray-600" data-lang-key="pulse1Desc">Ogni battito auscultato deve corrispondere a un'onda del polso.</p>
+                    </div>
+                    <div class="focus-box bg-white">
+                        <h4 class="text-sky-800 font-bold" data-lang-key="pulse2Title">Ritmo</h4>
+                        <p class="text-xs text-gray-600" data-lang-key="pulse2Desc">Regolare o aritmico (aritmia sinusale respiratoria nel cane).</p>
+                    </div>
+                    <div class="focus-box bg-white">
+                        <h4 class="text-sky-800 font-bold" data-lang-key="pulse3Title">Ampiezza</h4>
+                        <p class="text-xs text-gray-600" data-lang-key="pulse3Desc">Espansione dell'arteria (pieno, piccolo o filiforme).</p>
+                    </div>
+                    <div class="focus-box bg-white">
+                        <h4 class="text-sky-800 font-bold" data-lang-key="pulse4Title">Qualità</h4>
+                        <p class="text-xs text-gray-600" data-lang-key="pulse4Desc">Celerità (velocità dell'onda) e durezza (pressione necessaria).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PMI E PERFUSIONE -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- PMI -->
+                <div class="focus-box bg-sky-50/30 border-sky-100">
+                    <h2 class="!mt-0 !text-sky-700" data-lang-key="auscultTitle">Focolai Valvolari (PMI)</h2>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <h4 class="text-sky-800 font-bold mb-1" data-lang-key="auscultLeftTitle">LATO SINISTRO</h4>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                <li data-lang-key="pap">Polmonare (III s.i.)</li>
+                                <li data-lang-key="pao">Aortica (IV s.i.)</li>
+                                <li data-lang-key="pam">Mitralica (V s.i.)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-sky-800 font-bold mb-1" data-lang-key="auscultRightTitle">LATO DESTRO</h4>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                <li data-lang-key="pat">Tricuspidale (IV s.i.)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PERFUSIONE -->
+                <div class="focus-box bg-teal-50/30 border-teal-100">
+                    <h2 class="!mt-0 !text-teal-700" data-lang-key="perfusionTitle">Perfusione Periferica</h2>
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <h4 class="text-teal-800 font-bold" data-lang-key="trcTitle">TRC (Tempo Riempimento)</h4>
+                            <p class="text-gray-600" data-lang-key="trcDesc">Normale < 2 secondi. Prolungato in shock o disidratazione.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-teal-800 font-bold" data-lang-key="tempExtTitle">Temperatura Estremità</h4>
+                            <p class="text-gray-600" data-lang-key="tempExtDesc">Fredde in caso di vasocostrizione o ipoperfusione da disfunzione cardiaca.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-teal-800 font-bold mb-2" data-lang-key="mucosaTitle">Colore Mucose</h4>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-0.5 bg-pink-200 rounded-full text-[10px] font-bold border border-pink-300" data-lang-key="mucosa1">Rosa</span>
+                                <span class="px-2 py-0.5 bg-white rounded-full text-[10px] font-bold border border-gray-300" data-lang-key="mucosa2">Pallido</span>
+                                <span class="px-2 py-0.5 bg-red-200 rounded-full text-[10px] font-bold border border-red-300" data-lang-key="mucosa5">Iperemico</span>
+                                <span class="px-2 py-0.5 bg-yellow-100 rounded-full text-[10px] font-bold border border-yellow-300" data-lang-key="mucosa3">Itterico</span>
+                                <span class="px-2 py-0.5 bg-blue-100 rounded-full text-[10px] font-bold border border-blue-300" data-lang-key="mucosa4">Cianotico</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndex: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleCardio: { it: '2. Apparato Cardiocircolatorio', en: '2. Cardiovascular System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical Examination" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular System" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory System" },
+                navDig: { it: "Apparato Digerente", en: "Digestive System" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal System" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary System" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic System" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine System" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous System" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary System" },
+                pageTitle: { it: "L'Esame Cardiocircolatorio (P.A.)", en: "Cardiovascular Exam (Small Animals)" },
+                pageSubtitle: { it: "Schema riassuntivo della metodologia clinica per cane e gatto.", en: "Summary scheme of clinical methodology for dogs and cats." },
+                flowTitle: { it: "I 4 Tempi dell'Esame", en: "The 4 Steps of the Exam" },
+                step1Title: { it: "1. Ispezione", en: "1. Inspection" },
+                step1Desc: { it: "Itto visibile (Sx), giugulari (solo in magri/pelo corto) ed edemi declivi.", en: "Visible apex beat (L), jugulars (thin/short-hair only), and dependent edema." },
+                step2Title: { it: "2. Palpazione", en: "2. Palpation" },
+                step2Desc: { it: "Localizzazione itto, ricerca di fremiti cardiaci e rilievo del polso all'arteria femorale.", en: "Apex beat localization, cardiac thrills, and pulse evaluation at femoral artery." },
+                step3Title: { it: "3. Percussione", en: "3. Percussion" },
+                step3Desc: { it: "A raggera con centro sull'olecrano per mappare l'area di ottusità.", en: "Radial pattern centered on olecranon to map the dullness area." },
+                step4Title: { it: "4. Auscultazione", en: "4. Auscultation" },
+                step4Desc: { it: "Analisi focolai (P.A.M.-T.), toni, soffi e aritmia sinusale fisiologica.", en: "Sites (P.A.M.-T.), sounds, murmurs, and physiological arrhythmia." },
+                pulseTitle: { it: "Focus: Polso Arterioso Femorale", en: "Focus: Femoral Arterial Pulse" },
+                pulse1Title: { it: "Sincronia", en: "Synchrony" },
+                pulse1Desc: { it: "Ogni battito auscultato deve corrispondere a un'onda del polso.", en: "Each auscultated beat must correspond to a pulse wave." },
+                pulse2Title: { it: "Ritmo", en: "Rhythm" },
+                pulse2Desc: { it: "Regolare o aritmico (aritmia sinusale respiratoria nel cane).", en: "Regular or arrhythmic (respiratory sinus arrhythmia in dogs)." },
+                pulse3Title: { it: "Ampiezza", en: "Amplitude" },
+                pulse3Desc: { it: "Espansione dell'arteria (pieno, piccolo o filiforme).", en: "Arterial expansion (full, small, or thready)." },
+                pulse4Title: { it: "Qualità", en: "Quality" },
+                pulse4Desc: { it: "Celerità (velocità dell'onda) e durezza (pressione necessaria).", en: "Celerity (wave speed) and hardness (required pressure)." },
+                auscultTitle: { it: "Focolai Valvolari (PMI)", en: "Valvular Sites (PMI)" },
+                auscultLeftTitle: { it: "LATO SINISTRO", en: "LEFT SIDE" },
+                pap: { it: "Polmonare (III s.i.)", en: "Pulmonic (3rd ICS)" },
+                pao: { it: "Aortica (IV s.i.)", en: "Aortic (4th ICS)" },
+                pam: { it: "Mitralica (V s.i.)", en: "Mitral (5th ICS)" },
+                auscultRightTitle: { it: "LATO DESTRO", en: "RIGHT SIDE" },
+                pat: { it: "Tricuspidale (IV s.i.)", en: "Tricuspid (4th ICS)" },
+                perfusionTitle: { it: "Perfusione Periferica", en: "Peripheral Perfusion" },
+                trcTitle: { it: "TRC (Tempo Riempimento)", en: "CRT (Refill Time)" },
+                trcDesc: { it: "Normale < 2 secondi. Prolungato in shock o disidratazione.", en: "Normal < 2 seconds. Prolonged in shock or dehydration." },
+                tempExtTitle: { it: "Temperatura Estremità", en: "Extremity Temperature" },
+                tempExtDesc: { it: "Fredde in caso di vasocostrizione o ipoperfusione da disfunzione cardiaca.", en: "Cold in case of vasoconstriction or hypoperfusion from cardiac dysfunction." },
+                mucosaTitle: { it: "Colore Mucose", en: "Mucous Color" },
+                mucosa1: { it: "Rosa", en: "Pink" },
+                mucosa2: { it: "Pallido", en: "Pale" },
+                mucosa3: { it: "Itterico", en: "Icteric" },
+                mucosa4: { it: "Cianotico", en: "Cyanotic" },
+                mucosa5: { it: "Iperemico", en: "Hyperemic" },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) {
+                        if (el.tagName === 'A' && el.querySelector('svg')) {
+                            const svg = el.querySelector('svg').outerHTML;
+                            el.innerHTML = svg + translations[key][lang];
+                        } else {
+                            el.innerHTML = translations[key][lang];
+                        }
+                    }
+                });
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
