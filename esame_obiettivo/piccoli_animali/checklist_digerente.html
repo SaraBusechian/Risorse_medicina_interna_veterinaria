@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist: Esame Apparato Digerente - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA AZZURRO (SKY) per Piccoli Animali */
+        .hero-bg { background-color: #0369a1; background-image: linear-gradient(to right, #0369a1, #0284c7); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f0f9ff; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #0369a1; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e0f2fe; color: #0284c7; }
+        .quick-nav-item.active { background-color: #0369a1; color: #ffffff !important; border-color: #0369a1; }
+
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #0369a1; cursor: default; }
+
+        .content-card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: 2rem; max-width: 900px; margin: 2rem auto 3rem; position: relative; z-index: 10; }
+        
+        h2 { font-family: 'Lexend', sans-serif; color: #0c4a6e; border-bottom: 2px solid #e0f2fe; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 700; }
+        h3 { font-family: 'Lexend', sans-serif; color: #075985; font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 1rem; }
+
+        label { display: block; font-weight: 600; margin-top: 10px; color: #374151; }
+        .description { font-size: 0.85em; color: #6b7280; margin-bottom: 5px; margin-top: 2px; font-style: italic; }
+        
+        textarea { 
+            width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; 
+            min-height: 60px; margin-bottom: 15px; font-size: 0.9em; background-color: #f9fafb;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        textarea:focus { border-color: #0369a1; box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.1); outline: none; background-color: #fff; }
+
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode label, .dsa-mode input, .dsa-mode textarea, .dsa-mode .unit, .dsa-mode .sub-label { color: #000 !important; }
+        .dsa-mode input, .dsa-mode textarea { background-color: #ffffff; border: 2px solid #000; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .back-button-container, .quick-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+            .hero-bg { background: none !important; color: black !important; }
+            h1 { color: black !important; border-bottom: 2px solid #000 !important; }
+            h2 { border-bottom: 1px solid #000 !important; color: black !important; }
+            textarea { border: none !important; border-bottom: 1px dotted #000 !important; background: none !important; min-height: 40px !important; }
+            .grid-container { grid-template-columns: 1fr 1fr !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleDig">4. Apparato Digerente</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_digerente.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_digerente.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_digerente.html" class="section-nav-link active" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_digerente.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_digerente.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item active" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <h1 class="text-2xl font-bold mb-8 text-center text-sky-900" data-lang-key="pageTitle">Checklist: Esame Apparato Digerente</h1>
+
+            <!-- 1. ISPEZIONE -->
+            <section>
+                <h2 data-lang-key="sectionIspezione">1. Ispezione</h2>
+                <div class="grid-container">
+                    <div>
+                        <label data-lang-key="inspCavitaOrale">Cavità Orale</label>
+                        <p class="description" data-lang-key="inspCavitaOraleDesc">Denti, lingua, scolo, riflesso deglutizione.</p>
+                        <textarea id="val_bocca"></textarea>
+                    </div>
+                    <div>
+                        <label data-lang-key="inspAddomeForma">Forma Addome</label>
+                        <p class="description" data-lang-key="inspAddomeFormaDesc">Simmetria, distensione, meteorismo.</p>
+                        <textarea id="val_addome_forma"></textarea>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label data-lang-key="inspFeci">Feci</label>
+                        <p class="description" data-lang-key="inspFeciDesc">Consistenza, colore, presenza di sangue/muco.</p>
+                        <textarea id="val_feci"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. PALPAZIONE -->
+            <section>
+                <h2 data-lang-key="sectionPalpazione">2. Palpazione</h2>
+                
+                <h3 data-lang-key="palpBallottamento">Ballottamento o succussione</h3>
+                <div class="grid-container">
+                    <div class="sm:col-span-2">
+                        <p class="description" data-lang-key="palpBallottamentoDesc">Ricerca dello "sciabordio" per versamenti liquidi o masse flottanti.</p>
+                        <textarea id="val_ballottamento"></textarea>
+                    </div>
+                </div>
+
+                <h3 data-lang-key="palpAddominale">Palpazione Addominale Profonda</h3>
+                <p class="description mb-4" data-lang-key="palpIntro">Valutazione sistematica dei visceri per dimensione, consistenza e dolore.</p>
+                
+                <div class="grid-container">
+                    <!-- FEGATO E MILZA -->
+                    <div>
+                        <label data-lang-key="palpFegato">Fegato</label>
+                        <p class="description" data-lang-key="palpFegatoDesc">Rilevabile oltre l'arco costale solo se aumentato.</p>
+                        <textarea id="palp_fegato"></textarea>
+                    </div>
+                    <div>
+                        <label data-lang-key="palpMilza">Milza</label>
+                        <p class="description" data-lang-key="palpMilzaDesc">Rilevabilità della testa (Sx) o splenomegalia.</p>
+                        <textarea id="palp_milza"></textarea>
+                    </div>
+                    
+                    <!-- STOMACO E RENI -->
+                    <div>
+                        <label data-lang-key="palpStomaco">Stomaco</label>
+                        <p class="description" data-lang-key="palpStomacoDesc">Stato di riempimento, dolore, corpi estranei.</p>
+                        <textarea id="palp_stomaco"></textarea>
+                    </div>
+                    <div>
+                        <label data-lang-key="palpReni">Reni</label>
+                        <p class="description" data-lang-key="palpReniDesc">Sinistro e Destro (costanti nel gatto).</p>
+                        <textarea id="palp_reni"></textarea>
+                    </div>
+
+                    <!-- INTESTINO E VESCICA -->
+                    <div>
+                        <label data-lang-key="palpAnse">Anse Intestinali</label>
+                        <p class="description" data-lang-key="palpAnseDesc">Spessore, contenuto (gas/solido), masse.</p>
+                        <textarea id="palp_anse"></textarea>
+                    </div>
+                    <div>
+                        <label data-lang-key="palpVescica">Vescica</label>
+                        <p class="description" data-lang-key="palpVescicaDesc">Grado di pienezza, tensione, calcoli.</p>
+                        <textarea id="palp_vescica"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. ESPLORAZIONE RETTALE -->
+            <section>
+                <h2 data-lang-key="sectionRettale">3. Esplorazione Rettale Digitale</h2>
+                <div class="grid-container">
+                    <div>
+                        <label data-lang-key="rectSacchiAnali">Sacchi Anali</label>
+                        <p class="description" data-lang-key="rectSacchiAnaliDesc">Riempimento, ascessi, fistole.</p>
+                        <textarea id="val_rect_sacchi"></textarea>
+                    </div>
+                    <div>
+                        <label data-lang-key="rectProstata">Prostata (Maschio)</label>
+                        <p class="description" data-lang-key="rectProstataDesc">Volume, mobilità, simmetria, dolore.</p>
+                        <textarea id="val_rect_prostata"></textarea>
+                    </div>
+                    <div>
+                        <label data-lang-key="rectBacino">Integrità Bacino</label>
+                        <p class="description" data-lang-key="rectBacinoDesc">Simmetria branche iliache (post-trauma).</p>
+                        <textarea id="val_rect_bacino"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. PERCUSSIONE -->
+            <section>
+                <h2 data-lang-key="sectionPercussione">4. Percussione (Sospetto Meteorismo)</h2>
+                <div class="grid-container">
+                    <div class="sm:col-span-2">
+                        <label data-lang-key="percMeteorismo">Meteorismo Gastrico</label>
+                        <p class="description" data-lang-key="percMeteorismoDesc">Ricerca suono timpanico-metallico in addome craniale Sx.</p>
+                        <textarea id="val_perc_met"></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-sky-600 text-white font-bold py-3 px-10 rounded-xl hover:bg-sky-700 transition shadow-lg flex items-center mx-auto">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="btnPrint">Stampa Checklist Digerente</span>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleDig: { it: '4. Apparato Digerente', en: '4. Digestive System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                pageTitle: { it: "Checklist: Esame Apparato Digerente", en: "Digestive Exam Checklist" },
+                sectionIspezione: { it: "1. Ispezione", en: "1. Inspection" },
+                inspCavitaOrale: { it: "Cavità Orale", en: "Oral Cavity" },
+                inspCavitaOraleDesc: { it: "Denti, lingua, scolo, riflesso deglutizione.", en: "Teeth, tongue, discharge, swallowing reflex." },
+                inspAddomeForma: { it: "Forma Addome", en: "Abdomen Shape" },
+                inspAddomeFormaDesc: { it: "Simmetria, distensione, meteorismo.", en: "Symmetry, distension, meteorism." },
+                inspFeci: { it: "Feci", en: "Feces" },
+                inspFeciDesc: { it: "Consistenza, colore, presenza di sangue/muco.", en: "Consistency, color, blood/mucus presence." },
+                sectionPalpazione: { it: "2. Palpazione", en: "2. Palpation" },
+                palpBallottamento: { it: "Ballottamento o succussione", en: "Ballottement or succussion" },
+                palpBallottamentoDesc: { it: "Ricerca dello \"sciabordio\" per versamenti liquidi o masse flottanti.", en: "Searching for the \"sloshing\" sound for fluid effusions or floating masses." },
+                palpAddominale: { it: "Palpazione Addominale Profonda", en: "Deep Abdominal Palpation" },
+                palpIntro: { it: "Valutazione sistematica dei visceri per dimensione, consistenza e dolore.", en: "Systematic evaluation of viscera for size, consistency, and pain." },
+                palpFegato: { it: "Fegato", en: "Liver" },
+                palpFegatoDesc: { it: "Rilevabile oltre l'arco costale solo se aumentato.", en: "Detectable beyond the costal arch only if enlarged." },
+                palpMilza: { it: "Milza", en: "Spleen" },
+                palpMilzaDesc: { it: "Rilevabilità della testa (Sx) o splenomegalia.", en: "Detectability of the head (L) or splenomegaly." },
+                palpStomaco: { it: "Stomaco", en: "Stomach" },
+                palpStomacoDesc: { it: "Stato di riempimento, dolore, corpi estranei.", en: "Filling state, pain, foreign bodies." },
+                palpReni: { it: "Reni", en: "Kidneys" },
+                palpReniDesc: { it: "Sinistro e Destro (costanti nel gatto).", en: "Left and Right (consistent in cats)." },
+                palpAnse: { it: "Anse Intestinali", en: "Intestinal Loops" },
+                palpAnseDesc: { it: "Spessore, contenuto (gas/solido), masse.", en: "Thickness, content (gas/solid), masses." },
+                palpVescica: { it: "Vescica", en: "Bladder" },
+                palpVescicaDesc: { it: "Grado di pienezza, tensione, calcoli.", en: "Filling degree, tension, calculi." },
+                sectionRettale: { it: "3. Esplorazione Rettale Digitale", en: "3. Digital Rectal Exam" },
+                rectSacchiAnali: { it: "Sacchi Anali", en: "Anal Sacs" },
+                rectSacchiAnaliDesc: { it: "Riempimento, ascessi, fistole.", en: "Filling, abscesses, fistulas." },
+                rectProstata: { it: "Prostata (Maschio)", en: "Prostate (Male)" },
+                rectProstataDesc: { it: "Volume, mobilità, simmetria, dolore.", en: "Volume, mobility, symmetry, pain." },
+                rectBacino: { it: "Integrità Bacino", en: "Pelvic Integrity" },
+                rectBacinoDesc: { it: "Simmetria branche iliache (post-trauma).", en: "Iliac branch symmetry (post-trauma)." },
+                sectionPercussione: { it: "4. Percussione (Sospetto Meteorismo)", en: "4. Percussion (Suspected Meteorism)" },
+                percMeteorismo: { it: "Meteorismo Gastrico", en: "Gastric Meteorism" },
+                percMeteorismoDesc: { it: "Ricerca suono timpanico-metallico in addome craniale Sx.", en: "Search for tympanic-metallic sound in L cranial abdomen." },
+                btnPrint: { it: 'Stampa Checklist Digerente', en: 'Print Digestive Checklist' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) {
+                        if (el.tagName === 'A' && el.querySelector('svg')) {
+                            const svg = el.querySelector('svg').outerHTML;
+                            el.innerHTML = svg + translations[key][lang];
+                        } else {
+                            el.innerHTML = translations[key][lang];
+                        }
+                    }
+                });
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
