@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: Esame Apparato Digerente - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA AZZURRO (SKY) per Piccoli Animali */
+        .hero-bg { background-color: #0369a1; background-image: linear-gradient(to right, #0369a1, #0284c7); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f0f9ff; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #0369a1; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e0f2fe; color: #0284c7; }
+        .quick-nav-item.active { background-color: #0369a1; color: #ffffff !important; border-color: #0369a1; }
+
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #0369a1; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 1000px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Infografica */
+        h2 { font-family: 'Lexend', sans-serif; color: #0c4a6e; border-bottom: 2px solid #e0f2fe; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700; text-align: center; }
+        .flow-step { border-top: 4px solid #0369a1; padding: 1.25rem; background-color: #f8fafc; border-radius: 0.5rem; height: 100%; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .flow-step:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .focus-box { padding: 1.25rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; }
+        .specie-icon { font-size: 1.5rem; margin-right: 0.5rem; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .flow-step, .dsa-mode .focus-box { background-color: #ffffff !important; border: 2px solid #000 !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleDig">4. Apparato Digerente</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_digerente.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_digerente.html" class="section-nav-link active" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_digerente.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_digerente.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_digerente.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item active" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item active" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <header class="text-center mb-12">
+                <h1 class="text-3xl font-bold mb-2 text-sky-900" data-lang-key="pageTitle">L'Esame Digerente: Punti Chiave</h1>
+                <p class="text-gray-600" data-lang-key="pageSubtitle">Protocollo sistematico per la valutazione clinica dell'addome in cane e gatto.</p>
+            </header>
+
+            <!-- LE 3 METODICHE -->
+            <section class="mb-16">
+                <h2 data-lang-key="flowTitle">Le 3 Metodiche dell'Esame (P.A.)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="flow-step border-sky-400">
+                        <h3 class="text-sky-700 font-bold" data-lang-key="step1Title">1. Ispezione</h3>
+                        <p class="text-sm text-gray-600" data-lang-key="step1Desc">Cavo orale (lingua, denti), forma addome e analisi feci.</p>
+                    </div>
+                    <div class="flow-step border-sky-600">
+                        <h3 class="text-sky-800 font-bold" data-lang-key="step2Title">2. Palpazione</h3>
+                        <p class="text-sm text-gray-600" data-lang-key="step2Desc">Succussione (liquidi) e Palpazione Addominale profonda (visceri).</p>
+                    </div>
+                    <div class="flow-step border-sky-800">
+                        <h3 class="text-sky-900 font-bold" data-lang-key="step3Title">3. Percussione</h3>
+                        <p class="text-sm text-gray-600" data-lang-key="step3Desc">Utilizzata esclusivamente nel sospetto di meteorismo gastrico (GDV).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PALPAZIONE ADDOMINALE -->
+            <section class="mb-16">
+                <h2 data-lang-key="palpTitle">Palpazione: Il Cuore della Visita</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="focus-box bg-sky-50/30 border-sky-100">
+                        <h4 class="text-sky-800 font-bold mb-4" data-lang-key="palpTechniqueTitle">TECNICHE MANUALI</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-2" data-lang-key="palpTechniqueList">
+                            <li><strong>Monomanuale:</strong> Ideale per gatto e piccoli cani.</li>
+                            <li><strong>Bimanuale:</strong> Necessaria per cani di media e grande mole.</li>
+                            <li><strong>Succussione:</strong> Ricerca dello sciabordio di versamenti.</li>
+                        </ul>
+                    </div>
+                    <div class="focus-box bg-teal-50/30 border-teal-100">
+                        <h4 class="text-teal-800 font-bold mb-4" data-lang-key="palpOrgansTitle">VISCERI PALPABILI</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-2" data-lang-key="palpOrgansList">
+                            <li><strong>Fegato e Milza:</strong> Solo se aumentati di volume.</li>
+                            <li><strong>Anse intestinali:</strong> Valutabili per spessore e contenuto.</li>
+                            <li><strong>Reni:</strong> Costanti nel gatto; polo caudale nel cane.</li>
+                            <li><strong>Vescica:</strong> Reperibile se mediamente piena.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ESPLORAZIONE RETTALE -->
+            <section class="mb-16 bg-slate-50 p-8 rounded-xl">
+                <h2 data-lang-key="rectalTitle">Esplorazione Rettale Digitale</h2>
+                <p class="text-center text-sm text-gray-600 mb-6" data-lang-key="rectalDesc">Indagine mirata da eseguire in casi selezionati.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="focus-box bg-white text-center">
+                        <h4 class="text-sky-800 font-bold" data-lang-key="rectal1Title">Sacchi Anali</h4>
+                        <p class="text-xs text-gray-600" data-lang-key="rectal1Desc">Valutazione di riempimento, ascessi o fistole.</p>
+                    </div>
+                    <div class="focus-box bg-white text-center">
+                        <h4 class="text-sky-800 font-bold" data-lang-key="rectal2Title">Prostata (Maschio)</h4>
+                        <p class="text-xs text-gray-600" data-lang-key="rectal2Desc">Volume, simmetria, mobilità e dolorabilità.</p>
+                    </div>
+                    <div class="focus-box bg-white text-center">
+                        <h4 class="text-sky-800 font-bold" data-lang-key="rectal3Title">Integrità Bacino</h4>
+                        <p class="text-xs text-gray-600" data-lang-key="rectal3Desc">Ricerca fratture o asimmetrie in caso di trauma.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- URGENZA GDV -->
+            <section>
+                <div class="focus-box border-red-200 bg-red-50/50">
+                    <h2 class="!mt-0 !text-red-700" data-lang-key="gdvTitle">Urgenza: Sospetto Meteorismo Gastrico (GDV)</h2>
+                    <div class="flex flex-col md:flex-row gap-6 items-center">
+                        <div class="text-5xl">🎈</div>
+                        <div class="text-sm text-gray-700">
+                            <p data-lang-key="gdvNote">La percussione rivela un <strong>suono timpanico metallico</strong> nell'addome craniale sinistro. Questa combinazione di segni clinici impone un intervento immediato.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleDig: { it: '4. Apparato Digerente', en: '4. Digestive System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                pageTitle: { it: "L'Esame Digerente: Punti Chiave", en: "The Digestive Exam: Key Points" },
+                pageSubtitle: { it: "Protocollo sistematico per la valutazione clinica dell'addome in cane e gatto.", en: "Systematic protocol for clinical abdominal assessment in dogs and cats." },
+                flowTitle: { it: "Le 3 Metodiche dell'Esame (P.A.)", en: "The 3 Examination Methods (Small Animals)" },
+                step1Title: { it: "1. Ispezione", en: "1. Inspection" },
+                step1Desc: { it: "Cavo orale (lingua, denti), forma addome e analisi feci.", en: "Oral cavity, abdomen shape, and feces analysis." },
+                step2Title: { it: "2. Palpazione", en: "2. Palpation" },
+                step2Desc: { it: "Succussione (liquidi) e Palpazione Addominale profonda (visceri).", en: "Succussion (fluids) and deep Abdominal Palpation (viscera)." },
+                step3Title: { it: "3. Percussione", en: "3. Percussion" },
+                step3Desc: { it: "Utilizzata esclusivamente nel sospetto di meteorismo gastrico (GDV).", en: "Used exclusively for suspected gastric meteorism (GDV)." },
+                palpTitle: { it: "Palpazione: Il Cuore della Visita", en: "Palpation: The Heart of the Visit" },
+                palpTechniqueTitle: { it: "TECNICHE MANUALI", en: "MANUAL TECHNIQUES" },
+                palpTechniqueList: {
+                    it: "<li><strong>Monomanuale:</strong> Ideale per gatto e piccoli cani.</li><li><strong>Bimanuale:</strong> Per cani di media e grande mole.</li><li><strong>Succussione:</strong> Ricerca dello sciabordio di versamenti.</li>",
+                    en: "<li><strong>Monomanual:</strong> Ideal for cats and small dogs.</li><li><strong>Bimanual:</strong> For medium and large dogs.</li><li><strong>Succussion:</strong> Checking for fluid sloshing.</li>"
+                },
+                palpOrgansTitle: { it: "VISCERI PALPABILI", en: "PALPABLE VISCERA" },
+                palpOrgansList: {
+                    it: "<li><strong>Fegato e Milza:</strong> Solo se aumentati di volume.</li><li><strong>Anse intestinali:</strong> Valutabili per spessore e contenuto.</li><li><strong>Reni:</strong> Costanti nel gatto; polo caudale nel cane.</li><li><strong>Vescica:</strong> Reperibile se mediamente piena.</li>",
+                    en: "<li><strong>Liver and Spleen:</strong> Only if enlarged.</li><li><strong>Intestinal loops:</strong> Assessed for thickness and content.</li><li><strong>Kidneys:</strong> Constant in cats; caudal pole in dogs.</li><li><strong>Bladder:</strong> Detectable if full.</li>"
+                },
+                rectalTitle: { it: "Esplorazione Rettale Digitale", en: "Digital Rectal Examination" },
+                rectalDesc: { it: "Indagine mirata da eseguire in casi selezionati.", en: "Targeted investigation to be performed in selected cases." },
+                rectal1Title: { it: "Sacchi Anali", en: "Anal Sacs" },
+                rectal1Desc: { it: "Valutazione di riempimento, ascessi o fistole.", en: "Assessment of filling, abscesses, or fistulas." },
+                rectal2Title: { it: "Prostata (Maschio)", en: "Prostate (Male)" },
+                rectal2Desc: { it: "Volume, simmetria, mobilità e dolore.", en: "Size, symmetry, mobility, and pain." },
+                rectal3Title: { it: "Integrità Bacino", en: "Pelvic Integrity" },
+                rectal3Desc: { it: "Ricerca fratture o asimmetrie in caso di trauma.", en: "Search for fractures or asymmetries in case of trauma." },
+                gdvTitle: { it: "Urgenza: Sospetto Meteorismo Gastrico (GDV)", en: "Emergency: Suspected Gastric Meteorism (GDV)" },
+                gdvNote: { 
+                    it: "La percussione rivela un <strong>suono timpanico metallico</strong> nell'addome craniale sinistro. Segno critico per il sospetto di GDV.", 
+                    en: "Percussion reveals a <strong>metallic tympanic sound</strong> in the left cranial abdomen. Critical sign for GDV suspicion." 
+                },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) {
+                        if (el.tagName === 'A' && el.querySelector('svg')) {
+                            const svg = el.querySelector('svg').outerHTML;
+                            el.innerHTML = svg + translations[key][lang];
+                        } else {
+                            el.innerHTML = translations[key][lang];
+                        }
+                    }
+                });
+                
+                if (translations.palpTechniqueList) document.querySelector('[data-lang-key="palpTechniqueList"]').innerHTML = translations.palpTechniqueList[lang];
+                if (translations.palpOrgansList) document.querySelector('[data-lang-key="palpOrgansList"]').innerHTML = translations.palpOrgansList[lang];
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
