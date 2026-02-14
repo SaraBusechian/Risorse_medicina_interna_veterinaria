@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interattivo: Apparato Respiratorio - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA AZZURRO (SKY) per Piccoli Animali */
+        .hero-bg { background-color: #0369a1; background-image: linear-gradient(to right, #0369a1, #0284c7); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f0f9ff; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #0369a1; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #0284c7; }
+        .quick-nav-item.active { background-color: #0369a1; color: #ffffff !important; border-color: #0369a1; }
+
+        /* --- SECTION NAV --- */
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #0369a1; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 800px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Quiz */
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; text-align: left; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .option-btn:hover:not(:disabled) { border-color: #0284c7; background-color: #f0f9ff; transform: translateY(-2px); }
+        .option-btn.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: 600; }
+        .option-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: 600; }
+
+        /* TTS Button */
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #0284c7; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h2, .dsa-mode h3, .dsa-mode p { color: #000 !important; }
+        .dsa-mode .option-btn { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .option-btn.correct { background-color: #dcfce7 !important; border-width: 5px !important; }
+        .dsa-mode .option-btn.incorrect { background-color: #fee2e2 !important; border-width: 5px !important; }
+        .dsa-mode .tts-button { color: #000 !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleResp">3. Apparato Respiratorio</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_respiratorio.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_respiratorio.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_respiratorio.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_respiratorio.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_respiratorio.html" class="section-nav-link active" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item active" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="quiz-container" class="content-card">
+            
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: Apparato Respiratorio</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-gray-500"></p>
+                </div>
+
+                <div class="mb-8 p-4 bg-slate-50 rounded-xl flex items-start gap-3 border border-slate-100">
+                    <p id="question-text" class="text-lg font-medium text-gray-800 flex-grow"></p>
+                    <button id="question-tts-button" class="tts-button mt-1">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-sky-50 border-2 border-sky-200">
+                    <p id="rationale-text" class="text-sm italic text-sky-800 mb-6"></p>
+                    <button id="next-button" class="w-full bg-sky-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-sky-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🫁</div>
+                <h2 class="text-3xl font-bold text-sky-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-gray-600" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-6xl font-black text-sky-600 my-6"></p>
+                <button id="restart-button" class="w-full border-2 border-sky-600 text-sky-600 font-bold py-4 px-6 rounded-xl hover:bg-sky-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleResp: { it: '3. Apparato Respiratorio', en: '3. Respiratory System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                quizTitle: { it: 'Quiz: Apparato Respiratorio', en: 'Quiz: Respiratory System' },
+                progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
+            };
+
+            const questionsPool = [
+                {
+                    question: { it: "Qual è la definizione semeiologica corretta di 'dispnea'?", en: "What is the correct semiotic definition of 'dyspnea'?" },
+                    options: [
+                        { text: { it: "L'alterazione di almeno due caratteri del respiro (es. frequenza e tipo).", en: "The alteration of at least two breathing characteristics (e.g., rate and pattern)." }, isCorrect: true, rationale: { it: "Corretto. La dispnea è una respirazione difficoltosa che coinvolge più parametri funzionali contemporaneamente.", en: "Correct. Dyspnea is labored breathing involving multiple functional parameters simultaneously." } },
+                        { text: { it: "Il semplice aumento della frequenza respiratoria sopra i valori normali.", en: "A simple increase in respiratory rate above normal values." }, isCorrect: false, rationale: { it: "Questo fenomeno è definito tachipnea, non dispnea.", en: "This phenomenon is defined as tachypnea, not dyspnea." } },
+                        { text: { it: "La presenza di rantoli udibili senza stetoscopio.", en: "The presence of crackles audible without a stethoscope." }, isCorrect: false, rationale: { it: "Questo è un rumore respiratorio udibile a distanza, non la definizione di dispnea.", en: "This is a respiratory sound audible at a distance, not the definition of dyspnea." } },
+                        { text: { it: "L'assenza totale di movimenti respiratori toraco-addominali.", en: "The total absence of thoraco-abdominal respiratory movements." }, isCorrect: false, rationale: { it: "Questa è l'apnea, ovvero l'arresto del respiro.", en: "This is apnea, or breath arrest." } }
+                    ]
+                },
+                {
+                    question: { it: "Dove si colloca il limite polmonare posteriore nel cane durante la percussione?", en: "Where is the posterior lung limit located in dogs during percussion?" },
+                    options: [
+                        { text: { it: "Al 9° spazio intercostale, bilateralmente.", en: "At the 9th intercostal space, bilaterally." }, isCorrect: true, rationale: { it: "Esatto. Si trova lungo la prima linea del Vogel percuotendo da davanti a dietro.", en: "Exact. It is located along Vogel's first line by percussing from front to back." } },
+                        { text: { it: "Al 15° spazio intercostale sinistro.", en: "At the 15th left intercostal space." }, isCorrect: false, rationale: { it: "Questo è il limite tipico del cavallo, non del cane.", en: "This is the typical limit for horses, not dogs." } },
+                        { text: { it: "Sempre in corrispondenza dell'ultima costa.", en: "Always in correspondence with the last rib." }, isCorrect: false, rationale: { it: "Fisiologicamente il polmone non raggiunge l'ultima costa durante la percussione clinica.", en: "Physiologically the lung does not reach the last rib during clinical percussion." } },
+                        { text: { it: "Al 6° spazio intercostale, solo sul lato destro.", en: "At the 6th intercostal space, only on the right side." }, isCorrect: false, rationale: { it: "Sarebbe un limite troppo craniale e asimmetrico per un cane sano.", en: "It would be too cranial and asymmetric a limit for a healthy dog." } }
+                    ]
+                },
+                {
+                    question: { it: "Un 'silenzio respiratorio' rilevato nella porzione dorsale del torace nel gatto suggerisce:", en: "A 'respiratory silence' detected in the dorsal portion of the cat's thorax suggests:" },
+                    options: [
+                        { text: { it: "Pneumotorace (presenza di gas libero in cavità pleurica).", en: "Pneumothorax (presence of free gas in the pleural cavity)." }, isCorrect: true, rationale: { it: "Corretto. Il gas tende ad occupare la parte dorsale, schermando il suono del polmone.", en: "Correct. Gas tends to occupy the dorsal part, shielding the sound of the lung." } },
+                        { text: { it: "Versamento pleurico massivo.", en: "Massive pleural effusion." }, isCorrect: false, rationale: { it: "Il liquido si deposita ventralmente per gravità, causando silenzio basale.", en: "Fluid settles ventrally due to gravity, causing basal silence." } },
+                        { text: { it: "Un normale stato di rilassamento durante le fusa.", en: "A normal state of relaxation during purring." }, isCorrect: false, rationale: { it: "Le fusa producono un rumore che maschera il murmure, non il silenzio.", en: "Purring produces a noise that masks the murmur, not silence." } },
+                        { text: { it: "Asma felina in fase acuta.", en: "Acute feline asthma." }, isCorrect: false, rationale: { it: "L'asma produce solitamente sibili musicali espiratori, non silenzio dorsale.", en: "Asthma usually produces expiratory musical wheezes, not dorsal silence." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa si intende per 'sibili' all'auscultazione polmonare?", en: "What is meant by 'wheezes' in lung auscultation?" },
+                    options: [
+                        { text: { it: "Rumori musicali continui dovuti a broncocostrizione o restringimento del lume.", en: "Continuous musical sounds due to bronchoconstriction or lumen narrowing." }, isCorrect: true, rationale: { it: "Sì. Sono tipici di patologie ostruttive come l'asma o bronchiti croniche.", en: "Yes. They are typical of obstructive pathologies like asthma or chronic bronchitis." } },
+                        { text: { it: "Rumori discontinui simili a capelli sfregati tra le dita.", en: "Discontinuous sounds similar to hair rubbed between fingers." }, isCorrect: false, rationale: { it: "Questi sono i rantoli crepitanti, tipici dell'edema polmonare.", en: "These are crackles, typical of pulmonary edema." } },
+                        { text: { it: "Il normale rumore di fruscio prodotto dall'aria negli alveoli.", en: "The normal rustling noise produced by air in the alveoli." }, isCorrect: false, rationale: { it: "Questo è il murmure vescicolare fisiologico.", en: "This is the physiological vesicular murmur." } },
+                        { text: { it: "Il suono aspro prodotto dal passaggio d'aria nella trachea.", en: "The harsh sound produced by air passage in the trachea." }, isCorrect: false, rationale: { it: "Questo è il soffio laringo-tracheale.", en: "This is the laryngo-tracheal sound." } }
+                    ]
+                },
+                {
+                    question: { it: "Come si esegue correttamente la prova per scatenare il riflesso della tosse nel cane?", en: "How is the test to elicit the cough reflex correctly performed in dogs?" },
+                    options: [
+                        { text: { it: "Tramite una leggera palpazione e trazione dei primi anelli tracheali.", en: "Via light palpation and traction of the first tracheal rings." }, isCorrect: true, rationale: { it: "Esatto. Un riflesso facilmente scatenabile indica sensibilità o infiammazione delle alte vie.", en: "Exact. An easily elicited reflex indicates sensitivity or inflammation of the upper airways." } },
+                        { text: { it: "Eseguendo una percussione forte sull'area polmonare.", en: "Performing strong percussion on the lung area." }, isCorrect: false, rationale: { it: "La percussione valuta la densità del parenchima, non evoca il riflesso della tosse.", en: "Percussion assesses parenchymal density, not eliciting the cough reflex." } },
+                        { text: { it: "Introducendo un catetere sterile nelle cavità nasali.", en: "Introducing a sterile catheter into the nasal cavities." }, isCorrect: false, rationale: { it: "Questo evoca starnuti o fastidio, non è la manovra per il riflesso della tosse.", en: "This elicits sneezing or discomfort, not the maneuver for the cough reflex." } },
+                        { text: { it: "Facendo correre l'animale per almeno 5 minuti in sala visita.", en: "Making the animal run for at least 5 minutes in the exam room." }, isCorrect: false, rationale: { it: "L'esercizio può far tossire un animale malato, ma non è la prova semeiologica manuale.", en: "Exercise might make a sick animal cough, but it's not the manual semiotic test." } }
+                    ]
+                },
+                {
+                    question: { it: "Il riscontro di un tipo respiratorio puramente costale (addome immobile) suggerisce:", en: "Finding a purely costal respiratory pattern (still abdomen) suggests:" },
+                    options: [
+                        { text: { it: "Presenza di forte dolore addominale (es. peritonite).", en: "Presence of severe abdominal pain (e.g., peritonitis)." }, isCorrect: true, rationale: { it: "L'animale 'immobilizza' l'addome per non accentuare il dolore durante l'atto respiratorio.", en: "The animal 'immobilizes' the abdomen not to accentuate pain during breathing." } },
+                        { text: { it: "Presenza di dolore toracico o pleurico.", en: "Presence of thoracic or pleural pain." }, isCorrect: false, rationale: { it: "Il dolore toracico porta a un respiro puramente addominale.", en: "Thoracic pain leads to purely abdominal breathing." } },
+                        { text: { it: "Uno stato di normale sonno profondo.", en: "A normal state of deep sleep." }, isCorrect: false, rationale: { it: "In sonno il respiro è costo-addominale e molto calmo.", en: "In sleep, breathing is costo-abdominal and very calm." } },
+                        { text: { it: "Un collasso laringeo bilaterale.", en: "Bilateral laryngeal collapse." }, isCorrect: false, rationale: { it: "Il collasso laringeo causa dispnea inspiratoria grave, non necessariamente un cambio di tipo.", en: "Laryngeal collapse causes severe inspiratory dyspnea, not necessarily a pattern change." } }
+                    ]
+                },
+                {
+                    question: { it: "Cos'è lo 'starnuto inverso' (reverse sneezing) nel cane?", en: "What is 'reverse sneezing' in dogs?" },
+                    options: [
+                        { text: { it: "Una serie di inspirazioni rapide e rumorose a bocca chiusa dovute a irritazione rinofaringea.", en: "A series of rapid, noisy inspirations with closed mouth due to nasopharyngeal irritation." }, isCorrect: true, rationale: { it: "Corretto. È un fenomeno parossistico comune e spesso non patologico.", en: "Correct. It is a common paroxysmal phenomenon and often non-pathological." } },
+                        { text: { it: "Uno starnuto che provoca la retrazione dei bulbi oculari.", en: "A sneeze that causes retraction of the eyeballs." }, isCorrect: false, rationale: { it: "Definizione fantasiosa, non ha riscontro clinico.", en: "Fanciful definition, no clinical basis." } },
+                        { text: { it: "Una tosse secca che termina con un conato di vomito.", en: "A dry cough that ends with a gagging reflex." }, isCorrect: false, rationale: { it: "Questa è la tipica tosse della laringite o 'tosse dei canili'.", en: "This is the typical cough of laryngitis or 'kennel cough'." } },
+                        { text: { it: "L'espulsione di sangue dalle narici durante l'espirazione.", en: "Expulsion of blood from nostrils during expiration." }, isCorrect: false, rationale: { it: "Questo fenomeno è definito epistassi.", en: "This phenomenon is defined as epistaxis." } }
+                    ]
+                },
+                {
+                    question: { it: "Perché l'auscultazione tracheale è parte integrante dell'esame del torace?", en: "Why is tracheal auscultation an integral part of the chest exam?" },
+                    options: [
+                        { text: { it: "Per differenziare i rumori originati nelle alte vie da quelli polmonari trasmessi.", en: "To differentiate sounds originating in upper airways from transmitted lung sounds." }, isCorrect: true, rationale: { it: "Vero. Rumori forti prodotti in trachea possono essere uditi erroneamente sul campo polmonare.", en: "True. Loud sounds produced in the trachea can be wrongly heard over the lung field." } },
+                        { text: { it: "Per misurare indirettamente la frequenza cardiaca.", en: "To indirectly measure heart rate." }, isCorrect: false, rationale: { it: "Il cuore si ausculta direttamente sul torace o si palpa al polso.", en: "The heart is auscultated directly on the chest or palpated at the pulse." } },
+                        { text: { it: "Per valutare la pervietà dell'esofago sottostante.", en: "To assess the patency of the underlying esophagus." }, isCorrect: false, rationale: { it: "L'esofago non produce rumori auscultabili di routine se non durante la deglutizione.", en: "The esophagus doesn't produce routinely audible sounds except during swallowing." } },
+                        { text: { it: "Perché è l'unico punto dove si sente il murmure vescicolare.", en: "Because it's the only point where vesicular murmur is heard." }, isCorrect: false, rationale: { it: "Il murmure vescicolare si sente sul campo polmonare, non sulla trachea.", en: "Vesicular murmur is heard over the lung field, not over the trachea." } }
+                    ]
+                },
+                {
+                    question: { it: "Una percussione che produce un suono 'timpanico' (iperfonetico) sul campo polmonare indica:", en: "Percussion producing a 'tympanic' sound over the lung field indicates:" },
+                    options: [
+                        { text: { it: "Un eccesso di aria (pneumotorace o enfisema polmonare).", en: "Excess air (pneumothorax or pulmonary emphysema)." }, isCorrect: true, rationale: { it: "Sì. L'aria intrappolata o libera agisce come cassa di risonanza aumentando l'intensità del suono.", en: "Yes. Trapped or free air acts as a resonance chamber increasing sound intensity." } },
+                        { text: { it: "La presenza di un versamento pleurico basale.", en: "Presence of a basal pleural effusion." }, isCorrect: false, rationale: { it: "I liquidi smorzano il suono rendendolo ottuso.", en: "Fluids dampen the sound, making it dull." } },
+                        { text: { it: "Una polmonite lobare in fase di consolidamento.", en: "Lobar pneumonia in consolidation phase." }, isCorrect: false, rationale: { it: "Il consolidamento polmonare rende il suono ottuso.", en: "Lung consolidation makes the sound dull." } },
+                        { text: { it: "Un normale parenchima aerato nel cane giovane.", en: "Normal aerated parenchyma in a young dog." }, isCorrect: false, rationale: { it: "Il parenchima normale produce un suono chiaro, non timpanico.", en: "Normal parenchyma produces a resonant sound, not tympanic." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa si intende per 'tosse ad accessi' (parossistica)?", en: "What is meant by 'paroxysmal' cough?" },
+                    options: [
+                        { text: { it: "Una serie di colpi di tosse ravvicinati, violenti e difficili da interrompere.", en: "A series of close, violent coughs that are hard to stop." }, isCorrect: true, rationale: { it: "Corretto. È tipica di irritazioni tracheali o compressioni bronchiali massive.", en: "Correct. Typical of tracheal irritation or massive bronchial compression." } },
+                        { text: { it: "Un singolo colpo di tosse isolato che si presenta raramente.", en: "A single isolated cough that occurs rarely." }, isCorrect: false, rationale: { it: "Questo è un colpo di tosse staccato o sporadico.", en: "This is an isolated or sporadic cough." } },
+                        { text: { it: "Una tosse udibile esclusivamente durante le ore notturne.", en: "A cough audible exclusively during night hours." }, isCorrect: false, rationale: { it: "Questo descrive il ritmo nictemerale della tosse, non la sua modalità parossistica.", en: "This describes the cough's nycthemeral rhythm, not its paroxysmal mode." } },
+                        { text: { it: "Una tosse che non produce mai espettorato (tosse secca).", en: "A cough that never produces sputum (dry cough)." }, isCorrect: false, rationale: { it: "Descrive la natura del secreto, non la frequenza dei colpi.", en: "Describes the nature of secretion, not the frequency of coughs." } }
+                    ]
+                }
+            ];
+
+            let currentIdx = 0;
+            let score = 0;
+            let shuffledQuestions = [];
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTS = null;
+
+            const shuffleArray = (array) => {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking) {
+                    synth.cancel();
+                    if (activeTTS === button) { activeTTS.classList.remove('playing'); activeTTS = null; return; }
+                }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onend = () => { button.classList.remove('playing'); activeTTS = null; };
+                synth.speak(utterance);
+                if (activeTTS) activeTTS.classList.remove('playing');
+                activeTTS = button;
+                button.classList.add('playing');
+            };
+
+            const renderQuestion = () => {
+                const q = shuffledQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', shuffledQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                const shuffledOptions = shuffleArray([...q.options]);
+
+                shuffledOptions.forEach((opt) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-2 w-full";
+                    
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn flex-grow";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn);
+                    
+                    const tts = document.createElement('button');
+                    tts.className = "tts-button p-2";
+                    tts.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    tts.onclick = (e) => { e.stopPropagation(); speak(opt.text[currentLanguage], tts); };
+
+                    div.appendChild(btn);
+                    div.appendChild(tts);
+                    container.appendChild(div);
+                });
+            };
+
+            const handleSelect = (opt, btn) => {
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                if (opt.isCorrect) { btn.classList.add('correct'); score++; }
+                else { 
+                    btn.classList.add('incorrect');
+                    const correctIdx = shuffledQuestions[currentIdx].options.findIndex(o => o.isCorrect);
+                    const correctText = shuffledQuestions[currentIdx].options[correctIdx].text[currentLanguage];
+                    btns.forEach(b => { if(b.textContent === correctText) b.classList.add('correct'); });
+                }
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                document.getElementById('next-button').textContent = currentIdx === questionsPool.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
+
+            const startQuiz = () => {
+                currentIdx = 0; score = 0;
+                shuffledQuestions = shuffleArray([...questionsPool]);
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
+
+            document.getElementById('next-button').onclick = () => {
+                if (currentIdx < shuffledQuestions.length - 1) {
+                    currentIdx++;
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    renderQuestion();
+                } else {
+                    document.getElementById('question-area').classList.add('hidden');
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    document.getElementById('results-area').classList.remove('hidden');
+                    document.getElementById('score-text').textContent = `${score} / ${shuffledQuestions.length}`;
+                }
+            };
+
+            document.getElementById('restart-button').onclick = startQuiz;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                renderQuestion();
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => {
+                body.classList.toggle('dsa-mode');
+                localStorage.setItem('dsa-mode', body.classList.contains('dsa-mode') ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('question-tts-button').onclick = () => speak(shuffledQuestions[currentIdx].question[currentLanguage], document.getElementById('question-tts-button'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') body.classList.add('dsa-mode');
+            startQuiz();
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
