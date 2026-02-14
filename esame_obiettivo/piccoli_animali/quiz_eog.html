@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interattivo: Esame Obiettivo Generale (EOG) - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA AZZURRO (SKY) per Piccoli Animali */
+        .hero-bg { background-color: #0369a1; background-image: linear-gradient(to right, #0369a1, #0284c7); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f0f9ff; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #0369a1; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #0284c7; }
+        .quick-nav-item.active { background-color: #0369a1; color: #ffffff !important; border-color: #0369a1; }
+
+        /* --- SECTION NAV --- */
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #0369a1; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 800px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Quiz */
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; text-align: left; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .option-btn:hover:not(:disabled) { border-color: #0284c7; background-color: #f0f9ff; transform: translateY(-2px); }
+        .option-btn.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: 600; }
+        .option-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: 600; }
+
+        /* TTS Button */
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #0284c7; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h2, .dsa-mode h3, .dsa-mode p { color: #000 !important; }
+        .dsa-mode .option-btn { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .option-btn.correct { background-color: #dcfce7 !important; border-width: 5px !important; }
+        .dsa-mode .option-btn.incorrect { background-color: #fee2e2 !important; border-width: 5px !important; }
+        .dsa-mode .tts-button { color: #000 !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet EOG</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleEOG">1. Esame Obiettivo Generale (EOG)</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_eog.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_eog.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_eog.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="quiz_eog.html" class="section-nav-link active" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item active" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="quiz-container" class="content-card">
+            
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-sky-800" data-lang-key="quizTitle">Quiz: Esame Obiettivo Generale</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-gray-500"></p>
+                </div>
+
+                <div class="mb-8 p-4 bg-slate-50 rounded-xl flex items-start gap-3 border border-slate-100">
+                    <p id="question-text" class="text-lg font-medium text-gray-800 flex-grow"></p>
+                    <button id="question-tts-button" class="tts-button mt-1">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-sky-50 border-2 border-sky-200">
+                    <p id="rationale-text" class="text-sm italic text-sky-800 mb-6"></p>
+                    <button id="next-button" class="w-full bg-sky-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-sky-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🏆</div>
+                <h2 class="text-3xl font-bold text-sky-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p class="text-lg text-gray-600" data-lang-key="resultsScore">Il tuo punteggio finale è:</p>
+                <p id="score-text" class="text-6xl font-black text-sky-600 my-6"></p>
+                <button id="restart-button" class="w-full border-2 border-sky-600 text-sky-600 font-bold py-4 px-6 rounded-xl hover:bg-sky-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet EOG', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleEOG: { it: '1. Esame Obiettivo Generale (EOG)', en: '1. General Physical Exam (GPE)' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                quizTitle: { it: 'Quiz: Esame Obiettivo Generale', en: 'Quiz: General Physical Exam' },
+                progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                resultsScore: { it: 'Il tuo punteggio finale è:', en: 'Your final score is:' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
+            };
+
+            const questionsPool = [
+                {
+                    question: { it: "Qual è il range fisiologico della temperatura rettale nel cane e nel gatto adulti?", en: "What is the physiological rectal temperature range in adult dogs and cats?" },
+                    options: [
+                        { text: { it: "37.5 - 39.2 °C", en: "37.5 - 39.2 °C" }, isCorrect: true, rationale: { it: "Corretto. È leggermente superiore rispetto a quella dell'uomo.", en: "Correct. It is slightly higher than in humans." } },
+                        { text: { it: "36.5 - 37.5 °C", en: "36.5 - 37.5 °C" }, isCorrect: false, rationale: { it: "Questo range indicherebbe uno stato di ipotermia clinica per queste specie.", en: "This range would indicate clinical hypothermia for these species." } },
+                        { text: { it: "38.5 - 40.0 °C", en: "38.5 - 40.0 °C" }, isCorrect: false, rationale: { it: "Il limite superiore di 40.0 °C è decisamente ipertermico.", en: "The upper limit of 40.0 °C is definitely hyperthermic." } },
+                        { text: { it: "37.0 - 38.0 °C", en: "37.0 - 38.0 °C" }, isCorrect: false, rationale: { it: "Range troppo ristretto e basso per la normalità di cane e gatto.", en: "Range too narrow and low for normal dogs and cats." } }
+                    ]
+                },
+                {
+                    question: { it: "In quale sede anatomica si effettua la ricerca del polso durante l'EOG nei piccoli animali?", en: "At which anatomical site is the pulse taken during GPE in small animals?" },
+                    options: [
+                        { text: { it: "Arteria femorale (faccia interna della coscia).", en: "Femoral artery (inner thigh)." }, isCorrect: true, rationale: { it: "È il sito elettivo per la palpazione del polso in queste specie.", en: "It's the elective site for pulse palpation in these species." } },
+                        { text: { it: "Arteria facciale (bordo mandibolare).", en: "Facial artery (mandibular border)." }, isCorrect: false, rationale: { it: "Questo è un sito comune nei grandi animali (es. cavallo), non nei piccoli.", en: "This is a common site in large animals (e.g., horse), not small ones." } },
+                        { text: { it: "Arteria coccigea (base della coda).", en: "Coccygeal artery (tail base)." }, isCorrect: false, rationale: { it: "Sito utilizzato nei bovini, non nei cani o gatti.", en: "Site used in cattle, not in dogs or cats." } },
+                        { text: { it: "Arteria radiale (arto anteriore).", en: "Radial artery (forelimb)." }, isCorrect: false, rationale: { it: "Di difficile reperimento palpatorio di routine rispetto alla femorale.", en: "Difficult to find during routine palpation compared to the femoral." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa si intende per BAR nella valutazione del sensorio?", en: "What does BAR stand for in mental status assessment?" },
+                    options: [
+                        { text: { it: "Bright, Alert, Responsive (Vigile, Vivace, Reattivo).", en: "Bright, Alert, Responsive." }, isCorrect: true, rationale: { it: "Indica un animale con sensorio normale che interagisce bene con l'ambiente.", en: "Indicates an animal with normal sensorium interacting well with the environment." } },
+                        { text: { it: "Basic Animal Reflex (Riflesso Animale di Base).", en: "Basic Animal Reflex." }, isCorrect: false, rationale: { it: "Termine non esistente in semeiotica clinica.", en: "Non-existent term in clinical semeiotics." } },
+                        { text: { it: "Breath And Rhythm (Respiro e Ritmo).", en: "Breath And Rhythm." }, isCorrect: false, rationale: { it: "Riguarda l'apparato respiratorio, non lo stato mentale.", en: "Relates to the respiratory system, not the mental status." } },
+                        { text: { it: "Body Active Reaction (Reazione Corporea Attiva).", en: "Body Active Reaction." }, isCorrect: false, rationale: { it: "Termine generico non standardizzato.", en: "Non-standardized generic term." } }
+                    ]
+                },
+                {
+                    question: { it: "Un Tempo di Riempimento Capillare (TRC) normale deve essere:", en: "A normal Capillary Refill Time (CRT) must be:" },
+                    options: [
+                        { text: { it: "Inferiore a 2 secondi.", en: "Less than 2 seconds." }, isCorrect: true, rationale: { it: "Indica una corretta perfusione tissutale periferica.", en: "Indicates proper peripheral tissue perfusion." } },
+                        { text: { it: "Tra 2 e 4 secondi.", en: "Between 2 and 4 seconds." }, isCorrect: false, rationale: { it: "Un valore sopra i 2 secondi suggerisce shock o disidratazione.", en: "A value above 2 seconds suggests shock or dehydration." } },
+                        { text: { it: "Superiore a 5 secondi.", en: "Greater than 5 seconds." }, isCorrect: false, rationale: { it: "Indica uno stato di shock circolatorio grave.", en: "Indicates a state of severe circulatory shock." } },
+                        { text: { it: "Istantaneo (0 secondi).", en: "Instantaneous (0 seconds)." }, isCorrect: false, rationale: { it: "Un ritorno troppo rapido (iperemia) può indicare stati infiammatori o shock iniziale.", en: "Too rapid a return (hyperemia) can indicate inflammation or early shock." } }
+                    ]
+                },
+                {
+                    question: { it: "Quali linfonodi superficiali sono sempre palpabili nel cane sano?", en: "Which superficial lymph nodes are always palpable in a healthy dog?" },
+                    options: [
+                        { text: { it: "Retromandibolari, Prescapolari e Poplitei.", en: "Retromandibular, Prescapular, and Popliteal." }, isCorrect: true, rationale: { it: "Questi tre gruppi sono reperibili fisiologicamente.", en: "These three groups are physiologically detectable." } },
+                        { text: { it: "Ascellari e Inguinali.", en: "Axillary and Inguinal." }, isCorrect: false, rationale: { it: "Questi si palpano solitamente solo se aumentati di volume.", en: "These are usually felt only if enlarged." } },
+                        { text: { it: "Retrofaringei e Prefemorali.", en: "Retropharyngeal and Prefemoral." }, isCorrect: false, rationale: { it: "I prefemorali sono tipici dei grandi animali; i retrofaringei sono profondi.", en: "Prefemoral are typical of large animals; retropharyngeal are deep." } },
+                        { text: { it: "Solo i Retromandibolari.", en: "Only Retromandibular." }, isCorrect: false, rationale: { it: "Anche prescapolari e poplitei sono costantemente palpabili.", en: "Prescapular and popliteal are also constantly palpable." } }
+                    ]
+                },
+                {
+                    question: { it: "La 'posizione a preghiera' nel cane è tipicamente associata a:", en: "The 'praying position' in dogs is typically associated with:" },
+                    options: [
+                        { text: { it: "Forte dolore addominale.", en: "Severe abdominal pain." }, isCorrect: true, rationale: { it: "Postura antalgica per scaricare la tensione dai visceri dolenti.", en: "Antalgic posture to relieve tension from painful viscera." } },
+                        { text: { it: "Fame d'aria (dispnea).", en: "Air hunger (dyspnea)." }, isCorrect: false, rationale: { it: "La dispnea porta all'abduzione dei gomiti e collo esteso.", en: "Dispnea leads to elbow abduction and extended neck." } },
+                        { text: { it: "Voglia di interagire e giocare.", en: "Desire to interact and play." }, isCorrect: false, rationale: { it: "Nel gioco è transitoria; come postura fissa in visita è patologica.", en: "In play it's transient; as a fixed posture during a visit, it's pathological." } },
+                        { text: { it: "Deficit dei nervi cranici.", en: "Cranial nerve deficit." }, isCorrect: false, rationale: { it: "I deficit neurologici cranici causano alterazioni facciali o sensoriali.", en: "Cranial nerve deficits cause facial or sensory alterations." } }
+                    ]
+                },
+                {
+                    question: { it: "Mucose cianotiche (bluastre) osservate all'ispezione indicano:", en: "Cyanotic (bluish) membranes observed during inspection indicate:" },
+                    options: [
+                        { text: { it: "Ipossia (scarsa ossigenazione del sangue).", en: "Hypoxia (poor blood oxygenation)." }, isCorrect: true, rationale: { it: "Dovuta all'aumento di emoglobina ridotta nei capillari.", en: "Due to the increase in reduced hemoglobin in capillaries." } },
+                        { text: { it: "Grave anemia.", en: "Severe anemia." }, isCorrect: false, rationale: { it: "L'anemia causa mucose pallide o porcellanacee.", en: "Anemia causes pale or porcelain-like membranes." } },
+                        { text: { it: "Ittero.", en: "Icterus." }, isCorrect: false, rationale: { it: "L'ittero colora le mucose di giallo.", en: "Icterus colors the membranes yellow." } },
+                        { text: { it: "Stato di shock iniziale (iperemia).", en: "Initial shock state (hyperemia)." }, isCorrect: false, rationale: { it: "Lo shock iniziale dà mucose rosso acceso (congeste).", en: "Initial shock gives bright red (congested) membranes." } }
+                    ]
+                },
+                {
+                    question: { it: "Un gatto adulto con frequenza cardiaca a riposo di 180 bpm è:", en: "An adult cat with a resting heart rate of 180 bpm is:" },
+                    options: [
+                        { text: { it: "Fisiologico (normale).", en: "Physiological (normal)." }, isCorrect: true, rationale: { it: "Il range normale nel gatto è 140-220 bpm.", en: "The normal range in cats is 140-220 bpm." } },
+                        { text: { it: "Gravemente tachicardico.", en: "Severely tachycardic." }, isCorrect: false, rationale: { it: "Sarebbe tachicardico sopra i 220-240 bpm.", en: "It would be tachycardic above 220-240 bpm." } },
+                        { text: { it: "In stato di shock settico.", en: "In septic shock." }, isCorrect: false, rationale: { it: "Lo shock può alterare la FC, ma 180 è un valore normale.", en: "Shock can alter HR, but 180 is a normal value." } },
+                        { text: { it: "Bradicardico.", en: "Bradycardic." }, isCorrect: false, rationale: { it: "La bradicardia nel gatto si considera sotto i 120-140 bpm.", en: "Bradycardia in cats is considered below 120-140 bpm." } }
+                    ]
+                },
+                {
+                    question: { it: "Il 'test della plica cutanea' serve a valutare:", en: "The 'skin tent test' is used to assess:" },
+                    options: [
+                        { text: { it: "Lo stato di idratazione dei tessuti.", en: "Tissue hydration status." }, isCorrect: true, rationale: { it: "Un ritorno lento indica perdita di elasticità per disidratazione.", en: "A slow return indicates loss of elasticity due to dehydration." } },
+                        { text: { it: "Lo spessore del grasso sottocutaneo.", en: "Subcutaneous fat thickness." }, isCorrect: false, rationale: { it: "Questo fa parte della valutazione del BCS, non della plica.", en: "This is part of the BCS assessment, not the skin tent." } },
+                        { text: { it: "La presenza di ectoparassiti.", en: "The presence of ectoparasites." }, isCorrect: false, rationale: { it: "Si valutano con l'ispezione ravvicinata del mantello.", en: "These are assessed during close inspection of the coat." } },
+                        { text: { it: "Il grado di sviluppo muscolare.", en: "The degree of muscle development." }, isCorrect: false, rationale: { it: "La muscolatura si valuta con la palpazione profonda delle masse.", en: "Musculature is assessed via deep palpation of the masses." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale punteggio BCS (scala 1-9) indica un animale in condizione ideale?", en: "Which BCS score (1-9 scale) indicates an animal in ideal condition?" },
+                    options: [
+                        { text: { it: "4 - 5", en: "4 - 5" }, isCorrect: true, rationale: { it: "Punteggio in cui le coste sono palpabili ma non visibili.", en: "Score where ribs are palpable but not visible." } },
+                        { text: { it: "1 - 2", en: "1 - 2" }, isCorrect: false, rationale: { it: "Indica un animale sottopeso o cachettico.", en: "Indicates an underweight or cachectic animal." } },
+                        { text: { it: "7 - 8", en: "7 - 8" }, isCorrect: false, rationale: { it: "Indica un animale in sovrappeso.", en: "Indicates an overweight animal." } },
+                        { text: { it: "9", en: "9" }, isCorrect: false, rationale: { it: "Indica obesità grave.", en: "Indicates severe obesity." } }
+                    ]
+                }
+            ];
+
+            let currentIdx = 0;
+            let score = 0;
+            let shuffledQuestions = [];
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTS = null;
+
+            const shuffleArray = (array) => {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking) {
+                    synth.cancel();
+                    if (activeTTS === button) { activeTTS.classList.remove('playing'); activeTTS = null; return; }
+                }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onend = () => { button.classList.remove('playing'); activeTTS = null; };
+                synth.speak(utterance);
+                if (activeTTS) activeTTS.classList.remove('playing');
+                activeTTS = button;
+                button.classList.add('playing');
+            };
+
+            const renderQuestion = () => {
+                const q = shuffledQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', shuffledQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                const shuffledOptions = shuffleArray([...q.options]);
+
+                shuffledOptions.forEach((opt) => {
+                    const div = document.createElement('div');
+                    div.className = "w-full option-btn-container flex items-center gap-2";
+                    
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn);
+                    
+                    const tts = document.createElement('button');
+                    tts.className = "tts-button p-2";
+                    tts.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    tts.onclick = (e) => { e.stopPropagation(); speak(opt.text[currentLanguage], tts); };
+
+                    div.appendChild(btn);
+                    div.appendChild(tts);
+                    container.appendChild(div);
+                });
+            };
+
+            const handleSelect = (opt, btn) => {
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                if (opt.isCorrect) { btn.classList.add('correct'); score++; }
+                else { 
+                    btn.classList.add('incorrect');
+                    const correctIdx = shuffledQuestions[currentIdx].options.findIndex(o => o.isCorrect);
+                    const correctText = shuffledQuestions[currentIdx].options[correctIdx].text[currentLanguage];
+                    btns.forEach(b => { if(b.textContent === correctText) b.classList.add('correct'); });
+                }
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                document.getElementById('next-button').textContent = currentIdx === questionsPool.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
+
+            const startQuiz = () => {
+                currentIdx = 0; score = 0;
+                shuffledQuestions = shuffleArray([...questionsPool]);
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
+
+            document.getElementById('next-button').onclick = () => {
+                if (currentIdx < shuffledQuestions.length - 1) {
+                    currentIdx++;
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    renderQuestion();
+                } else {
+                    document.getElementById('question-area').classList.add('hidden');
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    document.getElementById('results-area').classList.remove('hidden');
+                    document.getElementById('score-text').textContent = `${score} / ${shuffledQuestions.length}`;
+                }
+            };
+
+            document.getElementById('restart-button').onclick = startQuiz;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                renderQuestion();
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => {
+                body.classList.toggle('dsa-mode');
+                localStorage.setItem('dsa-mode', body.classList.contains('dsa-mode') ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('question-tts-button').onclick = () => speak(shuffledQuestions[currentIdx].question[currentLanguage], document.getElementById('question-tts-button'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') body.classList.add('dsa-mode');
+            startQuiz();
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
