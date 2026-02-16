@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: Apparato Muscolare - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA AZZURRO (SKY) per Piccoli Animali */
+        .hero-bg { background-color: #0369a1; background-image: linear-gradient(to right, #0369a1, #0284c7); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f0f9ff; border: 1px solid #e2e8f0;
+            font-size: 0.65rem; font-weight: 700; color: #0369a1; text-transform: uppercase;
+        }
+        .quick-nav-item:hover { background-color: #e2e8f0; color: #0284c7; }
+        .quick-nav-item.active { background-color: #0369a1; color: #ffffff !important; border-color: #0369a1; }
+
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #0369a1; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 1000px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Infografica */
+        h2 { font-family: 'Lexend', sans-serif; color: #0c4a6e; border-bottom: 2px solid #e0f2fe; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700; text-align: center; }
+        .flow-step { border-top: 4px solid #0369a1; padding: 1.5rem; background-color: #f8fafc; border-radius: 0.5rem; height: 100%; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .flow-step:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .icon-box { background-color: #e0f2fe; color: #0c4a6e; border-radius: 0.5rem; padding: 1.5rem; height: 100%; border-left-width: 4px; }
+        .icon-box svg { width: 2.5rem; height: 2.5rem; margin-bottom: 1rem; stroke-width: 1.5; stroke: currentColor; fill: none; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .flow-step, .dsa-mode .icon-box, .dsa-mode .bg-blue-50, .dsa-mode .bg-white { background-color: #ffffff !important; border: 2px solid #000 !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="index.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleMusc">5. Apparato Muscolare</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_muscolare.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_muscolare.html" class="section-nav-link active" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_muscolare.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_muscolare.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_muscolare.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item active" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <header class="text-center mb-12">
+                <h1 class="text-3xl font-bold mb-2 text-sky-900" data-lang-key="pageTitle">Infografica: Apparato Muscolare (P.A.)</h1>
+                <p class="text-gray-600" data-lang-key="pageSubtitle">Guida visiva all'esame clinico medico di cane e gatto.</p>
+            </header>
+
+            <main class="space-y-16 mt-12">
+                <!-- PILASTRI -->
+                <section>
+                    <h2 data-lang-key="flowTitle">I 3 Pilastri dell'Esame Diretto</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center items-stretch">
+                        <div class="flow-step border-[#0369a1]">
+                            <h3 class="text-sky-900 font-bold" data-lang-key="step1Title">1. Ispezione</h3>
+                            <p class="text-sm text-gray-700" data-lang-key="step1Desc">Trofismo (atrofia), simmetria (masticatori), posture, andatura e fascicolazioni visibili.</p>
+                        </div>
+                        <div class="flow-step border-[#0ea5e9]">
+                            <h3 class="text-sky-800 font-bold" data-lang-key="step2Title">2. Palpazione</h3>
+                            <p class="text-sm text-gray-700" data-lang-key="step2Desc">Tono (iper/ipotonia), consistenza e ricerca di dolore profondo (sospette miositi).</p>
+                        </div>
+                        <div class="flow-step border-[#38bdf8]">
+                            <h3 class="text-sky-700 font-bold" data-lang-key="step3Title">3. Test Funzionali</h3>
+                            <p class="text-sm text-gray-700" data-lang-key="step3Desc">Valutazione della forza e test di affaticabilità (esercizio ripetuto).</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SEGNI CHIAVE -->
+                <section>
+                    <h2 data-lang-key="signsTitle">Cosa Cercare: Sospetti Clinici Medici</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+                        <div class="icon-box border-l-sky-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" /></svg>
+                            <h3 class="text-sky-900 font-bold" data-lang-key="sign1Title">Atrofia Focale</h3>
+                            <p class="text-xs text-gray-700" data-lang-key="sign1Desc">Perdita di massa localizzata. DDx: patologie immunomediate o processi neurogeni.</p>
+                        </div>
+                        <div class="icon-box border-l-red-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 15.752zM12 15.75h.007v.008H12v-.008z" /></svg>
+                            <h3 class="text-red-900 font-bold" data-lang-key="sign2Title">Mialgia Profonda</h3>
+                            <p class="text-xs text-gray-700" data-lang-key="sign2Desc">Dolore alla palpazione. DDx: miositi infettive (es. Toxoplasma), infiammatorie o traumi.</p>
+                        </div>
+                        <div class="icon-box border-l-emerald-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                            <h3 class="text-emerald-900 font-bold" data-lang-key="sign3Title">Fascicolazioni</h3>
+                            <p class="text-xs text-gray-700" data-lang-key="sign3Desc">Contrazioni visibili. Da considerare DDx di iperecitabilità nervosa o denervazione.</p>
+                        </div>
+                        <div class="icon-box border-l-orange-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0118 0z" /></svg>
+                            <h3 class="text-orange-900 font-bold" data-lang-key="sign4Title">Affaticabilità</h3>
+                            <p class="text-xs text-gray-700" data-lang-key="sign4Desc">Peggioramento dopo sforzo. Segno caratteristico del sospetto di Miastenia Grave.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FOCUS DIAGNOSI DIFFERENZIALI -->
+                <section class="bg-sky-50/30 p-8 rounded-xl border border-sky-100 shadow-sm">
+                    <h2 class="!mt-0 !text-sky-800 font-bold" data-lang-key="specialTitle">Focus: Sospetti e Diagnosi Differenziali</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-sky-100">
+                            <h3 class="text-sky-900 font-bold mb-4" data-lang-key="mmmTitle">Sospetta Miosite dei Muscoli Masticatori (MMM)</h3>
+                            <p class="text-sm text-gray-700 mb-2" data-lang-key="mmmDesc">Inclusa nelle DDx in caso di patologia specifica delle fibre muscolari 2M.</p>
+                            <ul class="text-xs text-gray-600 list-disc list-inside space-y-1">
+                                <li data-lang-key="mmm1">Fase Acuta: Possibile gonfiore e reazione dolorosa all'apertura della bocca.</li>
+                                <li data-lang-key="mmm2">Fase Cronica: Evidente atrofia bilaterale dei muscoli temporali e masseteri.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-sky-100">
+                            <h3 class="text-sky-900 font-bold mb-4" data-lang-key="miastTitle">Sospetta Miastenia Grave</h3>
+                            <p class="text-sm text-gray-700 mb-2" data-lang-key="miastDesc">Da considerare nelle DDx dei deficit della trasmissione neuromuscolare.</p>
+                            <ul class="text-xs text-gray-600 list-disc list-inside space-y-1">
+                                <li data-lang-key="miast1">Rilievo clinico: Debolezza fluttuante che tende a migliorare col riposo.</li>
+                                <li data-lang-key="miast2">Associazione: Verificare possibile correlazione con megaesofago (rigurgito).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleMusc: { it: '5. Apparato Muscolare', en: '5. Muscular System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                pageTitle: { it: "Infografica: Apparato Muscolare (P.A.)", en: "Infographic: Muscular System (Small Animals)" },
+                pageSubtitle: { it: "Guida visiva all'esame clinico medico di cane e gatto.", en: "Visual guide to medical clinical exam in dogs and cats." },
+                flowTitle: { it: "I 3 Pilastri dell'Esame Diretto", en: "The 3 Pillars of Direct Exam" },
+                step1Title: { it: "1. Ispezione", en: "1. Inspection" },
+                step1Desc: { it: "Trofismo (atrofia), simmetria (masticatori), posture, andatura e fascicolazioni visibili.", en: "Trophism (atrophy), symmetry (masticatory), posture, gait and visible fasciculations." },
+                step2Title: { it: "2. Palpazione", en: "2. Palpation" },
+                step2Desc: { it: "Tono (iper/ipotonia), consistenza e ricerca di dolore profondo (sospette miositi).", en: "Tone (hyper/hypotonia), consistency and search for deep pain (suspected myositis)." },
+                step3Title: { it: "3. Test Funzionali", en: "3. Functional Tests" },
+                step3Desc: { it: "Valutazione della forza e test di affaticabilità (esercizio ripetuto).", en: "Strength assessment and fatigability test (repeated exercise)." },
+                signsTitle: { it: "Cosa Cercare: Sospetti Clinici Medici", en: "What to Look For: Medical Clinical Suspicions" },
+                sign1Title: { it: "Atrofia Focale", en: "Focal Atrophy" },
+                sign1Desc: { it: "Perdita di massa localizzata. DDx: patologie immunomediate o processi neurogeni.", en: "Localized mass loss. DDx: immune-mediated or neurogenic processes." },
+                sign2Title: { it: "Mialgia Profonda", en: "Deep Myalgia" },
+                sign2Desc: { it: "Dolore alla palpazione. DDx: miositi infettive (es. Toxoplasma), infiammatorie o traumi.", en: "Pain on palpation. DDx: infectious (e.g. Toxoplasma), inflammatory or trauma myositis." },
+                sign3Title: { it: "Fascicolazioni", en: "Fasciculations" },
+                sign3Desc: { it: "Contrazioni visibili. Da considerare DDx di iperecitabilità nervosa o denervazione.", en: "Visible contractions. To be considered in DDx of hyperexcitability or denervation." },
+                sign4Title: { it: "Affaticabilità", en: "Fatigability" },
+                sign4Desc: { it: "Peggioramento dopo sforzo. Segno caratteristico del sospetto di Miastenia Grave.", en: "Worsening after effort. Key sign for Myasthenia Gravis suspicion." },
+                specialTitle: { it: "Focus: Sospetti e Diagnosi Differenziali", en: "Focus: Suspicions and Differential Diagnoses" },
+                mmmTitle: { it: "Sospetta Miosite dei Muscoli Masticatori (MMM)", en: "Suspected Masticatory Muscle Myositis (MMM)" },
+                mmmDesc: { it: "Inclusa nelle DDx in caso di patologia specifica delle fibre muscolari 2M.", en: "Included in DDx in case of pathology specific to 2M muscle fibers." },
+                mmm1: { it: "Fase Acuta: Possibile gonfiore e reazione dolorosa all'apertura della bocca.", en: "Acute Phase: Possible swelling and painful reaction when opening mouth." },
+                mmm2: { it: "Fase Cronica: Evidente atrofia bilaterale dei muscoli temporali e masseteri.", en: "Chronic Phase: Evident bilateral atrophy of temporal and masseter muscles." },
+                miastTitle: { it: "Sospetta Miastenia Grave", en: "Suspected Myasthenia Gravis" },
+                miastDesc: { it: "Da considerare nelle DDx dei deficit della trasmissione neuromuscolare.", en: "To be considered in DDx of neuromuscular transmission deficits." },
+                miast1: { it: "Rilievo clinico: Debolezza fluttuante che tende a migliorare col riposo.", en: "Clinical finding: Fluctuating weakness that tends to improve with rest." },
+                miast2: { it: "Associazione: Verificare possibile correlazione con megaesofago (rigurgito).", en: "Association: Check for possible correlation with megaesophagus (regurgitation)." },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
