@@ -13,6 +13,10 @@
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
         .hero-bg { background-color: #1E3A8A; background-image: linear-gradient(to right, #1E3A8A, #3B82F6); }
         
+        /* Navigazione: Forza il bianco su sfondo blu */
+        .nav-link { transition: color 0.3s; color: #ffffff !important; }
+        .nav-link:hover { color: #93C5FD !important; }
+
         .section-card { 
             background-color: white; 
             border-radius: 0.75rem; 
@@ -65,6 +69,7 @@
         }
         .audio-slot audio { width: 100%; height: 24px; outline: none; }
         .download-link { font-size: 9px; font-weight: 800; color: #3b82f6; text-transform: uppercase; margin-top: 4px; }
+        .download-link:hover { text-decoration: underline; }
 
         /* Quick Nav */
         .quick-nav {
@@ -86,17 +91,29 @@
             font-size: 0.65rem; font-weight: 700; color: #1e293b; text-transform: uppercase;
             letter-spacing: 0.025em; min-height: 3.2rem; line-height: 1.2;
         }
-        .quick-nav-item:hover { background-color: #f8fafc; transform: translateY(-2px); border-color: #3B82F6; }
+        .quick-nav-item:hover { background-color: #eff6ff; transform: translateY(-2px); border-color: #3B82F6; color: #1E3A8A; }
 
         /* --- STILI ACCESSIBILITÀ (DSA) --- */
         .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
         .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
         .dsa-mode #main-header h1, .dsa-mode .hero-bg h2 { color: #000 !important; }
-        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a { color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a { color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important; }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
         .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
         .dsa-mode .btn-link { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; font-weight: 900; }
-        .dsa-mode .section-card { border-width: 3px !important; box-shadow: none !important; }
-        .dsa-mode h3 { text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .btn-link:hover { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .section-card { background-color: #ffffff; border: 2px solid #000000; box-shadow: none !important; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .audio-slot { background-color: #ffffff !important; border: 2px solid #000000 !important; }
+        .dsa-mode .download-link { color: #000 !important; font-weight: 900; }
+        .dsa-mode .tts-button { color: #000000 !important; }
+
+        /* TTS Button */
+        .tts-button { cursor: pointer; display: inline-block; margin-left: 10px; vertical-align: middle; color: #64748b; transition: color 0.2s; }
+        .tts-button:hover { color: #0ea5e9; }
+        .tts-button.playing { color: #0ea5e9; }
+        
+        audio::-webkit-media-controls-panel { background-color: #f1f5f9; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -114,10 +131,10 @@
     <div class="hero-bg text-white">
         <div class="container mx-auto px-6 pt-8 pb-16 text-center relative">
             <div class="absolute top-4 left-6">
-                 <!-- Tasto Home con icona casa -->
+                 <!-- Tasto Home con Freccia nel cerchio e testo uniforme -->
                  <a href="../../index.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToHome">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                    <span data-lang-key="backHomeText">Home</span>
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>
+                    Torna alla Home
                  </a>
             </div>
             <h2 class="text-4xl md:text-5xl font-bold mb-2 mt-12" data-lang-key="heroTitle">Semeiotica Medica Veterinaria</h2>
@@ -316,18 +333,30 @@
 
     </main>
 
-    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
-        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    <footer id="main-footer" class="text-center mt-12 pt-8 border-t border-slate-200">
+        <div class="container mx-auto px-4 py-4">
+            <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+        </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const speakerIcon = `<span class="tts-button"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></span>`;
             const translations = {
                 siteTitle: { it: 'Semeiotica Vet G.A.', en: 'Large Animal Semeiotics' },
-                backHomeText: { it: 'Home', en: 'Home' },
+                backToHome: { it: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Torna alla Home', en: '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L9.414 11H13a1 1 0 100-2H9.414l1.293-1.293z" clip-rule="evenodd"></path></svg>Back to Home' },
+                
+                // HEADER MENU
+                navAnamnesi: { it: 'Anamnesi', en: 'History' },
+                navIspezione: { it: 'Ispezione', en: 'Inspection' },
+                navPalpazione: { it: 'Palpazione', en: 'Palpation' },
+                navPercussione: { it: 'Percussione', en: 'Percussion' },
+                navAuscultazione: { it: 'Auscultazione', en: 'Auscultation' },
                 accessibility: { it: 'Accessibilità', en: 'Accessibility' },
-                heroTitle: { it: 'Semeiotica Medica Veterinaria', en: 'Veterinary Medical Semeiotics' },
+                
+                heroTitle: { it: 'Semeiotica Medica Veterinaria', en: 'Veterinary Clinical Methodologies' },
                 heroSubtitle: { it: 'Metodologia clinica e diagnostica dei Grandi Animali.', en: 'Clinical methodologies and diagnostics of Large Animals.' },
+                
                 navEOG: { it: "Esame Obiettivo Generale", en: "General Physical Examination" },
                 navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular System" },
                 navResp: { it: "Apparato Respiratorio", en: "Respiratory System" },
@@ -338,16 +367,8 @@
                 navEndo: { it: "Sistema Endocrino", en: "Endocrine System" },
                 navNerv: { it: "Sistema Nervoso", en: "Nervous System" },
                 navTegum: { it: "Apparato Tegumentario", en: "Integumentary System" },
-                eogTitle: { it: '1. Esame Obiettivo Generale (EOG)', en: '1. General Physical Exam' },
-                cardioTitle: { it: '2. Apparato Cardiocircolatorio', en: '2. Cardiovascular System' },
-                respTitle: { it: '3. Apparato Respiratorio', en: '3. Respiratory System' },
-                digTitle: { it: '4. Apparato Digerente', en: '4. Digestive System' },
-                muscTitle: { it: '5. Apparato Muscolare', en: '5. Muscular System' },
-                urinTitle: { it: '6. Apparato Urinario', en: '6. Urinary System' },
-                hematTitle: { it: '7. Sistema Ematopoietico', en: '7. Hematopoietic System' },
-                endoTitle: { it: '8. Sistema Endocrino', en: '8. Endocrine System' },
-                nervTitle: { it: '9. Sistema Nervoso', en: '9. Nervous System' },
-                tegumTitle: { it: '10. Apparato Tegumentario', en: '10. Integumentary System' },
+                
+                // Descrizioni
                 eogDesc: { it: "Valutazione dello stato generale, sensorio, BCS e parametri vitali.", en: "General status, sensorium, BCS, and vital signs." },
                 cardioDesc: { it: "Esame clinico del cuore, vasi e pressione arteriosa.", en: "Clinical examination of heart, vessels, and blood pressure." },
                 respDesc: { it: "Semeiotica delle vie respiratorie superiori e inferiori.", en: "Upper and lower respiratory tract semeiotics." },
@@ -358,6 +379,7 @@
                 endoDesc: { it: "Semeiotica delle principali ghiandole endocrine.", en: "Major endocrine glands semeiotics." },
                 nervDesc: { it: "Esame neurologico completo e riflessi.", en: "Complete neurological exam and reflexes." },
                 tegumDesc: { it: "Esame di cute, mantello e annessi.", en: "Skin, coat, and appendages." },
+
                 btnSummary: { it: 'Riassunto', en: 'Summary' },
                 btnInfographic: { it: 'Infografica', en: 'Infographic' },
                 btnChecklist: { it: 'Checklist', en: 'Checklist' },
@@ -373,26 +395,103 @@
             const updateLanguage = (lang) => {
                 document.documentElement.lang = lang;
                 document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
-                document.querySelectorAll('[data-lang-key]').forEach(el => {
-                    const key = el.dataset.langKey;
-                    if (translations[key]) el.innerHTML = translations[key][lang];
+                document.querySelectorAll('[data-lang-key]').forEach(element => {
+                    const key = element.dataset.langKey;
+                    if (translations[key] && translations[key][lang]) {
+                        const ttsButton = element.querySelector('.tts-button');
+                        const text = translations[key][lang];
+                        if (ttsButton) {
+                            let textNode = Array.from(element.childNodes).find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0);
+                            if (textNode) textNode.textContent = text;
+                            else element.firstChild.textContent = text;
+                        } else {
+                            element.innerHTML = text;
+                        }
+                    }
                 });
+                const dsaToggle = document.getElementById('accessibility-toggle');
+                 if (document.body.classList.contains('dsa-mode')) {
+                    dsaToggle.textContent = lang === 'it' ? 'Vista Standard' : 'Standard View';
+                } else {
+                    dsaToggle.textContent = lang === 'it' ? 'Accessibilità' : 'Accessibility';
+                }
+                setupTTSListeners();
             };
 
             const setA11yMode = (enabled) => {
-                body.classList.toggle('dsa-mode', enabled);
-                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+                if (enabled) {
+                    body.classList.add('dsa-mode');
+                    localStorage.setItem('dsa-mode', 'enabled');
+                } else {
+                    body.classList.remove('dsa-mode');
+                    localStorage.setItem('dsa-mode', 'disabled');
+                }
             };
 
-            document.getElementById('lang-toggle').onclick = () => {
+            document.getElementById('lang-toggle').addEventListener('click', () => {
                 currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
                 localStorage.setItem('language', currentLanguage);
                 updateLanguage(currentLanguage);
-            };
+            });
 
-            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+            document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                const isEnabled = body.classList.contains('dsa-mode');
+                setA11yMode(!isEnabled);
+            });
 
-            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            // TTS Logic (Common)
+            const synth = window.speechSynthesis;
+            let currentUtterance = null;
+            let activeTTSButton = null;
+
+            function speak(text, button) {
+                if (activeTTSButton === button && currentUtterance) {
+                    if (synth.paused) { synth.resume(); button.classList.add('playing'); } 
+                    else { synth.pause(); button.classList.remove('playing'); }
+                    return;
+                }
+                if (synth.speaking) synth.cancel();
+                currentUtterance = new SpeechSynthesisUtterance(text);
+                currentUtterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                currentUtterance.onend = () => { if(activeTTSButton) activeTTSButton.classList.remove('playing'); activeTTSButton = null; };
+                synth.speak(currentUtterance);
+                if(activeTTSButton) activeTTSButton.classList.remove('playing');
+                activeTTSButton = button;
+                button.classList.add('playing');
+            }
+
+            function setupTTSListeners() {
+                document.querySelectorAll('.tts-button').forEach(button => {
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+                    newButton.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        let textToRead = '';
+                        const parentElement = newButton.parentElement;
+                        if (parentElement) {
+                            if (parentElement.tagName === 'H1') {
+                                 const title = parentElement.firstChild.textContent.trim();
+                                 const subtitle = document.querySelector('p[data-lang-key="heroSubtitle"]').textContent.trim();
+                                 textToRead = `${title}. ${subtitle}`;
+                            } else {
+                                const clone = parentElement.cloneNode(true);
+                                clone.querySelector('.tts-button')?.remove();
+                                textToRead = clone.textContent.trim();
+                                const card = parentElement.closest('.section-card'); 
+                                if (card) {
+                                    const desc = card.querySelector('p[data-lang-key$="Desc"]'); 
+                                    if (desc) { textToRead += '. ' + desc.textContent.trim(); }
+                                }
+                            }
+                        }
+                        if (textToRead) { speak(textToRead, newButton); }
+                    });
+                });
+            }
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') {
+                setA11yMode(true);
+            }
             updateLanguage(currentLanguage);
         });
     </script>
