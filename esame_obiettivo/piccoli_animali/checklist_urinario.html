@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist: Esame Apparato Urinario - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA SKY per Apparato Urinario - Scuro -> Chiaro */
+        .hero-bg { background-color: #0369a1; background-image: linear-gradient(to right, #0369a1, #0284c7); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f0f9ff; border: 1px solid #e2e8f0;
+            font-size: 0.6rem; font-weight: 700; color: #0369a1; text-transform: uppercase;
+            line-height: 1.1; min-height: 3rem;
+        }
+        .quick-nav-item:hover { background-color: #e0f2fe; color: #0284c7; }
+        .quick-nav-item.active { background-color: #0369a1; color: #ffffff !important; border-color: #0369a1; }
+
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #0369a1; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 900px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+        
+        .field { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; gap: 1rem; }
+        .label-area { flex-basis: 55%; display: flex; flex-direction: column; }
+        .label-area label { font-weight: 600; color: #1f2937; }
+        .label-desc { font-size: 0.85rem; color: #6b7280; font-style: italic; }
+        .input-area { flex-basis: 40%; display: flex; align-items: center; justify-content: flex-end; flex-grow: 1; }
+        
+        input[type="text"], textarea { 
+            border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.6rem 0.75rem; 
+            background-color: #f9fafb; width: 100%; transition: all 0.2s;
+        }
+        input:focus, textarea:focus { border-color: #0369a1; outline: none; box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.1); }
+        textarea { min-height: 80px; margin-top: 0.5rem; }
+
+        h4 { font-family: 'Lexend', sans-serif; color: #0c4a6e; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; border-bottom: 2px solid #e0f2fe; padding-bottom: 0.25rem; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode label, .dsa-mode input, .dsa-mode textarea, .dsa-mode .label-desc { color: #000 !important; }
+        .dsa-mode input, .dsa-mode textarea { background-color: #ffffff; border: 2px solid #000; }
+        
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+            input, textarea { border: none !important; border-bottom: 1px dotted #000 !important; background: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center text-white">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="esami_clinici_piccoli_animali.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleUrin">6. Apparato Urinario</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_urinario.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_urinario.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_urinario.html" class="section-nav-link active" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_urinario.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_urinario.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item active" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <h1 class="text-2xl font-bold mb-8 text-center text-sky-900" data-lang-key="pageTitle">Checklist: Esame Apparato Urinario (P.A.)</h1>
+
+            <!-- 1. ISPEZIONE -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-sky-800 border-b pb-2" data-lang-key="sectionIspezione">1. Ispezione</h2>
+                
+                <div class="field">
+                    <div class="label-area">
+                        <label data-lang-key="inspAtto">Atto della Minzione</label>
+                        <p class="label-desc" data-lang-key="inspAttoDesc">Normale, stranguria, pollachiuria, disuria, postura antalgica.</p>
+                    </div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+
+                <div class="field">
+                    <div class="label-area">
+                        <label data-lang-key="inspAspetto">Aspetto delle Urine</label>
+                        <p class="label-desc" data-lang-key="inspAspettoDesc">Colore (ematuria?), limpidezza (N: limpida in P.A.).</p>
+                    </div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+
+                <div class="field border-none">
+                    <div class="label-area">
+                        <label data-lang-key="inspEdemi">Edemi Declivi</label>
+                        <p class="label-desc" data-lang-key="inspEdemiDesc">Presenza di fovea digitale (segno della fovea) in regione ventrale/arti.</p>
+                    </div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+            </section>
+
+            <!-- 2. PALPAZIONE ADDOMINALE -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-sky-800 border-b pb-2" data-lang-key="sectionPalpazione">2. Palpazione Addominale Profonda</h2>
+                
+                <!-- VIE SUPERIORI -->
+                <h3 class="text-lg font-bold text-sky-700 mt-6 mb-4" data-lang-key="subUpper">Vie Urinarie Superiori (Reni)</h3>
+                
+                <h4 data-lang-key="specieGatto">🐱 Gatto (Monomanuale)</h4>
+                <div class="field">
+                    <div class="label-area">
+                        <label data-lang-key="palpReniGatto">Reni (Bilaterali)</label>
+                        <p class="label-desc" data-lang-key="palpReniGattoDesc">Sede, mobilità, forma, consistenza, dolore.</p>
+                    </div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+
+                <h4 data-lang-key="specieCane">🐶 Cane (Bimanuale)</h4>
+                <div class="field">
+                    <div class="label-area">
+                        <label data-lang-key="palpReniCane">Rene Sinistro (Polo Caudale)</label>
+                        <p class="label-desc" data-lang-key="palpReniCaneDesc">Reperibilità del polo caudale (difficile in taglie grandi).</p>
+                    </div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+
+                <!-- VIE INFERIORI -->
+                <h3 class="text-lg font-bold text-sky-700 mt-10 mb-4" data-lang-key="subLower">Vie Urinarie Inferiori (Vescica)</h3>
+                <div class="field border-none">
+                    <div class="label-area">
+                        <label data-lang-key="palpVescica">Vescica (Cane e Gatto)</label>
+                        <p class="label-desc" data-lang-key="palpVescicaDesc">Sede, volume, tensione parietale, uroliti voluminosi.</p>
+                    </div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+            </section>
+
+            <!-- 3. ESPLORAZIONE RETTALE -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-sky-800 border-b pb-2" data-lang-key="sectionRettale">3. Esplorazione Rettale Digitale</h2>
+                <div class="field border-none">
+                    <div class="label-area">
+                        <label data-lang-key="rectProstata">Prostata e Bacino</label>
+                        <p class="label-desc" data-lang-key="rectProstataDesc">Maschio: volume, simmetria e dolore. Trauma: rime di frattura.</p>
+                    </div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+            </section>
+
+            <!-- 4. METODICHE COMPLEMENTARI -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-sky-800 border-b pb-2" data-lang-key="sectionComplementari">4. Metodiche Complementari Dirette</h2>
+                <div class="field">
+                    <div class="label-area">
+                        <label data-lang-key="complCatetere">Sondaggio Uretrale</label>
+                        <p class="description" data-lang-key="complCatetereDesc">Valutazione pervietà uretrale e campionamento.</p>
+                    </div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+                <div class="field border-none">
+                    <div class="label-area">
+                        <label data-lang-key="complCisto">Cistocentesi</label>
+                        <p class="description" data-lang-key="complCistoDesc">Campionamento sterile ecoguidato per esame colturale.</p>
+                    </div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+            </section>
+
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-sky-800" data-lang-key="sectionNote">Annotazioni e Rilievi Clinici</h2>
+                <textarea id="note_urin" placeholder="Descrivere eventuali anomalie (es. nefromegalia, pareti vescicali ispessite, disuria osservata)..."></textarea>
+            </section>
+
+            <div class="mt-8 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-sky-600 text-white font-bold py-3 px-10 rounded-xl hover:bg-sky-700 transition shadow-lg inline-flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="btnPrint">Stampa Checklist Urinario</span>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleUrin: { it: '6. Apparato Urinario', en: '6. Urinary System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Phys. Exam" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular System" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory System" },
+                navDig: { it: "Apparato Digerente", en: "Digestive System" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal System" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary System" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic System" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine System" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous System" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary System" },
+                pageTitle: { it: "Checklist: Esame Apparato Urinario (P.A.)", en: "Urinary System Exam Checklist" },
+                sectionIspezione: { it: "1. Ispezione", en: "1. Inspection" },
+                inspAtto: { it: "Atto della Minzione", en: "Act of Urination" },
+                inspAttoDesc: { it: "Normale, stranguria, pollachiuria, disuria, postura antalgica.", en: "Normal, stranguria, pollakiuria, dysuria, antalgic posture." },
+                inspAspetto: { it: "Aspetto delle Urine", en: "Urine Appearance" },
+                inspAspettoDesc: { it: "Colore (ematuria?), limpidezza (N: limpida in P.A.).", en: "Color (hematuria?), clarity (N: clear in small pets)." },
+                inspEdemi: { it: "Edemi Declivi", en: "Dependent Edema" },
+                inspEdemiDesc: { it: "Presenza di fovea digitale (segno della fovea) in regione ventrale/arti.", en: "Pitting sign (fovea) in ventral region or limbs." },
+                sectionPalpazione: { it: "2. Palpazione Addominale Profonda", en: "2. Deep Abdominal Palpation" },
+                subUpper: { it: "Vie Urinarie Superiori (Reni)", en: "Upper Urinary Tract (Kidneys)" },
+                specieGatto: { it: "🐱 Gatto (Monomanuale)", en: "🐱 Cat (Monomanual)" },
+                palpReniGatto: { it: "Reni (Bilaterali)", en: "Kidneys (Bilateral)" },
+                palpReniGattoDesc: { it: "Sede, mobilità, forma, consistenza, dolore.", en: "Site, mobility, shape, consistency, pain." },
+                specieCane: { it: "🐶 Cane (Bimanuale)", en: "🐶 Dog (Bimanual)" },
+                palpReniCane: { it: "Rene Sinistro (Polo Caudale)", en: "Left Kidney (Caudal Pole)" },
+                palpReniCaneDesc: { it: "Solitamente palpabile solo il polo caudale del rene sinistro.", en: "Usually only the caudal pole of the left kidney is felt." },
+                subLower: { it: "Vie Urinarie Inferiori (Vescica)", en: "Lower Urinary Tract (Bladder)" },
+                palpVescica: { it: "Vescica (Cane e Gatto)", en: "Bladder (Dog and Cat)" },
+                palpVescicaDesc: { it: "Volume, tensione parietale, sensibilità, uroliti voluminosi.", en: "Volume, wall tension, sensitivity, large uroliths." },
+                sectionRettale: { it: "3. Esplorazione Rettale Digitale", en: "3. Digital Rectal Exam" },
+                rectProstata: { it: "Prostata e Bacino", en: "Prostate and Pelvis" },
+                rectProstataDesc: { it: "Maschio: volume, simmetria e dolore. Trauma: rime di frattura.", en: "Male: size, symmetry, pain. Trauma: fracture lines." },
+                sectionComplementari: { it: "4. Metodiche Complementari Dirette", en: "4. Direct Complementary Methods" },
+                complCatetere: { it: "Sondaggio Uretrale", en: "Urethral Catheterization" },
+                complCatetereDesc: { it: "Valutazione pervietà uretrale e campionamento.", en: "Urethral patency assessment and sampling." },
+                complCisto: { it: "Cistocentesi", en: "Cystocentesis" },
+                complCistoDesc: { it: "Campionamento sterile ecoguidato eseguito per coltura.", en: "Ultrasound-guided sterile sampling for culture." },
+                sectionNote: { it: "Annotazioni e Rilievi Clinici", en: "Observations and Clinical Findings" },
+                btnPrint: { it: 'Stampa Checklist Urinario', en: 'Print Urinary Checklist' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
