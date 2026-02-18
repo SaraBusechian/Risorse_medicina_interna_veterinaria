@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riassunto: Esame Apparato Urinario - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA SKY per Apparato Urinario */
+        .hero-bg { background-color: #0369a1; background-image: linear-gradient(to right, #0369a1, #0284c7); }
+        
+        /* --- QUICK NAV GRID --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f0f9ff; border: 1px solid #e2e8f0;
+            font-size: 0.6rem; font-weight: 700; color: #0369a1; text-transform: uppercase;
+            line-height: 1.1; min-height: 3rem;
+        }
+        .quick-nav-item:hover { background-color: #e0f2fe; color: #0284c7; }
+        .quick-nav-item.active { background-color: #0369a1; color: #ffffff !important; border-color: #0369a1; }
+
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #0369a1; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2.5rem; 
+            max-width: 900px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Testo Riassunto */
+        #main-content h2 { color: #0c4a6e; border-bottom: 2px solid #e0f2fe; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.25rem; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between; }
+        #main-content h3 { color: #075985; font-size: 1.2rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; border-bottom: none; }
+        #main-content p { margin-bottom: 1rem; }
+        #main-content ul { padding-left: 1.5rem; list-style-type: disc; margin-bottom: 1.5rem; }
+        #main-content li { margin-bottom: 0.75rem; }
+        #main-content strong { color: #0c4a6e; font-weight: 700; }
+        .section-block { background-color: #f0f9ff; border-left: 5px solid #0ea5e9; padding: 1.25rem; margin: 1.5rem 0; border-radius: 0 0.5rem 0.5rem 0; }
+
+        /* TTS Button */
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #0284c7; }
+
+        .audio-container { display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 1.5rem; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; margin-top: 3rem; }
+        .audio-container audio { width: 100%; max-width: 400px; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .section-block { background-color: #fffdf5; border: 1px solid #000; border-left-width: 8px; }
+
+        /* MODALITÀ DSA - QUICK NAV */
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav, .audio-container, .tts-button { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center text-white">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="esami_clinici_piccoli_animali.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleUrin">6. Apparato Urinario</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_urinario.html" class="section-nav-link active" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_urinario.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_urinario.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_urinario.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_urinario.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item active" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <h1 class="flex items-center justify-between" data-lang-key="pageTitle">
+                <span>Esame dell'Apparato Urinario (P.A.)</span>
+            </h1>
+
+            <div class="section-block" data-lang-key="introText"></div>
+
+            <div data-lang-key="sectionIspezione"></div>
+            <div data-lang-key="sectionPalpazione"></div>
+            <div data-lang-key="sectionComplementari"></div>
+
+            <!-- Sezione Audio -->
+            <div class="audio-container" id="audio">
+                <audio controls>
+                    <source src="audio_riassunto_urinario_pa.mp3" type="audio/mpeg">
+                    Audio non disponibile.
+                </audio>
+                <a href="audio_riassunto_urinario_pa.mp3" download class="bg-sky-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-700 transition inline-flex items-center" data-lang-key="btnDownloadAudio">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="btnDownloadAudioText">Scarica Audio</span>
+                </a>
+            </div>
+
+            <div class="mt-12 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-emerald-600 text-white font-bold py-3 px-10 rounded-xl hover:bg-emerald-700 transition shadow-lg inline-flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="btnPrintText">Stampa Riassunto</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const speakerIcon = `<button class="tts-button ml-2" aria-label="Riproduci audio"><svg class="w-6 h-6 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg></button>`;
+            
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleUrin: { it: '6. Apparato Urinario', en: '6. Urinary System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical Exam" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular System" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory System" },
+                navDig: { it: "Apparato Digerente", en: "Digestive System" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal System" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary System" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic System" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine System" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous System" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary System" },
+                pageTitle: { it: `<span>Esame dell'Apparato Urinario (P.A.)</span>${speakerIcon}`, en: `<span>Urinary System Exam (Small Animals)</span>${speakerIcon}` },
+                introText: { it: `L'esame dell'apparato urinario nel cane e nel gatto mira a valutare la funzionalità dei reni e l'integrità delle vie escretrici. Si basa sull'integrazione di dati anamnestici (PU/PD), ispezione del comportamento e palpazione addominale profonda. ${speakerIcon}`, en: `The urinary system exam in dogs and cats aims to assess renal function and the integrity of the excretory pathways. It relies on history (PU/PD), behavior inspection, and deep abdominal palpation. ${speakerIcon}` },
+                sectionIspezione: {
+                    it: `<h2>1. Ispezione${speakerIcon}</h2><ul><li><strong>Atteggiamento:</strong> Ricerca di posture antalgiche (dorso inarcato) o segni di dolore durante il tentativo di minzione.</li><li><strong>Atto della Minzione:</strong> Valutazione di <strong>stranguria</strong> (minzione dolorosa e lenta), <strong>pollachiuria</strong> (frequenti piccole emissioni) o <strong>disuria</strong>.</li><li><strong>Aspetto delle Urine:</strong> Valutazione di colore (ematuria, emoglobinuria) e torbidità. Nota: a differenza dei grandi animali, l'urina di cane e gatto è normalmente limpida.</li><li><strong>Edemi Declivi:</strong> Ricerca di gonfiori freddi caratterizzati dalla persistenza della <strong>fovea digitale</strong> (segno della fovea) dopo pressione, sospetti per ipoproteinemia (sindrome nefrosica).</li></ul>`,
+                    en: `<h2>1. Inspection${speakerIcon}</h2><ul><li><strong>Attitude:</strong> Search for antalgic postures (hunched back) or signs of pain during urination attempts.</li><li><strong>Act of Urination:</strong> Assessment of <strong>stranguria</strong> (painful, slow urination), <strong>pollakiuria</strong> (frequent small emissions), or <strong>dysuria</strong>.</li><li><strong>Urine Appearance:</strong> Evaluation of color (hematuria, hemoglobinuria) and turbidity. Note: unlike large animals, dog and cat urine is normally clear.</li><li><strong>Dependent Edema:</strong> Search for cold swellings characterized by the persistence of a <strong>pitting sign</strong> (pitting edema) after pressure, suggestive of hypoproteinemia (nephrotic syndrome).</li></ul>`
+                },
+                sectionPalpazione: {
+                    it: `<h2>2. Palpazione Addominale Profonda${speakerIcon}</h2><p>Manovra fondamentale per isolare gli organi urinari.</p><ul><li><strong>Reni nel Gatto:</strong> Normalmente palpabili entrambi, mobili, di forma ovoidale (a fagiolo) e consistenza parenchimatosa.</li><li><strong>Reni nel Cane:</strong> Di difficile reperimento se di taglia grande; solitamente si palpa solo il polo caudale del rene sinistro.</li><li><strong>Vescica:</strong> Valutazione di sede, volume (vuota, mediamente piena, distesa), tensione della parete e presenza di dolore o calcoli (uroliti) voluminosi.</li><li><strong>Dolorabilità Renale:</strong> Ricerca di reazioni dolorose alla pressione profonda nella regione sottolombare.</li></ul>`,
+                    en: `<h2>2. Deep Abdominal Palpation${speakerIcon}</h2><p>Key maneuver to isolate urinary organs.</p><ul><li><strong>Kidneys in Cats:</strong> Normally both palpable, mobile, bean-shaped, and parenchymatous.</li><li><strong>Kidneys in Dogs:</strong> Hard to find in large breeds; usually only the caudal pole of the left kidney is palpable.</li><li><strong>Bladder:</strong> Assessment of site, volume (empty, half-full, distended), wall tension, and presence of pain or large calculi (uroliths).</li><li><strong>Renal Tenderness:</strong> Search for painful reactions to deep pressure in the sublumbar region.</li></ul>`
+                },
+                sectionComplementari: {
+                    it: `<h2>3. Metodiche Dirette Complementari${speakerIcon}</h2><ul><li><strong>Sondaggio Uretrale:</strong> Per valutare la pervietà dell'uretra (specialmente nel gatto maschio con ostruzione) e raccogliere campioni.</li><li><strong>Esplorazione Rettale:</strong> Indispensabile nel cane maschio per valutare la prostata e l'uretra pelvica.</li></ul>`,
+                    en: `<h2>3. Direct Complementary Methods${speakerIcon}</h2><ul><li><strong>Urethral Catheterization:</strong> To assess urethral patency (especially in obstructed male cats) and collect samples.</li><li><strong>Rectal Examination:</strong> Essential in male dogs to assess the prostate and pelvic urethra.</li></ul>`
+                },
+                btnDownloadAudioText: { it: 'Scarica Audio', en: 'Download Audio' },
+                btnPrintText: { it: 'Stampa Riassunto', en: 'Print Summary' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'By Prof. Sara Busechian. Veterinary Internal Medicine Courses' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTSButton = null;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                setupTTS();
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking && activeTTSButton === button) {
+                    if (synth.paused) {
+                        synth.resume();
+                        button.classList.add('playing');
+                    } else {
+                        synth.pause();
+                        button.classList.remove('playing');
+                    }
+                    return;
+                }
+                synth.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onstart = () => {
+                    button.classList.add('playing');
+                    activeTTSButton = button;
+                };
+                utterance.onend = () => {
+                    button.classList.remove('playing');
+                    activeTTSButton = null;
+                };
+                synth.speak(utterance);
+            };
+
+            const setupTTS = () => {
+                document.querySelectorAll('.tts-button').forEach(btn => {
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        const container = btn.closest('div, h1, h2');
+                        const text = container.innerText.trim();
+                        speak(text, btn);
+                    };
+                });
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
