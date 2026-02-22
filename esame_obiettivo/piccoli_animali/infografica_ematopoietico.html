@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: Sistema Ematopoietico - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA ROSSO per Sistema Ematopoietico - Scuro -> Chiaro */
+        .hero-bg { background-color: #b91c1c; background-image: linear-gradient(to right, #b91c1c, #ef4444); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #fef2f2; border: 1px solid #e2e8f0;
+            font-size: 0.6rem; font-weight: 700; color: #b91c1c; text-transform: uppercase;
+            line-height: 1.1; min-height: 3rem;
+        }
+        .quick-nav-item:hover { background-color: #fee2e2; color: #991b1b; }
+        .quick-nav-item.active { background-color: #b91c1c; color: #ffffff !important; border-color: #b91c1c; }
+
+        /* --- SECTION NAV --- */
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #b91c1c; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 1000px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Infografica */
+        h2 { font-family: 'Lexend', sans-serif; color: #991b1b; border-bottom: 2px solid #fee2e2; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700; text-align: center; }
+        .icon-box { background-color: #fef2f2; color: #991b1b; border-radius: 0.5rem; padding: 1.5rem; height: 100%; border-left-width: 4px; transition: transform 0.2s; }
+        .icon-box:hover { transform: translateY(-3px); }
+        .icon-box svg { width: 2.5rem; height: 2.5rem; margin-bottom: 1rem; stroke-width: 1.5; stroke: currentColor; fill: none; }
+        .conclusion-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.75rem; padding: 1.5rem; text-align: center; }
+        .specie-icon { font-size: 1.5rem; margin-right: 0.5rem; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .icon-box, .dsa-mode .conclusion-box, .dsa-mode .bg-white { background-color: #ffffff !important; border: 2px solid #000 !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center text-white">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="esami_clinici_piccoli_animali.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleHema">7. Sistema Ematopoietico</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_ematopoietico.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_ematopoietico.html" class="section-nav-link active" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_ematopoietico.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_ematopoietico.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_ematopoietico.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item active" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <header class="text-center mb-12">
+                <h1 class="text-3xl font-bold mb-2 text-red-900" data-lang-key="pageTitle">Infografica: Sistema Ematopoietico (P.A.)</h1>
+                <p class="text-gray-600" data-lang-key="pageSubtitle">Identificazione clinica dei disordini del sangue in cane e gatto.</p>
+            </header>
+
+            <main class="space-y-12 mt-12">
+                <section>
+                    <h2 data-lang-key="flowTitle">Indicatori Clinici Chiave</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+                        
+                        <!-- Segni di Anemia -->
+                        <div class="icon-box border-l-red-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>
+                            <h3 class="text-red-700 font-bold" data-lang-key="sign1Title">1. Sospetta Anemia</h3>
+                            <p class="text-sm mb-4" data-lang-key="sign1Desc">Segni di ipossia tissutale generalizzata.</p>
+                            <ul class="list-disc list-inside text-sm space-y-1 text-gray-700">
+                                <li data-lang-key="sign1Li1"><strong>Pallore delle mucose</strong></li>
+                                <li data-lang-key="sign1Li2">Debolezza e abbattimento</li>
+                                <li data-lang-key="sign1Li3">Tachicardia di compenso</li>
+                                <li data-lang-key="sign1Li4">Soffio cardiaco funzionale</li>
+                            </ul>
+                        </div>
+
+                        <!-- Segni di Coagulopatia -->
+                        <div class="icon-box border-l-purple-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+                            <h3 class="text-purple-700 font-bold" data-lang-key="sign2Title">2. Disordini Emostasi</h3>
+                            <p class="text-sm mb-4" data-lang-key="sign2Desc">Segni di sanguinamento spontaneo o prolungato.</p>
+                            <ul class="list-disc list-inside text-sm space-y-1 text-gray-700">
+                                <li data-lang-key="sign2Li1"><strong>Petecchie</strong> (puntiformi)</li>
+                                <li data-lang-key="sign2Li2"><strong>Ecchimosi</strong> (chiazze)</li>
+                                <li data-lang-key="sign2Li3">Melena o ematochezia</li>
+                                <li data-lang-key="sign2Li4">Epistassi</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Segni Linfatici -->
+                        <div class="icon-box border-l-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.31h5.513c.47 0 .682.559.342.886l-4.204 3.602a.563.563 0 0 0-.182.635l2.056 5.39a.562.562 0 0 1-.84.622l-4.402-3.232a.563.563 0 0 0-.664 0L6.31 22.04a.562.562 0 0 1-.84-.622l2.056-5.39a.563.563 0 0 0-.182-.635L2.99 9.808c-.34-.327-.128-.886.342-.886h5.513a.563.563 0 0 0 .475-.31L11.48 3.5Z" /></svg>
+                            <h3 class="text-blue-700 font-bold" data-lang-key="sign3Title">3. Apparato Linfatico</h3>
+                            <p class="text-sm mb-4" data-lang-key="sign3Desc">Risposta degli organi linfoidi secondari.</p>
+                            <ul class="list-disc list-inside text-sm space-y-1 text-gray-700">
+                                <li data-lang-key="sign3Li1"><strong>Linfoadenomegalia</strong></li>
+                                <li data-lang-key="sign3Li2"><strong>Splenomegalia</strong></li>
+                                <li data-lang-key="sign3Li3">Dolore alla palpazione</li>
+                                <li data-lang-key="sign3Li4">Masse addominali</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FOCUS PALPAZIONE SPECIE-SPECIFICA -->
+                <section class="bg-red-50/30 p-8 rounded-xl border border-red-100 shadow-sm">
+                    <h2 class="!mt-0 !text-red-800 font-bold" data-lang-key="palpTitle">Focus: Palpazione dei Linfonodi e Milza</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-red-100">
+                            <h4 class="font-bold text-red-900 mb-4" data-lang-key="lymphNodesTitle">Linfonodi Esplorabili</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-700 space-y-2" data-lang-key="lymphNodesList">
+                                <li><strong>Isolabili nel sano:</strong> Mandibolari, Prescapolari, Poplitei.</li>
+                                <li><strong>Palpabili se aumentati:</strong> Ascellari e Inguinali superficiali.</li>
+                                <li><strong>Parametri:</strong> Volume, consistenza, mobilità e dolore.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border border-red-100">
+                            <h4 class="font-bold text-red-900 mb-4" data-lang-key="spleenTitle">Milza (Splenopalpazione)</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-700 space-y-2" data-lang-key="spleenList">
+                                <li><strong>Cane:</strong> Spesso palpabile il polo ventrale nel quadrante craniale sinistro.</li>
+                                <li><strong>Gatto:</strong> Normalmente non palpabile; se isolabile, sospettare splenomegalia.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="conclusion-box border-t-4 border-red-600">
+                    <h2 class="!mt-0 !border-none text-red-900 font-bold" data-lang-key="conclusionTitle">La Diagnosi Richiede Laboratorio</h2>
+                    <p class="text-gray-700 mb-6" data-lang-key="conclusionDesc">Il sospetto clinico basato su mucose e linfonodi deve essere sempre confermato.</p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <span class="bg-red-600 text-white font-bold px-6 py-2 rounded-full uppercase text-xs tracking-wider">CBC (Emocromo)</span>
+                        <span class="bg-red-700 text-white font-bold px-6 py-2 rounded-full uppercase text-xs tracking-wider">Striscio Ematico</span>
+                    </div>
+                </section>
+            </main>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleHema: { it: '7. Sistema Ematopoietico', en: '7. Hematopoietic System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                pageTitle: { it: "Infografica: Sistema Ematopoietico (P.A.)", en: "Infographic: Hematopoietic System (Small Animals)" },
+                pageSubtitle: { it: "Identificazione clinica dei disordini del sangue in cane e gatto.", en: "Clinical identification of blood disorders in dogs and cats." },
+                flowTitle: { it: "Indicatori Clinici Chiave", en: "Key Clinical Indicators" },
+                sign1Title: { it: "1. Sospetta Anemia", en: "1. Suspected Anemia" },
+                sign1Desc: { it: "Segni di ipossia tissutale generalizzata.", en: "Signs of generalized tissue hypoxia." },
+                sign1Li1: { it: "<strong>Pallore delle mucose</strong>", en: "<strong>Mucous membrane pallor</strong>" },
+                sign1Li2: { it: "Debolezza e abbattimento", en: "Weakness and lethargy" },
+                sign1Li3: { it: "Tachicardia di compenso", en: "Compensatory tachycardia" },
+                sign1Li4: { it: "Soffio cardiaco funzionale", en: "Functional heart murmur" },
+                sign2Title: { it: "2. Disordini Emostasi", en: "2. Hemostasis Disorders" },
+                sign2Desc: { it: "Segni di sanguinamento spontaneo o prolungato.", en: "Signs of spontaneous or prolonged bleeding." },
+                sign2Li1: { it: "<strong>Petecchie</strong> (puntiformi)", en: "<strong>Petechiae</strong> (pinpoint)" },
+                sign2Li2: { it: "<strong>Ecchimosi</strong> (chiazze)", en: "<strong>Ecchymoses</strong> (patches)" },
+                sign2Li3: { it: "Melena o ematochezia", en: "Melena or hematochezia" },
+                sign2Li4: { it: "Epistassi", en: "Epistaxis" },
+                sign3Title: { it: "3. Apparato Linfatico", en: "3. Lymphatic System" },
+                sign3Desc: { it: "Risposta degli organi linfoidi secondari.", en: "Response of secondary lymphoid organs." },
+                sign3Li1: { it: "<strong>Linfoadenomegalia</strong>", en: "<strong>Lymphadenomegaly</strong>" },
+                sign3Li2: { it: "<strong>Splenomegalia</strong>", en: "<strong>Splenomegaly</strong>" },
+                sign3Li3: { it: "Dolore alla palpazione", en: "Pain on palpation" },
+                sign3Li4: { it: "Masse addominali", en: "Abdominal masses" },
+                palpTitle: { it: "Focus: Palpazione dei Linfonodi e Milza", en: "Focus: Lymph Node and Spleen Palpation" },
+                lymphNodesTitle: { it: "Linfonodi Esplorabili", en: "Palpable Lymph Nodes" },
+                lymphNodesList: {
+                    it: "<li><strong>Isolabili nel sano:</strong> Mandibolari, Prescapolari, Poplitei.</li><li><strong>Palpabili se aumentati:</strong> Ascellari e Inguinali superficiali.</li><li><strong>Parametri:</strong> Volume, consistenza, mobilità e dolore.</li>",
+                    en: "<li><strong>Isolated in healthy:</strong> Mandibular, Prescapular, Popliteal.</li><li><strong>Palpable if enlarged:</strong> Axillary and superficial Inguinal.</li><li><strong>Parameters:</strong> Size, consistency, mobility, and pain.</li>"
+                },
+                spleenTitle: { it: "Milza (Splenopalpazione)", en: "Spleen (Splenopalpation)" },
+                spleenList: {
+                    it: "<li><strong>Cane:</strong> Spesso palpabile il polo ventrale nel quadrante craniale sinistro.</li><li><strong>Gatto:</strong> Normalmente non palpabile; se isolabile, sospettare splenomegalia.</li>",
+                    en: "<li><strong>Dog:</strong> Ventral pole often palpable in the left cranial quadrant.</li><li><strong>Cat:</strong> Normally not palpable; if detectable, suspect splenomegaly.</li>"
+                },
+                conclusionTitle: { it: "La Diagnosi Richiede Laboratorio", en: "Diagnosis Requires Laboratory" },
+                conclusionDesc: { it: "Il sospetto clinico basato su mucose e linfonodi deve essere sempre confermato.", en: "Clinical suspicion based on mucosa and nodes must always be confirmed." },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
