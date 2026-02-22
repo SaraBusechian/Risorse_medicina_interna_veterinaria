@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interattivo: Sistema Endocrino - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA PINK per Sistema Endocrino - Scuro -> Chiaro */
+        .hero-bg { background-color: #db2777; background-image: linear-gradient(to right, #db2777, #f472b6); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #fdf2f8; border: 1px solid #fbcfe8;
+            font-size: 0.6rem; font-weight: 700; color: #db2777; text-transform: uppercase;
+            line-height: 1.1; min-height: 3rem;
+        }
+        .quick-nav-item:hover { background-color: #fce7f3; color: #9d174d; }
+        .quick-nav-item.active { background-color: #db2777; color: #ffffff !important; border-color: #db2777; }
+
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #db2777; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 850px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Quiz */
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; text-align: left; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .option-btn:hover:not(:disabled) { border-color: #db2777; background-color: #fdf2f8; transform: translateY(-2px); }
+        .option-btn.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: 600; }
+        .option-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: 600; }
+
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #db2777; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h2, .dsa-mode h3, .dsa-mode p { color: #000 !important; }
+        .dsa-mode .option-btn { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .option-btn.correct { background-color: #dcfce7 !important; border-width: 5px !important; }
+        .dsa-mode .option-btn.incorrect { background-color: #fee2e2 !important; border-width: 5px !important; }
+        .dsa-mode .tts-button { color: #000 !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center text-white">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="esami_clinici_piccoli_animali.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleEndo">8. Sistema Endocrino</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_endocrino.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_endocrino.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_endocrino.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_endocrino.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_endocrino.html" class="section-nav-link active" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item active" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="quiz-container" class="content-card">
+            
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-pink-800" data-lang-key="quizTitle">Quiz: Sistema Endocrino</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-gray-500"></p>
+                </div>
+
+                <div class="mb-8 p-4 bg-slate-50 rounded-xl flex items-start gap-3 border border-slate-100">
+                    <p id="question-text" class="text-lg font-medium text-gray-800 flex-grow"></p>
+                    <button id="question-tts-button" class="tts-button mt-1">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-pink-50 border-2 border-pink-200">
+                    <p id="rationale-text" class="text-sm italic text-pink-800 mb-6"></p>
+                    <button id="next-button" class="w-full bg-pink-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-pink-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🧠</div>
+                <h2 class="text-3xl font-bold text-pink-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p id="score-text" class="text-6xl font-black text-pink-600 my-6"></p>
+                <button id="restart-button" class="w-full border-2 border-pink-600 text-pink-600 font-bold py-4 px-6 rounded-xl hover:bg-pink-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleEndo: { it: '8. Sistema Endocrino', en: '8. Endocrine System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                quizTitle: { it: "Quiz: Sistema Endocrino", en: 'Quiz: Endocrine System' },
+                progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' }
+            };
+
+            const questionsPool = [
+                {
+                    question: { it: "Un cane presenta alopecia bilaterale simmetrica, addome a botte e calcinosi cutanea. Qual è il principale sospetto clinico?", en: "A dog has bilateral symmetrical alopecia, pot-belly, and calcinosis cutis. What is the primary suspicion?" },
+                    options: [
+                        { text: { it: "Iperadrenocorticismo (Sindrome di Cushing)", en: "Hyperadrenocorticism (Cushing's Syndrome)" }, isCorrect: true, rationale: { it: "L'addome a botte dovuto all'ipotonia muscolare e la calcinosi sono segni classici dell'eccesso cronico di cortisolo nel cane.", en: "Pot-belly due to muscle hypotonia and calcinosis are classic signs of chronic cortisol excess in dogs." } },
+                        { text: { it: "Ipotiroidismo canino", en: "Canine Hypothyroidism" }, isCorrect: false, rationale: { it: "L'ipotiroidismo causa letargia e obesità, ma non tipicamente l'addome a botte o la calcinosi.", en: "Hypothyroidism causes lethargy and obesity, but not typically pot-belly or calcinosis." } },
+                        { text: { it: "Ipoadrenocorticismo (Addison)", en: "Hypoadrenocorticism (Addison's)" }, isCorrect: false, rationale: { it: "L'Addison si manifesta con segni spesso acuti legati a shock e debolezza.", en: "Addison's presents with often acute signs related to shock and weakness." } },
+                        { text: { it: "Diabete Mellito", en: "Diabetes Mellitus" }, isCorrect: false, rationale: { it: "Il diabete causa perdita di peso e PU/PD, ma non i cambiamenti cutanei del Cushing.", en: "Diabetes causes weight loss and PU/PD, but not Cushing's skin changes." } }
+                    ]
+                },
+                {
+                    question: { it: "Qual è il significato semeiologico della manovra del 'thyroid slip' nel gatto?", en: "What is the semiological meaning of the 'thyroid slip' maneuver in cats?" },
+                    options: [
+                        { text: { it: "Identificare noduli tiroidei palpabili e mobili lungo la trachea.", en: "Identify palpable and mobile thyroid nodules along the trachea." }, isCorrect: true, rationale: { it: "È la manovra chiave per sospettare l'ipertiroidismo felino, in cui i lobi aumentati scivolano sotto le dita.", en: "Key maneuver for suspecting feline hyperthyroidism, where enlarged lobes slip under fingers." } },
+                        { text: { it: "Verificare la presenza di dolore alla deglutizione.", en: "Check for pain upon swallowing." }, isCorrect: false, rationale: { it: "La sensibilità alla deglutizione riguarda esofago e faringe, non la tiroide.", en: "Swallowing sensitivity concerns esophagus and pharynx, not the thyroid." } },
+                        { text: { it: "Elicitare il riflesso della tosse.", en: "Elicit the cough reflex." }, isCorrect: false, rationale: { it: "Il riflesso tussigeno si evoca con la palpazione della trachea, non con la ricerca dei lobi.", en: "Cough reflex is elicited by tracheal palpation, not by lobe search." } },
+                        { text: { it: "Valutare la pervietà delle giugulari.", en: "Assess jugular patency." }, isCorrect: false, rationale: { it: "Le giugulari si valutano con l'ispezione e compressione, non con questa manovra.", en: "Jugulars are assessed by inspection and compression, not this maneuver." } }
+                    ]
+                },
+                {
+                    question: { it: "Un gatto anziano presenta dimagramento nonostante polifagia e iperattività. Quale patologia sospetti?", en: "A senior cat has weight loss despite polyphagia and hyperactivity. What do you suspect?" },
+                    options: [
+                        { text: { it: "Ipertiroidismo felino", en: "Feline Hyperthyroidism" }, isCorrect: true, rationale: { it: "L'aumento del metabolismo basale causa perdita di peso, tachicardia e fame eccessiva.", en: "Increased basal metabolism causes weight loss, tachycardia, and excessive hunger." } },
+                        { text: { it: "Ipotiroidismo felino", en: "Feline Hypothyroidism" }, isCorrect: false, rationale: { it: "L'ipotiroidismo felino è rarissimo e causerebbe letargia.", en: "Feline hypothyroidism is extremely rare and would cause lethargy." } },
+                        { text: { it: "Sindrome di Addison", en: "Addison's Disease" }, isCorrect: false, rationale: { it: "L'Addison causa solitamente anoressia e abbattimento, non polifagia.", en: "Addison's usually causes anorexia and lethargy, not polyphagia." } },
+                        { text: { it: "Pancreatite cronica", en: "Chronic Pancreatitis" }, isCorrect: false, rationale: { it: "Causa dolore e inappetenza, non l'iperattività dell'ipertiroideo.", en: "Causes pain and lack of appetite, not hyperthyroid hyperactivity." } }
+                    ]
+                },
+                {
+                    question: { it: "Il rilievo di un rapporto elettrolitico Sodio/Potassio (Na/K) inferiore a 27 suggerisce:", en: "A Sodium/Potassium (Na/K) electrolyte ratio below 27 suggests:" },
+                    options: [
+                        { text: { it: "Ipoadrenocorticismo (Addison)", en: "Hypoadrenocorticism (Addison's)" }, isCorrect: true, rationale: { it: "La carenza di aldosterone causa perdita di sodio e ritenzione di potassio, abbassando il rapporto.", en: "Aldosterone deficiency causes sodium loss and potassium retention, lowering the ratio." } },
+                        { text: { it: "Iperadrenocorticismo (Cushing)", en: "Hyperadrenocorticism (Cushing's)" }, isCorrect: false, rationale: { it: "Il Cushing non altera tipicamente gli elettroliti in modo così marcato.", en: "Cushing's doesn't typically alter electrolytes so markedly." } },
+                        { text: { it: "Diabete Mellito", en: "Diabetes Mellitus" }, isCorrect: false, rationale: { it: "Le alterazioni elettrolitiche nel diabete non sono specifiche del rapporto Na/K.", en: "Electrolyte changes in diabetes are not specific to the Na/K ratio." } },
+                        { text: { it: "Ipertiroidismo", en: "Hyperthyroidism" }, isCorrect: false, rationale: { it: "Non influenza direttamente il rapporto sodio/potassio.", en: "Does not directly influence the sodium/potassium ratio." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale segno clinico descrive correttamente la 'espressione tragica' nel cane?", en: "Which clinical sign correctly describes the 'tragic expression' in dogs?" },
+                    options: [
+                        { text: { it: "Aspetto dovuto al mixedema facciale associato a ipotiroidismo.", en: "Appearance due to facial myxedema associated with hypothyroidism." }, isCorrect: true, rationale: { it: "L'ispessimento cutaneo conferisce un aspetto triste o 'tragico' tipico del deficit tiroideo.", en: "Skin thickening gives a sad or 'tragic' look typical of thyroid deficiency." } },
+                        { text: { it: "Segno di dolore acuto alla palpazione addominale.", en: "Sign of acute pain during abdominal palpation." }, isCorrect: false, rationale: { it: "Il dolore causa retrazione o lamento, non mixedema facciale.", en: "Pain causes withdrawal or moaning, not facial myxedema." } },
+                        { text: { it: "Sguardo fisso dovuto a ipertensione endocranica.", en: "Staring gaze due to intracranial hypertension." }, isCorrect: false, rationale: { it: "Segno neurologico grave, diverso dal pattern endocrino citato.", en: "Severe neurological sign, different from the mentioned endocrine pattern." } },
+                        { text: { it: "Aspetto del gatto diabetico in chetoacidosi.", en: "Appearance of a diabetic cat in ketoacidosis." }, isCorrect: false, rationale: { it: "Il gatto in DKA è abbattuto e disidratato, ma non mostra espressione tragica da mixedema.", en: "A cat in DKA is lethargic and dehydrated but doesn't show tragic myxedema expression." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa si osserva nel gatto con neuropatia diabetica avanzata?", en: "What is observed in a cat with advanced diabetic neuropathy?" },
+                    options: [
+                        { text: { it: "Postura plantigrada (poggia i tarsi al suolo).", en: "Plantigrade stance (rests hocks on the ground)." }, isCorrect: true, rationale: { it: "L'iperglicemia cronica danneggia i nervi periferici, causando il cedimento dei garretti.", en: "Chronic hyperglycemia damages peripheral nerves, causing hock collapse." } },
+                        { text: { it: "Andatura rigida con arti a 'pilastro'.", en: "Stiff gait with 'pillar-like' limbs." }, isCorrect: false, rationale: { it: "Tipica del tetano o di gravi patologie spinali motorie.", en: "Typical of tetanus or severe motor spinal pathologies." } },
+                        { text: { it: "Ipermetria degli arti anteriori.", en: "Hypermetria of the forelimbs." }, isCorrect: false, rationale: { it: "Segno cerebellare, non associato al diabete.", en: "Cerebellar sign, not associated with diabetes." } },
+                        { text: { it: "Ricerca del freddo costante.", en: "Constant cold-seeking." }, isCorrect: false, rationale: { it: "Al contrario, è l'ipotiroideo a cercare il calore.", en: "On the contrary, it's the hypothyroid patient who seeks heat." } }
+                    ]
+                },
+                {
+                    question: { it: "Qual è il test dinamico 'Gold Standard' per diagnosticare l'Ipoadrenocorticismo (Addison)?", en: "What is the 'Gold Standard' dynamic test for diagnosing Hypoadrenocorticism (Addison's)?" },
+                    options: [
+                        { text: { it: "Test di stimolazione con ACTH", en: "ACTH Stimulation Test" }, isCorrect: true, rationale: { it: "L'Addison è confermato se i surreni non rispondono allo stimolo con ACTH sintetico.", en: "Addison's is confirmed if the adrenals do not respond to synthetic ACTH stimulation." } },
+                        { text: { it: "Test di soppressione a basse dosi (LDDS)", en: "Low-Dose Dexamethasone Suppression (LDDS)" }, isCorrect: false, rationale: { it: "Usato per il Cushing, non per l'Addison.", en: "Used for Cushing's, not Addison's." } },
+                        { text: { it: "Dosaggio del TSH canino.", en: "Canine TSH assay." }, isCorrect: false, rationale: { it: "Valuta la tiroide, non il surrene.", en: "Assesses the thyroid, not the adrenal gland." } },
+                        { text: { it: "Oral Sugar Test (OST).", en: "Oral Sugar Test (OST)." }, isCorrect: false, rationale: { it: "Test specifico per il cavallo (EMS).", en: "Specific test for horses (EMS)." } }
+                    ]
+                },
+                {
+                    question: { it: "Un cane in shock con bradicardia paradossa deve far sospettare:", en: "A dog in shock with paradoxical bradycardia should raise suspicion of:" },
+                    options: [
+                        { text: { it: "Crisi Addisoniana (per iperkaliemia).", en: "Addisonian Crisis (due to hyperkalemia)." }, isCorrect: true, rationale: { it: "L'eccesso di potassio rallenta il cuore impedendo la normale tachicardia di compenso allo shock.", en: "Potassium excess slows the heart, preventing the normal compensatory tachycardia to shock." } },
+                        { text: { it: "Shock emorragico semplice.", en: "Simple hemorrhagic shock." }, isCorrect: false, rationale: { it: "Causerebbe tachicardia di compenso.", en: "Would cause compensatory tachycardia." } },
+                        { text: { it: "Sindrome di Cushing.", en: "Cushing's Syndrome." }, isCorrect: false, rationale: { it: "Non causa crisi emodinamicamente instabili con bradicardia.", en: "Doesn't cause hemodynamically unstable crises with bradycardia." } },
+                        { text: { it: "Ipertiroidismo felino.", en: "Feline Hyperthyroidism." }, isCorrect: false, rationale: { it: "Causa tachicardia estrema, non bradicardia.", en: "Causes extreme tachycardia, not bradycardia." } }
+                    ]
+                },
+                {
+                    question: { it: "Perché il test LDDS è preferito per la diagnosi di Cushing rispetto al cortisolo basale?", en: "Why is the LDDS test preferred for Cushing's diagnosis over baseline cortisol?" },
+                    options: [
+                        { text: { it: "Perché è più sensibile: il cortisolo basale fluttua troppo per lo stress.", en: "Because it's more sensitive: baseline cortisol fluctuates too much due to stress." }, isCorrect: true, rationale: { it: "Il cortisolo basale può essere alto per semplice stress da visita, rendendolo poco affidabile.", en: "Baseline cortisol can be high just from exam stress, making it unreliable." } },
+                        { text: { it: "Perché è l'unico test non invasivo.", en: "Because it's the only non-invasive test." }, isCorrect: false, rationale: { it: "Richiede tre prelievi ematici (0, 4 e 8 ore).", en: "Requires three blood samples (0, 4, and 8 hours)." } },
+                        { text: { it: "Perché valuta anche la funzionalità renale.", en: "Because it also assesses renal function." }, isCorrect: false, rationale: { it: "Valuta esclusivamente l'asse ipotalamo-ipofisi-surrene.", en: "Evaluates only the hypothalamic-pituitary-adrenal axis." } },
+                        { text: { it: "Perché fornisce una diagnosi in soli 30 minuti.", en: "Because it provides a diagnosis in only 30 minutes." }, isCorrect: false, rationale: { it: "È un test lungo, richiede 8 ore per il prelievo finale.", en: "It's a long test, taking 8 hours for the final sample." } }
+                    ]
+                },
+                {
+                    question: { it: "All'ecografia di un cane con Cushing, il reperto epatico più comune è:", en: "In the ultrasound of a dog with Cushing's, the most common liver finding is:" },
+                    options: [
+                        { text: { it: "Epatomegalia con iperecogenicità diffusa.", en: "Hepatomegaly with diffuse hyperechogenicity." }, isCorrect: true, rationale: { it: "Il cortisolo induce accumulo di glicogeno (epatopatia vacuolare), rendendo il fegato grande e brillante.", en: "Cortisol induces glycogen accumulation (vacuolar hepatopathy), making the liver large and bright." } },
+                        { text: { it: "Atrofia epatica (fegato piccolo).", en: "Liver atrophy (small liver)." }, isCorrect: false, rationale: { it: "Tipica della cirrosi o degli shunt, non del Cushing.", en: "Typical of cirrhosis or shunts, not Cushing's." } },
+                        { text: { it: "Assenza dei lobi epatici sinistri.", en: "Absence of left liver lobes." }, isCorrect: false, rationale: { it: "Anomalia congenita non correlata alla sindrome.", en: "Congenital anomaly unrelated to the syndrome." } },
+                        { text: { it: "Presenza costante di tumori solidi.", en: "Constant presence of solid tumors." }, isCorrect: false, rationale: { it: "Il Cushing dà alterazioni parenchimali diffuse, non necessariamente focali neoplastiche.", en: "Cushing's causes diffuse parenchymal changes, not necessarily focal neoplastic ones." } }
+                    ]
+                }
+            ];
+
+            let currentIdx = 0;
+            let score = 0;
+            let shuffledQuestions = [];
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTS = null;
+
+            const shuffleArray = (array) => {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking) {
+                    synth.cancel();
+                    if (activeTTS === button) { activeTTS.classList.remove('playing'); activeTTS = null; return; }
+                }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onend = () => { button.classList.remove('playing'); activeTTS = null; };
+                synth.speak(utterance);
+                if (activeTTS) activeTTS.classList.remove('playing');
+                activeTTS = button;
+                button.classList.add('playing');
+            };
+
+            const renderQuestion = () => {
+                const q = shuffledQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', shuffledQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                const shuffledOptions = shuffleArray([...q.options]);
+
+                shuffledOptions.forEach((opt) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-2 w-full";
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn flex-grow";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn, shuffledOptions);
+                    
+                    const tts = document.createElement('button');
+                    tts.className = "tts-button p-2";
+                    tts.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    tts.onclick = (e) => { e.stopPropagation(); speak(opt.text[currentLanguage], tts); };
+
+                    div.appendChild(btn);
+                    div.appendChild(tts);
+                    container.appendChild(div);
+                });
+            };
+
+            const handleSelect = (opt, btn, currentOptions) => {
+                if (synth.speaking) synth.cancel();
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                if (opt.isCorrect) { btn.classList.add('correct'); score++; }
+                else { 
+                    btn.classList.add('incorrect');
+                    btns.forEach(b => {
+                        const originalOpt = currentOptions.find(o => o.text[currentLanguage] === b.textContent);
+                        if (originalOpt && originalOpt.isCorrect) b.classList.add('correct');
+                    });
+                }
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                document.getElementById('next-button').textContent = currentIdx === shuffledQuestions.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
+
+            const startQuiz = () => {
+                currentIdx = 0; score = 0;
+                shuffledQuestions = shuffleArray([...questionsPool]);
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
+
+            document.getElementById('next-button').onclick = () => {
+                if (currentIdx < shuffledQuestions.length - 1) {
+                    currentIdx++;
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    renderQuestion();
+                } else {
+                    document.getElementById('question-area').classList.add('hidden');
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    document.getElementById('results-area').classList.remove('hidden');
+                    document.getElementById('score-text').textContent = `${score} / ${shuffledQuestions.length}`;
+                }
+            };
+
+            document.getElementById('restart-button').onclick = startQuiz;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                renderQuestion();
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+                if (synth.speaking) synth.cancel();
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => {
+                body.classList.toggle('dsa-mode');
+                localStorage.setItem('dsa-mode', body.classList.contains('dsa-mode') ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('question-tts-button').onclick = () => speak(shuffledQuestions[currentIdx].question[currentLanguage], document.getElementById('question-tts-button'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') body.classList.add('dsa-mode');
+            startQuiz();
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
