@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: Apparato Tegumentario - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA AMBER per Apparato Tegumentario - Scuro -> Chiaro */
+        .hero-bg { background-color: #d97706; background-image: linear-gradient(to right, #d97706, #fbbf24); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #fffbeb; border: 1px solid #fef3c7;
+            font-size: 0.6rem; font-weight: 700; color: #b45309; text-transform: uppercase;
+            line-height: 1.1; min-height: 3rem;
+        }
+        .quick-nav-item:hover { background-color: #fef3c7; color: #92400e; }
+        .quick-nav-item.active { background-color: #d97706; color: #ffffff !important; border-color: #d97706; }
+
+        /* --- SECTION NAV --- */
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #d97706; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 1100px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Infografica */
+        h2 { font-family: 'Lexend', sans-serif; color: #92400e; border-bottom: 2px solid #fef3c7; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700; text-align: center; }
+        .lesion-card { background-color: white; border-radius: 0.5rem; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); height: 100%; border-top-width: 4px; transition: transform 0.2s; }
+        .lesion-card:hover { transform: translateY(-5px); }
+        .lesion-card ul { list-style-type: none; padding-left: 0; margin-top: 0.5rem; }
+        .lesion-card li { font-size: 0.85rem; color: #374151; margin-bottom: 0.5rem; padding-left: 1.25rem; position: relative; }
+        .lesion-card li::before { content: "•"; position: absolute; left: 0; color: #d97706; font-weight: bold; }
+        
+        .icon-box { background-color: #fffbeb; color: #b45309; border-radius: 0.5rem; padding: 1.5rem; height: 100%; border-left-width: 4px; transition: transform 0.2s; border-left-color: #d97706; }
+        .icon-box:hover { transform: translateY(-3px); }
+        .icon-box svg { width: 2.5rem; height: 2.5rem; margin-bottom: 1rem; stroke-width: 1.5; stroke: currentColor; fill: none; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link:hover, .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .lesion-card, .dsa-mode .icon-box, .dsa-mode .bg-white { background-color: #ffffff !important; border: 2px solid #000 !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center text-white">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6 text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center">
+                 <a href="esami_clinici_piccoli_animali.html" class="inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleTegu">10. Apparato Tegumentario</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_tegumentario.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_tegumentario.html" class="section-nav-link active" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_tegumentario.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_tegumentario.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_tegumentario.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item active" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <header class="text-center mb-12">
+                <h1 class="text-3xl font-bold mb-2 text-amber-900" data-lang-key="pageTitle">Infografica: L'Esame Dermatologico (P.A.)</h1>
+                <p class="text-gray-600" data-lang-key="pageSubtitle">Approccio metodico alle lesioni cutanee e ai pattern di distribuzione nel cane e nel gatto.</p>
+            </header>
+
+            <main class="space-y-16 mt-12">
+                
+                <!-- LESIONI -->
+                <section>
+                    <h2 data-lang-key="flowTitle">Lesioni Primarie vs. Secondarie</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                        
+                        <div class="lesion-card border-amber-600">
+                            <h3 class="text-amber-800 font-bold" data-lang-key="primaryTitle">Lesioni Primarie</h3>
+                            <p class="text-xs font-semibold text-gray-500 mb-2" data-lang-key="primaryDesc">Indicano lo stadio iniziale e sono fondamentali per la diagnosi eziologica.</p>
+                            <ul data-lang-key="primaryList">
+                                <li><strong>Macula/Papula:</strong> Cambio colore (piatta) o rilievo solido (< 1cm).</li>
+                                <li><strong>Pustola:</strong> Piccola rilevatezza fragile contenente pus (Piodermite).</li>
+                                <li><strong>Pomfo:</strong> Edema dermico, tipico dell'orticaria.</li>
+                                <li><strong>Nodulo:</strong> Massa solida circoscritta che interessa il derma o l'ipoderma.</li>
+                            </ul>
+                        </div>
+
+                        <div class="lesion-card border-gray-400">
+                            <h3 class="text-gray-700 font-bold" data-lang-key="secondaryTitle">Lesioni Secondarie</h3>
+                            <p class="text-xs font-semibold text-gray-500 mb-2" data-lang-key="secondaryDesc">Derivano dall'evoluzione delle primarie o dal grattamento/trauma.</p>
+                            <ul data-lang-key="secondaryList">
+                                <li><strong>Collaretto Epidermico:</strong> Residuo circolare di una pustola scoppiata.</li>
+                                <li><strong>Crosta:</strong> Materiale secco (siero, pus, sangue) sulla superficie.</li>
+                                <li><strong>Lichenificazione:</strong> Pelle spessa "a corazza" da grattamento cronico.</li>
+                                <li><strong>Iperpigmentazione:</strong> Melanosi (aumento della pigmentazione) della cute.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- DISTRIBUZIONE CHIAVE P.A. -->
+                <section class="bg-amber-50/50 p-8 rounded-xl border border-amber-100">
+                    <h2 class="!mt-0 !text-amber-800 font-bold" data-lang-key="distTitle">Mappa della Distribuzione</h2>
+                    <p class="text-sm text-gray-700 mb-8 text-center" data-lang-key="distDesc">La localizzazione delle lesioni indirizza verso specifiche patologie.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-amber-100 text-center">
+                            <h4 class="font-bold text-amber-900 mb-2" data-lang-key="dist1Title">Dermatite da Pulci (DAP)</h4>
+                            <p class="text-xs text-gray-600" data-lang-key="dist1Desc">Area lombo-sacrale, base della coda e interno coscia.</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-amber-100 text-center">
+                            <h4 class="font-bold text-amber-900 mb-2" data-lang-key="dist2Title">Atopia / Cibo</h4>
+                            <p class="text-xs text-gray-600" data-lang-key="dist2Desc">Muso, spazi interdigitali (leccamento), ascelle e inguine.</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-amber-100 text-center">
+                            <h4 class="font-bold text-amber-900 mb-2" data-lang-key="dist3Title">Rogna Sarcoptica</h4>
+                            <p class="text-xs text-gray-600" data-lang-key="dist3Desc">Margini dei padiglioni auricolari, gomiti e garretti.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TEST DIAGNOSTICI -->
+                <section>
+                    <h2 data-lang-key="testsTitle">Test Semeiologici in Dermatologia</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        
+                        <div class="icon-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 15.75-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+                            <h3 data-lang-key="test1Title">Raschiato Profondo</h3>
+                            <p class="text-xs" data-lang-key="test1Desc">Fino al sanguinamento capillare per ricercare acari follicolari (Demodex).</p>
+                        </div>
+
+                        <div class="icon-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 16.172 6.457 7.587M4.5 16.5 16.5 4.5m-3.912 11.444-4.743-4.744M8.002 16.12l5.056-5.056m1.112 1.112L9.114 17.232" /></svg>
+                            <h3 data-lang-key="test2Title">Citologia da Scotch Test</h3>
+                            <p class="text-xs" data-lang-key="test2Desc">Utilizzo di nastro adesivo per lieviti (Malassezia) o parassiti superficiali.</p>
+                        </div>
+
+                        <div class="icon-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12H.75m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25c0 1.357.94 2.47 2.185 2.575V18a.75.75 0 0 0 1.5 0v-1.175A2.625 2.625 0 0 0 14.25 14.25 2.25 2.25 0 0 0 12 12Z" /></svg>
+                            <h3 data-lang-key="test3Title">Lampada di Wood</h3>
+                            <p class="text-xs" data-lang-key="test3Desc">Screening rapido UV per dermatofitosi (Microsporum canis emette fluorescenza verde).</p>
+                        </div>
+
+                        <div class="icon-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+                            <h3 data-lang-key="test4Title">Citologia da Impronta</h3>
+                            <p class="text-xs" data-lang-key="test4Desc">Apposizione del vetrino su lesioni umide o scoppio di pustole per ricerca batteri.</p>
+                        </div>
+
+                        <div class="icon-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a4.5 4.5 0 0 0-7.36 4.368 4.5 4.5 0 0 0 7.36-4.368Z" /></svg>
+                            <h3 data-lang-key="test5Title">Tricoscopia</h3>
+                            <p class="text-xs" data-lang-key="test5Desc">Esame microscopico del fusto del pelo per valutare la fase di crescita o danni (autotrauma).</p>
+                        </div>
+
+                        <div class="icon-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m15 0-2.25 2.25m0 0-2.25 2.25M15 0l2.25 2.25M15 0l2.25 2.25" /></svg>
+                            <h3 data-lang-key="test6Title">Biopsia Cutanea</h3>
+                            <p class="text-xs" data-lang-key="test6Desc">Punch bioptico per diagnosi definitiva di malattie autoimmuni o neoplastiche.</p>
+                        </div>
+
+                    </div>
+                </section>
+            </main>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleTegu: { it: '10. Apparato Tegumentario', en: '10. Integumentary System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                pageTitle: { it: "Infografica: L'Esame Dermatologico (P.A.)", en: "Infographic: The Dermatological Exam (Small Animals)" },
+                pageSubtitle: { it: "Identificare lesioni primarie, secondarie e scegliere i test diagnostici corretti.", en: "Identifying primary and secondary lesions and choosing the correct diagnostic tests." },
+                flowTitle: { it: "Lesioni Primarie vs. Secondarie", en: "Primary vs. Secondary Lesions" },
+                primaryTitle: { it: "Lesioni Primarie", en: "Primary Lesions" },
+                primaryDesc: { it: "Indicano lo stadio iniziale e sono fondamentali per la diagnosi eziologica.", en: "Indicate initial stage and are fundamental for etiological diagnosis." },
+                primaryList: { it: `<li><strong>Macula/Papula:</strong> Cambio colore (piatta) o rilievo solido (< 1cm).</li><li><strong>Pustola:</strong> Piccola rilevatezza fragile contenente pus (Piodermite).</li><li><strong>Pomfo:</strong> Edema dermico, tipico dell'orticaria.</li><li><strong>Nodulo:</strong> Massa solida circoscritta che interessa il derma o l'ipoderma.</li>`, en: `<li><strong>Macule/Papule:</strong> Color change (flat) or solid elevation (< 1cm).</li><li><strong>Pustule:</strong> Small fragile elevation containing pus (Pyoderma).</li><li><strong>Wheal:</strong> Dermal edema, typical of urticaria.</li><li><strong>Nodule:</strong> Circumscribed solid mass involving dermis or hypodermis.</li>` },
+                secondaryTitle: { it: "Lesioni Secondarie", en: "Secondary Lesions" },
+                secondaryDesc: { it: "Derivano dall'evoluzione delle primarie o dal grattamento/trauma.", en: "Derived from evolution of primary ones or from scratching/trauma." },
+                secondaryList: { it: `<li><strong>Collaretto Epidermico:</strong> Residuo circolare di una pustola scoppiata.</li><li><strong>Crosta:</strong> Materiale secco (siero, pus, sangue) sulla superficie.</li><li><strong>Lichenificazione:</strong> Pelle spessa \"a corazza\" da grattamento cronico.</li><li><strong>Iperpigmentazione:</strong> Melanosi (aumento della pigmentazione) della cute.</li>`, en: `<li><strong>Epidermal Collarette:</strong> Circular residue of a ruptured pustule.</li><li><strong>Crust:</strong> Dried material (serum, pus, blood) on the surface.</li><li><strong>Lichenification:</strong> Thickened skin from chronic scratching.</li><li><strong>Hyperpigmentation:</strong> Melanosis (increased pigmentation) of the skin.</li>` },
+                distTitle: { it: "Mappa della Distribuzione", en: "Distribution Map" },
+                distDesc: { it: "La localizzazione delle lesioni indirizza verso specifiche patologie.", en: "Localization of lesions points toward specific pathologies." },
+                dist1Title: { it: "Dermatite da Pulci (DAP)", en: "Flea Dermatitis (FAD)" },
+                dist1Desc: { it: "Area lombo-sacrale, base della coda e interno coscia.", en: "Lumbosacral area, tail base, and inner thigh." },
+                dist2Title: { it: "Atopia / Cibo", en: "Atopy / Food" },
+                dist2Desc: { it: "Muso, spazi interdigitali (leccamento), ascelle e inguine.", en: "Face, interdigital spaces (licking), axillae, and groin." },
+                dist3Title: { it: "Rogna Sarcoptica", en: "Sarcoptic Mange" },
+                dist3Desc: { it: "Margini dei padiglioni auricolari, gomiti e garretti.", en: "Ear margins, elbows, and hocks." },
+                testsTitle: { it: "Test Semeiologici in Dermatologia", en: "Semeiotic Tests in Dermatology" },
+                test1Title: { it: "Raschiato Profondo", en: "Deep Skin Scrape" },
+                test1Desc: { it: "Fino al sanguinamento capillare per ricercare acari follicolari (Demodex).", en: "Until capillary bleeding to search for follicular mites (Demodex)." },
+                test2Title: { it: "Citologia da Scotch Test", en: "Tape Strip Cytology (Scotch Test)" },
+                test2Desc: { it: "Utilizzo di nastro adesivo per lieviti (Malassezia) o parassiti superficiali.", en: "Tape usage for yeast (Malassezia) or superficial parasites." },
+                test3Title: { it: "Lampada di Wood", en: "Wood's Lamp" },
+                test3Desc: { it: "Screening rapido UV per dermatofitosi (fluorescenza verde).", en: "Rapid UV screening for dermatophytosis (green fluorescence)." },
+                test4Title: { it: "Citologia da Impronta", en: "Impression Smear" },
+                test4Desc: { it: "Apposizione del vetrino su lesioni umide per ricerca batteri.", en: "Placing slide on moist lesions to search for bacteria." },
+                test5Title: { it: "Tricoscopia", en: "Trichoscopy" },
+                test5Desc: { it: "Esame del pelo per valutare la fase di crescita o danni.", en: "Hair exam to assess growth phase or damage." },
+                test6Title: { it: "Biopsia Cutanea", en: "Skin Biopsy" },
+                test6Desc: { it: "Punch bioptico per diagnosi definitiva di malattie autoimmuni o neoplastiche.", en: "Bioptic punch for definitive diagnosis of autoimmune or neoplastic diseases." },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
