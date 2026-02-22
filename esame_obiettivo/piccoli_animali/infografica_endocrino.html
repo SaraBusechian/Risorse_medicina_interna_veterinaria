@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: Sistema Endocrino - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA PINK per Sistema Endocrino - Scuro -> Chiaro */
+        .hero-bg { background-color: #db2777; background-image: linear-gradient(to right, #db2777, #f472b6); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #fdf2f8; border: 1px solid #fbcfe8;
+            font-size: 0.6rem; font-weight: 700; color: #db2777; text-transform: uppercase;
+            line-height: 1.1; min-height: 3rem;
+        }
+        .quick-nav-item:hover { background-color: #fce7f3; color: #9d174d; }
+        .quick-nav-item.active { background-color: #db2777; color: #ffffff !important; border-color: #db2777; }
+
+        /* --- SECTION NAV --- */
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #db2777; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 1100px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Infografica */
+        h2 { font-family: 'Lexend', sans-serif; color: #9d174d; border-bottom: 2px solid #fce7f3; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700; text-align: center; }
+        .flow-step { border-top: 4px solid #db2777; padding: 1.5rem; background-color: #f8fafc; border-radius: 0.5rem; height: 100%; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .flow-step:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .icon-box { background-color: #fdf2f8; color: #9d174d; border-radius: 0.5rem; padding: 1.5rem; height: 100%; border-left-width: 4px; }
+        .specie-icon { font-size: 1.5rem; margin-right: 0.5rem; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .flow-step, .dsa-mode .icon-box, .dsa-mode .bg-white { background-color: #ffffff !important; border: 2px solid #000 !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center text-white">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="esami_clinici_piccoli_animali.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleEndo">8. Sistema Endocrino</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_endocrino.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_endocrino.html" class="section-nav-link active" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_endocrino.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_endocrino.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_endocrino.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item active" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <header class="text-center mb-12">
+                <h1 class="text-3xl font-bold mb-2 text-pink-900" data-lang-key="pageTitle">Infografica: Sistema Endocrino (P.A.)</h1>
+                <p class="text-gray-600" data-lang-key="pageSubtitle">L'esame clinico si basa sul riconoscimento di pattern sistemici e metabolici.</p>
+            </header>
+
+            <main class="space-y-16 mt-12">
+                <!-- LE SINDROMI -->
+                <section>
+                    <h2 data-lang-key="flowTitle">Principali Pattern Endocrini</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                        
+                        <!-- CUSHING -->
+                        <div class="flow-step border-pink-600">
+                            <h3 class="text-pink-900 font-bold" data-lang-key="synd1Title">Cushing (Iperadrenocorticismo)</h3>
+                            <p class="text-sm font-semibold text-gray-600 mb-4" data-lang-key="synd1Subtitle">Tipico del cane adulto/anziano</p>
+                            <ul class="list-disc list-inside text-sm space-y-2 text-left text-gray-700">
+                                <li data-lang-key="synd1Li1"><strong>Addome a botte:</strong> Per ipotonia e ridistribuzione grasso.</li>
+                                <li data-lang-key="synd1Li2"><strong>Alterazioni cutanee:</strong> Alopecia bilaterale simmetrica, calcinosi.</li>
+                                <li data-lang-key="synd1Li3"><strong>PU/PD:</strong> Poliuria e polidipsia marcate.</li>
+                                <li data-lang-key="synd1Li4"><strong>Epatomegalia:</strong> Spesso rilevabile alla palpazione.</li>
+                            </ul>
+                        </div>
+
+                        <!-- IPERTIROIDISMO -->
+                        <div class="flow-step border-orange-600">
+                            <h3 class="text-orange-900 font-bold" data-lang-key="synd2Title">Ipertiroidismo Felino</h3>
+                            <p class="text-sm font-semibold text-gray-600 mb-4" data-lang-key="synd2Subtitle">Patologia principe del gatto anziano</p>
+                            <ul class="list-disc list-inside text-sm space-y-2 text-left text-gray-700">
+                                <li data-lang-key="synd2Li1"><strong>Dimagramento:</strong> Nonostante l'appetito aumentato (polifagia).</li>
+                                <li data-lang-key="synd2Li2"><strong>Iperattività:</strong> Irritabilità e talvolta aggressività.</li>
+                                <li data-lang-key="synd2Li3"><strong>Tachicardia:</strong> Spesso associata a soffi cardiaci.</li>
+                                <li data-lang-key="synd2Li4"><strong>Mantello:</strong> Scadente, opaco e non curato.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <!-- FOCUS PALPAZIONE TIROIDE -->
+                    <div class="bg-white rounded-lg shadow-md p-6 h-full border border-gray-100">
+                        <h3 class="text-xl font-bold mb-4 text-pink-800 text-center" data-lang-key="palpTitle">Focus: Palpazione Cervicale</h3>
+                        <div class="space-y-6">
+                            <div class="p-4 bg-pink-50 rounded-lg border border-pink-100">
+                                <h4 class="font-bold text-pink-900 mb-1" data-lang-key="palp1Title">Thyroid Slip (Gatto)</h4>
+                                <p class="text-xs text-gray-700 leading-relaxed" data-lang-key="palp1Desc">Manovra per percepire noduli tiroidei mobili lungo la trachea. Segno fondamentale nell'ipertiroidismo felino.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                <h4 class="font-bold text-slate-800 mb-1" data-lang-key="palp2Title">Masse Tiroidee (Cane)</h4>
+                                <p class="text-xs text-gray-700 leading-relaxed" data-lang-key="palp2Desc">Nel cane la tiroide sana non si palpa. Masse fisse o mobili suggeriscono carcinomi tiroidei.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- DIAGNOSI COLLATERALE -->
+                    <div class="bg-white rounded-lg shadow-md p-6 h-full border border-gray-100">
+                        <h3 class="text-xl font-bold mb-4 text-emerald-800 text-center" data-lang-key="testsTitle">Percorso Diagnostico</h3>
+                        <p class="text-center text-sm text-gray-600 mb-6" data-lang-key="testsDesc">Il sospetto clinico richiede conferme da test collaterali.</p>
+                        <ul class="space-y-4">
+                            <li class="flex items-center gap-3">
+                                <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                                <div class="text-xs text-gray-700"><strong>Screening:</strong> Emocromo e Biochimico (ALP elevata nel Cushing).</div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                                <div class="text-xs text-gray-700"><strong>Test Funzionali:</strong> ACTH Stim, LDDS (per il surrene).</div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                                <div class="text-xs text-gray-700"><strong>Urine:</strong> Valutazione Peso Specifico (isostenuria) e Glicosuria.</div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                                <div class="text-xs text-gray-700"><strong>Imaging:</strong> Ecografia addominale (volume surrenale).</div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- ALTRI SEGNI CHIAVE -->
+                <section class="bg-pink-900 text-white p-8 rounded-xl shadow-lg">
+                    <h2 class="!mt-0 !text-white font-bold" data-lang-key="specialTitle">Segni "Specchio" Endocrini</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+                        <div>
+                            <div class="text-4xl mb-2">👁️</div>
+                            <h4 class="font-bold mb-1" data-lang-key="mirror1Title">Espressione Tragica</h4>
+                            <p class="text-xs opacity-80" data-lang-key="mirror1Desc">Tipica dell'ipotiroidismo canino per accumulo di mucopolisaccaridi.</p>
+                        </div>
+                        <div>
+                            <div class="text-4xl mb-2">🦶</div>
+                            <h4 class="font-bold mb-1" data-lang-key="mirror2Title">Postura Plantigrada</h4>
+                            <p class="text-xs opacity-80" data-lang-key="mirror2Desc">Possibile nel gatto diabetico per neuropatia periferica.</p>
+                        </div>
+                        <div>
+                            <div class="text-4xl mb-2">❤️</div>
+                            <h4 class="font-bold mb-1" data-lang-key="mirror3Title">Bradicardia paradossa</h4>
+                            <p class="text-xs opacity-80" data-lang-key="mirror3Desc">In corso di crisi di Addison (iperkaliemia) nonostante lo shock.</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleEndo: { it: '8. Sistema Endocrino', en: '8. Endocrine System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                pageTitle: { it: "Infografica: Sistema Endocrino (P.A.)", en: "Infographic: Endocrine System (Small Animals)" },
+                pageSubtitle: { it: "L'esame clinico si basa sul riconoscimento di pattern sistemici e metabolici.", en: "Clinical exam relies on recognizing systemic and metabolic patterns." },
+                flowTitle: { it: "Principali Pattern Endocrini", en: "Main Endocrine Patterns" },
+                synd1Title: { it: "Cushing (Iperadrenocorticismo)", en: "Cushing's (Hyperadrenocorticism)" },
+                synd1Subtitle: { it: "Tipico del cane adulto/anziano", en: "Typical of adult/senior dogs" },
+                synd1Li1: { it: "<strong>Addome a botte:</strong> Per ipotonia e ridistribuzione grasso.", en: "<strong>Pot-bellied abdomen:</strong> Due to hypotonia and fat redistribution." },
+                synd1Li2: { it: "<strong>Alterazioni cutanee:</strong> Alopecia bilaterale simmetrica, calcinosi.", en: "<strong>Skin changes:</strong> Bilateral symmetrical alopecia, calcinosis." },
+                synd1Li3: { it: "<strong>PU/PD:</strong> Poliuria e polidipsia marcate.", en: "<strong>PU/PD:</strong> Marked polyuria and polydipsia." },
+                synd1Li4: { it: "<strong>Epatomegalia:</strong> Spesso rilevabile alla palpazione.", en: "<strong>Hepatomegaly:</strong> Often detectable on palpation." },
+                synd2Title: { it: "Ipertiroidismo Felino", en: "Feline Hyperthyroidism" },
+                synd2Subtitle: { it: "Patologia principe del gatto anziano", en: "Primary pathology of senior cats" },
+                synd2Li1: { it: "<strong>Dimagramento:</strong> Nonostante l'appetito aumentato.", en: "<strong>Weight loss:</strong> Despite increased appetite." },
+                synd2Li2: { it: "<strong>Iperattività:</strong> Irritabilità e aggressività.", en: "<strong>Hyperactivity:</strong> Irritability and aggression." },
+                synd2Li3: { it: "<strong>Tachicardia:</strong> Spesso associata a soffi cardiaci.", en: "<strong>Tachycardia:</strong> Often associated with heart murmurs." },
+                synd2Li4: { it: "<strong>Mantello:</strong> Scadente, opaco e non curato.", en: "<strong>Coat:</strong> Poor, dull, and unkempt." },
+                palpTitle: { it: "Focus: Palpazione Cervicale", en: "Focus: Cervical Palpation" },
+                palp1Title: { it: "Thyroid Slip (Gatto)", en: "Thyroid Slip (Cat)" },
+                palp1Desc: { it: "Manovra per percepire noduli tiroidei mobili lungo la trachea.", en: "Maneuver to feel mobile thyroid nodules along the trachea." },
+                palp2Title: { it: "Masse Tiroidee (Cane)", en: "Thyroid Masses (Dog)" },
+                palp2Desc: { it: "La tiroide sana non si palpa. Masse suggeriscono carcinomi.", en: "Healthy thyroid isn't felt. Masses suggest carcinoma." },
+                testsTitle: { it: "Percorso Diagnostico", en: "Diagnostic Pathway" },
+                testsDesc: { it: "Il sospetto clinico richiede conferme da test collaterali.", en: "Clinical suspicion requires confirmation from ancillary tests." },
+                specialTitle: { it: "Segni \"Specchio\" Endocrini", en: "Endocrine \"Mirror\" Signs" },
+                mirror1Title: { it: "Espressione Tragica", en: "Tragic Expression" },
+                mirror1Desc: { it: "Tipica dell'ipotiroidismo canino.", en: "Typical of canine hypothyroidism." },
+                mirror2Title: { it: "Postura Plantigrada", en: "Plantigrade Stance" },
+                mirror2Desc: { it: "Possibile nel gatto diabetico.", en: "Possible in diabetic cats." },
+                mirror3Title: { it: "Bradicardia paradossa", en: "Paradoxical Bradycardia" },
+                mirror3Desc: { it: "In corso di crisi di Addison.", en: "During Addisonian crisis." },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
