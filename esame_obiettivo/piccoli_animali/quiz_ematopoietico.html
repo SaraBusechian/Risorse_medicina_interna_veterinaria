@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interattivo: Sistema Ematopoietico - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA ROSSO per Sistema Ematopoietico - Scuro -> Chiaro */
+        .hero-bg { background-color: #b91c1c; background-image: linear-gradient(to right, #b91c1c, #ef4444); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #fef2f2; border: 1px solid #e2e8f0;
+            font-size: 0.6rem; font-weight: 700; color: #b91c1c; text-transform: uppercase;
+            line-height: 1.1; min-height: 3rem;
+        }
+        .quick-nav-item:hover { background-color: #fee2e2; color: #991b1b; }
+        .quick-nav-item.active { background-color: #b91c1c; color: #ffffff !important; border-color: #b91c1c; }
+
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #b91c1c; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 800px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Quiz */
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; text-align: left; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .option-btn:hover:not(:disabled) { border-color: #f87171; background-color: #fef2f2; transform: translateY(-2px); }
+        .option-btn.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: 600; }
+        .option-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: 600; }
+
+        /* TTS Button */
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #ef4444; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item:hover, .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h2, .dsa-mode h3, .dsa-mode p { color: #000 !important; }
+        .dsa-mode .option-btn { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .option-btn.correct { background-color: #dcfce7 !important; border-width: 5px !important; }
+        .dsa-mode .option-btn.incorrect { background-color: #fee2e2 !important; border-width: 5px !important; }
+        .dsa-mode .tts-button { color: #000 !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center text-white">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="esami_clinici_piccoli_animali.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleHema">7. Sistema Ematopoietico</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_ematopoietico.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_ematopoietico.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_ematopoietico.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_ematopoietico.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_ematopoietico.html" class="section-nav-link active" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item active" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="quiz-container" class="content-card">
+            
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-red-800" data-lang-key="quizTitle">Quiz: Sistema Ematopoietico</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-gray-500"></p>
+                </div>
+
+                <div class="mb-8 p-4 bg-slate-50 rounded-xl flex items-start gap-3 border border-slate-100">
+                    <p id="question-text" class="text-lg font-medium text-gray-800 flex-grow"></p>
+                    <button id="question-tts-button" class="tts-button mt-1">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-red-50 border-2 border-red-200">
+                    <p id="rationale-text" class="text-sm italic text-red-800 mb-6"></p>
+                    <button id="next-button" class="w-full bg-red-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-red-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🩸</div>
+                <h2 class="text-3xl font-bold text-red-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p id="score-text" class="text-6xl font-black text-red-600 my-6"></p>
+                <button id="restart-button" class="w-full border-2 border-sky-600 text-sky-600 font-bold py-4 px-6 rounded-xl hover:bg-sky-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleHema: { it: '7. Sistema Ematopoietico', en: '7. Hematopoietic System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                quizTitle: { it: "Quiz: Sistema Ematopoietico", en: 'Quiz: Hematopoietic System' },
+                progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary internal medicine courses' }
+            };
+
+            const questionsPool = [
+                {
+                    question: { it: "Qual è il segno clinico principale da ricercare all'ispezione per sospettare un'anemia nel cane?", en: "What is the primary clinical sign to look for on inspection to suspect anemia in dogs?" },
+                    options: [
+                        { text: { it: "Pallore delle mucose apparenti.", en: "Pallor of visible mucous membranes." }, isCorrect: true, rationale: { it: "Esatto. Le mucose roseo-pallide o porcellanacee sono indice di ridotta emoglobina circolante.", en: "Exact. Pale-pink or porcelain membranes indicate reduced circulating hemoglobin." } },
+                        { text: { it: "Tachicardia costante.", en: "Constant tachycardia." }, isCorrect: false, rationale: { it: "La tachicardia è un segno di compenso, ma il segno ispettivo principe è il pallore.", en: "Tachycardia is a compensatory sign, but the primary inspection sign is pallor." } },
+                        { text: { it: "Presenza di scialorrea.", en: "Presence of scialorrhea." }, isCorrect: false, rationale: { it: "La scialorrea è legata a problemi gastrointestinali o neurologici.", en: "Scialorrhea is linked to gastrointestinal or neurological issues." } },
+                        { text: { it: "Fascicolazioni muscolari.", en: "Muscle fasciculations." }, isCorrect: false, rationale: { it: "Segno neurologico o elettrolitico, non di anemia.", en: "Neurological or electrolyte sign, not of anemia." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa indicano le 'petecchie' rilevate sulle mucose orali o sulla cute del cane?", en: "What do 'petechiae' detected on oral mucosa or skin in dogs indicate?" },
+                    options: [
+                        { text: { it: "Un difetto dell'emostasi primaria (es. trombocitopenia).", en: "A primary hemostasis defect (e.g., thrombocytopenia)." }, isCorrect: true, rationale: { it: "Corretto. Sono micro-emorragie puntiformi tipiche della carenza o disfunzione piastrinica.", en: "Correct. They are pinpoint micro-hemorrhages typical of platelet deficiency or dysfunction." } },
+                        { text: { it: "Un'eccessiva ossigenazione dei tessuti.", en: "Excessive tissue oxygenation." }, isCorrect: false, rationale: { it: "L'iperossigenazione non causa emorragie.", en: "Hyperoxygenation doesn't cause hemorrhage." } },
+                        { text: { it: "Una normale pigmentazione cutanea.", en: "Normal skin pigmentation." }, isCorrect: false, rationale: { it: "Le petecchie sono lesioni emorragiche, non pigmento naturale.", en: "Petechiae are hemorrhagic lesions, not natural pigment." } },
+                        { text: { it: "Una reazione allergica da contatto.", en: "A contact allergic reaction." }, isCorrect: false, rationale: { it: "L'allergia dà pomfi o rossore diffuso (eritema), non petecchie.", en: "Allergies give wheals or diffuse redness (erythema), not petechiae." } }
+                    ]
+                },
+                {
+                    question: { it: "Quali linfonodi superficiali sono isolabili alla palpazione in un cane sano?", en: "Which superficial lymph nodes are isolatable on palpation in a healthy dog?" },
+                    options: [
+                        { text: { it: "Retromandibolari, Prescapolari e Poplitei.", en: "Retromandibular, Prescapular, and Popliteal." }, isCorrect: true, rationale: { it: "Esatto. Questi tre gruppi sono isolabili fisiologicamente nei piccoli animali sani.", en: "Exact. These three groups are physiologically isolatable in healthy small animals." } },
+                        { text: { it: "Mandibolari, Ascellari e Inguinali.", en: "Mandibular, Axillary, and Inguinal." }, isCorrect: false, rationale: { it: "Ascellari e Inguinali si palpano solo se patologicamente aumentati.", en: "Axillary and Inguinal are felt only if pathologically enlarged." } },
+                        { text: { it: "Solo i poplitei.", en: "Only popliteal." }, isCorrect: false, rationale: { it: "Anche retromandibolari e prescapolari sono costantemente reperibili.", en: "Retromandibular and prescapular are also constantly detectable." } },
+                        { text: { it: "Nessun linfonodo è palpabile nel soggetto sano.", en: "No lymph nodes are palpable in a healthy subject." }, isCorrect: false, rationale: { it: "Falso. I gruppi superficiali sono reperibili con una corretta tecnica.", en: "False. Superficial groups are detectable with proper technique." } }
+                    ]
+                },
+                {
+                    question: { it: "A differenza del cavallo, cosa ci si aspetta di trovare nel sangue di un cane con anemia rigenerativa?", en: "Unlike horses, what is expected in the blood of a dog with regenerative anemia?" },
+                    options: [
+                        { text: { it: "Reticolociti.", en: "Reticulocytes." }, isCorrect: true, rationale: { it: "Vero. Cane e gatto immettono reticolociti (globuli rossi immaturi) in circolo per rigenerare; il cavallo no.", en: "True. Dogs and cats release reticulocytes into circulation to regenerate; horses don't." } },
+                        { text: { it: "Corpi di Heinz.", en: "Heinz bodies." }, isCorrect: false, rationale: { it: "Sono segni di danno ossidativo, non necessariamente di rigenerazione.", en: "These are signs of oxidative damage, not necessarily regeneration." } },
+                        { text: { it: "Assenza totale di bianchi.", en: "Total absence of white cells." }, isCorrect: false, rationale: { it: "L'anemia riguarda la serie rossa, non comporta l'assenza di bianchi.", en: "Anemia concerns the red series, it doesn't involve absence of white cells." } },
+                        { text: { it: "Aumento dei cristalli di struvite.", en: "Increase in struvite crystals." }, isCorrect: false, rationale: { it: "Reperto urinario, non ematico.", en: "Urinary finding, not blood-related." } }
+                    ]
+                },
+                {
+                    question: { it: "In un cane sano, dove si palpa solitamente la milza?", en: "In a healthy dog, where is the spleen usually palpated?" },
+                    options: [
+                        { text: { it: "Polo ventrale nel quadrante craniale sinistro.", en: "Ventral pole in the left cranial quadrant." }, isCorrect: true, rationale: { it: "Corretto. Spesso si riesce a percepire la testa o la coda della milza dietro l'arco costale Sx.", en: "Correct. Often the head or tail of the spleen can be felt behind the left costal arch." } },
+                        { text: { it: "Esclusivamente tramite esplorazione rettale.", en: "Exclusively via rectal exam." }, isCorrect: false, rationale: { it: "La milza nel cane non è raggiungibile per via rettale.", en: "The spleen in dogs is not reachable via rectum." } },
+                        { text: { it: "Sotto l'ascella destra.", en: "Under the right armpit." }, isCorrect: false, rationale: { it: "Posizione anatomica errata.", en: "Wrong anatomical position." } },
+                        { text: { it: "Non è mai palpabile se non è neoplastica.", en: "It is never palpable unless neoplastic." }, isCorrect: false, rationale: { it: "Falso. Una modesta splenomegalia o anche la milza sana sono spesso rilevabili nel cane.", en: "False. Mild splenomegaly or even a healthy spleen are often detectable in dogs." } }
+                    ]
+                },
+                {
+                    question: { it: "Qual è il significato diagnostico del riscontro di 'sferociti' allo striscio ematico?", en: "What is the diagnostic significance of finding 'spherocytes' on a blood smear?" },
+                    options: [
+                        { text: { it: "Sospetto di Anemia Emolitica Immunomediata (IMHA).", en: "Suspicion of Immune-Mediated Hemolytic Anemia (IMHA)." }, isCorrect: true, rationale: { it: "Vero. Sono eritrociti che hanno perso parte della membrana a causa dell'attacco anticorpale.", en: "True. They are erythrocytes that lost part of their membrane due to antibody attack." } },
+                        { text: { it: "Indicano una carenza di ferro cronica.", en: "They indicate chronic iron deficiency." }, isCorrect: false, rationale: { it: "La carenza di ferro dà microcitosi e ipocromia.", en: "Iron deficiency causes microcytosis and hypochromia." } },
+                        { text: { it: "Segno di infezione da rabbia.", en: "Sign of rabies infection." }, isCorrect: false, rationale: { it: "Nessuna correlazione.", en: "No correlation." } },
+                        { text: { it: "Normale reperto nel gatto neonato.", en: "Normal finding in newborn cats." }, isCorrect: false, rationale: { it: "Non sono reperti normali.", en: "They are not normal findings." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa si valuta con il 'Test di autoagglutinazione su vetrino'?", en: "What is assessed with the 'Saline Agglutination Test' on a slide?" },
+                    options: [
+                        { text: { it: "La presenza di anticorpi che legano i globuli rossi tra loro.", en: "The presence of antibodies linking red blood cells together." }, isCorrect: true, rationale: { it: "Sì. Se positivo, conferma la natura immunomediata dell'emolisi.", en: "Yes. If positive, it confirms the immune-mediated nature of hemolysis." } },
+                        { text: { it: "Il numero totale di piastrine.", en: "The total number of platelets." }, isCorrect: false, rationale: { it: "Si valuta con l'emocromo.", en: "Assessed with CBC." } },
+                        { text: { it: "La funzionalità dei linfonodi profondi.", en: "Deep lymph node function." }, isCorrect: false, rationale: { it: "Non è un test per i linfonodi.", en: "Not a test for lymph nodes." } },
+                        { text: { it: "Il gruppo sanguigno del paziente.", en: "The patient's blood type." }, isCorrect: false, rationale: { it: "Si usano kit specifici di tipizzazione sanguigna.", en: "Specific blood typing kits are used." } }
+                    ]
+                },
+                {
+                    question: { it: "Quali sono i siti comunemente utilizzati per il prelievo di midollo osseo nei piccoli animali?", en: "What are common sites for bone marrow sampling in small animals?" },
+                    options: [
+                        { text: { it: "Omero prossimale, Cresta Iliaca o Femore.", en: "Proximal Humerus, Iliac Crest, or Femur." }, isCorrect: true, rationale: { it: "Corretto. Sono siti facilmente accessibili e ricchi di midollo attivo.", en: "Correct. These are easily accessible sites rich in active marrow." } },
+                        { text: { it: "Sterno, Coste o Vertebre.", en: "Sternum, Ribs, or Vertebrae." }, isCorrect: false, rationale: { it: "Siti più rischiosi o non standard per la pratica ambulatoriale sui piccoli animali.", en: "Riskier or non-standard sites for small animal outpatient practice." } },
+                        { text: { it: "Mandibola, Radio o Ulna.", en: "Mandible, Radius, or Ulna." }, isCorrect: false, rationale: { it: "Ossa con scarsa quantità di midollo rosso prelevabile.", en: "Bones with low amount of harvestable red marrow." } },
+                        { text: { it: "Ossa del carpo o del tarso.", en: "Carpal or tarsal bones." }, isCorrect: false, rationale: { it: "Ossa troppo piccole per campionamenti affidabili.", en: "Bones too small for reliable sampling." } }
+                    ]
+                },
+                {
+                    question: { it: "Il rilievo di mucose itteriche (gialle) associate a pallore suggerisce:", en: "Detecting icteric (yellow) mucosae associated with pallor suggests:" },
+                    options: [
+                        { text: { it: "Anemia emolitica.", en: "Hemolytic anemia." }, isCorrect: true, rationale: { it: "Vero. La distruzione dei GR libera bilirubina (ittero) e riduce la loro conta (pallore).", en: "True. RBC destruction releases bilirubin (icterus) and reduces their count (pallor)." } },
+                        { text: { it: "Grave disidratazione.", en: "Severe dehydration." }, isCorrect: false, rationale: { it: "La disidratazione altera l'umidità e il TRC, non il colore giallo.", en: "Dehydration alters moisture and CRT, not the yellow color." } },
+                        { text: { it: "Intossicazione da anticoagulanti.", en: "Anticoagulant poisoning." }, isCorrect: false, rationale: { it: "Darebbe emorragie (pallore), ma non necessariamente ittero immediato.", en: "Would cause hemorrhage (pallor), but not necessarily immediate icterus." } },
+                        { text: { it: "Un normale stato post-prandiale.", en: "A normal post-prandial state." }, isCorrect: false, rationale: { it: "L'ittero è sempre un reperto patologico.", en: "Icterus is always a pathological finding." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa si intende per 'linfoadenomegalia'?", en: "What is meant by 'lymphadenomegaly'?" },
+                    options: [
+                        { text: { it: "L'aumento di volume di uno o più linfonodi.", en: "The enlargement of one or more lymph nodes." }, isCorrect: true, rationale: { it: "Corretto. Può essere localizzata o generalizzata.", en: "Correct. Can be localized or generalized." } },
+                        { text: { it: "L'infiammazione dei vasi linfatici.", en: "Inflammation of lymphatic vessels." }, isCorrect: false, rationale: { it: "Questa è la linfangite.", en: "This is lymphangitis." } },
+                        { text: { it: "La scomparsa dei linfonodi palpabili.", en: "The disappearance of palpable lymph nodes." }, isCorrect: false, rationale: { it: "L'atrofia linfonodale è un reperto diverso.", en: "Lymph node atrophy is a different finding." } },
+                        { text: { it: "La presenza di batteri nel sangue.", en: "The presence of bacteria in the blood." }, isCorrect: false, rationale: { it: "Questa è la batteriemia.", en: "This is bacteremia." } }
+                    ]
+                }
+            ];
+
+            let currentIdx = 0;
+            let score = 0;
+            let shuffledQuestions = [];
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTS = null;
+
+            const shuffleArray = (array) => {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking) {
+                    synth.cancel();
+                    if (activeTTS === button) { activeTTS.classList.remove('playing'); activeTTS = null; return; }
+                }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onend = () => { button.classList.remove('playing'); activeTTS = null; };
+                synth.speak(utterance);
+                if (activeTTS) activeTTS.classList.remove('playing');
+                activeTTS = button;
+                button.classList.add('playing');
+            };
+
+            const renderQuestion = () => {
+                const q = shuffledQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', shuffledQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                const shuffledOptions = shuffleArray([...q.options]);
+
+                shuffledOptions.forEach((opt) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-2 w-full";
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn flex-grow";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn, shuffledOptions);
+                    
+                    const tts = document.createElement('button');
+                    tts.className = "tts-button p-2";
+                    tts.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    tts.onclick = (e) => { e.stopPropagation(); speak(opt.text[currentLanguage], tts); };
+
+                    div.appendChild(btn);
+                    div.appendChild(tts);
+                    container.appendChild(div);
+                });
+            };
+
+            const handleSelect = (opt, btn, currentOptions) => {
+                if (synth.speaking) synth.cancel();
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                if (opt.isCorrect) { btn.classList.add('correct'); score++; }
+                else { 
+                    btn.classList.add('incorrect');
+                    btns.forEach(b => {
+                        const originalOpt = currentOptions.find(o => o.text[currentLanguage] === b.textContent);
+                        if (originalOpt && originalOpt.isCorrect) b.classList.add('correct');
+                    });
+                }
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                document.getElementById('next-button').textContent = currentIdx === questionsPool.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
+
+            const startQuiz = () => {
+                currentIdx = 0; score = 0;
+                shuffledQuestions = shuffleArray([...questionsPool]);
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
+
+            document.getElementById('next-button').onclick = () => {
+                if (currentIdx < shuffledQuestions.length - 1) {
+                    currentIdx++;
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    renderQuestion();
+                } else {
+                    document.getElementById('question-area').classList.add('hidden');
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    document.getElementById('results-area').classList.remove('hidden');
+                    document.getElementById('score-text').textContent = `${score} / ${shuffledQuestions.length}`;
+                }
+            };
+
+            document.getElementById('restart-button').onclick = startQuiz;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                renderQuestion();
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => {
+                body.classList.toggle('dsa-mode');
+                localStorage.setItem('dsa-mode', body.classList.contains('dsa-mode') ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('question-tts-button').onclick = () => speak(shuffledQuestions[currentIdx].question[currentLanguage], document.getElementById('question-tts-button'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') body.classList.add('dsa-mode');
+            startQuiz();
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
