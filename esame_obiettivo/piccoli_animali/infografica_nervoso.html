@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografica: Sistema Nervoso - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA VIOLA per Sistema Nervoso - Scuro -> Chiaro */
+        .hero-bg { background-color: #9333ea; background-image: linear-gradient(to right, #9333ea, #c084fc); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f5f3ff; border: 1px solid #ddd6fe;
+            font-size: 0.6rem; font-weight: 700; color: #7c3aed; text-transform: uppercase;
+            line-height: 1.1; min-height: 3rem;
+        }
+        .quick-nav-item:hover { background-color: #ede9fe; color: #6d28d9; }
+        .quick-nav-item.active { background-color: #9333ea; color: #ffffff !important; border-color: #9333ea; }
+
+        /* --- SECTION NAV --- */
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #9333ea; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 1200px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Infografica */
+        h2 { font-family: 'Lexend', sans-serif; color: #581c87; border-bottom: 2px solid #f3e8ff; padding-bottom: 0.5rem; margin-top: 2.5rem; margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700; text-align: center; }
+        
+        .location-card { 
+            background-color: white;
+            border-radius: 0.5rem; 
+            padding: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); 
+            height: 100%;
+            border-left-width: 4px;
+            transition: transform 0.2s;
+        }
+        .location-card:hover { transform: translateY(-3px); }
+        .location-card h3 { font-weight: 700; font-size: 1.15rem; margin-bottom: 0.5rem; color: #581c87; }
+        .location-card h4 { font-size: 0.75rem; font-weight: 600; color: #6b7280; text-transform: uppercase; margin-bottom: 1rem; }
+        .location-card ul { list-style-type: none; padding-left: 0; }
+        .location-card li { font-size: 0.85rem; color: #374151; margin-bottom: 0.5rem; padding-left: 1.25rem; position: relative; }
+        .location-card li::before { content: "•"; position: absolute; left: 0; color: #a855f7; font-weight: bold; }
+        .location-card strong { color: #6b21a8; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode .location-card, .dsa-mode .bg-white { background-color: #ffffff !important; border: 2px solid #000 !important; }
+        
+        /* FIX SPECIFICO PER RIQUADRO RIFLESSI IN MODALITÀ DSA */
+        .dsa-mode .bg-purple-900 { background-color: #ffffff !important; color: #000000 !important; border: 3px solid #000 !important; }
+        .dsa-mode .text-purple-200, .dsa-mode .text-pink-200, .dsa-mode .text-white { color: #000000 !important; }
+        .dsa-mode .opacity-90 { opacity: 1 !important; }
+        .dsa-mode .border-purple-400, .dsa-mode .border-pink-400 { border-color: #000000 !important; border-left-width: 8px !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center text-white">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="esami_clinici_piccoli_animali.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleNerv">9. Sistema Nervoso</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_nervoso.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_nervoso.html" class="section-nav-link active" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_nervoso.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_nervoso.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_nervoso.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item active" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <header class="text-center mb-12">
+                <h1 class="text-3xl font-bold mb-2 text-purple-900" data-lang-key="pageTitle">Infografica: Localizzazione Neuroanatomica (P.A.)</h1>
+                <p class="text-gray-600" data-lang-key="pageSubtitle">Schema per correlare i segni clinici alla sede della lesione in cane e gatto.</p>
+            </header>
+
+            <main class="space-y-12">
+                
+                <section>
+                    <h2 data-lang-key="flowTitle">Lesioni Encefaliche e Cerebellari</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+                        <!-- Cervello Anteriore -->
+                        <div class="location-card border-l-red-600">
+                            <h3 data-lang-key="loc1Title">Cervello Anteriore</h3>
+                            <h4 data-lang-key="loc1Desc">Proencefalo</h4>
+                            <ul data-lang-key="loc1List">
+                                <li><strong>Sensorio:</strong> Alterato (ottundimento/stupore).</li>
+                                <li><strong>Segni:</strong> Circoli ampi, head pressing, cecità controlaterale.</li>
+                                <li><strong>Altro:</strong> Possibili <strong>convulsioni</strong>.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Tronco Encefalico -->
+                        <div class="location-card border-l-blue-600">
+                            <h3 data-lang-key="loc2Title">Tronco Encefalico</h3>
+                            <h4 data-lang-key="loc2Desc">Mesencefalo, Ponte, Bulbo</h4>
+                            <ul data-lang-key="loc2List">
+                                <li><strong>Sensorio:</strong> Gravemente depresso.</li>
+                                <li><strong>Nervi Cranici:</strong> Deficit multipli (III-XII).</li>
+                                <li><strong>Andatura:</strong> Paresi <strong>UMN</strong> ipsilaterale su 4 arti.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Cervelletto -->
+                        <div class="location-card border-l-green-600">
+                            <h3 data-lang-key="loc3Title">Cervelletto</h3>
+                            <h4 data-lang-key="loc3Desc">Coordinatore</h4>
+                            <ul data-lang-key="loc3List">
+                                <li><strong>Sensorio:</strong> Vigile e normale.</li>
+                                <li><strong>Andatura:</strong> Atassia ipermetrica, tremori intenzionali.</li>
+                                <li><strong>Forza:</strong> Preservata (niente paresi).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 data-lang-key="midolloTitle">Localizzazione Spinale (Midollo)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+                        <!-- C1-C5 -->
+                        <div class="location-card border-l-purple-600">
+                            <h3 data-lang-key="loc4Title">C1 - C5</h3>
+                            <h4 data-lang-key="loc4Desc">Cervicale Craniale</h4>
+                            <ul data-lang-key="loc4List">
+                                <li><strong>Anteriori:</strong> UMN (spasticità).</li>
+                                <li><strong>Posteriori:</strong> UMN (spasticità).</li>
+                                <li><strong>Riflessi:</strong> Tutti normali o aumentati.</li>
+                            </ul>
+                        </div>
+
+                        <!-- C6-T2 -->
+                        <div class="location-card border-l-yellow-600">
+                            <h3 data-lang-key="loc5Title">C6 - T2</h3>
+                            <h4 data-lang-key="loc5Desc">Intumescenza Cervicale</h4>
+                            <ul data-lang-key="loc5List">
+                                <li><strong>Anteriori:</strong> <strong>LMN</strong> (flaccidità, atrofia rapida).</li>
+                                <li><strong>Posteriori:</strong> UMN (spasticità).</li>
+                                <li><strong>Andatura:</strong> "Due motori" (passi corti ant, lunghi post).</li>
+                            </ul>
+                        </div>
+
+                        <!-- T3-L3 -->
+                        <div class="location-card border-l-orange-600">
+                            <h3 data-lang-key="loc6Title">T3 - L3</h3>
+                            <h4 data-lang-key="loc6Desc">Toraco-Lombare</h4>
+                            <ul data-lang-key="loc6List">
+                                <li><strong>Anteriori:</strong> Normali.</li>
+                                <li><strong>Posteriori:</strong> UMN (spasticità).</li>
+                                <li><strong>Riflessi Post:</strong> Normali o aumentati.</li>
+                            </ul>
+                        </div>
+
+                        <!-- L4-S3 -->
+                        <div class="location-card border-l-pink-600">
+                            <h3 data-lang-key="loc7Title">L4 - S3</h3>
+                            <h4 data-lang-key="loc7Desc">Intumescenza Lombosacrale</h4>
+                            <ul data-lang-key="loc7List">
+                                <li><strong>Anteriori:</strong> Normali.</li>
+                                <li><strong>Posteriori:</strong> <strong>LMN</strong> (flaccidità).</li>
+                                <li><strong>Riflessi Post:</strong> Diminuiti o assenti.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SCHEMA UMN VS LMN -->
+                <section class="bg-purple-900 text-white p-8 rounded-xl shadow-lg transition-colors duration-300">
+                    <h2 class="!mt-0 !text-white font-bold mb-6" data-lang-key="reflexTitle">Differenziazione Riflessi</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <div class="border-l-4 border-purple-400 pl-6">
+                            <h3 class="text-xl font-bold mb-2 text-purple-200" data-lang-key="umnTitle">UMN (Motoneurone Superiore)</h3>
+                            <p class="text-sm opacity-90" data-lang-key="umnDesc">La lesione è craniale al segmento riflesso. Il muscolo è "liberato" dal controllo centrale.</p>
+                            <ul class="mt-4 text-sm space-y-2">
+                                <li data-lang-key="umnLi1">✓ Riflessi aumentati (iper-riflessia).</li>
+                                <li data-lang-key="umnLi2">✓ Tono aumentato (ipertonia).</li>
+                                <li data-lang-key="umnLi3">✓ Atrofia muscolare tardiva (da disuso).</li>
+                            </ul>
+                        </div>
+                        <div class="border-l-4 border-pink-400 pl-6">
+                            <h3 class="text-xl font-bold mb-2 text-pink-200" data-lang-key="lmnTitle">LMN (Motoneurone Inferiore)</h3>
+                            <p class="text-sm opacity-90" data-lang-key="lmnDesc">La lesione è nel segmento riflesso o nel nervo. L'arco riflesso è interrotto.</p>
+                            <ul class="mt-4 text-sm space-y-2">
+                                <li data-lang-key="lmnLi1">✗ Riflessi diminuiti o assenti (ipo-riflessia).</li>
+                                <li data-lang-key="lmnLi2">✗ Tono diminuito (ipotonia).</li>
+                                <li data-lang-key="lmnLi3">✗ Atrofia muscolare precoce e grave (neurogena).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleNerv: { it: '9. Sistema Nervoso', en: '9. Nervous System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                pageTitle: { it: "Infografica: Localizzazione Neuroanatomica (P.A.)", en: "Infographic: Neuroanatomical Localization (Small Animals)" },
+                pageSubtitle: { it: "Schema per correlare i segni clinici alla sede della lesione in cane e gatto.", en: "Scheme to correlate clinical signs with lesion site in dogs and cats." },
+                flowTitle: { it: "Lesioni Encefaliche e Cerebellari", en: "Brain and Cerebellar Lesions" },
+                loc1Title: { it: "Cervello Anteriore", en: "Forebrain" },
+                loc1Desc: { it: "Proencefalo", en: "Forebrain" },
+                loc1List: {
+                    it: "<li><strong>Sensorio:</strong> Alterato (ottundimento/stupore).</li><li><strong>Segni:</strong> Circoli ampi, head pressing, cecità controlaterale.</li><li><strong>Altro:</strong> Possibili <strong>convulsioni</strong>.</li>",
+                    en: "<li><strong>Mental Status:</strong> Altered (obtunded/stupor).</li><li><strong>Signs:</strong> Wide circling, head pressing, contralateral blindness.</li><li><strong>Other:</strong> Possible <strong>seizures</strong>.</li>"
+                },
+                loc2Title: { it: "Tronco Encefalico", en: "Brainstem" },
+                loc2Desc: { it: "Mesencefalo, Ponte, Bulbo", en: "Midbrain, Pons, Medulla" },
+                loc2List: {
+                    it: "<li><strong>Sensorio:</strong> Gravemente depresso.</li><li><strong>Nervi Cranici:</strong> Deficit multipli (III-XII).</li><li><strong>Andatura:</strong> Paresi <strong>UMN</strong> ipsilaterale su 4 arti.</li>",
+                    en: "<li><strong>Mental Status:</strong> Severely depressed.</li><li><strong>Cranial Nerves:</strong> Multiple deficits (III-XII).</li><li><strong>Gait:</strong> Ipsilateral <strong>UMN</strong> paresis in 4 limbs.</li>"
+                },
+                loc3Title: { it: "Cervelletto", en: "Cerebellum" },
+                loc3Desc: { it: "Coordinatore", en: "Coordinator" },
+                loc3List: {
+                    it: "<li><strong>Sensorio:</strong> Vigile e normale.</li><li><strong>Andatura:</strong> Atassia ipermetrica, tremori intenzionali.</li><li><strong>Forza:</strong> Preservata (niente paresi).</li>",
+                    en: "<li><strong>Mental Status:</strong> Alert and normal.</li><li><strong>Gait:</strong> Hypermetric ataxia, intention tremors.</li><li><strong>Strength:</strong> Preserved (no paresis).</li>"
+                },
+                midolloTitle: { it: "Localizzazione Spinale (Midollo)", en: "Spinal Localization (Cord)" },
+                loc4Title: { it: "C1 - C5", en: "C1 - C5" },
+                loc4Desc: { it: "Cervicale Craniale", en: "Cranial Cervical" },
+                loc4List: {
+                    it: "<li><strong>Anteriori:</strong> UMN (spasticità).</li><li><strong>Posteriori:</strong> UMN (spasticità).</li><li><strong>Riflessi:</strong> Tutti normali o aumentati.</li>",
+                    en: "<li><strong>Forelimbs:</strong> UMN (spasticity).</li><li><strong>Hindlimbs:</strong> UMN (spasticity).</li><li><strong>Reflexes:</strong> All normal or increased.</li>"
+                },
+                loc5Title: { it: "C6 - T2", en: "C6 - T2" },
+                loc5Desc: { it: "Intumescenza Cervicale", en: "Cervical Intumescence" },
+                loc5List: {
+                    it: "<li><strong>Anteriori:</strong> <strong>LMN</strong> (flaccidità, atrofia rapida).</li><li><strong>Posteriori:</strong> UMN (spasticità).</li><li><strong>Andatura:</strong> \"Due motori\" (passi corti ant, lunghi post).</li>",
+                    en: "<li><strong>Forelimbs:</strong> <strong>LMN</strong> (flaccidity, rapid atrophy).</li><li><strong>Hindlimbs:</strong> UMN (spasticity).</li><li><strong>Gait:</strong> \"Two-engine\" (short fore, long hind steps).</li>"
+                },
+                loc6Title: { it: "T3 - L3", en: "T3 - L3" },
+                loc6Desc: { it: "Toraco-Lombare", en: "Thoracolumbar" },
+                loc6List: {
+                    it: "<li><strong>Anteriori:</strong> Normali.</li><li><strong>Posteriori:</strong> UMN (spasticità).</li><li><strong>Riflessi Post:</strong> Normali o aumentati.</li>",
+                    en: "<li><strong>Forelimbs:</strong> Normal.</li><li><strong>Hindlimbs:</strong> UMN (spasticity).</li><li><strong>Hind Reflexes:</strong> Normal or increased.</li>"
+                },
+                loc7Title: { it: "L4 - S3", en: "L4 - S3" },
+                loc7Desc: { it: "Intumescenza Lombosacrale", en: "Lumbosacral Intumescence" },
+                loc7List: {
+                    it: "<li><strong>Anteriori:</strong> Normali.</li><li><strong>Posteriori:</strong> <strong>LMN</strong> (flaccidità).</li><li><strong>Riflessi Post:</strong> Diminuiti o assenti.</li>",
+                    en: "<li><strong>Forelimbs:</strong> Normal.</li><li><strong>Hindlimbs:</strong> <strong>LMN</strong> (flaccidity).</li><li><strong>Hind Reflexes:</strong> Decreased or absent.</li>"
+                },
+                reflexTitle: { it: "Differenziazione Riflessi", en: "Reflex Differentiation" },
+                umnTitle: { it: "UMN (Motoneurone Superiore)", en: "UMN (Upper Motor Neuron)" },
+                umnDesc: { it: "La lesione è craniale al segmento riflesso. Il muscolo è \"liberato\" dal controllo centrale.", en: "Lesion is cranial to the reflex segment. Muscle is \"released\" from central inhibition." },
+                umnLi1: { it: "✓ Riflessi aumentati (iper-riflessia).", en: "✓ Increased reflexes (hyperreflexia)." },
+                umnLi2: { it: "✓ Tono aumentato (ipertonia).", en: "✓ Increased tone (hypertonia)." },
+                umnLi3: { it: "✓ Atrofia muscolare tardiva (da disuso).", en: "✓ Late muscle atrophy (disuse)." },
+                lmnTitle: { it: "LMN (Motoneurone Inferiore)", en: "LMN (Lower Motor Neuron)" },
+                lmnDesc: { it: "La lesione è nel segmento riflesso o nel nervo. L'arco riflesso è interrotto.", en: "Lesion is in the reflex segment or nerve. Reflex arc is interrupted." },
+                lmnLi1: { it: "✗ Riflessi diminuiti o assenti (ipo-riflessia).", en: "✗ Decreased or absent reflexes (hyporeflexia)." },
+                lmnLi2: { it: "✗ Tono diminuito (ipotonia).", en: "✗ Decreased tone (hypotonia)." },
+                lmnLi3: { it: "✗ Atrofia muscolare precoce e grave (neurogena).", en: "✗ Early and severe muscle atrophy (neurogenic)." },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary clinical medicine teachings' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
