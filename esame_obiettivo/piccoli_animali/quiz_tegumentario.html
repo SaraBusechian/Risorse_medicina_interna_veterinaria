@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interattivo: Apparato Tegumentario - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA AMBER per Apparato Tegumentario - Scuro -> Chiaro */
+        .hero-bg { background-color: #d97706; background-image: linear-gradient(to right, #d97706, #fbbf24); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #fffbeb; border: 1px solid #fef3c7;
+            font-size: 0.6rem; font-weight: 700; color: #b45309; text-transform: uppercase;
+            line-height: 1.1; min-height: 3rem;
+        }
+        .quick-nav-item:hover { background-color: #fef3c7; color: #92400e; }
+        .quick-nav-item.active { background-color: #d97706; color: #ffffff !important; border-color: #d97706; }
+
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #d97706; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2rem; 
+            max-width: 850px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+
+        /* Stili Quiz */
+        .option-btn { transition: all 0.2s; border: 2px solid #e2e8f0; border-radius: 0.75rem; padding: 1rem; text-align: left; width: 100%; display: flex; align-items: center; justify-content: space-between; }
+        .option-btn:hover:not(:disabled) { border-color: #d97706; background-color: #fffbeb; transform: translateY(-2px); }
+        .option-btn.correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #15803d; font-weight: 600; }
+        .option-btn.incorrect { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #b91c1c; font-weight: 600; }
+
+        .tts-button { cursor: pointer; color: #64748b; transition: color 0.2s; flex-shrink: 0; }
+        .tts-button:hover, .tts-button.playing { color: #d97706; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode #accessibility-toggle:hover, .dsa-mode #lang-toggle:hover, .dsa-mode .hero-bg a:hover { border-width: 4px !important; }
+
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .quick-nav-item.active { border-width: 5px !important; text-decoration: underline; text-underline-offset: 4px; }
+        .dsa-mode .section-nav-link { color: #000 !important; border: 2px solid #000; background-color: transparent !important; }
+        .dsa-mode .section-nav-link.active { border-width: 5px !important; text-decoration: underline; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h2, .dsa-mode h3, .dsa-mode p { color: #000 !important; }
+        .dsa-mode .option-btn { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .option-btn.correct { background-color: #dcfce7 !important; border-width: 5px !important; }
+        .dsa-mode .option-btn.incorrect { background-color: #fee2e2 !important; border-width: 5px !important; }
+        .dsa-mode .tts-button { color: #000 !important; }
+
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center text-white">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6">
+                 <a href="esami_clinici_piccoli_animali.html" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleTegu">10. Apparato Tegumentario</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_tegumentario.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_tegumentario.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_tegumentario.html" class="section-nav-link" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_tegumentario.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_tegumentario.html" class="section-nav-link active" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item active" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <div id="quiz-container" class="content-card">
+            
+            <div id="question-area">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-amber-800" data-lang-key="quizTitle">Quiz: Apparato Tegumentario</h2>
+                    <p id="progress-text" class="text-sm font-semibold text-gray-500"></p>
+                </div>
+
+                <div class="mb-8 p-4 bg-slate-50 rounded-xl flex items-start gap-3 border border-slate-100">
+                    <p id="question-text" class="text-lg font-medium text-gray-800 flex-grow"></p>
+                    <button id="question-tts-button" class="tts-button mt-1">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+
+                <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+            </div>
+
+            <div id="feedback-area" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-amber-50 border-2 border-amber-200">
+                    <p id="rationale-text" class="text-sm italic text-amber-800 mb-6"></p>
+                    <button id="next-button" class="w-full bg-amber-600 text-white font-bold py-4 px-6 rounded-xl hover:bg-amber-700 transition shadow-lg" data-lang-key="btnNext">Prossima Domanda</button>
+                </div>
+            </div>
+
+            <div id="results-area" class="text-center hidden py-10">
+                <div class="text-6xl mb-6">🐾</div>
+                <h2 class="text-3xl font-bold text-amber-900 mb-2" data-lang-key="resultsTitle">Quiz Completato!</h2>
+                <p id="score-text" class="text-6xl font-black text-amber-600 my-6"></p>
+                <button id="restart-button" class="w-full border-2 border-amber-600 text-amber-600 font-bold py-4 px-6 rounded-xl hover:bg-amber-50 transition" data-lang-key="btnRestart">Ricomincia il Quiz</button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleTegu: { it: '10. Apparato Tegumentario', en: '10. Integumentary System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                quizTitle: { it: "Quiz: Apparato Tegumentario", en: 'Quiz: Integumentary System' },
+                progressText: { it: 'Domanda {current} / {total}', en: 'Question {current} / {total}' },
+                btnNext: { it: 'Prossima Domanda', en: 'Next Question' },
+                btnResults: { it: 'Vedi Risultati', en: 'See Results' },
+                resultsTitle: { it: 'Quiz Completato!', en: 'Quiz Completed!' },
+                btnRestart: { it: 'Ricomincia il Quiz', en: 'Restart Quiz' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary internal medicine courses' }
+            };
+
+            const quizQuestions = [
+                {
+                    question: { it: "Qual è la differenza clinica principale tra una macula e una papula?", en: "What is the primary clinical difference between a macule and a papule?" },
+                    options: [
+                        { text: { it: "La macula è una macchia piatta, la papula è un piccolo rilievo solido.", en: "The macule is a flat spot, the papule is a small solid elevation." }, isCorrect: true, rationale: { it: "Vero. La papula è palpabile come un rilievo, mentre la macula è solo una variazione di colore della cute.", en: "True. A papule is palpable as an elevation, while a macule is just a color change of the skin." } },
+                        { text: { it: "La papula è piena di pus, la macula è piena di siero.", en: "The papule is filled with pus, the macule is filled with serum." }, isCorrect: false, rationale: { it: "Falso. La papula è solida; quelle piene di liquido sono pustole (pus) o vescicole (siero).", en: "False. A papule is solid; liquid-filled ones are pustules (pus) or vesicles (serum)." } },
+                        { text: { it: "La macula è causata da prurito, la papula è congenita.", en: "The macule is caused by itching, the papule is congenital." }, isCorrect: false, rationale: { it: "Entrambe sono lesioni primarie e non dipendono necessariamente dal prurito o dalla nascita.", en: "Both are primary lesions and don't necessarily depend on itching or birth." } },
+                        { text: { it: "Non vi è alcuna differenza, sono sinonimi.", en: "There is no difference, they are synonyms." }, isCorrect: false, rationale: { it: "In semeiotica sono lesioni distinte per rilievo e caratteristiche tattili.", en: "In semeiotics, they are distinct lesions based on elevation and tactile features." } }
+                    ]
+                },
+                {
+                    question: { it: "In quale area si localizzano tipicamente le lesioni da Dermatite Allergica da Pulci (DAP) nel cane?", en: "In which area are Flea Allergy Dermatitis (FAD) lesions typically localized in dogs?" },
+                    options: [
+                        { text: { it: "Area lombo-sacrale e base della coda.", en: "Lumbosacral area and tail base." }, isCorrect: true, rationale: { it: "Corretto. È il pattern di distribuzione classico per l'ipersensibilità al morso di pulce.", en: "Correct. It's the classic distribution pattern for flea bite hypersensitivity." } },
+                        { text: { it: "Solo sui margini dei padiglioni auricolari.", en: "Only on the margins of the ear pinnae." }, isCorrect: false, rationale: { it: "Questa localizzazione è tipica della rogna sarcoptica.", en: "This localization is typical of sarcoptic mange." } },
+                        { text: { it: "Esclusivamente negli spazi interdigitali.", en: "Exclusively in the interdigital spaces." }, isCorrect: false, rationale: { it: "Gli spazi interdigitali sono tipici dell'atopia o dell'allergia alimentare.", en: "Interdigital spaces are typical of atopy or food allergy." } },
+                        { text: { it: "Sulla punta del naso e intorno agli occhi.", en: "On the tip of the nose and around the eyes." }, isCorrect: false, rationale: { it: "Tipico del Demodex o di alcune malattie autoimmuni come il Lupus.", en: "Typical of Demodex or some autoimmune diseases like Lupus." } }
+                    ]
+                },
+                {
+                    question: { it: "Quale acaro richiede obbligatoriamente un 'raschiato profondo' (fino al sanguinamento) per essere identificato?", en: "Which mite strictly requires a 'deep skin scrape' (until bleeding) to be identified?" },
+                    options: [
+                        { text: { it: "Demodex canis (acaro follicolare).", en: "Demodex canis (follicular mite)." }, isCorrect: true, rationale: { it: "Esatto. Vivendo nei follicoli piliferi profondi, è necessario spremere e grattare fino al derma capillare.", en: "Exact. Living in deep hair follicles, squeezing and scraping down to the capillary dermis is necessary." } },
+                        { text: { it: "Cheyletiella (forfora camminante).", en: "Cheyletiella (walking dandruff)." }, isCorrect: false, rationale: { it: "È un acaro superficiale identificabile con lo Scotch Test.", en: "It is a superficial mite identifiable with the Scotch Test." } },
+                        { text: { it: "Otodectes cynotis (acaro dell'orecchio).", en: "Otodectes cynotis (ear mite)." }, isCorrect: false, rationale: { it: "Si identifica tramite esame del cerume o otoscopia.", en: "Identified via earwax exam or otoscopy." } },
+                        { text: { it: "Pidocchi (mallofagi).", en: "Lice (mallophaga)." }, isCorrect: false, rationale: { it: "I pidocchi e le lenti sono visibili ad occhio nudo o con tricoscopia.", en: "Lice and nits are visible to the naked eye or with trichoscopy." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa si intende per 'collaretto epidermico'?", en: "What is meant by 'epidermal collarette'?" },
+                    options: [
+                        { text: { it: "Una lesione secondaria circolare che rappresenta il residuo di una pustola scoppiata.", en: "A circular secondary lesion representing the residue of a ruptured pustule." }, isCorrect: true, rationale: { it: "Vero. È un segno molto comune di piodermite superficiale nel cane.", en: "True. It's a very common sign of superficial pyoderma in dogs." } },
+                        { text: { it: "Una lesione primaria solida di grandi dimensioni.", en: "A large solid primary lesion." }, isCorrect: false, rationale: { it: "Questa definizione corrisponde al nodulo o alla massa.", en: "This definition corresponds to a nodule or mass." } },
+                        { text: { it: "Un parassita che si avvolge intorno al collo dell'animale.", en: "A parasite that wraps around the animal's neck." }, isCorrect: false, rationale: { it: "Definizione errata; non è un termine parassitologico.", en: "Incorrect definition; it's not a parasitological term." } },
+                        { text: { it: "Una piega della pelle fisiologica nel gatto.", en: "A physiological skin fold in cats." }, isCorrect: false, rationale: { it: "È una lesione patologica, non un reperto normale.", en: "It's a pathological lesion, not a normal finding." } }
+                    ]
+                },
+                {
+                    question: { it: "La fluorescenza 'verde mela' rilevata con la lampada di Wood suggerisce:", en: "The 'apple-green' fluorescence detected with a Wood's lamp suggests:" },
+                    options: [
+                        { text: { it: "Infezione da fungo dermatofita (es. Microsporum canis).", en: "Dermatophyte fungal infection (e.g., Microsporum canis)." }, isCorrect: true, rationale: { it: "Esatto. Sebbene non tutti i ceppi siano fluorescenti, la positività è fortemente indicativa di tigna.", en: "Exact. Although not all strains fluoresce, positivity is strongly indicative of ringworm." } },
+                        { text: { it: "Presenza di croste emorragiche.", en: "Presence of hemorrhagic crusts." }, isCorrect: false, rationale: { it: "Il sangue assorbe la luce ma non emette fluorescenza verde.", en: "Blood absorbs light but does not emit green fluorescence." } },
+                        { text: { it: "Un'eccessiva untuosità del pelo (seborrea).", en: "Excessive coat greasiness (seborrhea)." }, isCorrect: false, rationale: { it: "La seborrea può dare riflessi giallastri o bianchi, non il verde mela tipico del fungo.", en: "Seborrhea can give yellowish or white reflections, not the typical fungal apple-green." } },
+                        { text: { it: "Normale stato di salute del mantello.", en: "Normal healthy coat status." }, isCorrect: false, rationale: { it: "Un mantello sano non emette fluorescenza specifica alla lampada di Wood.", en: "A healthy coat does not emit specific fluorescence under a Wood's lamp." } }
+                    ]
+                },
+                {
+                    question: { it: "Cosa descrive il termine tecnico 'Melanosi'?", en: "What does the technical term 'Melanosis' describe?" },
+                    options: [
+                        { text: { it: "L'aumento della pigmentazione melaninica della cute (iperpigmentazione).", en: "The increase in melanin pigmentation of the skin (hyperpigmentation)." }, isCorrect: true, rationale: { it: "Corretto. Spesso associata a infiammazione cronica o disordini endocrini.", en: "Correct. Often associated with chronic inflammation or endocrine disorders." } },
+                        { text: { it: "La perdita totale di pigmento (depigmentazione).", en: "The total loss of pigment (depigmentation)." }, isCorrect: false, rationale: { it: "Questa è la leucodermia o vitiligine.", en: "This is leukoderma or vitiligo." } },
+                        { text: { it: "Una neoformazione tumorale maligna della pelle.", en: "A malignant skin tumor." }, isCorrect: false, rationale: { it: "Il tumore dei melanociti è il melanoma, non la melanosi (che è una variazione cromatica).", en: "The melanocyte tumor is melanoma, not melanosis (which is a color variation)." } },
+                        { text: { it: "Un'infezione batterica profonda del derma.", en: "A deep bacterial infection of the dermis." }, isCorrect: false, rationale: { it: "La melanosi non è un processo infettivo primario.", en: "Melanosis is not a primary infectious process." } }
+                    ]
+                },
+                {
+                    question: { it: "Un cane che si lecca costantemente gli spazi interdigitali e presenta arrossamento del muso è sospetto per:", en: "A dog constantly licking interdigital spaces with face redness is suspected of:" },
+                    options: [
+                        { text: { it: "Atopia o Ipersensibilità alimentare.", en: "Atopy or Food Hypersensitivity." }, isCorrect: true, rationale: { it: "Sì. Muso e zampe sono le sedi d'elezione per le patologie allergiche ambientali o alimentari.", en: "Yes. Face and paws are elective sites for environmental or food allergic pathologies." } },
+                        { text: { it: "Dermatite da pulci (DAP).", en: "Flea Allergy Dermatitis (FAD)." }, isCorrect: false, rationale: { it: "La DAP colpisce primariamente la zona lombo-sacrale.", en: "FAD primarily affects the lumbosacral area." } },
+                        { text: { it: "Rogna Corioptica.", en: "Chorioptic mange." }, isCorrect: false, rationale: { it: "Tipica dei grandi animali (arti), rara nei piccoli.", en: "Typical of large animals (limbs), rare in small ones." } },
+                        { text: { it: "Normale comportamento di pulizia (grooming).", en: "Normal cleaning behavior (grooming)." }, isCorrect: false, rationale: { it: "Il leccamento insistente associato a eritema è sempre patologico.", en: "Persistent licking associated with erythema is always pathological." } }
+                    ]
+                },
+                {
+                    question: { it: "Qual è l'utilità principale della citologia da 'Scotch Test'?", en: "What is the primary utility of 'Scotch Test' cytology?" },
+                    options: [
+                        { text: { it: "Identificare lieviti (Malassezia) o batteri presenti sulla superficie cutanea.", en: "Identify yeast (Malassezia) or bacteria on the skin surface." }, isCorrect: true, rationale: { it: "Corretto. Il nastro adesivo raccoglie le cellule superficiali e i microrganismi per l'osservazione.", en: "Correct. The tape collects superficial cells and microorganisms for observation." } },
+                        { text: { it: "Valutare la profondità di un'invasione neoplastica.", en: "Assess the depth of a neoplastic invasion." }, isCorrect: false, rationale: { it: "Questa richiede una biopsia a tutto spessore.", en: "This requires a full-thickness biopsy." } },
+                        { text: { it: "Rilevare parassiti che vivono nel bulbo pilifero.", en: "Detect parasites living in the hair bulb." }, isCorrect: false, rationale: { it: "Richiede tricoscopia o raschiato profondo.", en: "Requires trichoscopy or deep scrape." } },
+                        { text: { it: "Identificare alterazioni degli organi interni.", en: "Identify alterations of internal organs." }, isCorrect: false, rationale: { it: "È un test esclusivamente dermatologico superficiale.", en: "It is an exclusively superficial dermatological test." } }
+                    ]
+                },
+                {
+                    question: { it: "Il test della plica cutanea (skin tent test) serve a valutare:", en: "The skin tent test is used to assess:" },
+                    options: [
+                        { text: { it: "Lo stato di idratazione dell'animale.", en: "The animal's hydration status." }, isCorrect: true, rationale: { it: "Esatto. Un ritorno lento della plica indica perdita di turgore per disidratazione.", en: "Exact. A slow return of the skin tent indicates loss of turgor due to dehydration." } },
+                        { text: { it: "La presenza di dolore muscolare profondo.", en: "The presence of deep muscle pain." }, isCorrect: false, rationale: { it: "Si valuta con la palpazione profonda dei ventri muscolari.", en: "Assessed via deep palpation of muscle bellies." } },
+                        { text: { it: "La presenza di pulci vive sul mantello.", en: "The presence of live fleas on the coat." }, isCorrect: false, rationale: { it: "Si valuta con l'ispezione e il pettine a denti stretti.", en: "Assessed with inspection and a fine-tooth comb." } },
+                        { text: { it: "Il grado di atrofia muscolare.", en: "The degree of muscle atrophy." }, isCorrect: false, rationale: { it: "L'atrofia si valuta con la palpazione e l'ispezione dei profili muscolari.", en: "Atrophy is assessed by palpation and inspection of muscle profiles." } }
+                    ]
+                },
+                {
+                    question: { it: "Quando è indicata l'esecuzione di una biopsia cutanea tramite punch?", en: "When is a punch skin biopsy indicated?" },
+                    options: [
+                        { text: { it: "In caso di sospette malattie autoimmuni, neoplasie o dermatiti non responsive.", en: "In case of suspected autoimmune diseases, neoplasia, or unresponsive dermatoses." }, isCorrect: true, rationale: { it: "Vero. È l'esame definitivo per caratterizzare istologicamente lesioni complesse.", en: "True. It's the definitive exam to histologically characterize complex lesions." } },
+                        { text: { it: "Come primo test in ogni animale che ha un leggero prurito.", en: "As the first test in any animal with slight itching." }, isCorrect: false, rationale: { it: "Invasivo e costoso; si preferiscono prima test parassitologici e citologici.", en: "Invasive and costly; parasitological and cytological tests are preferred first." } },
+                        { text: { it: "Esclusivamente per contare il numero di pulci presenti.", en: "Exclusively to count the number of fleas present." }, isCorrect: false, rationale: { it: "Non serve a questo scopo; basta l'ispezione visiva.", en: "It doesn't serve this purpose; visual inspection is enough." } },
+                        { text: { it: "Per diagnosticare l'insufficienza renale cronica.", en: "To diagnose chronic renal failure." }, isCorrect: false, rationale: { it: "L'insufficienza renale si diagnostica con esami del sangue e delle urine.", en: "Renal failure is diagnosed with blood and urine tests." } }
+                    ]
+                }
+            ];
+
+            let currentIdx = 0;
+            let score = 0;
+            let shuffledQuestions = [];
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+            const synth = window.speechSynthesis;
+            let activeTTS = null;
+
+            const shuffleArray = (array) => {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            };
+
+            const speak = (text, button) => {
+                if (synth.speaking) {
+                    synth.cancel();
+                    if (activeTTS === button) { activeTTS.classList.remove('playing'); activeTTS = null; return; }
+                }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLanguage === 'it' ? 'it-IT' : 'en-US';
+                utterance.onend = () => { button.classList.remove('playing'); activeTTS = null; };
+                synth.speak(utterance);
+                if (activeTTS) activeTTS.classList.remove('playing');
+                activeTTS = button;
+                button.classList.add('playing');
+            };
+
+            const renderQuestion = () => {
+                const q = shuffledQuestions[currentIdx];
+                document.getElementById('progress-text').textContent = translations.progressText[currentLanguage].replace('{current}', currentIdx + 1).replace('{total}', quizQuestions.length);
+                document.getElementById('question-text').textContent = q.question[currentLanguage];
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+                shuffledOptions.forEach((opt) => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center gap-2 w-full";
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn flex-grow";
+                    btn.textContent = opt.text[currentLanguage];
+                    btn.onclick = () => handleSelect(opt, btn, shuffledOptions);
+                    
+                    const tts = document.createElement('button');
+                    tts.className = "tts-button p-2";
+                    tts.innerHTML = `<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.414z"/></svg>`;
+                    tts.onclick = (e) => { e.stopPropagation(); speak(opt.text[currentLanguage], tts); };
+
+                    div.appendChild(btn);
+                    div.appendChild(tts);
+                    container.appendChild(div);
+                });
+            };
+
+            const handleSelect = (opt, btn, currentOptions) => {
+                if (synth.speaking) synth.cancel();
+                const btns = document.querySelectorAll('.option-btn');
+                btns.forEach(b => b.disabled = true);
+                if (opt.isCorrect) { btn.classList.add('correct'); score++; }
+                else { 
+                    btn.classList.add('incorrect');
+                    btns.forEach(b => {
+                        const originalOpt = currentOptions.find(o => o.text[currentLanguage] === b.textContent);
+                        if (originalOpt && originalOpt.isCorrect) b.classList.add('correct');
+                    });
+                }
+                document.getElementById('rationale-text').textContent = opt.rationale[currentLanguage];
+                document.getElementById('feedback-area').classList.remove('hidden');
+                document.getElementById('next-button').textContent = currentIdx === quizQuestions.length - 1 ? translations.btnResults[currentLanguage] : translations.btnNext[currentLanguage];
+            };
+
+            const startQuiz = () => {
+                currentIdx = 0; score = 0;
+                shuffledQuestions = shuffleArray([...quizQuestions]);
+                document.getElementById('results-area').classList.add('hidden');
+                document.getElementById('question-area').classList.remove('hidden');
+                renderQuestion();
+            };
+
+            document.getElementById('next-button').onclick = () => {
+                if (currentIdx < shuffledQuestions.length - 1) {
+                    currentIdx++;
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    renderQuestion();
+                } else {
+                    document.getElementById('question-area').classList.add('hidden');
+                    document.getElementById('feedback-area').classList.add('hidden');
+                    document.getElementById('results-area').classList.remove('hidden');
+                    document.getElementById('score-text').textContent = `${score} / ${quizQuestions.length}`;
+                }
+            };
+
+            document.getElementById('restart-button').onclick = startQuiz;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+                renderQuestion();
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => {
+                body.classList.toggle('dsa-mode');
+                localStorage.setItem('dsa-mode', body.classList.contains('dsa-mode') ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('question-tts-button').onclick = () => speak(shuffledQuestions[currentIdx].question[currentLanguage], document.getElementById('question-tts-button'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') body.classList.add('dsa-mode');
+            startQuiz();
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
