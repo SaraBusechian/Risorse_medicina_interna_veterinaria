@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist: Esame Sistema Nervoso - Piccoli Animali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lexend:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #333; line-height: 1.6; }
+        
+        /* TEMA VIOLA per Sistema Nervoso */
+        .hero-bg { background-color: #9333ea; background-image: linear-gradient(to right, #9333ea, #c084fc); }
+        
+        /* --- QUICK NAV GRID 5x2 --- */
+        .quick-nav { background-color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 0.75rem 0; }
+        .quick-nav-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.4rem; }
+        @media (min-width: 768px) { .quick-nav-grid { grid-template-columns: repeat(5, 1fr); } }
+
+        .quick-nav-item {
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            padding: 0.5rem; border-radius: 0.5rem; transition: all 0.2s;
+            background-color: #f5f3ff; border: 1px solid #ddd6fe;
+            font-size: 0.6rem; font-weight: 700; color: #7c3aed; text-transform: uppercase;
+            line-height: 1.1; min-height: 3rem;
+        }
+        .quick-nav-item:hover { background-color: #ede9fe; color: #6d28d9; }
+        .quick-nav-item.active { background-color: #9333ea; color: #ffffff !important; border-color: #9333ea; }
+
+        /* --- SECTION NAV --- */
+        .section-nav-link {
+            transition: all 0.3s; padding: 0.5rem 1rem; border-radius: 0.5rem;
+            font-weight: 600; color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1); white-space: nowrap;
+        }
+        .section-nav-link:hover { background-color: rgba(255, 255, 255, 0.2); color: white; }
+        .section-nav-link.active { background-color: white; color: #9333ea; cursor: default; }
+
+        .content-card { 
+            background-color: white; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); 
+            padding: 2.5rem; 
+            max-width: 1000px; 
+            margin: 2rem auto 3rem; 
+            position: relative; 
+            z-index: 10; 
+        }
+        
+        .field { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; gap: 1rem; }
+        .label-area { flex-basis: 55%; display: flex; flex-direction: column; }
+        .label-area label { font-weight: 600; color: #1f2937; }
+        .label-desc { font-size: 0.85rem; color: #6b7280; font-style: italic; }
+        .input-area { flex-basis: 40%; display: flex; align-items: center; justify-content: flex-end; flex-grow: 1; }
+        
+        input[type="text"], textarea { 
+            border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.6rem 0.75rem; 
+            background-color: #f9fafb; width: 100%; transition: all 0.2s;
+        }
+        input:focus, textarea:focus { border-color: #9333ea; outline: none; box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1); }
+        textarea { min-height: 70px; margin-top: 0.5rem; }
+
+        .location-box { padding: 1rem; border-radius: 0.5rem; background-color: #f9fafb; border: 1px solid #e2e8f0; }
+        .checklist-item { display: flex; align-items: center; margin-bottom: 0.5rem; }
+        .checklist-item input[type="checkbox"] { width: 1.15rem; height: 1.15rem; margin-right: 0.5rem; accent-color: #9333ea; cursor: pointer; }
+        .checklist-item label { font-size: 0.875rem; font-weight: 500; cursor: pointer; color: #374151; margin-top: 0; }
+
+        h4 { font-family: 'Lexend', sans-serif; color: #6b21a8; font-weight: 600; margin-bottom: 0.5rem; border-bottom: 2px solid #f3e8ff; padding-bottom: 0.25rem; }
+
+        /* --- STILI ACCESSIBILITÀ (DSA) --- */
+        .dsa-mode { font-family: 'Lexend', sans-serif; background-color: #fffdf5 !important; color: #1a1a1a !important; letter-spacing: 0.05em; line-height: 2; }
+        .dsa-mode .hero-bg, .dsa-mode #main-header, .dsa-mode #main-footer, .dsa-mode .quick-nav { background-color: #ffffff !important; background-image: none !important; border-bottom: 3px solid #1a1a1a !important; }
+        
+        .dsa-mode #main-header h1, .dsa-mode .hero-bg h1 { color: #000 !important; }
+        .dsa-mode #accessibility-toggle, .dsa-mode #lang-toggle, .dsa-mode .hero-bg a {
+            color: #000 !important; border: 2px solid #000 !important; background-color: transparent !important; opacity: 1 !important;
+        }
+        .dsa-mode .quick-nav-item { background-color: #ffffff !important; border: 2px solid #000 !important; color: #000 !important; }
+        .dsa-mode .content-card { border: 2px solid #000; }
+        .dsa-mode h1, .dsa-mode h2, .dsa-mode h3, .dsa-mode h4 { color: #000000 !important; text-decoration: underline; text-decoration-color: #fbbf24; }
+        .dsa-mode input, .dsa-mode textarea, .dsa-mode .location-box { background-color: #ffffff; border: 2px solid #000; }
+        
+        @media print {
+            #main-header, #main-footer, #print-button, .quick-nav, .scrollable-nav { display: none !important; }
+            body { background-color: white !important; }
+            .content-card { box-shadow: none !important; border: 1px solid #eee !important; margin: 0 !important; max-width: 100% !important; }
+            input, textarea { border: none !important; border-bottom: 1px dotted #000 !important; background: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header id="main-header" class="hero-bg text-white shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center text-white">
+            <h1 class="text-xl font-bold" data-lang-key="siteTitle">Semeiotica Vet P.A.</h1>
+            <div class="flex items-center space-x-4">
+                <button id="accessibility-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition" data-lang-key="accessibility">Accessibilità</button>
+                <button id="lang-toggle" class="text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-bg text-white">
+        <div class="container mx-auto px-6 pt-8 pb-12 relative text-center">
+            <div class="absolute top-4 left-6 text-sm font-semibold px-3 py-2 rounded-lg bg-white/20 hover:bg-white/30 transition inline-flex items-center">
+                 <a href="index.html" class="inline-flex items-center" data-lang-key="backToIndex">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="backToIndexText">Indice</span>
+                 </a>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 !text-white" data-lang-key="sectionTitleNerv">9. Sistema Nervoso</h1>
+            <nav class="overflow-x-auto scroll-hide mt-4">
+                 <div class="flex justify-center space-x-2 pb-2">
+                     <a href="riassunto_nervoso.html" class="section-nav-link" data-lang-key="navSummary">Riassunto</a>
+                     <a href="infografica_nervoso.html" class="section-nav-link" data-lang-key="navInfographic">Infografica</a>
+                     <a href="checklist_nervoso.html" class="section-nav-link active" data-lang-key="navChecklist">Checklist</a>
+                     <a href="collaterali_nervoso.html" class="section-nav-link" data-lang-key="navAncillary">Esami Collaterali</a>
+                     <a href="quiz_nervoso.html" class="section-nav-link" data-lang-key="navQuiz">Quiz</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- NAVIGAZIONE RAPIDA APPARATI -->
+    <nav class="quick-nav sticky top-[64px] z-40 shadow-sm text-center">
+        <div class="container mx-auto px-4">
+            <div class="quick-nav-grid">
+                <a href="riassunto_eog.html" class="quick-nav-item" data-lang-key="navEOG">Esame Obiettivo Generale</a>
+                <a href="riassunto_cardiocircolatorio.html" class="quick-nav-item" data-lang-key="navCardio">Apparato Cardiocircolatorio</a>
+                <a href="riassunto_respiratorio.html" class="quick-nav-item" data-lang-key="navResp">Apparato Respiratorio</a>
+                <a href="riassunto_digerente.html" class="quick-nav-item" data-lang-key="navDig">Apparato Digerente</a>
+                <a href="riassunto_muscolare.html" class="quick-nav-item" data-lang-key="navMusc">Apparato Muscolare</a>
+                <a href="riassunto_urinario.html" class="quick-nav-item" data-lang-key="navUrin">Apparato Urinario</a>
+                <a href="riassunto_ematopoietico.html" class="quick-nav-item" data-lang-key="navHema">Sistema Ematopoietico</a>
+                <a href="riassunto_endocrino.html" class="quick-nav-item" data-lang-key="navEndo">Sistema Endocrino</a>
+                <a href="riassunto_nervoso.html" class="quick-nav-item active" data-lang-key="navNerv">Sistema Nervoso</a>
+                <a href="riassunto_tegumentario.html" class="quick-nav-item" data-lang-key="navTegum">Apparato Tegumentario</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4">
+        <div id="main-content" class="content-card">
+            
+            <h1 class="text-2xl font-bold mb-8 text-center text-purple-900" data-lang-key="pageTitle">Checklist: Esame Neurologico (P.A.)</h1>
+
+            <!-- 1. ANAMNESI -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-purple-800 border-b pb-2" data-lang-key="secAnamnesi">1. Anamnesi Mirata</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                    <div class="field">
+                        <div class="label-area"><label data-lang-key="fldEvoluzione">Progressione</label><p class="label-desc" data-lang-key="fldEvoluzioneDesc">Acuta, cronica, progressiva, episodica.</p></div>
+                        <div class="input-area"><input type="text"></div>
+                    </div>
+                    <div class="field">
+                        <div class="label-area"><label data-lang-key="fldComportamento">Comportamento</label><p class="label-desc" data-lang-key="fldComportamentoDesc">Aggressività, head pressing, cecità.</p></div>
+                        <div class="input-area"><input type="text"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. SENSORIO E ANDATURA -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-purple-800 border-b pb-2" data-lang-key="secSensorio">2. Sensorio, Postura e Andatura</h2>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="fldMentale">Stato Mentale</label><p class="label-desc" data-lang-key="fldMentaleDesc">Vigile (BAR), Ottuso, Stuporoso, Comatoso.</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+                <div class="field">
+                    <div class="label-area"><label data-lang-key="fldAtassia">Atassia / Paresi</label><p class="label-desc" data-lang-key="fldAtassiaDesc">Sensoriale, vestibolare, cerebellare; grado (1-5).</p></div>
+                    <div class="input-area"><input type="text"></div>
+                </div>
+            </section>
+
+            <!-- 3. REAZIONI POSTURALI -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-purple-800 border-b pb-2" data-lang-key="secPosturali">3. Reazioni Posturali (Propriocezione)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="location-box">
+                        <h4 data-lang-key="propTest">Test Propriocezione</h4>
+                        <div class="checklist-item"><input type="checkbox" id="p1"><label for="p1" data-lang-key="cbP1">Posizionamento zampa (knuckling)</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="p2"><label for="p2" data-lang-key="cbP2">Saltellamento (Hopping)</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="p3"><label for="p3" data-lang-key="cbP3">Carriola (Wheelbarrowing)</label></div>
+                    </div>
+                    <div class="location-box">
+                        <h4 data-lang-key="latDiff">Simmetria</h4>
+                        <div class="checklist-item"><input type="checkbox" id="l1"><label for="l1" data-lang-key="cbL1">Deficit Ipsilaterale</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="l2"><label for="l2" data-lang-key="cbL2">Deficit Controlaterale</label></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. NERVI CRANICI -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-purple-800 border-b pb-2" data-lang-key="secNC">4. Valutazione Nervi Cranici</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="field"><div class="label-area"><label data-lang-key="ncMinaccia">Minaccia / PLR (II, III, VII)</label></div><div class="input-area"><input type="text"></div></div>
+                    <div class="field"><div class="label-area"><label data-lang-key="ncPalpebrale">Riflesso Palpebrale (V, VII)</label></div><div class="input-area"><input type="text"></div></div>
+                    <div class="field"><div class="label-area"><label data-lang-key="ncOculov">Vestibolo-oculare (VIII)</label></div><div class="input-area"><input type="text"></div></div>
+                    <div class="field"><div class="label-area"><label data-lang-key="ncDeglut">Deglutizione (IX, X)</label></div><div class="input-area"><input type="text"></div></div>
+                </div>
+            </section>
+
+            <!-- 5. RIFLESSI SPINALI -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-purple-800 border-b pb-2" data-lang-key="secRiflessi">5. Riflessi Spinali (UMN vs LMN)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                    <div>
+                        <h4 data-lang-key="rifAnteriori">Arti Anteriori</h4>
+                        <div class="field border-none"><label data-lang-key="rifEstens">Estensore Radiale</label><input type="text"></div>
+                        <div class="field border-none"><label data-lang-key="rifFlessAnt">Flessorio (Ritiro)</label><input type="text"></div>
+                    </div>
+                    <div>
+                        <h4 data-lang-key="rifPosteriori">Arti Posteriori</h4>
+                        <div class="field border-none"><label data-lang-key="rifPatell">Patellare (L4-L6)</label><input type="text"></div>
+                        <div class="field border-none"><label data-lang-key="rifFlessPost">Flessorio (L6-S1)</label><input type="text"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. LOCALIZZAZIONE -->
+            <section class="mb-10">
+                <h2 class="text-xl font-semibold mb-4 text-purple-800 border-b pb-2" data-lang-key="secLoc">6. Sintesi e Localizzazione</h2>
+                <div class="location-box">
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="checklist-item"><input type="checkbox" id="loc1"><label for="loc1" data-lang-key="cbLoc1">Proencefalo</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="loc2"><label for="loc2" data-lang-key="cbLoc2">Tronco / Cervelletto</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="loc3"><label for="loc3" data-lang-key="cbLoc3">C1 - C5</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="loc4"><label for="loc4" data-lang-key="cbLoc4">C6 - T2</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="loc5"><label for="loc5" data-lang-key="cbLoc5">T3 - L3</label></div>
+                        <div class="checklist-item"><input type="checkbox" id="loc6"><label for="loc6" data-lang-key="cbLoc6">L4 - S3</label></div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label class="font-bold text-sm" data-lang-key="fldNote">Note e Diagnosi Differenziale</label>
+                    <textarea class="w-full mt-2"></textarea>
+                </div>
+            </section>
+
+            <div class="mt-8 text-center">
+                <button id="print-button" onclick="window.print()" class="bg-purple-600 text-white font-bold py-3 px-10 rounded-xl hover:bg-purple-700 transition shadow-lg inline-flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4v3h10V4H5zm11 9H4v4h12v-4zM5 11h10v-3H5v3z"></path><path fill-rule="evenodd" d="M18 8H2a2 2 0 00-2 2v4a2 2 0 002 2h2v2a2 2 0 002 2h8a2 2 0 002-2v-2h2a2 2 0 002-2v-4a2 2 0 00-2-2zM4 10a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm1 5a1 1 0 100 2h8a1 1 0 100-2H5z" clip-rule="evenodd"></path></svg>
+                    <span data-lang-key="btnPrint">Stampa Checklist Neurologico</span>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer id="main-footer" class="text-center py-8 border-t border-slate-200">
+        <p class="text-slate-500 text-sm" data-lang-key="footerText">A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                siteTitle: { it: 'Semeiotica Vet P.A.', en: 'Small Animal Semeiotics' },
+                backToIndexText: { it: 'Indice', en: 'Index' },
+                accessibility: { it: 'Accessibilità', en: 'Accessibility' },
+                sectionTitleNerv: { it: '9. Sistema Nervoso', en: '9. Nervous System' },
+                navSummary: { it: 'Riassunto', en: 'Summary' },
+                navInfographic: { it: 'Infografica', en: 'Infographic' },
+                navChecklist: { it: 'Checklist', en: 'Checklist' },
+                navAncillary: { it: 'Esami Collaterali', en: 'Ancillary Exams' },
+                navQuiz: { it: 'Quiz', en: 'Quiz' },
+                navEOG: { it: "Esame Obiettivo Generale", en: "General Physical" },
+                navCardio: { it: "Apparato Cardiocircolatorio", en: "Cardiovascular" },
+                navResp: { it: "Apparato Respiratorio", en: "Respiratory" },
+                navDig: { it: "Apparato Digerente", en: "Digestive" },
+                navMusc: { it: "Apparato Muscolare", en: "Musculoskeletal" },
+                navUrin: { it: "Apparato Urinario", en: "Urinary" },
+                navHema: { it: "Sistema Ematopoietico", en: "Hematopoietic" },
+                navEndo: { it: "Sistema Endocrino", en: "Endocrine" },
+                navNerv: { it: "Sistema Nervoso", en: "Nervous" },
+                navTegum: { it: "Apparato Tegumentario", en: "Integumentary" },
+                pageTitle: { it: "Checklist: Esame Neurologico (P.A.)", en: "Neurological Exam Checklist" },
+                secAnamnesi: { it: "1. Anamnesi Mirata", en: "1. Targeted History" },
+                fldEvoluzione: { it: "Progressione", en: "Progression" },
+                fldEvoluzioneDesc: { it: "Acuta, cronica, progressiva, episodica.", en: "Acute, chronic, progressive, episodic." },
+                fldComportamento: { it: "Comportamento", en: "Behavior" },
+                fldComportamentoDesc: { it: "Aggressività, head pressing, cecità.", en: "Aggression, head pressing, blindness." },
+                secSensorio: { it: "2. Sensorio, Postura e Andatura", en: "2. Mentation, Posture, and Gait" },
+                fldMentale: { it: "Stato Mentale", en: "Mental Status" },
+                fldMentaleDesc: { it: "Vigile (BAR), Ottuso, Stuporoso, Comatoso.", en: "Alert (BAR), Obtunded, Stuporous, Comatose." },
+                fldAtassia: { it: "Atassia / Paresi", en: "Ataxia / Paresis" },
+                fldAtassiaDesc: { it: "Sensoriale, vestibolare, cerebellare; grado (1-5).", en: "Sensory, vestibular, cerebellar; grade (1-5)." },
+                secPosturali: { it: "3. Reazioni Posturali (Propriocezione)", en: "3. Postural Reactions (Proprioception)" },
+                propTest: { it: "Test Propriocezione", en: "Proprioceptive Tests" },
+                cbP1: { it: "Posizionamento zampa (knuckling)", en: "Paw positioning (knuckling)" },
+                cbP2: { it: "Saltellamento (Hopping)", en: "Hopping" },
+                cbP3: { it: "Carriola (Wheelbarrowing)", en: "Wheelbarrowing" },
+                latDiff: { it: "Simmetria", en: "Symmetry" },
+                cbL1: { it: "Deficit Ipsilaterale", en: "Ipsilateral Deficit" },
+                cbL2: { it: "Deficit Controlaterale", en: "Contralateral Deficit" },
+                secNC: { it: "4. Valutazione Nervi Cranici", en: "4. Cranial Nerve Assessment" },
+                ncMinaccia: { it: "Minaccia / PLR (II, III, VII)", en: "Menace / PLR (II, III, VII)" },
+                ncPalpebrale: { it: "Riflesso Palpebrale (V, VII)", en: "Palpebral Reflex (V, VII)" },
+                ncOculov: { it: "Vestibolo-oculare (VIII)", en: "Vestibulo-ocular (VIII)" },
+                ncDeglut: { it: "Deglutizione (IX, X)", en: "Gag Reflex (IX, X)" },
+                secRiflessi: { it: "5. Riflessi Spinali (UMN vs LMN)", en: "5. Spinal Reflexes (UMN vs LMN)" },
+                rifAnteriori: { it: "Arti Anteriori", en: "Forelimbs" },
+                rifEstens: { it: "Estensore Radiale", en: "Extensor Carpi Radialis" },
+                rifFlessAnt: { it: "Flessorio (Ritiro)", en: "Flexor (Withdrawal)" },
+                rifPosteriori: { it: "Arti Posteriori", en: "Hindlimbs" },
+                rifPatell: { it: "Patellare (L4-L6)", en: "Patellar (L4-L6)" },
+                rifFlessPost: { it: "Flessorio (L6-S1)", en: "Flexor (L6-S1)" },
+                secLoc: { it: "6. Sintesi e Localizzazione", en: "6. Synthesis and Localization" },
+                cbLoc1: { it: "Proencefalo", en: "Prosencephalon" },
+                cbLoc2: { it: "Tronco / Cervelletto", en: "Brainstem / Cerebellum" },
+                cbLoc3: { it: "C1 - C5", en: "C1 - C5" },
+                cbLoc4: { it: "C6 - T2", en: "C6 - T2" },
+                cbLoc5: { it: "T3 - L3", en: "T3 - L3" },
+                cbLoc6: { it: "L4 - S3", en: "L4 - S3" },
+                fldNote: { it: "Note e Diagnosi Differenziale", en: "Notes and Differential Diagnosis" },
+                btnPrint: { it: 'Stampa Checklist Neurologico', en: 'Print Neurological Checklist' },
+                footerText: { it: 'A cura della Prof.ssa Sara Busechian. Insegnamenti di clinica medica veterinaria', en: 'Curated by Prof. Sara Busechian. Veterinary internal medicine teachings' }
+            };
+
+            let currentLanguage = localStorage.getItem('language') || 'it';
+            const body = document.body;
+
+            const updateLanguage = (lang) => {
+                document.documentElement.lang = lang;
+                document.getElementById('lang-toggle').textContent = lang === 'it' ? 'EN' : 'IT';
+                document.querySelectorAll('[data-lang-key]').forEach(el => {
+                    const key = el.dataset.langKey;
+                    if (translations[key]) el.innerHTML = translations[key][lang];
+                });
+            };
+
+            const setA11yMode = (enabled) => {
+                body.classList.toggle('dsa-mode', enabled);
+                localStorage.setItem('dsa-mode', enabled ? 'enabled' : 'disabled');
+            };
+
+            document.getElementById('lang-toggle').onclick = () => {
+                currentLanguage = currentLanguage === 'it' ? 'en' : 'it';
+                localStorage.setItem('language', currentLanguage);
+                updateLanguage(currentLanguage);
+            };
+
+            document.getElementById('accessibility-toggle').onclick = () => setA11yMode(!body.classList.contains('dsa-mode'));
+
+            if (localStorage.getItem('dsa-mode') === 'enabled') setA11yMode(true);
+            updateLanguage(currentLanguage);
+        });
+    </script>
+</body>
+</html>
